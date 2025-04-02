@@ -35,9 +35,9 @@
 import {
   navigationFirstEnter,
   navigationShow,
-} from '~/utils/animations/navigation';
-import { gsap } from 'gsap';
-import { useTemplateRefsList } from '@vueuse/core';
+} from "~/utils/animations/navigation";
+import { gsap } from "gsap";
+import { useTemplateRefsList } from "@vueuse/core";
 
 const navItemRefs = useTemplateRefsList();
 const navAniDuration = 0.15;
@@ -45,7 +45,7 @@ const navAniY = 10;
 
 const navigationHoverAnimate = (index) => {
   const tl = gsap.timeline();
-  const text = navItemRefs.value[index].querySelector('span');
+  const text = navItemRefs.value[index].querySelector("span");
   tl.to(text, {
     duration: navAniDuration,
     y: navAniY,
@@ -70,8 +70,8 @@ const goToSection = (sectionId) => {
 
 const currentYear = new Date().getFullYear().toString().slice(-2);
 
-const localTime = ref('');
-const timezone = 'Europe/Lisbon';
+const localTime = ref("");
+const timezone = "Europe/Lisbon";
 
 const navigationItems = computed(() => navigationStore.navigationItems);
 const activeNav = computed(() => navigationStore.activeNavItem);
@@ -79,10 +79,10 @@ const navContrastSwitched = computed(() => navigationStore.navContrastSwitched);
 
 let intervalId = null;
 function updateLisbonTime() {
-  localTime.value = new Intl.DateTimeFormat('en-GB', {
+  localTime.value = new Intl.DateTimeFormat("en-GB", {
     timeZone: timezone,
-    hour: '2-digit',
-    minute: '2-digit',
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: true,
   }).format(new Date());
 }
@@ -147,7 +147,7 @@ watch(
   }
   &:before {
     opacity: 0;
-    content: '👉';
+    content: "👉";
     display: inline-block;
     margin-right: 4px;
     position: relative;
