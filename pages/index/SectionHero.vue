@@ -28,11 +28,11 @@
     </Container>
     <div class="hero-bg-image">
       <CanvasImage
-        :src-link="'images/hero.webp'"
+        :src-link="'images/11.JPG'"
         :uniforms="imageUniforms"
         :shader="'hero'"
         :load-strategy="'preload'"
-        :alt="'background portrait image of a person'"
+        :alt="'background wave on beach'"
       />
     </div>
   </div>
