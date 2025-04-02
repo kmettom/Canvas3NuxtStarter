@@ -11,12 +11,12 @@
     "build": "nuxt build",
     "start-nuxt": "nuxt start",
     "dev": "prettier --write . && npm run lint:eslint && nuxt dev --hostname myhost --port 4200",
+    "prettier": "prettier --write .",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "npm run prettier && npm run lint:eslint ",
     "lint:eslint": "eslint . --fix",
-    "prettier": "prettier --write .",
     "lintfix": "eslint . --fix && prettier --write --list-different ."
   },
   "devDependencies": {
