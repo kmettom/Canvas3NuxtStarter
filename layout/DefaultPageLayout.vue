@@ -18,21 +18,21 @@
 </template>
 
 <script setup>
-import { Canvas } from '~/utils/canvas';
-import { useDisplayStore } from '~/stores/display';
+import { Canvas } from "~/utils/canvas";
+import { useDisplayStore } from "~/stores/display";
 
 const navigationStore = useNavigationStore();
 const displayStore = useDisplayStore();
 
 const backLayerCanvas = computed(() => {
   return (
-    navigationStore.activeNavItem === 'home' || !navigationStore.navVisible
+    navigationStore.activeNavItem === "home" || !navigationStore.navVisible
   );
 });
 
-const canvas = ref('canvas');
+const canvas = ref("canvas");
 
-const scrollableContent = ref('scrollableContent');
+const scrollableContent = ref("scrollableContent");
 
 onMounted(async () => {
   await Canvas.init(canvas.value, scrollableContent.value);

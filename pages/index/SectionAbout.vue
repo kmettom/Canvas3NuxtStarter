@@ -41,10 +41,10 @@
 </template>
 
 <script setup>
-import Container from '~/components/common/Container.vue';
+import Container from "~/components/common/Container.vue";
 
-import { gsap } from 'gsap';
-import { SplitText } from 'gsap/SplitText';
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(SplitText);
 
@@ -52,11 +52,11 @@ function textAniCallback(item) {
   const selector = `.${item.elNode.dataset.aboutId}`;
   const tl = gsap.timeline();
   const lines = new SplitText(selector, {
-    type: 'lines',
+    type: "lines",
   }).lines;
-  const wrappedLines = new SplitText(lines, { type: 'lines' }).lines;
-  tl.set(selector, { opacity: 1, overflow: 'hidden' });
-  tl.set(lines, { opacity: 1, overflow: 'hidden' });
+  const wrappedLines = new SplitText(lines, { type: "lines" }).lines;
+  tl.set(selector, { opacity: 1, overflow: "hidden" });
+  tl.set(lines, { opacity: 1, overflow: "hidden" });
   tl.fromTo(
     wrappedLines,
     { y: 50, opacity: 1 },

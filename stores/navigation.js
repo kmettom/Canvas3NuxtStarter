@@ -4,24 +4,24 @@ import {
   openGalleryTransition,
   showGalleryControls,
   closeGalleryTransition,
-} from '~/utils/animations/projects';
-import { gsap } from 'gsap';
-import { projectDefaults } from '~/constants/projectDefaults.js';
-import { Canvas } from '~/utils/canvas';
-import { defineStore } from 'pinia';
+} from "~/utils/animations/projects";
+import { gsap } from "gsap";
+import { projectDefaults } from "~/constants/projectDefaults.js";
+import { Canvas } from "~/utils/canvas";
+import { defineStore } from "pinia";
 
-export const useNavigationStore = defineStore('navigationStore', {
+export const useNavigationStore = defineStore("navigationStore", {
   state: () => ({
     canvasInitiated: false,
-    activeNavItem: 'home',
+    activeNavItem: "home",
     navVisible: true,
     navContrastSwitched: false,
     navigationItems: [
-      { name: 'Home', id: 'home' },
-      { name: 'About', id: 'about' },
-      { name: 'Services', id: 'services' },
-      { name: 'Work', id: 'work' },
-      { name: 'Contact', id: 'contact' },
+      { name: "Home", id: "home" },
+      { name: "About", id: "about" },
+      { name: "Services", id: "services" },
+      { name: "Work", id: "work" },
+      { name: "Contact", id: "contact" },
     ],
     projects: {
       galleryOpen: false,
@@ -77,7 +77,7 @@ export const useNavigationStore = defineStore('navigationStore', {
       if (this.projects.htmlSizeOrigins !== null) return;
       this.projects.htmlSizeOrigins = [];
       for (const ref of this.projects.htmlRefs) {
-        const imageRef = ref.querySelector('.webgl-img');
+        const imageRef = ref.querySelector(".webgl-img");
         const imageBounds = imageRef.getBoundingClientRect();
         this.projects.htmlSizeOrigins.push({
           width: imageBounds.width,
@@ -103,7 +103,7 @@ export const useNavigationStore = defineStore('navigationStore', {
         projectDefaults.margin,
       );
       Canvas.setFixedScrollToElement(null);
-      gsap.set('body', { overflow: 'auto' });
+      gsap.set("body", { overflow: "auto" });
       Canvas.animateImageMesh = false;
     },
     setGalleryNavigationVisible(visible) {
@@ -112,7 +112,7 @@ export const useNavigationStore = defineStore('navigationStore', {
     },
 
     scrollToProject(index) {
-      gsap.set('body', { overflow: 'auto' });
+      gsap.set("body", { overflow: "auto" });
       const htmlRef = this.projects.htmlRefs[index];
       const projectPosition =
         htmlRef.getBoundingClientRect().top +
@@ -123,7 +123,7 @@ export const useNavigationStore = defineStore('navigationStore', {
         Math.abs(projectPosition - Canvas.scroll.current) + 200;
       return new Promise((resolve) => {
         setTimeout(() => {
-          gsap.set('body', { overflow: 'hidden' });
+          gsap.set("body", { overflow: "hidden" });
           resolve();
         }, scrollDurationEnd);
       });

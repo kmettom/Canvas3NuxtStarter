@@ -42,10 +42,10 @@
 </template>
 
 <script setup>
-import Container from '~/components/common/Container.vue';
-import services from '~/content/services.model.json';
-import Service from '~/pages/index/services/Service.vue';
-import gsap from 'gsap';
+import Container from "~/components/common/Container.vue";
+import services from "~/content/services.model.json";
+import Service from "~/pages/index/services/Service.vue";
+import gsap from "gsap";
 
 const serviceBlockSize = 340;
 const serviceTopPadding = 50;
@@ -77,7 +77,7 @@ const setServiceBlockBlur = (index, elNode, styles) => {
   const rotateDeg = styles.rotate * aniInCoef;
   const blur = 5 * (1 - aniInCoef) + 15 * aniOutCoef;
   if (blur > maxBlur) return;
-  gsap.set(elNode.querySelector('.service-item-inner'), {
+  gsap.set(elNode.querySelector(".service-item-inner"), {
     filter: `blur(${blur}px)`,
     rotation: rotateDeg,
   });

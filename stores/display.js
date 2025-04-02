@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const useDisplayStore = defineStore('displayStore', {
+export const useDisplayStore = defineStore("displayStore", {
   state: () => ({
     isMobile: null,
     isTablet: null,
@@ -13,11 +13,11 @@ export const useDisplayStore = defineStore('displayStore', {
       this.setScreenSize();
       this.resizeListener();
       this.prefersReducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)',
+        "(prefers-reduced-motion: reduce)",
       ).matches;
     },
     resizeListener() {
-      window.addEventListener('resize', () => {
+      window.addEventListener("resize", () => {
         this.setScreenSize();
       });
     },

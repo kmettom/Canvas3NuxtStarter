@@ -1,23 +1,23 @@
-import { defineNuxtConfig } from 'nuxt/config';
-import glsl from 'vite-plugin-glsl';
+import { defineNuxtConfig } from "nuxt/config";
+import glsl from "vite-plugin-glsl";
 export default defineNuxtConfig({
   devtools: { enabled: true },
   routeRules: {},
   modules: [
-    '@nuxt-modules/compression',
-    '@nuxt/eslint',
-    '@nuxt/content',
-    '@nuxt/image',
-    'nuxt-viewport',
-    '@pinia/nuxt',
+    "@nuxt-modules/compression",
+    "@nuxt/eslint",
+    "@nuxt/content",
+    "@nuxt/image",
+    "nuxt-viewport",
+    "@pinia/nuxt",
   ],
   image: {
-    target: 'static',
-    dir: 'public/',
+    target: "static",
+    dir: "public/",
   },
 
   build: {
-    transpile: ['gsap'],
+    transpile: ["gsap"],
   },
 
   vite: {
@@ -33,11 +33,11 @@ export default defineNuxtConfig({
   },
 
   hooks: {
-    'build:manifest': (manifest) => {
-      const css = manifest['node_modules/nuxt/dist/app/entry.js']?.css;
+    "build:manifest": (manifest) => {
+      const css = manifest["node_modules/nuxt/dist/app/entry.js"]?.css;
       if (css) {
         for (let i = css.length - 1; i >= 0; i--) {
-          if (css[i].startsWith('entry')) css.splice(i, 1);
+          if (css[i].startsWith("entry")) css.splice(i, 1);
         }
       }
     },
@@ -59,5 +59,5 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
   },
-  compatibilityDate: '2025-01-08',
+  compatibilityDate: "2025-01-08",
 });

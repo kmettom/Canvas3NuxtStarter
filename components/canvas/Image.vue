@@ -16,8 +16,8 @@
 </template>
 
 <script setup>
-import { Canvas } from '~/utils/canvas';
-import { useDisplayStore } from '~/stores/display';
+import { Canvas } from "~/utils/canvas";
+import { useDisplayStore } from "~/stores/display";
 
 const displayStore = useDisplayStore();
 const navigationStore = useNavigationStore();
@@ -25,7 +25,7 @@ const navigationStore = useNavigationStore();
 const props = defineProps({
   alt: {
     type: String,
-    default: 'picture',
+    default: "picture",
   },
   srcLink: {
     type: String,
@@ -33,7 +33,7 @@ const props = defineProps({
   },
   shader: {
     type: String,
-    default: 'default',
+    default: "default",
   },
   uniforms: {
     type: Object,
@@ -41,13 +41,13 @@ const props = defineProps({
   },
   loadStrategy: {
     type: String,
-    default: 'lazy',
+    default: "lazy",
   },
 });
 
 const generatedMeshId = props.srcLink + crypto.randomUUID();
 
-const image = ref('image');
+const image = ref("image");
 const imgAddedToCanvas = ref(false);
 
 const meshUniforms = computed(() => {

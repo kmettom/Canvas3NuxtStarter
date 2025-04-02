@@ -22,14 +22,14 @@
   />
 </template>
 <script setup>
-import DefaultPageLayout from '~/layout/DefaultPageLayout.vue';
+import DefaultPageLayout from "~/layout/DefaultPageLayout.vue";
 const navigationStore = useNavigationStore();
 
 const welcomeInit = ref(false);
 
 useHead({
   htmlAttrs: {
-    lang: 'en',
+    lang: "en",
   },
   style: [
     {

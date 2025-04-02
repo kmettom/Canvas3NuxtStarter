@@ -15,11 +15,11 @@ export default {
   props: {
     text: {
       type: String,
-      default: '',
+      default: "",
     },
     title: {
       type: String,
-      default: '',
+      default: "",
     },
     icon: {
       type: String,

@@ -45,18 +45,18 @@
 </template>
 
 <script setup>
-import SectionProjects from '~/pages/index/projects/SectionProjects.vue';
-import SectionServices from '~/pages/index/services/SectionServices.vue';
-import SectionHero from '~/pages/index/SectionHero.vue';
-import SectionAbout from '~/pages/index/SectionAbout.vue';
-import SectionContact from '~/pages/index/SectionContact.vue';
-import Footer from '~/components/common/Footer.vue';
+import SectionProjects from "~/pages/index/projects/SectionProjects.vue";
+import SectionServices from "~/pages/index/services/SectionServices.vue";
+import SectionHero from "~/pages/index/SectionHero.vue";
+import SectionAbout from "~/pages/index/SectionAbout.vue";
+import SectionContact from "~/pages/index/SectionContact.vue";
+import Footer from "~/components/common/Footer.vue";
 
 useSeoMeta({
-  title: 'Tomas Kmet - Web developer',
-  ogTitle: 'Tomas Kmet - Web developer',
-  description: 'web3 | creative | web apps | websites | e-commerce',
-  ogDescription: 'web3 | creative | web apps | websites | e-commerce',
+  title: "Tomas Kmet - Web developer",
+  ogTitle: "Tomas Kmet - Web developer",
+  description: "web3 | creative | web apps | websites | e-commerce",
+  ogDescription: "web3 | creative | web apps | websites | e-commerce",
 });
 
 const navigationStore = useNavigationStore();

@@ -1,11 +1,11 @@
-import { defineNuxtPlugin } from '#app';
+import { defineNuxtPlugin } from "#app";
 
 const addDataSetToEl = (_attrs, _el) => {
-  if (_el.nodeName == '#text') return;
+  if (_el.nodeName == "#text") return;
 
   for (let key in _attrs) {
     if (Object.prototype.hasOwnProperty.call(_attrs, key) && _el.setAttribute) {
-      _el.setAttribute('data-' + key, _attrs[key]);
+      _el.setAttribute("data-" + key, _attrs[key]);
     }
   }
 };
@@ -30,7 +30,7 @@ const setElementsWithDataSets = (binding, el) => {
 };
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.directive('setDataAttrs', {
+  nuxtApp.vueApp.directive("setDataAttrs", {
     mounted: function (el, binding) {
       setElementsWithDataSets(binding, el);
     },

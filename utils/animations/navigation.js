@@ -1,8 +1,8 @@
-import { gsap } from 'gsap';
+import { gsap } from "gsap";
 
 function navigationItems(timeline) {
   timeline.fromTo(
-    '.navigation-item',
+    ".navigation-item",
     {
       x: -10,
       opacity: 0,
@@ -21,7 +21,7 @@ export function navigationFirstEnter() {
     delay: 1.5,
   });
   tl.fromTo(
-    '.navigation-bar',
+    ".navigation-bar",
     {
       y: 0,
       opacity: 0,
@@ -37,7 +37,7 @@ export function navigationFirstEnter() {
 
 export function navigationShow(isVisible) {
   const tl = gsap.timeline();
-  tl.to('.navigation-bar', {
+  tl.to(".navigation-bar", {
     duration: 0.5,
     y: 0,
     opacity: isVisible ? 1 : 0,

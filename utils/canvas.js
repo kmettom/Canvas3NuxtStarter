@@ -1,44 +1,44 @@
-import { gsap } from 'gsap';
-import * as THREE from 'three';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { gsap } from "gsap";
+import * as THREE from "three";
+import { FontLoader } from "three/addons/loaders/FontLoader.js";
 
-import * as pkg from 'three-msdf-text-utils/build/bundle';
+import * as pkg from "three-msdf-text-utils/build/bundle";
 
-import Scroll from './scroll.js';
+import Scroll from "./scroll.js";
 
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
-import scrollFragment from './shaders/scrollFragment.glsl';
-import scrollVertex from './shaders/scrollVertex.glsl';
+import scrollFragment from "./shaders/scrollFragment.glsl";
+import scrollVertex from "./shaders/scrollVertex.glsl";
 
-import projectBlurFragment from './shaders/projectBlurFragment.glsl';
-import projectBlurVertex from './shaders/projectBlurVertex.glsl';
+import projectBlurFragment from "./shaders/projectBlurFragment.glsl";
+import projectBlurVertex from "./shaders/projectBlurVertex.glsl";
 
-import heroBlurFragment from './shaders/heroBlurFragment.glsl';
-import heroBlurVertex from './shaders/heroBlurVertex.glsl';
+import heroBlurFragment from "./shaders/heroBlurFragment.glsl";
+import heroBlurVertex from "./shaders/heroBlurVertex.glsl";
 
-import TextBlurFragment from './shaders/TextBlurFragment.glsl';
-import TextBlurVertex from './shaders/TextBlurVertex.glsl';
+import TextBlurFragment from "./shaders/TextBlurFragment.glsl";
+import TextBlurVertex from "./shaders/TextBlurVertex.glsl";
 
-import play1Fragment from './shaders/play1Fragment.glsl';
-import play1Vertex from './shaders/play1Vertex.glsl';
+import play1Fragment from "./shaders/play1Fragment.glsl";
+import play1Vertex from "./shaders/play1Vertex.glsl";
 
 import {
   generateBindingLogic,
   loadTexture,
   getMSDFFontMeshScales,
   heightPositionCoef,
-} from '~/utils/canvasHelpers';
+} from "~/utils/canvasHelpers";
 
 const { MSDFTextGeometry } = pkg;
 
 const CanvasOptions = {
   fonts: {
     PPFormula: {
-      fnt: '/font/PPFormula-CondensedBlack.fnt',
-      atlas: '/font/PPFormula-CondensedBlack.png',
+      fnt: "/font/PPFormula-CondensedBlack.fnt",
+      atlas: "/font/PPFormula-CondensedBlack.png",
     },
   },
   scroll: {
@@ -124,7 +124,7 @@ const Canvas = {
 
     this.render();
 
-    window.addEventListener('mousemove', (event) => {
+    window.addEventListener("mousemove", (event) => {
       this.mouse.x = event.clientX / this.width;
       this.mouse.y = event.clientY / this.height;
       setTimeout(() => {
@@ -159,7 +159,7 @@ const Canvas = {
     });
   },
   setResizeListener() {
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       this.resizeOnChange();
     });
   },
@@ -237,21 +237,21 @@ const Canvas = {
   activateMesh(id, isActive) {
     const mesh = this.scene.getObjectByName(id);
     if (!mesh) {
-      console.error('no Mesh found with ID: ' + id);
+      console.error("no Mesh found with ID: " + id);
       return;
     }
     if (mesh.material.uniforms.uAniInImage) {
       gsap.to(mesh.material.uniforms.uAniInImage, {
         duration: 1.0,
         value: isActive ? 1 : 0,
-        ease: 'power1.inOut',
+        ease: "power1.inOut",
       });
     }
     if (mesh.material.uniforms.uAniInText) {
       gsap.to(mesh.material.uniforms.uAniInText, {
         duration: 1.5,
         value: isActive ? 1 : 0,
-        ease: 'power2.out',
+        ease: "power2.out",
       });
     }
   },
@@ -360,13 +360,13 @@ const Canvas = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uColor: {
           value: new THREE.Vector4(
-            theme === 'dark' ? 27 / 255 : 191 / 255, // R
-            theme === 'dark' ? 24 / 255 : 192 / 255, // G
-            theme === 'dark' ? 24 / 255 : 178 / 255, // B
+            theme === "dark" ? 27 / 255 : 191 / 255, // R
+            theme === "dark" ? 24 / 255 : 192 / 255, // G
+            theme === "dark" ? 24 / 255 : 178 / 255, // B
           ),
         },
         uViewport: {
-          type: 'v2',
+          type: "v2",
           value: new THREE.Vector2(this.width, this.height),
         },
         // Common
@@ -420,7 +420,7 @@ const Canvas = {
 
     this.setTextMeshPositions();
 
-    if (htmlEl.dataset.activeScroll === 'true') {
+    if (htmlEl.dataset.activeScroll === "true") {
       this.activateMesh(meshId, true);
     }
 
@@ -467,7 +467,7 @@ const Canvas = {
           ),
         },
         uViewport: {
-          type: 'v2',
+          type: "v2",
           value: new THREE.Vector2(this.width, this.height),
         },
         ...meshUniforms,
@@ -500,7 +500,7 @@ const Canvas = {
 
     this.imageStore.push(newMesh);
 
-    if (meshUniforms.uAniInImage || imgHtmlEl.dataset.activeScroll === 'true') {
+    if (meshUniforms.uAniInImage || imgHtmlEl.dataset.activeScroll === "true") {
       this.activateMesh(meshId, true);
     }
 
@@ -509,7 +509,7 @@ const Canvas = {
   },
 
   meshMouseListeners(mesh, material) {
-    mesh.htmlEl.addEventListener('mouseenter', () => {
+    mesh.htmlEl.addEventListener("mouseenter", () => {
       mesh.mesh.renderOrder = 1;
       gsap.to(material.uniforms.hoverState, {
         duration: 0.5,
@@ -517,7 +517,7 @@ const Canvas = {
       });
     });
 
-    mesh.htmlEl.addEventListener('mouseout', () => {
+    mesh.htmlEl.addEventListener("mouseout", () => {
       mesh.mesh.renderOrder = 0;
       gsap.to(material.uniforms.hoverState, {
         duration: 0.5,

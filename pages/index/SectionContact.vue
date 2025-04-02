@@ -152,13 +152,13 @@
 </template>
 
 <script setup>
-import Container from '~/components/common/Container.vue';
-import { gsap } from 'gsap';
-import { SplitText } from 'gsap/SplitText';
-import BasketBallIcon from 'public/images/ball.png';
-import { Canvas } from '~/utils/canvas';
+import Container from "~/components/common/Container.vue";
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
+import BasketBallIcon from "public/images/ball.png";
+import { Canvas } from "~/utils/canvas";
 
-import { useDisplayStore } from '~/stores/display';
+import { useDisplayStore } from "~/stores/display";
 
 const displayStore = useDisplayStore();
 
@@ -167,16 +167,16 @@ gsap.registerPlugin(SplitText);
 const splitLineAnimation = (item) => {
   const tl = gsap.timeline({ delay: 0.5 });
   const lines = new SplitText(item, {
-    type: 'lines',
+    type: "lines",
   }).lines;
   tl.set(item, { opacity: 1 });
   tl.fromTo(
     lines,
-    { y: '10px', opacity: 0 },
+    { y: "10px", opacity: 0 },
     {
       duration: 0.3,
       opacity: 1,
-      y: '0px',
+      y: "0px",
       stagger: 0.1,
     },
   );
@@ -185,10 +185,10 @@ const splitLineAnimation = (item) => {
 // game
 const navigationStore = useNavigationStore();
 
-const gamePad = ref('gamePad');
-const gameBall = ref('gameBall');
-const gamePoints = ref('gamePoints');
-const gameContainer = ref('gameContainer');
+const gamePad = ref("gamePad");
+const gameBall = ref("gameBall");
+const gamePoints = ref("gamePoints");
+const gameContainer = ref("gameContainer");
 const gameBaseSpeed = -5;
 const gameBallPadding = 75;
 const game = ref({
@@ -243,7 +243,7 @@ const gameStop = () => {
   });
   tl.fromTo(gameBall.value, { opacity: 0 }, { opacity: 1, duration: 0.3 });
 
-  tl.fromTo(gameBall.value, { opacity: 0 }, { opacity: 1, duration: 0.2 }, '<');
+  tl.fromTo(gameBall.value, { opacity: 0 }, { opacity: 1, duration: 0.2 }, "<");
 };
 
 const gameInit = () => {
@@ -266,7 +266,7 @@ const gameInit = () => {
     x: game.value.ball.position.x,
   });
 
-  window.addEventListener('mousemove', (e) => {
+  window.addEventListener("mousemove", (e) => {
     gsap.to(gamePad.value, {
       x: e.clientX - gamePad.value.clientWidth / 2,
       duration: 0.1,
@@ -366,7 +366,7 @@ watch(
   () => navigationStore.activeNavItem,
   (activeNavItem) => {
     if (
-      activeNavItem === 'contact' &&
+      activeNavItem === "contact" &&
       !displayStore.isTablet &&
       !displayStore.prefersReducedMotion
     ) {

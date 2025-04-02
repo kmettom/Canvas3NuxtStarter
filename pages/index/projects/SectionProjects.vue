@@ -81,10 +81,10 @@
 </template>
 
 <script setup>
-import Container from '~/components/common/Container.vue';
-import projectsData from '~/content/projects.json';
-import Project from '~/pages/index/projects/Project.vue';
-import IconsClose from '~/components/common/icons/close.client.vue';
+import Container from "~/components/common/Container.vue";
+import projectsData from "~/content/projects.json";
+import Project from "~/pages/index/projects/Project.vue";
+import IconsClose from "~/components/common/icons/close.client.vue";
 
 const navigationStore = useNavigationStore();
 
@@ -92,7 +92,7 @@ const projects = ref(projectsData);
 
 const updateProjectReferenceList = () => {
   const projectItemRefs =
-    projectGalleryRef.value.querySelectorAll('.project-item');
+    projectGalleryRef.value.querySelectorAll(".project-item");
   navigationStore.setProjectRefs(projectItemRefs);
 };
 

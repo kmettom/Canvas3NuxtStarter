@@ -1,7 +1,7 @@
 <script setup>
-import { gsap } from 'gsap';
-import { SplitText } from 'gsap/SplitText';
-import { useDisplayStore } from '~/stores/display';
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { useDisplayStore } from "~/stores/display";
 
 const displayStore = useDisplayStore();
 const navigationStore = useNavigationStore();
@@ -20,15 +20,15 @@ const props = defineProps({
 });
 
 const projectElClasses = computed(() => {
-  return `project ${props.project.position?.alignRight ? ' project-right ' : ''}`;
+  return `project ${props.project.position?.alignRight ? " project-right " : ""}`;
 });
 
 const projectNumber = computed(() => {
-  return '0' + (props.index + 1).toString();
+  return "0" + (props.index + 1).toString();
 });
 
 const projectNumberTheme = computed(() => {
-  return 'light';
+  return "light";
 });
 
 const hoverProject = (status) => {
@@ -46,7 +46,7 @@ const projectImageUniforms = ref({
   uImageGalleryActive: { active: false, duration: 0.5 },
 });
 
-const emit = defineEmits(['openGallery']);
+const emit = defineEmits(["openGallery"]);
 const scrollSpeedUpdate = computed(() => {
   if (!props.project.scrollSpeed) return;
   return navigationStore.projects.galleryToOpen || displayStore.isTablet

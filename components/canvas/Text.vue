@@ -9,8 +9,8 @@
 </template>
 
 <script setup>
-import { Canvas } from '~/utils/canvas';
-import { useDisplayStore } from '~/stores/display';
+import { Canvas } from "~/utils/canvas";
+import { useDisplayStore } from "~/stores/display";
 
 const displayStore = useDisplayStore();
 const navigationStore = useNavigationStore();
@@ -26,12 +26,12 @@ const props = defineProps({
   },
   theme: {
     type: String,
-    default: 'dark',
+    default: "dark",
   },
 });
 
-const htmlEl = ref('htmlEl');
-const meshId = 'text' + crypto.randomUUID();
+const htmlEl = ref("htmlEl");
+const meshId = "text" + crypto.randomUUID();
 
 const meshUniforms = computed(() => {
   const uni = {};
@@ -46,9 +46,9 @@ const meshUniforms = computed(() => {
 const getTrimmedText = () => {
   let innerHTML = htmlEl.value.innerHTML;
   //remove nuxt slot comment from innerHTML, only once
-  if (innerHTML.includes('<!--]-->')) {
-    const start = innerHTML.indexOf('<!--[-->') + 8; // Start after '<!--[-->'
-    const end = innerHTML.indexOf('<!--]-->'); // End just before '<!--]-->'
+  if (innerHTML.includes("<!--]-->")) {
+    const start = innerHTML.indexOf("<!--[-->") + 8; // Start after '<!--[-->'
+    const end = innerHTML.indexOf("<!--]-->"); // End just before '<!--]-->'
     innerHTML = innerHTML.slice(start, end);
   }
   return innerHTML;

@@ -2,7 +2,7 @@
   <div class="welcome" />
 </template>
 <script>
-import { gsap } from 'gsap';
+import { gsap } from "gsap";
 
 export default {
   props: {
@@ -11,7 +11,7 @@ export default {
       required: true,
     },
   },
-  emits: ['welcomeComplete'],
+  emits: ["welcomeComplete"],
 
   data() {
     return {
@@ -32,19 +32,19 @@ export default {
   mounted() {},
   methods: {
     welcomeAnimation() {
-      gsap.to('.welcome', {
+      gsap.to(".welcome", {
         duration: this.welcomeHideDuration,
         delay: this.welcomeAniDuration + this.welcomeHideDelay,
         opacity: 0,
         height: 0,
-        ease: 'power4.in',
+        ease: "power4.in",
         onComplete: () => {
           this.welcomeComplete();
         },
       });
     },
     welcomeComplete() {
-      this.$emit('welcomeComplete');
+      this.$emit("welcomeComplete");
     },
   },
 };

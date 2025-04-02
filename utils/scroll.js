@@ -1,8 +1,8 @@
-import { Canvas } from './canvas';
+import { Canvas } from "./canvas";
 import {
   elementNearViewport,
   setScrollActiveElements,
-} from '~/utils/canvasHelpers';
+} from "~/utils/canvasHelpers";
 
 const lerp = (a, b, n) => (1 - n) * a + n * b;
 
@@ -54,11 +54,11 @@ export default class Scroll {
   }
 
   initEvents() {
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       this.resizeMobileBreakEvents();
       this.setSize();
     });
-    window.addEventListener('scroll', () => {
+    window.addEventListener("scroll", () => {
       this.getScroll();
     });
   }
@@ -73,14 +73,14 @@ export default class Scroll {
 
   setElementActive(item, isActive) {
     if (isActive) {
-      item.elNode.dataset.activeScroll = 'true';
-      setScrollActiveElements(item.elNode, item.containedMeshIds, 'true');
-      item.elNode.classList.add('active');
+      item.elNode.dataset.activeScroll = "true";
+      setScrollActiveElements(item.elNode, item.containedMeshIds, "true");
+      item.elNode.classList.add("active");
       Canvas.onActiveElCallback(item);
     } else {
-      item.elNode.dataset.activeScroll = 'false';
-      setScrollActiveElements(item.elNode, item.containedMeshIds, 'false');
-      if (!item.trackOnly) item.elNode.classList.remove('active');
+      item.elNode.dataset.activeScroll = "false";
+      setScrollActiveElements(item.elNode, item.containedMeshIds, "false");
+      if (!item.trackOnly) item.elNode.classList.remove("active");
     }
 
     if (item.containedMeshIds.length > 0 && !item.trackOnly) {
@@ -115,12 +115,12 @@ export default class Scroll {
         if (activeFromTop && activeFromBottom) {
           if (item.options.onScrollCallback)
             item.options.onScrollCallback(item, this.speed);
-          if (item.elNode.dataset.activeScroll !== 'true') {
+          if (item.elNode.dataset.activeScroll !== "true") {
             this.setElementActive(item, true);
           }
         } else {
           if (
-            item.elNode.dataset.activeScroll === 'true' &&
+            item.elNode.dataset.activeScroll === "true" &&
             !item.options.activateOnce
           ) {
             this.setElementActive(item, false);
@@ -129,7 +129,7 @@ export default class Scroll {
       }
 
       //SCROLL SPEED
-      if (typeof item.options.scrollSpeed?.value === 'number') {
+      if (typeof item.options.scrollSpeed?.value === "number") {
         item.elNode.style.transition = `linear translate3d 0s`;
 
         if (item.options.fixToParentId) {
@@ -179,7 +179,7 @@ export default class Scroll {
     window.scrollTo({
       left: 0,
       top: scrollTo,
-      behavior: 'instant',
+      behavior: "instant",
     });
     document.documentElement.scrollTop = scrollTo;
   }

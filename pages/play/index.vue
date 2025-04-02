@@ -9,13 +9,13 @@
   </div>
 </template>
 <script setup>
-import { onMounted, watch } from 'vue';
+import { onMounted, watch } from "vue";
 
 useSeoMeta({
-  title: 'Tomas Kmet - Web developer - Playground',
-  ogTitle: 'Tomas Kmet - Web developer - Playground',
-  description: 'Tomas Kmet - Web developer - Playground',
-  ogDescription: 'Tomas Kmet - Web developer - Playground',
+  title: "Tomas Kmet - Web developer - Playground",
+  ogTitle: "Tomas Kmet - Web developer - Playground",
+  description: "Tomas Kmet - Web developer - Playground",
+  ogDescription: "Tomas Kmet - Web developer - Playground",
 });
 
 const props = defineProps({

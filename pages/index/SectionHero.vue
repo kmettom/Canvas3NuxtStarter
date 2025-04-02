@@ -43,9 +43,9 @@
 </template>
 
 <script setup>
-import Container from '~/components/common/Container.vue';
-import gsap from 'gsap';
-import { SplitText } from 'gsap/SplitText';
+import Container from "~/components/common/Container.vue";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 const props = defineProps({
@@ -74,12 +74,12 @@ const heroSectionAnimation = () => {
   }, 300);
 
   const tl = gsap.timeline();
-  const split = new SplitText('.hero-content-sm', { type: 'words,lines' });
+  const split = new SplitText(".hero-content-sm", { type: "words,lines" });
   tl.set(split.lines, {
     opacity: 0,
     y: 10,
   });
-  tl.set('.hero-content-sm', { opacity: 1 });
+  tl.set(".hero-content-sm", { opacity: 1 });
   tl.to(split.lines, {
     y: 0,
     opacity: 1,

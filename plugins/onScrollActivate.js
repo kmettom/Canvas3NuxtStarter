@@ -1,8 +1,8 @@
-import { Canvas } from '~/utils/canvas.js';
-import { defineNuxtPlugin } from '#app';
+import { Canvas } from "~/utils/canvas.js";
+import { defineNuxtPlugin } from "#app";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.directive('onScrollActivate', {
+  nuxtApp.vueApp.directive("onScrollActivate", {
     mounted(el, binding) {
       el.dataset.scrollActivateId = crypto.randomUUID();
 

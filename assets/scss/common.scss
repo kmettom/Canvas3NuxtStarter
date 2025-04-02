@@ -98,43 +98,43 @@ $w-xxs: 450px; // mobile resolution
 //*************************
 
 @font-face {
-  font-family: 'PP Formula Black';
+  font-family: "PP Formula Black";
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url('../../public/font/PPFormula-CondensedBlack.ttf') format('truetype');
+  src: url("../../public/font/PPFormula-CondensedBlack.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'PP Neue Montreal Book';
+  font-family: "PP Neue Montreal Book";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../../public/font/ppneuemontreal-book.otf') format('truetype');
+  src: url("../../public/font/ppneuemontreal-book.otf") format("truetype");
 }
 
 @font-face {
-  font-family: 'PP Neue Montreal Bold';
+  font-family: "PP Neue Montreal Bold";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../../public/font/ppneuemontreal-bold.otf') format('truetype');
+  src: url("../../public/font/ppneuemontreal-bold.otf") format("truetype");
 }
 
 // ================================
 
 @mixin body-font {
-  font-family: 'PP Neue Montreal Book', serif;
+  font-family: "PP Neue Montreal Book", serif;
   font-weight: 400;
 }
 
 @mixin body-font-bold {
-  font-family: 'PP Neue Montreal Bold', serif;
+  font-family: "PP Neue Montreal Bold", serif;
   font-weight: 700;
 }
 
 @mixin header-font {
-  font-family: 'PP Formula Black', serif;
+  font-family: "PP Formula Black", serif;
   font-weight: 900;
 }
 
@@ -184,7 +184,7 @@ $w-xxs: 450px; // mobile resolution
 
 .headline {
   font-size: 100px;
-  font-family: 'PP Formula Black', sans-serif;
+  font-family: "PP Formula Black", sans-serif;
 }
 
 .heading-0 {

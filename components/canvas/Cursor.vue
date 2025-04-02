@@ -7,10 +7,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
-import { Canvas } from '~/utils/canvas';
+import { ref, reactive, onMounted } from "vue";
+import { Canvas } from "~/utils/canvas";
 
-import { useDisplayStore } from '~/stores/display';
+import { useDisplayStore } from "~/stores/display";
 
 const displayStore = useDisplayStore();
 
@@ -18,21 +18,21 @@ const baseSize = 12;
 const baseOpacity = 1;
 const easingPosition = 2;
 const easing = 5;
-const cursorEl = ref('cursorEl');
+const cursorEl = ref("cursorEl");
 
 const cursorIcons = [
-  '🔥',
-  '🕶',
-  '🤌',
-  '☝',
-  '🙃',
-  '🚀',
-  '😜',
-  '😎',
-  '🖖',
-  '👌',
-  '🤘',
-  '🌴',
+  "🔥",
+  "🕶",
+  "🤌",
+  "☝",
+  "🙃",
+  "🚀",
+  "😜",
+  "😎",
+  "🖖",
+  "👌",
+  "🤘",
+  "🌴",
 ];
 
 const randomIndex = () => {
@@ -68,9 +68,9 @@ const cursorInit = () => {
   };
 
   // Handle mouse out of window
-  document.addEventListener('mouseout', (e) => {
+  document.addEventListener("mouseout", (e) => {
     const from = e.relatedTarget || e.toElement;
-    if (!from || from.nodeName === 'HTML') {
+    if (!from || from.nodeName === "HTML") {
       state.curNewSize = 1;
     }
   });
@@ -92,17 +92,17 @@ const cursorTrack = (event) => {
 
   state.curNewColor =
     event.target.dataset.cursorcolor &&
-    event.target.dataset.cursorcolor === 'dark'
+    event.target.dataset.cursorcolor === "dark"
       ? `rgba(27, 24, 24, ${state.curNewOpacity})` //27,24,24
       : `rgba(191, 192, 178, ${state.curNewOpacity})`; //191,192,178
 
   if (
     event.target.dataset.cursoricon &&
-    event.target.dataset.cursoricon !== 'false' &&
+    event.target.dataset.cursoricon !== "false" &&
     !state.cursorIcon
   ) {
     state.cursorIcon =
-      event.target.dataset.cursoricon === 'true'
+      event.target.dataset.cursoricon === "true"
         ? getCursorIcon()
         : event.target.dataset.cursoricon;
   } else if (!event.target.dataset.cursoricon && state.cursorIcon) {

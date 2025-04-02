@@ -1,14 +1,14 @@
-import * as THREE from 'three';
-import { gsap } from 'gsap';
+import * as THREE from "three";
+import { gsap } from "gsap";
 
 export function generateBindingLogic(newBindingData) {
   let binding = newBindingData;
   binding.elNode.dataset.activeScroll =
-    newBindingData?.elNode?.dataset?.activeScroll ?? 'false';
+    newBindingData?.elNode?.dataset?.activeScroll ?? "false";
   binding.containedMeshIds = [];
   if (!binding.options.trackOnly) {
     binding.containedMeshIds = findMeshIDs(binding.elNode);
-    binding.elNode.classList.add('show-on-scroll');
+    binding.elNode.classList.add("show-on-scroll");
   }
 
   if (binding.options.fixToParentId) {
@@ -48,7 +48,7 @@ export function findMeshIDs(elParent) {
     return meshIds;
   }
 
-  let elementsWithMesh = elParent.querySelectorAll('[data-mesh-id]');
+  let elementsWithMesh = elParent.querySelectorAll("[data-mesh-id]");
   if (!elementsWithMesh || elementsWithMesh.length === 0) return false;
   for (const el of elementsWithMesh) {
     meshIds.push(el.dataset.meshId);
