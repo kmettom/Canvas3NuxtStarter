@@ -1,0 +1,82 @@
+[
+  {
+    "name": "OVP",
+    "year": "2024",
+    "description": "Website for strategy consulting specialists. Minimalist design, with animated morphing svg elements. Based on Nuxt with WebGL elements and smooth scroll. Designed by <a href=\"https://jagodakondratiuk.com\" target=\"_blank\">Jagoda Kondratiuk</a>. ",
+    "websiteLink": "https://www.ovpartners.net/",
+    "image": {
+      "src": "images/ovp.webp",
+      "alt": "Building construction from bottom with blue sky",
+      "size": {
+        "width": "375px",
+        "height": "500px"
+      }
+    },
+    "scrollSpeed": 0.3
+  },
+  {
+    "name": "Ease DeFi",
+    "year": "2023",
+    "description": "DeFi insurance platform Ease.org decided to branch out to make meme coins saver. We have build couple of projects with safe meme coin launches protecting the users from hacks and rug-pulls. App based on Next under goat.trading",
+    "websiteLink": "https://www.goat.trading/",
+    "image": {
+      "src": "images/goat.webp",
+      "alt": "Mobile phone with an app open on the screen",
+      "size": {
+        "width": "425px",
+        "height": "450px"
+      }
+    },
+    "position": {
+      "alignRight": true
+    }
+  },
+  {
+    "name": "Jagoda Kondratiuk",
+    "year": "2023",
+    "award": "HM Awwwards",
+    "description": "Portfolio website for designer Jagoda Kondratiuk. No framework used, with help of Request Animation Frame for smooth scroll and transitions.",
+    "websiteLink": "https://jagodakondratiuk.com/",
+    "image": {
+      "src": "images/jk.webp",
+      "alt": "Designer portrait with for the project jagodakondratiuk.com",
+      "size": {
+        "width": "750px",
+        "height": "400px"
+      }
+    }
+  },
+  {
+    "name": "Bright Union",
+    "year": "2022",
+    "description": "DeFi insurance platform built on Vue.js. BrightUnion.io helps to navigate, search for and buy insurance covers for your crypto assets.",
+    "websiteLink": "https://app.brightunion.io/",
+    "image": {
+      "src": "images/bu.webp",
+      "alt": "Mobile phone with an app open on the screen",
+      "size": {
+        "width": "400px",
+        "height": "550px"
+      }
+    },
+    "position": {
+      "alignRight": true
+    },
+    "scrollSpeed": 0.35
+  },
+  {
+    "name": "Neosephiri",
+    "year": "2021",
+    "award": "HM Awwwards",
+    "description": "Shopify e-commerce website for a high end skin care product.",
+    "websiteLink": "https://neosephiri.com/",
+    "image": {
+      "src": "images/neo.webp",
+      "alt": "Woman holding a melon",
+      "size": {
+        "width": "450px",
+        "height": "450px"
+      }
+    }
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "seo": {
+    "title": "OV Partners - Business strategy consulting",
+    "ogTitle": "OV Partners - Business strategy consulting",
+    "description": "Grow your business with OV Partners, specialists in robust business solutions and change management. We forge partnerships between experts and entrepreneurs, offering expertise in market analysis, marketing research, and strategic consulting.",
+    "ogDescription": "Grow your business with OV Partners, specialists in robust business solutions and change management. We forge partnerships between experts and entrepreneurs, offering expertise in market analysis, marketing research, and strategic consulting."
+  },
+  "header": {
+    "pageTitle": "Tomas Kmet",
+    "headerText": "dev, bla bla"
+  },
+  "services": [
+    {
+      "title": "Service 1",
+      "text": "service description"
+    },
+    {
+      "title": "Service 2",
+      "text": "service description 2"
+    }
+  ]
+}
