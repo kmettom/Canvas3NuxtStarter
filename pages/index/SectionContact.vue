@@ -124,8 +124,6 @@
         </div>
       </div>
     </Container>
-
-
   </div>
 </template>
 
@@ -153,7 +151,6 @@ const splitLineAnimation = (item) => {
     },
   );
 };
-
 </script>
 
 <style lang="scss" scoped>
