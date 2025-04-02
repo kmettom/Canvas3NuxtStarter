@@ -19,8 +19,7 @@ export const useNavigationStore = defineStore("navigationStore", {
     navigationItems: [
       { name: "Home", id: "home" },
       { name: "About", id: "about" },
-      { name: "Services", id: "services" },
-      { name: "Work", id: "work" },
+      { name: "Examples", id: "examples" },
       { name: "Contact", id: "contact" },
     ],
     projects: {

@@ -120,42 +120,42 @@ watch(
   display: inline-block;
   margin: 0 auto;
   justify-content: center;
-  &.hero-line-tomas {
-    right: 15%;
-    top: 20px;
-    @include respond-width($w-m-s) {
-      top: 0px;
-    }
-    @include respond-width($w-xs) {
-      right: auto;
-    }
-  }
-  &.hero-line-kmet {
-    left: 20%;
-    bottom: 20px;
-    @include respond-width($w-m-s) {
-      bottom: 20px;
-    }
-    @include respond-width($w-s) {
-      bottom: 0;
-    }
-  }
+  //&.hero-line-tomas {
+  //  right: 15%;
+  //  top: 20px;
+  //  @include respond-width($w-m-s) {
+  //    top: 0px;
+  //  }
+  //  @include respond-width($w-xs) {
+  //    right: auto;
+  //  }
+  //}
+  //&.hero-line-kmet {
+  //  left: 20%;
+  //  bottom: 20px;
+  //  @include respond-width($w-m-s) {
+  //    bottom: 20px;
+  //  }
+  //  @include respond-width($w-s) {
+  //    bottom: 0;
+  //  }
+  //}
 }
 
 .hero-content-sm {
-  position: absolute;
+  //position: absolute;
   padding: 0 20px;
-  width: 300px;
+  //width: 300px;
   opacity: 0;
   &.hero-services {
     text-align: right;
-    left: -300px;
-    bottom: 25%;
+    //left: -300px;
+    //bottom: 25%;
   }
   &.hero-summary {
     text-align: left;
-    right: -300px;
-    bottom: 25%;
+    //right: -300px;
+    //bottom: 25%;
     @include respond-width($w-m-s) {
       display: none;
     }

@@ -53,10 +53,10 @@ import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 
 useSeoMeta({
-  title: "Tomas Kmet - Web developer",
-  ogTitle: "Tomas Kmet - Web developer",
-  description: "web3 | creative | web apps | websites | e-commerce",
-  ogDescription: "web3 | creative | web apps | websites | e-commerce",
+  title: "NUXTTHREEJSSTARTERPACK",
+  ogTitle: "NUXTTHREEJSSTARTERPACK",
+  description: "NUXTTHREEJSSTARTERPACK",
+  ogDescription: "NUXTTHREEJSSTARTERPACK",
 });
 
 const navigationStore = useNavigationStore();
