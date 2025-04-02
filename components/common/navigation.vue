@@ -68,8 +68,6 @@ const goToSection = (sectionId) => {
   );
 };
 
-// const currentYear = new Date().getFullYear().toString().slice(-2);
-
 const localTime = ref("");
 const timezone = "Europe/Lisbon";
 
