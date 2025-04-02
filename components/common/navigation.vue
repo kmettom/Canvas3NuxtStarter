@@ -1,12 +1,12 @@
 <template>
   <div class="body-xs navigation-bar" :class="{ dark: navContrastSwitched }">
-    <div class="location">
-      <span>Portugal</span>
-      <span id="splitter">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-      <span>{{ localTime }}</span>
-    </div>
+    <!--    <div class="location">-->
+    <!--      <span>Portugal</span>-->
+    <!--      <span id="splitter">&nbsp;&nbsp;|&nbsp;&nbsp;</span>-->
+    <!--      <span>{{ localTime }}</span>-->
+    <!--    </div>-->
 
-    <div>Folio {{ currentYear }}</div>
+    <!--    <div>Folio {{ currentYear }}</div>-->
 
     <nav class="navigation-items">
       <div
@@ -68,7 +68,7 @@ const goToSection = (sectionId) => {
   );
 };
 
-const currentYear = new Date().getFullYear().toString().slice(-2);
+// const currentYear = new Date().getFullYear().toString().slice(-2);
 
 const localTime = ref("");
 const timezone = "Europe/Lisbon";
