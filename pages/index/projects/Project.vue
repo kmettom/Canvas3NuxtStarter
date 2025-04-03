@@ -51,9 +51,9 @@ const scrollSpeedUpdate = computed(() => {
     <div @mouseover="hoverProject(true)" @mouseleave="hoverProject(false)">
       <div class="project-image">
         <CanvasImage
-          :src-link="'images/01.JPG'"
+          :src-link="project.src"
           :uniforms="projectImageUniforms"
-          :alt="project.alt"
+          alt=""
         />
       </div>
 

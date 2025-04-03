@@ -25,11 +25,17 @@
     <div
       v-onScrollActivate="setSectionActivationOptions('examples', false)"
       class="page-section"
-      data-nav-id="work"
+      data-nav-id="examples"
     >
       <SectionProjects />
     </div>
-
+    <div
+      v-onScrollActivate="setSectionActivationOptions('roadmap', true)"
+      class="page-section"
+      data-nav-id="roadmap"
+    >
+      <SectionRoadmap />
+    </div>
     <div
       v-onScrollActivate="setSectionActivationOptions('contact', true)"
       v-set-data-attrs="{ cursorcolor: 'dark' }"
@@ -49,6 +55,7 @@ import SectionProjects from "~/pages/index/projects/SectionProjects.vue";
 // import SectionServices from "~/pages/index/services/SectionServices.vue";
 import SectionHero from "~/pages/index/SectionHero.vue";
 import SectionAbout from "~/pages/index/SectionAbout.vue";
+import SectionRoadmap from "~/pages/index/SectionRoadmap.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 

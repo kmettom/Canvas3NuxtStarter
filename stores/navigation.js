@@ -10,6 +10,7 @@ export const useNavigationStore = defineStore("navigationStore", {
       { name: "Home", id: "home" },
       { name: "About", id: "about" },
       { name: "Examples", id: "examples" },
+      { name: "Roadmap", id: "roadmap" },
       { name: "Contact", id: "contact" },
     ],
   }),
