@@ -4,7 +4,6 @@ import { SplitText } from "gsap/SplitText";
 import { useDisplayStore } from "~/stores/display";
 
 const displayStore = useDisplayStore();
-const navigationStore = useNavigationStore();
 
 gsap.registerPlugin(SplitText);
 
@@ -19,25 +18,8 @@ const props = defineProps({
   },
 });
 
-const projectElClasses = computed(() => {
-  return `project ${props.project.position?.alignRight ? " project-right " : ""}`;
-});
-
-const projectNumber = computed(() => {
-  return "0" + (props.index + 1).toString();
-});
-
-const projectNumberTheme = computed(() => {
-  return "light";
-});
-
 const hoverProject = (status) => {
-  if (status) {
-    projectImageUniforms.value.uHover.active =
-      !navigationStore.projects.galleryOpen;
-  } else {
-    projectImageUniforms.value.uHover.active = false;
-  }
+  projectImageUniforms.value.uHover.active = status;
 };
 
 const projectImageUniforms = ref({
@@ -46,105 +28,30 @@ const projectImageUniforms = ref({
   uImageGalleryActive: { active: false, duration: 0.5 },
 });
 
-const emit = defineEmits(["openGallery"]);
 const scrollSpeedUpdate = computed(() => {
   if (!props.project.scrollSpeed) return;
-  return navigationStore.projects.galleryToOpen || displayStore.isTablet
-    ? 0.0001
-    : props.project.scrollSpeed;
+  return displayStore.isTablet ? 0.0001 : props.project.scrollSpeed;
 });
-
-watch(
-  () => navigationStore.projects.galleryOpen,
-  (galleryOpen) => {
-    projectImageUniforms.value.uImageGallery.active = galleryOpen;
-    if (galleryOpen === false) {
-      projectImageUniforms.value.uAniInImage = { active: true, duration: 0 };
-      projectImageUniforms.value.uAniInText = { active: true, duration: 0 };
-    }
-  },
-);
-
-watch(
-  () => navigationStore.projects.activeProject.index,
-  (activeProjectIndex) => {
-    projectImageUniforms.value.uImageGalleryActive.active =
-      activeProjectIndex === props.index;
-  },
-);
 </script>
 
 <template>
   <div
     v-onScrollActivate="{
-      activeRange: navigationStore.projects.galleryToOpen ? 1 : 0.95,
-      activateOnce: !navigationStore.projects.galleryToOpen,
-      activeRangeOrigin: navigationStore.projects.galleryToOpen ? 0.5 : 1,
-      bidirectionalActivation: navigationStore.projects.galleryToOpen,
-      activateCallback: () => {
-        navigationStore.setActiveProject(props.index);
-      },
+      activeRange: 0.95,
+      // activateOnce: !navigationStore.projects.galleryToOpen,
+      // bidirectionalActivation: navigationStore.projects.galleryToOpen,
+      // activeRangeOrigin:  1,
+      // activateCallback: () => {
+      //
+      // },
       scrollSpeedSetTo: { value: scrollSpeedUpdate, duration: 0.25 },
     }"
     :class="projectElClasses"
-    :style="`${project.position?.bottom && !displayStore.isTablet ? 'bottom:' + project.position?.bottom + 'vh' : 'initial'};`"
   >
-    <div
-      v-set-data-attrs="{
-        cursorsize: navigationStore.projects.galleryOpen ? 15 : 75,
-        cursoropacity: navigationStore.projects.galleryOpen ? 1 : 0.9,
-        cursoricon: navigationStore.projects.galleryOpen ? 'false' : 'true',
-      }"
-      :class="`project-wrapper ${project.position?.alignRight ? ' project-right ' : ''}`"
-      @mouseover="hoverProject(true)"
-      @mouseleave="hoverProject(false)"
-      @click="emit('openGallery')"
-    >
-      <div class="project-info-wrapper">
-        <div class="heading-3 project-index">
-          <CanvasText
-            :theme="projectNumberTheme"
-            :uniforms="projectImageUniforms"
-          >
-            {{ projectNumber }}
-          </CanvasText>
-        </div>
-        <div class="expand-description">
-          <div class="statistics">
-            <div class="info-row">
-              <div class="info-category">client:</div>
-              <div>{{ project.name }}</div>
-            </div>
-            <div class="info-row">
-              <div class="info-category">year:</div>
-              <div>{{ project.year }}</div>
-            </div>
-            <div v-if="project.award" class="info-row">
-              <div class="info-category">award:</div>
-              <div>{{ project.award }}</div>
-            </div>
-          </div>
-          <p class="project-description body-m" v-html="project.description" />
-          <div
-            v-set-data-attrs="{
-              cursoropacity: 0.7,
-              cursorsize: 70,
-              cursoricon: 'true',
-            }"
-          >
-            <a class="project-link" :href="project.websiteLink" target="_blank"
-              >👉 visit website</a
-            >
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="project-image"
-        :style="`width:${project.image.size?.width ?? 'auto'};height:${project.image.size?.height ?? 'auto'};`"
-      >
+    <div @mouseover="hoverProject(true)" @mouseleave="hoverProject(false)">
+      <div class="project-image">
         <CanvasImage
-          :src-link="project.image.src"
+          :src-link="'images/01.JPG'"
           :uniforms="projectImageUniforms"
           :alt="project.alt"
         />

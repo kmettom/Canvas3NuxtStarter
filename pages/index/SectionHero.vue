@@ -7,18 +7,18 @@
             NUXT
           </CanvasText>
         </h2>
-        <div class="body-m hero-content-sm hero-summary">
-          <p>Starter</p>
-          <p>Pack</p>
-        </div>
+        <!--        <div class="body-m hero-content-sm hero-summary">-->
+        <!--          <p>Starter</p>-->
+        <!--          <p>Pack</p>-->
+        <!--        </div>-->
       </div>
 
       <div class="hero-content-line hero-line-kmet">
-        <div class="body-m hero-content-sm hero-services">
-          <p>NUTX</p>
-          <p>THREE JS</p>
-          <p>GSAP</p>
-        </div>
+        <!--        <div class="body-m hero-content-sm hero-services">-->
+        <!--          <p>NUTX</p>-->
+        <!--          <p>THREE JS</p>-->
+        <!--          <p>GSAP</p>-->
+        <!--        </div>-->
         <h2 v-set-data-attrs="{ cursorcolor: 'light' }" class="heading-1">
           <CanvasText :theme="'light'" :uniforms="mainTextInUniforms">
             THREEJS

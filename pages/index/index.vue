@@ -23,7 +23,7 @@
     <!--      <SectionServices />-->
     <!--    </div>-->
     <div
-      v-onScrollActivate="setSectionActivationOptions('work', false)"
+      v-onScrollActivate="setSectionActivationOptions('examples', false)"
       class="page-section"
       data-nav-id="work"
     >

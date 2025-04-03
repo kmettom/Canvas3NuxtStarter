@@ -6,69 +6,17 @@
           v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
           v-set-data-attrs="{ cursorcolor: 'light' }"
         >
-          <CanvasText :theme="'light'"> WORK </CanvasText>
+          <CanvasText :theme="'light'"> EXAMPLES </CanvasText>
         </span>
       </h2>
 
-      <div
-        id="gallery"
-        ref="projectGalleryRef"
-        v-onScrollActivate="{
-          trackOnly: true,
-          bidirectionalActivation: true,
-        }"
-      >
-        <div v-onScrollActivate="{ fixToParentId: 'gallery' }">
-          <div
-            class="gallery-controls"
-            :class="{ active: navigationStore.projects.galleryOpen }"
-          >
-            <button
-              v-set-data-attrs="{
-                cursoropacity: 0.7,
-                cursorsize: 70,
-                cursoricon: '🤏',
-              }"
-              class="gallery-controls-btn close-btn"
-              @click="closeGallery()"
-            >
-              <IconsClose />
-            </button>
-            <button
-              v-if="nextProjectName"
-              v-set-data-attrs="{
-                cursoropacity: 0.7,
-                cursorsize: 70,
-                cursoricon: '👇',
-              }"
-              class="gallery-controls-btn change-project-btn next-item"
-              @click="navigationStore.scrollToProject(activeProjectIndex + 1)"
-            >
-              next: {{ nextProjectName }} 👇
-            </button>
-            <button
-              v-if="prevProjectName"
-              v-set-data-attrs="{
-                cursoropacity: 0.7,
-                cursorsize: 70,
-                cursoricon: '👆',
-              }"
-              class="gallery-controls-btn change-project-btn prev-item"
-              @click="navigationStore.scrollToProject(activeProjectIndex - 1)"
-            >
-              previous: {{ prevProjectName }} 👆
-            </button>
-          </div>
-        </div>
-        <div class="gallery-controls-margin" />
+      <div>
         <div
           v-for="(project, index) in projectsData"
           :key="index"
           class="project-item"
           :class="{ first: index === 0 }"
         >
-          <!--          :ref="projectItemRefs.set"-->
-
           <Project
             :project="project"
             :index="index"
@@ -84,46 +32,11 @@
 import Container from "~/components/common/Container.vue";
 import projectsData from "~/content/projects.json";
 import Project from "~/pages/index/projects/Project.vue";
-import IconsClose from "~/components/common/icons/close.client.vue";
 
 const navigationStore = useNavigationStore();
 
-const projects = ref(projectsData);
-
-const updateProjectReferenceList = () => {
-  const projectItemRefs =
-    projectGalleryRef.value.querySelectorAll(".project-item");
-  navigationStore.setProjectRefs(projectItemRefs);
-};
-
-onMounted(() => {
-  updateProjectReferenceList();
-});
-
-onUpdated(() => {
-  updateProjectReferenceList();
-});
-
-const projectGalleryRef = ref();
-navigationStore.setGalleryRef(projectGalleryRef);
-
-const activeProjectIndex = computed(() => {
-  return navigationStore.projects.activeProject.index ?? 0;
-});
-
-const nextProjectName = computed(() => {
-  return projects.value[activeProjectIndex.value + 1]?.name ?? null;
-});
-const prevProjectName = computed(() => {
-  return projects.value[activeProjectIndex.value - 1]?.name ?? null;
-});
-
 const openProject = (index) => {
   navigationStore.openGalleryProject(index);
-};
-
-const closeGallery = () => {
-  navigationStore.closeGallery();
 };
 </script>
 
