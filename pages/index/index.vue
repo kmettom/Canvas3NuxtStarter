@@ -14,14 +14,14 @@
     >
       <SectionAbout />
     </div>
-    <div
-      v-onScrollActivate="setSectionActivationOptions('services', true)"
-      v-set-data-attrs="{ cursorcolor: 'dark' }"
-      class="page-section"
-      data-nav-id="services"
-    >
-      <SectionServices />
-    </div>
+    <!--    <div-->
+    <!--      v-onScrollActivate="setSectionActivationOptions('services', true)"-->
+    <!--      v-set-data-attrs="{ cursorcolor: 'dark' }"-->
+    <!--      class="page-section"-->
+    <!--      data-nav-id="services"-->
+    <!--    >-->
+    <!--      <SectionServices />-->
+    <!--    </div>-->
     <div
       v-onScrollActivate="setSectionActivationOptions('work', false)"
       class="page-section"
@@ -46,7 +46,7 @@
 
 <script setup>
 import SectionProjects from "~/pages/index/projects/SectionProjects.vue";
-import SectionServices from "~/pages/index/services/SectionServices.vue";
+// import SectionServices from "~/pages/index/services/SectionServices.vue";
 import SectionHero from "~/pages/index/SectionHero.vue";
 import SectionAbout from "~/pages/index/SectionAbout.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
