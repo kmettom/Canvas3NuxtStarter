@@ -11,8 +11,7 @@
         class="about-1 about-txt"
         data-about-id="about-1"
       >
-        Nuxt starter pack with integrated three.js canvas.  <br />
-        Directive to adjust scroll speed of an element, activate animation on scroll, set as fixed element and much more. Also includes a Image component which automatically loads the image as mesh and Text component for MSDF font rendering.
+        Nuxt starter pack with integrated three.js canvas.
       </p>
       <p
         v-onScrollActivate="{
@@ -23,16 +22,8 @@
         class="about-2 about-txt"
         data-about-id="about-2"
       >
-        Interested in developing web apps, dapps, websites and e-commerce,
-        happily spending time with Web3 or animating with WebGl. Looking forward
-        to learning more. Connected with a broad network to fit the needs of a
-        wide range of projects.
-        <br />
-        Collaborate with other developers, designers and marketers to shape and
-        create brands, experiences and products together.
+        Directive to adjust scroll speed of an element, activate animation on scroll, set as fixed element and much more. Also includes a Image component which automatically loads the image as mesh and Text component for MSDF font rendering.
       </p>
-
-      <!--        <DownloadButton />-->
     </div>
   </Container>
 </template>
