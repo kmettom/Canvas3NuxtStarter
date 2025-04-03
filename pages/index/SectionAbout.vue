@@ -11,11 +11,8 @@
         class="about-1 about-txt"
         data-about-id="about-1"
       >
-        A developer with managerial background and 10+ years of hands on coding
-        experience.
-        <br />
-        WORKING WITH AGENCIES, COMPANIES and freelancers using broad spectrum
-        frameworks and backend API's.
+        Nuxt starter pack with integrated three.js canvas.  <br />
+        Directive to adjust scroll speed of an element, activate animation on scroll, set as fixed element and much more. Also includes a Image component which automatically loads the image as mesh and Text component for MSDF font rendering.
       </p>
       <p
         v-onScrollActivate="{
