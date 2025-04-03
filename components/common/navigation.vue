@@ -19,7 +19,6 @@
           cursorcolor: navContrastSwitched ? 'dark' : 'light',
         }"
         class="navigation-item"
-        :style="`pointer-events: ${navigationStore.projects.galleryOpen ? 'none' : 'auto'};`"
         :class="{ active: activeNav === navItem.id }"
         @click="goToSection(navItem.id)"
         @mouseenter="navigationHoverAnimate(index)"
