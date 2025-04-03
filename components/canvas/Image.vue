@@ -9,9 +9,6 @@
       :loading="loadStrategy === 'lazy' ? 'lazy' : 'eager'"
       @load="addImageToCanvas"
     />
-    <!--    :loading="loadStrategy === 'lazy' ? 'lazy' : 'eager'"-->
-    <!--    @load="imageLoaded"-->
-    <!--    :preload="loadStrategy === 'preload'"-->
   </div>
 </template>
 

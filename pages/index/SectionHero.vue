@@ -7,18 +7,9 @@
             NUXT
           </CanvasText>
         </h2>
-        <!--        <div class="body-m hero-content-sm hero-summary">-->
-        <!--          <p>Starter</p>-->
-        <!--          <p>Pack</p>-->
-        <!--        </div>-->
       </div>
 
       <div class="hero-content-line hero-line-kmet">
-        <!--        <div class="body-m hero-content-sm hero-services">-->
-        <!--          <p>NUTX</p>-->
-        <!--          <p>THREE JS</p>-->
-        <!--          <p>GSAP</p>-->
-        <!--        </div>-->
         <h2 v-set-data-attrs="{ cursorcolor: 'light' }" class="heading-1">
           <CanvasText :theme="'light'" :uniforms="mainTextInUniforms">
             THREEJS
@@ -68,21 +59,6 @@ const heroSectionAnimation = () => {
   setTimeout(() => {
     mainTextIn.value = true;
   }, 300);
-
-  const tl = gsap.timeline();
-  const split = new SplitText(".hero-content-sm", { type: "words,lines" });
-  tl.set(split.lines, {
-    opacity: 0,
-    y: 10,
-  });
-  tl.set(".hero-content-sm", { opacity: 1 });
-  tl.to(split.lines, {
-    y: 0,
-    opacity: 1,
-    delay: 1.5,
-    duration: 0.2,
-    stagger: 0.05,
-  });
 };
 
 watch(
@@ -120,42 +96,16 @@ watch(
   display: inline-block;
   margin: 0 auto;
   justify-content: center;
-  //&.hero-line-tomas {
-  //  right: 15%;
-  //  top: 20px;
-  //  @include respond-width($w-m-s) {
-  //    top: 0px;
-  //  }
-  //  @include respond-width($w-xs) {
-  //    right: auto;
-  //  }
-  //}
-  //&.hero-line-kmet {
-  //  left: 20%;
-  //  bottom: 20px;
-  //  @include respond-width($w-m-s) {
-  //    bottom: 20px;
-  //  }
-  //  @include respond-width($w-s) {
-  //    bottom: 0;
-  //  }
-  //}
 }
 
 .hero-content-sm {
-  //position: absolute;
   padding: 0 20px;
-  //width: 300px;
   opacity: 0;
   &.hero-services {
     text-align: right;
-    //left: -300px;
-    //bottom: 25%;
   }
   &.hero-summary {
     text-align: left;
-    //right: -300px;
-    //bottom: 25%;
     @include respond-width($w-m-s) {
       display: none;
     }
@@ -169,7 +119,7 @@ watch(
   top: 0;
   left: 0;
   height: 100%;
-  width: 50%;
+  width: 100%;
   z-index: -1;
   @include respond-width($w-s) {
     max-height: 660px;

@@ -104,7 +104,7 @@ float createOverlayOpacity(float activeOverlay) {
 
 void main() {
   float overlayBlur = createOverlayBlur(uHover);
-  float circle = createCircle(50.0);
+  float circle = createCircle(100.0);
 
   // Calculate the aspect ratios
   float meshAspect = uMeshSize.x / uMeshSize.y;
