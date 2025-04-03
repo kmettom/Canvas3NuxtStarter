@@ -22,7 +22,10 @@
         class="about-2 about-txt"
         data-about-id="about-2"
       >
-        Directive to adjust scroll speed of an element, activate animation on scroll, set as fixed element and much more. Also includes a Image component which automatically loads the image as mesh and Text component for MSDF font rendering.
+        Directive to adjust scroll speed of an element, activate animation on
+        scroll, set as fixed element and much more. Also includes a Image
+        component which automatically loads the image as mesh and Text component
+        for MSDF font rendering.
       </p>
     </div>
   </Container>
