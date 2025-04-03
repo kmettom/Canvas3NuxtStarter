@@ -55,6 +55,5 @@ export default defineNuxtPlugin((nuxtApp) => {
 //   fixToParentId: String,
 //   onScrollCallback: (item, speed) => {},
 //   scrollSpeed: {value: Number},
-//  scrollSpeedSetTo: {value: Number, duration: Number}
-
+//   scrollSpeedSetTo: {value: Number, duration: Number}
 // }

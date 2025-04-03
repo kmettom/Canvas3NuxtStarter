@@ -130,18 +130,34 @@ Example:
 
 ```
 
-### Scroll Speed directive
+### Scroll Activate directive
 
 - adjusts the scroll speed of element
 - automatically handles scroll difference for Scene's Mesh objects added through CanvasImage component
 - set fixed element
 
+Options:
+
+```bash
+  {
+    activeRange: Number, // optional, default 1
+    activateOnce: Boolean, // default false
+    activateCallback: String,
+    trackOnly: Boolean,
+    bidirectionalActivation: Boolean (default: false),
+    activeRangeOrigin: Number (0-1, 0 from top of screen, 1 bottom of the screen)
+    activeRangeMargin: Number
+    fixToParentId: String,
+    onScrollCallback: (item, speed) => {},
+    scrollSpeed: {value: Number},
+    scrollSpeedSetTo: {value: Number, duration: Number}
+  }
+```
+
 Example:
 
 ```bash
-    <div v-scrollSpeed="0" ></div>
-    <div v-scrollSpeed="0.1" ></div>
-    <div v-scrollSpeed="-0.1" ></div>
+    <div v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }" ></div>
 ```
 
 If value is 0, scroll speed is normal, if the number is positive, the element will move faster upwards, if negative, the
