@@ -53,6 +53,7 @@ const scrollSpeedUpdate = computed(() => {
         <CanvasImage
           :src-link="project.src"
           :uniforms="projectImageUniforms"
+          :load-strategy="'eager'"
           alt=""
         />
       </div>
