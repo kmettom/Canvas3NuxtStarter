@@ -19,7 +19,7 @@
     </Container>
     <div class="hero-bg-image">
       <CanvasImage
-        :src-link="'images/11.JPG'"
+        :src-link="'images/08.JPG'"
         :uniforms="imageUniforms"
         :shader="'hero'"
         :load-strategy="'preload'"

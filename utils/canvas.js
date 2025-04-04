@@ -22,8 +22,12 @@ import heroBlurVertex from "./shaders/heroBlurVertex.glsl";
 import TextBlurFragment from "./shaders/TextBlurFragment.glsl";
 import TextBlurVertex from "./shaders/TextBlurVertex.glsl";
 
-import play1Fragment from "./shaders/play1Fragment.glsl";
-import play1Vertex from "./shaders/play1Vertex.glsl";
+import example1Fragment from "./shaders/example1Fragment.glsl";
+import example1Vertex from "./shaders/example1Vertex.glsl";
+import example2Fragment from "./shaders/example2Fragment.glsl";
+import example2Vertex from "./shaders/example2Vertex.glsl";
+import example3Fragment from "./shaders/example3Fragment.glsl";
+import example3Vertex from "./shaders/example3Vertex.glsl";
 
 import {
   generateBindingLogic,
@@ -55,9 +59,17 @@ const CanvasOptions = {
     fragmentShader: heroBlurFragment,
     vertexShader: heroBlurVertex,
   },
-  play1: {
-    fragmentShader: play1Fragment,
-    vertexShader: play1Vertex,
+  example1: {
+    fragmentShader: example1Fragment,
+    vertexShader: example1Vertex,
+  },
+  example2: {
+    fragmentShader: example2Fragment,
+    vertexShader: example2Vertex,
+  },
+  example3: {
+    fragmentShader: example3Fragment,
+    vertexShader: example3Vertex,
   },
 };
 

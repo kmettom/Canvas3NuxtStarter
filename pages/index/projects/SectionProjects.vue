@@ -12,16 +12,21 @@
 
       <div>
         <div
-          v-for="(project, index) in projectsData"
-          :key="index"
           class="project-item"
-          :class="{ first: index === 0 }"
+          @mouseover="hoverProject(true)"
+          @mouseleave="hoverProject(false)"
         >
-          <Project
-            :project="project"
-            :index="index"
-            @open-gallery="openProject(index)"
+          <CanvasImage
+            :src-link="project.src"
+            :uniforms="projectImageUniforms"
+            :load-strategy="'eager'"
+            alt=""
           />
+          <!--          <Project-->
+          <!--            :project="project"-->
+          <!--            :index="index"-->
+          <!--            @open-gallery="openProject(index)"-->
+          <!--          />-->
         </div>
       </div>
     </Container>
@@ -30,7 +35,6 @@
 
 <script setup>
 import Container from "~/components/common/Container.vue";
-import projectsData from "~/content/projects.json";
 import Project from "~/pages/index/projects/Project.vue";
 
 const navigationStore = useNavigationStore();
