@@ -18,17 +18,20 @@
             <br />
             <br />
           </p>
-          <div>Example 1</div>
-          <CanvasImage
-            :src-link="'images/01.JPG'"
-            :uniforms="{
-              uHover: { active: false, duration: 0.55 },
-              uImageGallery: { active: false, duration: 0.5 },
-              uImageGalleryActive: { active: false, duration: 0.5 },
-            }"
-            :load-strategy="'eager'"
-            alt=""
-          />
+          <div v-onScrollActivate="{ activeRange: 0.9 }">
+            <h3>Activate item 1</h3>
+            <p>All CanvasImage or CanvasText get activated automatically</p>
+            <CanvasImage
+              :src-link="'images/01.JPG'"
+              :uniforms="{
+                uHover: { value: 0, duration: 0.55 },
+                uImageGallery: { value: 0, duration: 0.5 },
+                uImageGalleryActive: { value: 0, duration: 0.5 },
+              }"
+              :load-strategy="'eager'"
+              alt=""
+            />
+          </div>
         </div>
       </div>
     </Container>

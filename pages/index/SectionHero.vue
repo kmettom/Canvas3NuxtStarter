@@ -2,16 +2,16 @@
   <div class="hero-section-wrapper">
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-tomas">
-        <h2 v-set-data-attrs="{ cursorcolor: 'light' }" class="heading-1">
-          <CanvasText :theme="'light'" :uniforms="mainTextInUniforms">
+        <h2 class="heading-1">
+          <CanvasText :theme="'dark'" :uniforms="mainTextInUniforms">
             NUXT
           </CanvasText>
         </h2>
       </div>
 
       <div class="hero-content-line hero-line-kmet">
-        <h2 v-set-data-attrs="{ cursorcolor: 'light' }" class="heading-1">
-          <CanvasText :theme="'light'" :uniforms="mainTextInUniforms">
+        <h2 class="heading-1">
+          <CanvasText :theme="'dark'" :uniforms="mainTextInUniforms">
             THREEJS
           </CanvasText>
         </h2>
@@ -43,13 +43,13 @@ const mainTextIn = ref(false);
 const imageIn = ref(false);
 const mainTextInUniforms = computed(() => {
   return {
-    uAniInText: { active: mainTextIn.value, duration: 2 },
+    uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
   };
 });
 
 const imageUniforms = computed(() => {
   return {
-    uAniInImage: { active: imageIn.value, duration: 1.25 },
+    uAniInImage: { value: imageIn.value ? 1 : 0, duration: 1.25 },
   };
 });
 
