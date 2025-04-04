@@ -19,14 +19,14 @@
             <br />
           </p>
           <div v-onScrollActivate="{ activeRange: 0.9 }">
-            <h3>Activate item 1</h3>
-            <p>All CanvasImage or CanvasText get activated automatically</p>
+            <h3 class="body-l">Example 1 - Animate item in</h3>
+            <p class="body-xs">
+              All CanvasImage or CanvasText get activated automatically
+            </p>
             <CanvasImage
               :src-link="'images/01.JPG'"
               :uniforms="{
                 uHover: { value: 0, duration: 0.55 },
-                uImageGallery: { value: 0, duration: 0.5 },
-                uImageGalleryActive: { value: 0, duration: 0.5 },
               }"
               :load-strategy="'eager'"
               alt=""
@@ -40,6 +40,8 @@
 
 <script setup>
 import Container from "~/components/common/Container.vue";
+
+const example1Uni = computed(() => {});
 </script>
 
 <style lang="scss" scoped></style>

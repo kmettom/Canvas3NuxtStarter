@@ -232,7 +232,6 @@ const Canvas = {
   },
 
   meshUniformsUpdate(id, uniforms) {
-    console.log("meshUniformsUpdate", id, uniforms);
     const mesh = this.scene.getObjectByName(id);
     if (!mesh) return;
     for (const uniKey in uniforms) {

@@ -6,8 +6,6 @@ uniform sampler2D uImage;
 uniform float uHover;
 uniform vec2 uMouse;
 uniform float uAniInImage;
-uniform float uImageGallery;
-uniform float uImageGalleryActive;
 
 uniform vec2 uMeshSize; // The size of the mesh (width, height)
 uniform vec2 uTextureSize; // The size of the texture (width, height)
@@ -124,27 +122,21 @@ void main() {
     uv.x = uv.x * scale + (1.0 - scale) / 2.0; // Center the texture horizontally
   }
 
-  float overlayAniIn = max(
-    uAniInImage,
-    uImageGallery + uAniInImage - uImageGallery * uAniInImage
-  );
 
-  float overlayOpacity = createOverlayOpacity(overlayAniIn);
+  float overlayOpacity = createOverlayOpacity(uAniInImage);
 
   // Apply sepia to the texture color
-  float blurStrength = 1.0 * circle * overlayBlur * (1.0 - uImageGalleryActive);
+  float blurStrength = 1.0 * circle * overlayBlur;
   float blurAmount = 0.025;
 
   vec3 originalColor = blur(uv, uImage, blurAmount, blurStrength);
   vec3 sepiaColor = mix(
     originalColor,
     applySepia(originalColor),
-    circle * (1.0 - uImageGalleryActive)
+    circle
   );
 
-  float galleryOpacity = 1.0 - 0.8 * abs(uImageGallery - uImageGalleryActive);
-
-  vec4 final = vec4(sepiaColor, overlayOpacity * galleryOpacity);
+  vec4 final = vec4(sepiaColor, overlayOpacity);
 
   gl_FragColor = final;
 
