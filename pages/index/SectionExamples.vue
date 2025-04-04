@@ -18,7 +18,11 @@
             <br />
             <br />
           </p>
-          <div v-onScrollActivate="{ activeRange: 0.9 }">
+          <div
+            v-onScrollActivate="{ activeRange: 0.9 }"
+            @mouseenter="example1Hover = true"
+            @mouseleave="example1Hover = false"
+          >
             <h3 class="body-l">Example 1 - Animate item in</h3>
             <p class="body-xs">
               All CanvasImage or CanvasText get activated automatically
@@ -26,7 +30,7 @@
             <CanvasImage
               :src-link="'images/01.JPG'"
               :uniforms="{
-                uHover: { value: 0, duration: 0.55 },
+                uHover: { value: example1Hover ? 1 : 0, duration: 0.55 },
               }"
               :load-strategy="'eager'"
               alt=""
@@ -41,7 +45,7 @@
 <script setup>
 import Container from "~/components/common/Container.vue";
 
-const example1Uni = computed(() => {});
+const example1Hover = ref(false);
 </script>
 
 <style lang="scss" scoped></style>

@@ -27,7 +27,7 @@
       class="page-section"
       data-nav-id="examples"
     >
-      <SectionProjects />
+      <SectionExamples />
     </div>
     <div
       v-onScrollActivate="setSectionActivationOptions('roadmap', true)"
@@ -51,8 +51,7 @@
 </template>
 
 <script setup>
-import SectionProjects from "~/pages/index/projects/SectionProjects.vue";
-// import SectionServices from "~/pages/index/services/SectionServices.vue";
+import SectionExamples from "~/pages/index/SectionExamples.vue";
 import SectionHero from "~/pages/index/SectionHero.vue";
 import SectionAbout from "~/pages/index/SectionAbout.vue";
 import SectionRoadmap from "~/pages/index/SectionRoadmap.vue";
