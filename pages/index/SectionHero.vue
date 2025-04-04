@@ -93,7 +93,6 @@ watch(
 .hero-content-line {
   position: relative;
   text-align: center;
-  display: inline-block;
   margin: 0 auto;
   justify-content: center;
 }
