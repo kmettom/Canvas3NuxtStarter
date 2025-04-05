@@ -25,7 +25,8 @@
             which predefined shader you want to use and add a trigger variable.
           </p>
           <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
-<!--          TODO: create code sample component-->
+          <CodeSnippet> { activeRange: 0.99, activateOnce: true } </CodeSnippet>
+          <!--          TODO: create code sample component-->
 
           <div
             v-onScrollActivate="{ activeRange: 0.9 }"
@@ -46,16 +47,9 @@
                 :load-strategy="'eager'"
                 alt=""
               />
-              <div class="code-container">
-                <pre>
-                  <code>
-                  {
-                    activeRange: 0.99,
-                    activateOnce: true
-                  }
-                  </code>
-                </pre>
-              </div>
+              <CodeSnippet>
+                { activeRange: 0.99, activateOnce: true }
+              </CodeSnippet>
             </div>
           </div>
           <div
@@ -77,16 +71,9 @@
                 :load-strategy="'eager'"
                 alt=""
               />
-              <div class="code-container">
-                <pre>
-                  <code>
-                  {
-                    activeRange: 0.99,
-                    activateOnce: true
-                  }
-                  </code>
-                </pre>
-              </div>
+              <CodeSnippet>
+                { activeRange: 0.99, activateOnce: true }
+              </CodeSnippet>
             </div>
           </div>
         </div>
@@ -97,6 +84,7 @@
 
 <script setup>
 import Container from "~/components/common/Container.vue";
+import CodeSnippet from "~/components/common/CodeSnippet.vue";
 
 const example1Hover = ref(false);
 </script>
@@ -104,8 +92,5 @@ const example1Hover = ref(false);
 <style lang="scss" scoped>
 .code-example-wrapper {
   //display: flex;
-}
-.code-container {
-  background: black;
 }
 </style>
