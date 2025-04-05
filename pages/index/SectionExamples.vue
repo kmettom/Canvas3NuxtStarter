@@ -3,7 +3,7 @@
     <Container>
       <h2 class="heading-1 text-align-right">
         <span
-          v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
+          v-onScrollActivate="{ activeRange: 0.9, activateOnce: true }"
           v-set-data-attrs="{ cursorcolor: 'light' }"
         >
           <CanvasText :theme="'light'"> EXAMPLES </CanvasText>
@@ -18,6 +18,15 @@
             <br />
             <br />
           </p>
+
+          <h3 class="body-l">Easily add images to Scene Mesh</h3>
+          <p>
+            Use CanvasImage component to add images to Scene as Mesh, specify
+            which predefined shader you want to use and add a trigger variable.
+          </p>
+          <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
+<!--          TODO: create code sample component-->
+
           <div
             v-onScrollActivate="{ activeRange: 0.9 }"
             class="example-1"
@@ -94,7 +103,7 @@ const example1Hover = ref(false);
 
 <style lang="scss" scoped>
 .code-example-wrapper {
-  display: flex;
+  //display: flex;
 }
 .code-container {
   background: black;
