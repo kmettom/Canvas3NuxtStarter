@@ -25,8 +25,9 @@
             which predefined shader you want to use and add a trigger variable.
           </p>
           <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
-          <CodeSnippet> { activeRange: 0.99, activateOnce: true } </CodeSnippet>
-          <!--          TODO: create code sample component-->
+          <CodeSnippet>
+            <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
+          </CodeSnippet>
 
           <div
             v-onScrollActivate="{ activeRange: 0.9 }"
