@@ -60,10 +60,14 @@
             @mouseenter="example2Hover = true"
             @mouseleave="example2Hover = false"
           >
-            <h3 class="body-l">Basic</h3>
-            <!--            <p class="body-xs">-->
-            <!--              All CanvasImage or CanvasText get activated automatically-->
-            <!--            </p>-->
+            <h3 class="body-l">
+              Directive for scroll manipulation and feedback
+            </h3>
+            <p class="body-xs">
+              Use directive for scroll manipulation and feedback. All
+              CanvasImage or CanvasText get activated automatically by uAniIn
+              uniform float variable
+            </p>
             <div class="code-example-wrapper">
               <CanvasImage
                 :src-link="'images/01.JPG'"
