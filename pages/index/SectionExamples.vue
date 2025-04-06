@@ -19,14 +19,16 @@
             <br />
           </p>
 
-          <h3 class="body-l">Easily add images to Scene Mesh</h3>
+          <h3 class="body-l">Easily add images to scene</h3>
           <p>
-            Use CanvasImage component to add images to Scene as Mesh, specify
-            which predefined shader you want to use and add a trigger variable.
+            Use CanvasImage component to add images to three.js scene as mesh,
+            specify which predefined shader you want to use and add a trigger
+            variable.
           </p>
           <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
           <CodeSnippet>
-            <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
+            <span> {{ String("<") }}</span
+            >CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
           </CodeSnippet>
 
           <div
