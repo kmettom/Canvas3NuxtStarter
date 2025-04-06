@@ -32,10 +32,33 @@
           </CodeSnippet>
 
           <div
-            v-onScrollActivate="{ activeRange: 0.9 }"
-            class="example-1"
             @mouseenter="example1Hover = true"
             @mouseleave="example1Hover = false"
+          >
+            <h3 class="body-l">Add needed uniforms for shaders</h3>
+            <p>
+              add uniforms - uniforms are reactive, manipulate uniforms with
+              your business logic hover: {{ example1Hover }}
+            </p>
+            <CanvasImage
+              :src-link="'images/02.JPG'"
+              :shader="'example2'"
+              :uniforms="{
+                uHover: { value: example1Hover ? 1 : 0, duration: 1.3 },
+              }"
+            />
+            <CodeSnippet>
+              <span> {{ String("<") }}</span
+              >CanvasImage :src-link="'images/02.JPG'" :shader="'example2'"
+              :uniforms="{ uHover: { value: example1Hover ? 1 : 0, duration: 1.3
+              } }"/>
+            </CodeSnippet>
+          </div>
+          <div
+            v-onScrollActivate="{ activeRange: 0.9 }"
+            class="example-1"
+            @mouseenter="example2Hover = true"
+            @mouseleave="example2Hover = false"
           >
             <h3 class="body-l">Basic</h3>
             <!--            <p class="body-xs">-->
@@ -45,7 +68,7 @@
               <CanvasImage
                 :src-link="'images/01.JPG'"
                 :uniforms="{
-                  uHover: { value: example1Hover ? 1 : 0, duration: 0.55 },
+                  uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                 }"
                 :load-strategy="'eager'"
                 alt=""
@@ -58,8 +81,8 @@
           <div
             v-onScrollActivate="{ activeRange: 0.9 }"
             class="example-2"
-            @mouseenter="example1Hover = true"
-            @mouseleave="example1Hover = false"
+            @mouseenter="example2Hover = true"
+            @mouseleave="example2Hover = false"
           >
             <h3 class="body-l">Scroll speed</h3>
             <!--            <p class="body-xs">-->
@@ -69,7 +92,7 @@
               <CanvasImage
                 :src-link="'images/01.JPG'"
                 :uniforms="{
-                  uHover: { value: example1Hover ? 1 : 0, duration: 0.55 },
+                  uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                 }"
                 :load-strategy="'eager'"
                 alt=""
@@ -90,6 +113,7 @@ import Container from "~/components/common/Container.vue";
 import CodeSnippet from "~/components/common/CodeSnippet.vue";
 
 const example1Hover = ref(false);
+const example2Hover = ref(false);
 </script>
 
 <style lang="scss" scoped>
