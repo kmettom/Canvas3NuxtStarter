@@ -47,13 +47,12 @@ export default defineNuxtPlugin((nuxtApp) => {
 // const onScrollActivateOptions = {
 //   activeRange: Number,
 //   activateOnce: Boolean, // default false
-//   activateCallback: String,
+//   activateCallback: () => {},
 //   trackOnly: Boolean,
 //   bidirectionalActivation: Boolean (default: false),
 //   activeRangeOrigin: Number (0-1, 0 from top of screen, 1 bottom of the screen)
 //   activeRangeMargin: Number
-//   fixToParentId: String,
+//   fixToParentId: String (id of parent element),
 //   onScrollCallback: (item, speed) => {},
-//   scrollSpeed: {value: Number},
 //   scrollSpeedSetTo: {value: Number, duration: Number}
 // }

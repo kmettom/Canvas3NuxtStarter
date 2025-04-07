@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <Container>
-      <h2 class="heading-1 text-align-right">
+      <h2 class="heading-1">
         <span
           v-onScrollActivate="{ activeRange: 0.9, activateOnce: true }"
           v-set-data-attrs="{ cursorcolor: 'light' }"
@@ -12,12 +12,7 @@
       <div>
         <div class="examples-row">
           <div class="example-wrapper">
-            <h3 class="body-l">Easily add images to scene</h3>
-            <!--            <p class="example-txt">-->
-            <!--              Use CanvasImage component to add images to three.js scene as mesh,-->
-            <!--              specify which predefined shader you want to use and add a trigger-->
-            <!--              variable.-->
-            <!--            </p>-->
+            <h3 class="body-l">Add images to scene</h3>
             <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
             <CodeSnippet>
               <span> {{ String("<") }}</span
@@ -31,12 +26,8 @@
             @mouseleave="example1Hover = false"
           >
             <h3 class="body-l">
-              Add needed uniforms for shaders (hover: {{ example1Hover }})
+              Add shader uniforms ( hover: {{ example1Hover }} )
             </h3>
-            <!--            <p class="example-txt">-->
-            <!--              add uniforms - uniforms are reactive, manipulate uniforms with-->
-            <!--              your business-->
-            <!--            </p>-->
             <CanvasImage
               :src-link="'images/02.JPG'"
               :shader="'example2'"
@@ -64,13 +55,23 @@
               activeRange: 0.7,
               activateOnce: false,
               bidirectionalActivation: true,
+              onScrollCallback: (item, speed) => {
+                example1Speed = speed;
+                example1Bounds = item.elNode.getBoundingClientRect().top;
+              },
+              activateCallback: (item) => {
+                console.log('onScrollCallback', item);
+              },
             }"
             class="example-1 example-wrapper"
             @mouseenter="example2Hover = true"
             @mouseleave="example2Hover = false"
           >
             <div class="code-example-wrapper">
-              <p class="example-txt"></p>
+              <p class="example-txt">
+                <!--                {{ example1Speed }}-->
+                {{ example1Bounds }}
+              </p>
               <CanvasImage
                 :src-link="'images/03.JPG'"
                 :uniforms="{
@@ -142,6 +143,8 @@ import Container from "~/components/common/Container.vue";
 import CodeSnippet from "~/components/common/CodeSnippet.vue";
 
 const example1Hover = ref(false);
+const example1Speed = ref(0);
+const example1Bounds = ref(0);
 const example2Hover = ref(false);
 </script>
 
@@ -158,7 +161,13 @@ const example2Hover = ref(false);
   padding: 10px 0;
 }
 .fixed-scroll-example {
-  border: 1px solid var(--light-color);
+  border-right: 1px solid var(--light-color);
   height: 1000px;
+}
+.example-wrapper {
+  &.active {
+    .code-example-wrapper {
+    }
+  }
 }
 </style>
