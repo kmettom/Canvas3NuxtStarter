@@ -10,67 +10,69 @@
         </span>
       </h2>
       <div>
-        <div>
-          <p>
-            - activate item - scroll speed - origin of active - callback -
-            scroll call back for rotation - Image component - Text component
-            <br />
-            <br />
-            <br />
-          </p>
-
-          <h3 class="body-l">Easily add images to scene</h3>
-          <p>
-            Use CanvasImage component to add images to three.js scene as mesh,
-            specify which predefined shader you want to use and add a trigger
-            variable.
-          </p>
-          <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
-          <CodeSnippet>
-            <span> {{ String("<") }}</span
-            >CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
-          </CodeSnippet>
+        <div class="examples-row">
+          <div class="example-wrapper">
+            <h3 class="body-l">Easily add images to scene</h3>
+            <!--            <p class="example-txt">-->
+            <!--              Use CanvasImage component to add images to three.js scene as mesh,-->
+            <!--              specify which predefined shader you want to use and add a trigger-->
+            <!--              variable.-->
+            <!--            </p>-->
+            <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
+            <CodeSnippet>
+              <span> {{ String("<") }}</span
+              >CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
+            </CodeSnippet>
+          </div>
 
           <div
+            class="example-wrapper"
             @mouseenter="example1Hover = true"
             @mouseleave="example1Hover = false"
           >
-            <h3 class="body-l">Add needed uniforms for shaders</h3>
-            <p>
-              add uniforms - uniforms are reactive, manipulate uniforms with
-              your business logic hover: {{ example1Hover }}
-            </p>
+            <h3 class="body-l">
+              Add needed uniforms for shaders (hover: {{ example1Hover }})
+            </h3>
+            <!--            <p class="example-txt">-->
+            <!--              add uniforms - uniforms are reactive, manipulate uniforms with-->
+            <!--              your business-->
+            <!--            </p>-->
             <CanvasImage
               :src-link="'images/02.JPG'"
               :shader="'example2'"
               :uniforms="{
-                uHover: { value: example1Hover ? 1 : 0, duration: 1.3 },
+                uHover: { value: example1Hover ? 1 : 0, duration: 1 },
               }"
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span
               >CanvasImage :src-link="'images/02.JPG'" :shader="'example2'"
-              :uniforms="{ uHover: { value: example1Hover ? 1 : 0, duration: 1.3
-              } }"/>
+              :load-strategy="'eager'" :uniforms="{ uHover: { value:
+              example1Hover ? 1 : 0, duration: 1 } }"/>
             </CodeSnippet>
           </div>
+        </div>
+        <h3 class="body-l">Directive for scroll manipulation and feedback</h3>
+        <p class="example-txt">
+          Use directive for scroll manipulation and feedback. All CanvasImage or
+          CanvasText get activated automatically by uAniIn uniform float
+          variable
+        </p>
+        <div class="examples-row">
           <div
-            v-onScrollActivate="{ activeRange: 0.9 }"
-            class="example-1"
+            v-onScrollActivate="{
+              activeRange: 0.7,
+              activateOnce: false,
+              bidirectionalActivation: true,
+            }"
+            class="example-1 example-wrapper"
             @mouseenter="example2Hover = true"
             @mouseleave="example2Hover = false"
           >
-            <h3 class="body-l">
-              Directive for scroll manipulation and feedback
-            </h3>
-            <p class="body-xs">
-              Use directive for scroll manipulation and feedback. All
-              CanvasImage or CanvasText get activated automatically by uAniIn
-              uniform float variable
-            </p>
             <div class="code-example-wrapper">
+              <p class="example-txt"></p>
               <CanvasImage
-                :src-link="'images/01.JPG'"
+                :src-link="'images/03.JPG'"
                 :uniforms="{
                   uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                 }"
@@ -78,21 +80,44 @@
                 alt=""
               />
               <CodeSnippet>
-                { activeRange: 0.99, activateOnce: true }
+                v-onScrollActivate="{ activeRange: 0.8 }"
               </CodeSnippet>
             </div>
           </div>
           <div
-            v-onScrollActivate="{ activeRange: 0.9 }"
-            class="example-2"
+            v-onScrollActivate="{
+              activeRange: 0.9,
+              activateOnce: false,
+              scrollSpeedSetTo: { value: 0.2 },
+            }"
+            class="example-4 example-wrapper"
             @mouseenter="example2Hover = true"
             @mouseleave="example2Hover = false"
           >
-            <h3 class="body-l">Scroll speed</h3>
-            <!--            <p class="body-xs">-->
-            <!--              All CanvasImage or CanvasText get activated automatically-->
-            <!--            </p>-->
-            <div class="code-example-wrapper">
+            <!--            <h3 class="body-l">Advanced settings</h3>-->
+            <p class="example-txt">Set Scroll speed of elements</p>
+            <CanvasImage
+              :src-link="'images/04.JPG'"
+              :uniforms="{
+                uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
+              }"
+              :load-strategy="'eager'"
+              alt=""
+            />
+            <CodeSnippet>
+              { activeRange: 0.99, activateOnce: true }
+            </CodeSnippet>
+          </div>
+          <div
+            id="fixedParent"
+            class="fixed-scroll-example example-wrapper"
+            v-onScrollActivate="{
+              activeRange: 0.9,
+              fixToParentId: 'fixedParent',
+            }"
+          >
+            <div>
+              <p class="example-txt">Set fixed element</p>
               <CanvasImage
                 :src-link="'images/01.JPG'"
                 :uniforms="{
@@ -121,7 +146,19 @@ const example2Hover = ref(false);
 </script>
 
 <style lang="scss" scoped>
-.code-example-wrapper {
-  //display: flex;
+.examples-row {
+  display: flex;
+  padding: 20px 0;
+}
+.example-wrapper {
+  width: 50%;
+  padding: 0 15px;
+}
+.example-txt {
+  padding: 10px 0;
+}
+.fixed-scroll-example {
+  border: 1px solid var(--light-color);
+  height: 1000px;
 }
 </style>

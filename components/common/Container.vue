@@ -17,7 +17,7 @@ export default {
 
 <style lang="scss" scoped>
 .section-container {
-  max-width: 1048px;
+  max-width: 1248px;
   margin: 0 auto;
 }
 </style>
