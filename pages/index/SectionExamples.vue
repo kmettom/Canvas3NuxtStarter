@@ -52,31 +52,40 @@
         <div class="examples-row">
           <div
             v-onScrollActivate="{
-              activeRange: 0.7,
+              activeRange: 0.9,
               activateOnce: false,
               bidirectionalActivation: true,
               onScrollCallback: (item, speed) => {
-                example1Speed = speed;
-                example1Bounds = item.elNode.getBoundingClientRect().top;
+                example3Speed = speed;
+                gsap.to(item.elNode.querySelector('.scroll-speed-ani'), {
+                  width: `${speed * 100}%`,
+                  duration: 0.1,
+                });
+                example3Bounds = item.elNode.getBoundingClientRect().top;
               },
               activateCallback: (item) => {
-                console.log('onScrollCallback', item);
+                console.log('item', item);
+                // gsap.fromTo(
+                //   item.elNode.querySelector('.example-txt'),
+                //   { opacity: 0 },
+                //   { opacity: 1 },
+                // );
               },
             }"
-            class="example-1 example-wrapper"
-            @mouseenter="example2Hover = true"
-            @mouseleave="example2Hover = false"
+            class="example-wrapper"
           >
             <div class="code-example-wrapper">
               <p class="example-txt">
-                <!--                {{ example1Speed }}-->
-                {{ example1Bounds }}
+                Element top: {{ example3Bounds }}px <br />
+                Scroll speed: {{ example3Speed }}
+                <span class="scroll-speed-ani"></span>
               </p>
               <CanvasImage
                 :src-link="'images/03.JPG'"
                 :uniforms="{
-                  uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
+                  uScrollSpeed: { value: example3Speed, duration: 0 },
                 }"
+                :shader="'example3'"
                 :load-strategy="'eager'"
                 alt=""
               />
@@ -87,20 +96,18 @@
           </div>
           <div
             v-onScrollActivate="{
-              activeRange: 0.9,
+              activeRange: 0.7,
               activateOnce: false,
               scrollSpeedSetTo: { value: 0.2 },
             }"
             class="example-4 example-wrapper"
-            @mouseenter="example2Hover = true"
-            @mouseleave="example2Hover = false"
           >
             <!--            <h3 class="body-l">Advanced settings</h3>-->
             <p class="example-txt">Set Scroll speed of elements</p>
             <CanvasImage
               :src-link="'images/04.JPG'"
               :uniforms="{
-                uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
+                uHover: { value: example3Hover ? 1 : 0, duration: 0.55 },
               }"
               :load-strategy="'eager'"
               alt=""
@@ -141,10 +148,11 @@
 <script setup>
 import Container from "~/components/common/Container.vue";
 import CodeSnippet from "~/components/common/CodeSnippet.vue";
+import { gsap } from "gsap";
 
 const example1Hover = ref(false);
-const example1Speed = ref(0);
-const example1Bounds = ref(0);
+const example3Speed = ref(0);
+const example3Bounds = ref(0);
 const example2Hover = ref(false);
 </script>
 
@@ -159,15 +167,16 @@ const example2Hover = ref(false);
 }
 .example-txt {
   padding: 10px 0;
+  position: relative;
 }
 .fixed-scroll-example {
   border-right: 1px solid var(--light-color);
   height: 1000px;
 }
-.example-wrapper {
-  &.active {
-    .code-example-wrapper {
-    }
-  }
+.scroll-speed-ani {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  border-bottom: 3px solid var(--light-color);
 }
 </style>

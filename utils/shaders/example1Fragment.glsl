@@ -2,9 +2,6 @@ varying float vNoise;
 varying vec2 vUv;
 uniform sampler2D uImage;
 uniform float time;
-//uniform float uAniIn;
-// float aniIn = 1.0;
-
 
 void main()	{
 

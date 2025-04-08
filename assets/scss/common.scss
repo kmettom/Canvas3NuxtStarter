@@ -153,12 +153,15 @@ $w-xxs: 450px; // mobile resolution
 //*************************
 
 .show-on-scroll {
-  //transition: ease opacity 0.3s;
-  //opacity: 0;
-  //$movepx: 45px;
-  //&.active {
-  //  opacity: 1;
-  //}
+  * {
+    transition: ease opacity 0.5s;
+    opacity: 0;
+  }
+  &.active {
+    * {
+      opacity: 1;
+    }
+  }
 }
 
 //*************************
