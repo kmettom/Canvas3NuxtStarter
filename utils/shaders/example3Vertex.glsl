@@ -93,7 +93,7 @@ void main() {
 
   float dist = distance(uv,hover);
 
-  newposition.z += uScrollSpeed * 30.*sin(dist*10. + uTime);
+  newposition.z += uScrollSpeed * 50.*sin(dist*10. + uTime);
 
   vNoise = sin(dist*10. - uTime) ;
   vUv = uv;

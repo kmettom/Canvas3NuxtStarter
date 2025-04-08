@@ -54,7 +54,6 @@
             v-onScrollActivate="{
               activeRange: 0.9,
               activateOnce: false,
-              bidirectionalActivation: true,
               onScrollCallback: (item, speed) => {
                 example3Speed = speed;
                 gsap.to(item.elNode.querySelector('.scroll-speed-ani'), {
@@ -63,20 +62,11 @@
                 });
                 example3Bounds = item.elNode.getBoundingClientRect().top;
               },
-              activateCallback: (item) => {
-                console.log('item', item);
-                // gsap.fromTo(
-                //   item.elNode.querySelector('.example-txt'),
-                //   { opacity: 0 },
-                //   { opacity: 1 },
-                // );
-              },
             }"
             class="example-wrapper"
           >
             <div class="code-example-wrapper">
               <p class="example-txt">
-                Element top: {{ example3Bounds }}px <br />
                 Scroll speed: {{ example3Speed }}
                 <span class="scroll-speed-ani" />
               </p>
@@ -99,10 +89,21 @@
               activeRange: 0.7,
               activateOnce: false,
               scrollSpeedSetTo: { value: 0.3 },
+              bidirectionalActivation: true,
+              activateCallback: (item) => {
+                gsap.fromTo(
+                  item.elNode.querySelector('.example-activate-txt'),
+                  { opacity: 0 },
+                  { opacity: 1, duration: 0.5 },
+                );
+              },
             }"
             class="example-4 example-wrapper"
           >
-            <p class="example-txt">Set Scroll speed of elements</p>
+            <p class="example-txt">
+              Set Scroll speed of elements
+              <span class="example-activate-txt">Activated</span>
+            </p>
             <CanvasImage
               :src-link="'images/04.JPG'"
               :load-strategy="'eager'"
@@ -121,7 +122,7 @@
             class="fixed-scroll-example example-wrapper"
           >
             <div>
-              <p class="example-txt">Set fixed element</p>
+              <p class="example-txt">Fix element to Parent</p>
               <CanvasImage
                 :src-link="'images/01.JPG'"
                 :uniforms="{
@@ -168,11 +169,18 @@ const example2Hover = ref(false);
 .fixed-scroll-example {
   border-right: 1px solid var(--light-color);
   height: 1000px;
+  margin-bottom: 100px;
 }
 .scroll-speed-ani {
   position: absolute;
   bottom: 2px;
   left: 0;
   border-bottom: 3px solid var(--light-color);
+}
+.example-activate-txt {
+  position: absolute;
+  font-weight: bold;
+  bottom: 10px;
+  right: 10px;
 }
 </style>
