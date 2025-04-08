@@ -78,7 +78,7 @@
               <p class="example-txt">
                 Element top: {{ example3Bounds }}px <br />
                 Scroll speed: {{ example3Speed }}
-                <span class="scroll-speed-ani"></span>
+                <span class="scroll-speed-ani" />
               </p>
               <CanvasImage
                 :src-link="'images/03.JPG'"
@@ -98,17 +98,13 @@
             v-onScrollActivate="{
               activeRange: 0.7,
               activateOnce: false,
-              scrollSpeedSetTo: { value: 0.2 },
+              scrollSpeedSetTo: { value: 0.3 },
             }"
             class="example-4 example-wrapper"
           >
-            <!--            <h3 class="body-l">Advanced settings</h3>-->
             <p class="example-txt">Set Scroll speed of elements</p>
             <CanvasImage
               :src-link="'images/04.JPG'"
-              :uniforms="{
-                uHover: { value: example3Hover ? 1 : 0, duration: 0.55 },
-              }"
               :load-strategy="'eager'"
               alt=""
             />
@@ -118,11 +114,11 @@
           </div>
           <div
             id="fixedParent"
-            class="fixed-scroll-example example-wrapper"
             v-onScrollActivate="{
               activeRange: 0.9,
               fixToParentId: 'fixedParent',
             }"
+            class="fixed-scroll-example example-wrapper"
           >
             <div>
               <p class="example-txt">Set fixed element</p>
