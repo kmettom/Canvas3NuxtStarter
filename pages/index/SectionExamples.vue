@@ -154,6 +154,10 @@ const example2Hover = ref(false);
 </script>
 
 <style lang="scss" scoped>
+.heading-2 {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
 .examples-row {
   display: flex;
   padding: 20px 0;
