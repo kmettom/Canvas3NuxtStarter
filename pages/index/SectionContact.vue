@@ -177,23 +177,10 @@ const splitLineAnimation = (item) => {
 
 .contact-line {
   display: flex;
-  justify-content: start;
+  justify-content: center;
   padding-left: 20px;
-  @include respond-width($w-m-s) {
-    justify-content: center;
-  }
   @include respond-width($w-xs) {
     padding-left: 0;
-  }
-  &.align-right {
-    padding-right: 20px;
-    justify-content: end;
-    @include respond-width($w-m-s) {
-      justify-content: center;
-    }
-    @include respond-width($w-xs) {
-      padding-right: 0;
-    }
   }
 }
 
@@ -204,7 +191,6 @@ const splitLineAnimation = (item) => {
   position: relative;
   bottom: 75px;
   gap: 5px;
-
   @include respond-width($w-m-s) {
     bottom: 50px;
   }
@@ -218,49 +204,8 @@ const splitLineAnimation = (item) => {
   }
   a {
     cursor: none;
-  }
-}
-
-.basketball-game {
-  width: 100%;
-  height: 25px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  @include respond-width($w-m-s) {
-    display: none;
-  }
-}
-
-.game-pad {
-  width: 150px;
-  height: 25px;
-  background-color: var(--dark-color);
-  position: absolute;
-  left: 0;
-  bottom: 0;
-}
-
-.game-points {
-  text-align: center;
-  opacity: 0;
-  bottom: 35px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  position: absolute;
-  pointer-events: none;
-  font-size: 25px;
-  font-weight: bold;
-}
-
-.basketball-icon-wrapper {
-  opacity: 0;
-  position: absolute;
-  left: 0;
-  top: 0;
-  @include respond-width($w-m-s) {
-    display: none;
+    color: var(--dark-color);
+    text-decoration: none;
   }
 }
 </style>

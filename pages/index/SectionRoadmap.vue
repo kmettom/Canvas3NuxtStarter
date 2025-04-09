@@ -1,7 +1,7 @@
 <template>
   <div class="roadmap-section-bg">
     <Container id="" additional-class="roadmap-section">
-      <h2 class="body-xs">Road map</h2>
+      <h2 class="body-s about-headline">Road map</h2>
       <div class="body-l">
         <p
           v-onScrollActivate="{
@@ -9,21 +9,14 @@
             activateOnce: true,
             activateCallback: textAniCallback,
           }"
-          class="about-1 about-txt"
+          class="about-txt about-1"
           data-about-id="about-1"
         >
-          3D model imports and interactions
-        </p>
-        <p
-          v-onScrollActivate="{
-            activeRange: 0.85,
-            activateOnce: true,
-            activateCallback: textAniCallback,
-          }"
-          class="about-2 about-txt"
-          data-about-id="about-2"
-        >
-          SDK extraction
+          CanvasText component generalization <br />
+          3D model imports and interactions <br />
+          <!--          3D model imports and interactions <br/>-->
+          <!--          3D model imports and interactions <br/>-->
+          <!--          3D model imports and interactions <br/>-->
         </p>
       </div>
     </Container>
@@ -65,6 +58,10 @@ function textAniCallback(item) {
   background: var(--light-color);
   color: var(--dark-color);
 }
+.about-headline {
+  margin-left: 20px;
+  font-weight: lighter;
+}
 .roadmap-section {
   display: grid;
   grid-template-columns: 10fr 14fr;
@@ -84,9 +81,6 @@ function textAniCallback(item) {
   @include respond-width($w-xs) {
     margin-top: 10px;
     margin-bottom: 10px;
-  }
-  &.about-1 {
-    margin-bottom: 30px;
   }
   div {
     opacity: 0;

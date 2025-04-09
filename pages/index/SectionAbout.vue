@@ -1,6 +1,6 @@
 <template>
   <Container id="about" additional-class="about-section">
-    <h2 class="body-xs">About</h2>
+    <h2 class="body-s about-headline">About</h2>
     <div class="body-l">
       <p
         v-onScrollActivate="{
@@ -72,6 +72,10 @@ function textAniCallback(item) {
     grid-template-columns: 1fr;
     padding: 10vh 10px 125px 10px;
   }
+}
+.about-headline {
+  margin-left: 20px;
+  font-weight: lighter;
 }
 .about-txt {
   opacity: 0;
