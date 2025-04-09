@@ -3,28 +3,22 @@
 This is a starter template for Nuxt 3 with ThreeJS. It includes:
 
 - Smooth scroll
-- One RequestAnimation Frame call Renders both smooth scroll and Canvas
+- One RequestAnimation Frame call Renders both smooth scroll render, Three.js render and related logic
 - CanvasImage component
   - adds the loaded image to Scene's Mesh
   - applies the defined shaders
-  - hover and appear variables for shaders implemented
+  - define any uniform and connect it to the business logic
 - CanvasText component
   - adds text to Scene's Mesh as MSDF font
   - applies the defined shaders
-  - hover and appear variables for shaders are implemented
-- Scroll Speed directive
+  - define any uniform and connect it to the business logic
+- Scroll Active directive
   - adjusts the scroll speed of element
   - automatically handles scroll difference for Scene's Mesh objects added through CanvasImage component
-- Scroll Active Directive
   - adds active class to element when it is in viewport
   - automatically includes appear animation for a Mesh object added through CanvasImage component
 
-Working example: https://nuxt-three-js-starter-pack.vercel.app
-
-Upcoming features
-
-- Responsiveness management - easily turn on/off canvas animations depending on screen size
-- side scroll sections
+Working example and road map: https://nuxt-three-js-starter-pack.vercel.app
 
 ## Setup
 

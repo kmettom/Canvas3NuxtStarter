@@ -43,97 +43,99 @@
             </CodeSnippet>
           </div>
         </div>
-        <h3 class="body-l">Directive for scroll manipulation and feedback</h3>
-        <p class="example-txt">
-          Use directive for scroll manipulation and feedback. All CanvasImage or
-          CanvasText get activated automatically by uAniIn uniform float
-          variable
-        </p>
-        <div class="examples-row">
-          <div
-            v-onScrollActivate="{
-              activeRange: 0.9,
-              activateOnce: false,
-              onScrollCallback: (item, speed) => {
-                example3Speed = speed;
-                gsap.to(item.elNode.querySelector('.scroll-speed-ani'), {
-                  width: `${speed * 100}%`,
-                  duration: 0.1,
-                });
-                example3Bounds = item.elNode.getBoundingClientRect().top;
-              },
-            }"
-            class="example-wrapper"
-          >
-            <div class="code-example-wrapper">
+        <div class="example-row-second">
+          <h3 class="body-l">Directive for scroll manipulation and feedback</h3>
+          <p class="example-txt">
+            Use directive for scroll manipulation and feedback. All CanvasImage
+            or CanvasText get activated automatically by uAniIn uniform float
+            variable
+          </p>
+          <div class="examples-row">
+            <div
+              v-onScrollActivate="{
+                activeRange: 0.9,
+                activateOnce: false,
+                onScrollCallback: (item, speed) => {
+                  example3Speed = speed;
+                  gsap.to(item.elNode.querySelector('.scroll-speed-ani'), {
+                    width: `${speed * 100}%`,
+                    duration: 0.1,
+                  });
+                  example3Bounds = item.elNode.getBoundingClientRect().top;
+                },
+              }"
+              class="example-wrapper"
+            >
+              <div class="code-example-wrapper">
+                <p class="example-txt">
+                  Scroll speed: {{ example3Speed }}
+                  <span class="scroll-speed-ani" />
+                </p>
+                <CanvasImage
+                  :src-link="'images/03.JPG'"
+                  :uniforms="{
+                    uScrollSpeed: { value: example3Speed, duration: 0 },
+                  }"
+                  :shader="'example3'"
+                  :load-strategy="'eager'"
+                  alt=""
+                />
+                <CodeSnippet>
+                  v-onScrollActivate="{ activeRange: 0.8 }"
+                </CodeSnippet>
+              </div>
+            </div>
+            <div
+              v-onScrollActivate="{
+                activeRange: 0.7,
+                activateOnce: false,
+                scrollSpeedSetTo: { value: 0.3 },
+                bidirectionalActivation: true,
+                activateCallback: (item) => {
+                  gsap.fromTo(
+                    item.elNode.querySelector('.example-activate-txt'),
+                    { opacity: 0 },
+                    { opacity: 1, duration: 0.5 },
+                  );
+                },
+              }"
+              class="example-4 example-wrapper"
+            >
               <p class="example-txt">
-                Scroll speed: {{ example3Speed }}
-                <span class="scroll-speed-ani" />
+                Set Scroll speed of elements
+                <span class="example-activate-txt">Activated</span>
               </p>
               <CanvasImage
-                :src-link="'images/03.JPG'"
-                :uniforms="{
-                  uScrollSpeed: { value: example3Speed, duration: 0 },
-                }"
-                :shader="'example3'"
-                :load-strategy="'eager'"
-                alt=""
-              />
-              <CodeSnippet>
-                v-onScrollActivate="{ activeRange: 0.8 }"
-              </CodeSnippet>
-            </div>
-          </div>
-          <div
-            v-onScrollActivate="{
-              activeRange: 0.7,
-              activateOnce: false,
-              scrollSpeedSetTo: { value: 0.3 },
-              bidirectionalActivation: true,
-              activateCallback: (item) => {
-                gsap.fromTo(
-                  item.elNode.querySelector('.example-activate-txt'),
-                  { opacity: 0 },
-                  { opacity: 1, duration: 0.5 },
-                );
-              },
-            }"
-            class="example-4 example-wrapper"
-          >
-            <p class="example-txt">
-              Set Scroll speed of elements
-              <span class="example-activate-txt">Activated</span>
-            </p>
-            <CanvasImage
-              :src-link="'images/04.JPG'"
-              :load-strategy="'eager'"
-              alt=""
-            />
-            <CodeSnippet>
-              { activeRange: 0.99, activateOnce: true }
-            </CodeSnippet>
-          </div>
-          <div
-            id="fixedParent"
-            v-onScrollActivate="{
-              activeRange: 0.9,
-              fixToParentId: 'fixedParent',
-            }"
-            class="fixed-scroll-example example-wrapper"
-          >
-            <div>
-              <p class="example-txt">Fix element to Parent</p>
-              <CanvasImage
-                :src-link="'images/01.JPG'"
-                :uniforms="{
-                  uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
-                }"
+                :src-link="'images/04.JPG'"
                 :load-strategy="'eager'"
                 alt=""
               />
               <CodeSnippet>
                 { activeRange: 0.99, activateOnce: true }
               </CodeSnippet>
+            </div>
+            <div
+              id="fixedParent"
+              v-onScrollActivate="{
+                activeRange: 0.9,
+                fixToParentId: 'fixedParent',
+              }"
+              class="fixed-scroll-example example-wrapper"
+            >
+              <div>
+                <p class="example-txt">Fix element to Parent</p>
+                <CanvasImage
+                  :src-link="'images/01.JPG'"
+                  :uniforms="{
+                    uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
+                  }"
+                  :load-strategy="'eager'"
+                  alt=""
+                />
+                <CodeSnippet>
+                  { activeRange: 0.99, activateOnce: true }
+                </CodeSnippet>
+              </div>
             </div>
           </div>
         </div>
@@ -161,6 +163,9 @@ const example2Hover = ref(false);
 .examples-row {
   display: flex;
   padding: 20px 0;
+}
+.example-row-second {
+  padding-top: 75px;
 }
 .example-wrapper {
   width: 50%;

@@ -7,12 +7,12 @@
             <span
               v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
             >
-              <CanvasText :theme="'dark'"> GET </CanvasText>
+              <CanvasText :theme="'light'"> GET </CanvasText>
               <span
                 v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
                 class="canvas-text-spacing"
               >
-                <CanvasText :theme="'dark'"> IN </CanvasText>
+                <CanvasText :theme="'light'"> IN </CanvasText>
               </span>
             </span>
           </div>
@@ -118,7 +118,7 @@
             <span
               v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
             >
-              <CanvasText :theme="'dark'"> TOUCH </CanvasText>
+              <CanvasText :theme="'light'"> TOUCH </CanvasText>
             </span>
           </div>
         </div>
@@ -156,9 +156,9 @@ const splitLineAnimation = (item) => {
 <style lang="scss" scoped>
 .contact-section {
   position: relative;
-  color: var(--dark-color);
-  background-color: var(--light-color);
-  padding: 17vh 0 7vh;
+  color: var(--light-color);
+  //background-color: var(--light-color);
+  padding: 10vh 0 7vh;
   @include respond-width($w-xs) {
     padding: 20vh 0 12vh;
   }
@@ -204,7 +204,7 @@ const splitLineAnimation = (item) => {
   }
   a {
     cursor: none;
-    color: var(--dark-color);
+    color: var(--light-color);
     text-decoration: none;
   }
 }

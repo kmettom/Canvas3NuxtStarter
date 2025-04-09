@@ -15,6 +15,9 @@
           → CanvasText component dynamic colors<br />
           → 3D model imports<br />
           → Canvas initiation improvements<br />
+          <!--          → Responsiveness management - improve Display store<br />-->
+          → Enable/Disable canvas animations dynamically<br />
+          <!--          → Side scroll sections<br />-->
           → Create Type for working with TypeScript<br />
           → Create SDK for generic usage<br />
           → Refactor to Typescript <br />
@@ -56,10 +59,6 @@ function textAniCallback(item) {
 </script>
 
 <style lang="scss" scoped>
-.roadmap-section-bg {
-  background: var(--light-color);
-  color: var(--dark-color);
-}
 .about-headline {
   margin-left: 20px;
   font-weight: lighter;
