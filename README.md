@@ -63,9 +63,9 @@ npm run preview
 
 - Activates SmoothScroll
 - Initiates a single requestAnimationFrame call
-- Renders both SmoothScroll and Canvas
+- Renders both SmoothScroll and Three.js render
 - Initiates Scene and adds Images to Scene's Mesh
-- Predefined shaders are defined in this file
+- Import and define shaders
 
 ```bash
 const CanvasOptions = {
@@ -97,31 +97,25 @@ const CanvasOptions = {
 Usage:
 
 ```bash
-<CanvasImage :imageHover="<Boolean>" :meshId="<UniqueString>" :shader="<String>" :srcLink="<String>" />
+<CanvasImage :srcLink="<String>" :shader="<String | undefined>"  :uniforms="<{uName: {value:Number , duration: Number}}>"  />
 ```
 
 Props:
 
-- :imageHover - Boolean value used for hover effect on the mesh object triggered from a parent component. If not used,
-  the hover effect will apply from hovering on the original <img> element.
 - :shader - String value used for assigning a predefined shader effect. Shader effects are defined in Canvas.js file in
   Utils directory.
 - :srcLink - String value used for assigning a source link to the image.
+- :uniforms - Object used to pass uniform values to shaders
 
 Example:
 
 ```bash
-
     <div class="example"
          @mouseover="imageHover=true"
          @mouseleave="imageHover=false"
     >
-      <CanvasImage :imageHover="imageHover" :meshId="ex1" :shader="'example1'" :srcLink="'img/example1.jpg'" />
+      <CanvasImage :uniforms="{ uHover: {value: imageHover ? 1:0, duration: 0.5 }}" :shader="'example1'" :srcLink="'img/example1.jpg'" />
     </div>
-
-    <p>Some text</p>
-    <CanvasImage :meshId="ex2" :shader="'example2'" :srcLink="'img/example2.jpg'" />
-
 ```
 
 ### Scroll Activate directive

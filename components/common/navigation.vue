@@ -1,13 +1,5 @@
 <template>
-  <div class="body-xs navigation-bar" :class="{ dark: navContrastSwitched }">
-    <!--    <div class="location">-->
-    <!--      <span>Portugal</span>-->
-    <!--      <span id="splitter">&nbsp;&nbsp;|&nbsp;&nbsp;</span>-->
-    <!--      <span>{{ localTime }}</span>-->
-    <!--    </div>-->
-
-    <!--    <div>Folio {{ currentYear }}</div>-->
-
+  <div class="body-xs navigation-bar">
     <nav class="navigation-items">
       <div
         v-for="(navItem, index) in navigationItems"
@@ -16,7 +8,7 @@
         v-set-data-attrs="{
           cursorsize: 25,
           cursoropacity: 0.65,
-          cursorcolor: navContrastSwitched ? 'dark' : 'light',
+          cursorcolor: 'light',
         }"
         class="navigation-item"
         :class="{ active: activeNav === navItem.id }"
@@ -67,26 +59,10 @@ const goToSection = (sectionId) => {
   );
 };
 
-const localTime = ref("");
-const timezone = "Europe/Lisbon";
-
 const navigationItems = computed(() => navigationStore.navigationItems);
 const activeNav = computed(() => navigationStore.activeNavItem);
-const navContrastSwitched = computed(() => navigationStore.navContrastSwitched);
-
-let intervalId = null;
-function updateLisbonTime() {
-  localTime.value = new Intl.DateTimeFormat("en-GB", {
-    timeZone: timezone,
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  }).format(new Date());
-}
 
 onMounted(() => {
-  updateLisbonTime();
-  intervalId = setInterval(updateLisbonTime, 60000);
   navigationFirstEnter();
 });
 
@@ -113,16 +89,6 @@ watch(
   z-index: 9;
   opacity: 0;
   pointer-events: none;
-
-  &.dark {
-    color: var(--dark-color);
-
-    .navigation-item {
-      &:after {
-        color: var(--dark-color);
-      }
-    }
-  }
 }
 
 .navigation-items {
