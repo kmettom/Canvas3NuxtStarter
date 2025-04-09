@@ -12,11 +12,12 @@
           class="about-txt about-1"
           data-about-id="about-1"
         >
-          CanvasText component generalization <br />
-          3D model imports and interactions <br />
-          <!--          3D model imports and interactions <br/>-->
-          <!--          3D model imports and interactions <br/>-->
-          <!--          3D model imports and interactions <br/>-->
+          → CanvasText component dynamic colors<br />
+          → 3D model imports<br />
+          → Canvas initiation improvements<br />
+          → Create Type for working with TypeScript<br />
+          → Create SDK for generic usage<br />
+          → Refactor to Typescript <br />
         </p>
       </div>
     </Container>
@@ -32,6 +33,7 @@ import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 function textAniCallback(item) {
+  console.log("textAniCallback", item);
   const selector = `.${item.elNode.dataset.aboutId}`;
   const tl = gsap.timeline();
   const lines = new SplitText(selector, {
@@ -64,7 +66,7 @@ function textAniCallback(item) {
 }
 .roadmap-section {
   display: grid;
-  grid-template-columns: 10fr 14fr;
+  grid-template-columns: 6fr 14fr;
   text-transform: uppercase;
   padding-bottom: 125px;
   padding-top: 10vh;
@@ -74,6 +76,7 @@ function textAniCallback(item) {
   }
 }
 .about-txt {
+  line-height: 1.5;
   opacity: 0;
   @include respond-width($w-m) {
     margin-bottom: 10px;

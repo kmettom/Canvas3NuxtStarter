@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <Container>
-      <h2 class="heading-1">
+      <h2 class="heading-2">
         <span
           v-onScrollActivate="{ activeRange: 0.9, activateOnce: true }"
           v-set-data-attrs="{ cursorcolor: 'light' }"

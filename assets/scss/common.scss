@@ -148,6 +148,24 @@ $w-xxs: 450px; // mobile resolution
   }
 }
 
+.heading-2 {
+  @include header-font;
+  font-size: 140px;
+  line-height: 100%;
+  @include respond-width($w-m-s) {
+    font-size: 145px;
+  }
+  @include respond-width($w-s) {
+    font-size: 120px;
+  }
+  @include respond-width($w-xs) {
+    font-size: 90px;
+  }
+  @include respond-width($w-xxs) {
+    font-size: 70px;
+  }
+}
+
 //*************************
 // animations
 //*************************
