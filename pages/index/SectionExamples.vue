@@ -16,7 +16,10 @@
             <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
             <CodeSnippet>
               <span> {{ String("<") }}</span
-              >CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
+              >CanvasImage <br />
+              &nbsp;&nbsp;:src-link="'images/01.JPG'" <br />
+              &nbsp;&nbsp;:shader="'example1'" <br />
+              />
             </CodeSnippet>
           </div>
 
@@ -37,10 +40,18 @@
               }"
             />
             <CodeSnippet>
-              <span> {{ String("<") }}</span
-              >CanvasImage :src-link="'images/02.JPG'" :shader="'example2'"
-              :load-strategy="'eager'" :uniforms="{ uHover: { value:
-              example1Hover ? 1 : 0, duration: 1 } }"/>
+              <span> {{ String("<") }}</span> CanvasImage <br />
+              &nbsp;&nbsp;:src-link="'images/02.JPG'"<br />
+              &nbsp;&nbsp;:shader="'example2'"<br />
+              &nbsp;&nbsp;:load-strategy="'eager'"<br />
+              &nbsp;&nbsp;:uniforms="{<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;uHover: {<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: example1Hover ? 1 :
+              0,<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;duration: 1<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;}<br />
+              &nbsp;&nbsp;}"<br />
+              />
             </CodeSnippet>
           </div>
         </div>
@@ -79,12 +90,18 @@
                   :uniforms="{
                     uScrollSpeed: { value: example3Speed, duration: 0 },
                   }"
-                  :shader="'example6'"
+                  :shader="'example3'"
                   :load-strategy="'eager'"
                   alt=""
                 />
                 <CodeSnippet>
-                  v-onScrollActivate="{ activeRange: 0.8 }"
+                  v-onScrollActivate="{ <br />
+                  &nbsp;&nbsp;activeRange: 0.9,<br />
+                  &nbsp;&nbsp;activateOnce: false,<br />
+                  &nbsp;&nbsp;onScrollCallback: (item, speed) => {
+                  <br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;// do something with speed<br />
+                  }"
                 </CodeSnippet>
               </div>
             </div>
@@ -114,7 +131,15 @@
                 alt=""
               />
               <CodeSnippet>
-                { activeRange: 0.99, activateOnce: true }
+                v-onScrollActivate="{ <br />
+                &nbsp;&nbsp;activeRange: 0.7,<br />
+                &nbsp;&nbsp;scrollSpeedSetTo: { value: 0.3 },<br />
+                &nbsp;&nbsp;bidirectionalActivation: true,<br />
+                &nbsp;&nbsp;activateOnce: false,<br />
+                &nbsp;&nbsp;activateCallback: (item, speed) => {
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;// do something when activated<br />
+                }"
               </CodeSnippet>
             </div>
             <div
@@ -136,7 +161,10 @@
                   alt=""
                 />
                 <CodeSnippet>
-                  { activeRange: 0.99, activateOnce: true }
+                  v-onScrollActivate="{<br />
+                  &nbsp;&nbsp;activeRange: 0.9,<br />
+                  &nbsp;&nbsp;fixToParentId: 'fixedParent',<br />
+                  }"
                 </CodeSnippet>
               </div>
             </div>
@@ -182,6 +210,7 @@ const example2Hover = ref(false);
   position: relative;
 }
 .fixed-scroll-example {
+  margin-right: 10px;
   border-right: 1px solid var(--light-color);
   height: 1000px;
   margin-bottom: 100px;

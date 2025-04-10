@@ -62,5 +62,8 @@
       display: inline;
     }
   }
+  a {
+    color: var(--light-color);
+  }
 }
 </style>
