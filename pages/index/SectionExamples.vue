@@ -19,6 +19,7 @@
               >CanvasImage <br />
               &nbsp;&nbsp;:src-link="'images/01.JPG'" <br />
               &nbsp;&nbsp;:shader="'example1'" <br />
+              &nbsp;&nbsp;:load-strategy="'eager'"<br />
               />
             </CodeSnippet>
           </div>
@@ -41,9 +42,8 @@
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span> CanvasImage <br />
-              &nbsp;&nbsp;:src-link="'images/02.JPG'"<br />
-              &nbsp;&nbsp;:shader="'example2'"<br />
-              &nbsp;&nbsp;:load-strategy="'eager'"<br />
+              &nbsp;&nbsp;:src-link="'images/02.JPG'"
+              &nbsp;:shader="'example2'"<br />
               &nbsp;&nbsp;:uniforms="{<br />
               &nbsp;&nbsp;&nbsp;&nbsp;uHover: {<br />
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: example1Hover ? 1 :
@@ -112,18 +112,17 @@
                 scrollSpeedSetTo: { value: 0.3 },
                 bidirectionalActivation: true,
                 activateCallback: (item) => {
-                  gsap.fromTo(
-                    item.elNode.querySelector('.example-activate-txt'),
-                    { opacity: 0 },
-                    { opacity: 1, duration: 0.5 },
-                  );
+                  const el = item.elNode.querySelector('.example-activate-txt');
+                  const tl = gsap.timeline();
+                  tl.to(el, { x: -10, opacity: 1, duration: 0.5 });
+                  tl.to(el, { x: 0, opacity: 0, duration: 0.5 });
                 },
               }"
               class="example-4 example-wrapper"
             >
               <p class="example-txt">
                 Set Scroll speed of elements
-                <span class="example-activate-txt">Activated</span>
+                <span class="example-activate-txt">Activated 👋</span>
               </p>
               <CanvasImage
                 :src-link="'images/04.JPG'"
@@ -219,12 +218,14 @@ const example2Hover = ref(false);
   position: absolute;
   bottom: 2px;
   left: 0;
-  border-bottom: 3px solid var(--light-color);
+  border-bottom: 5px solid var(--light-color);
 }
 .example-activate-txt {
+  //color: var(--light-color);
+  opacity: 0;
   position: absolute;
   font-weight: bold;
   bottom: 10px;
-  right: 10px;
+  right: 0;
 }
 </style>
