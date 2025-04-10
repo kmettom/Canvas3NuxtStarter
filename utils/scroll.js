@@ -1,201 +1,220 @@
-const lerp = (a, b, n) => (1 - n) * a + n * b
+import { Canvas } from "./canvas";
+import {
+  elementNearViewport,
+  setScrollActiveElements,
+} from "~/utils/canvasHelpers";
 
-import {Canvas} from "./canvas";
+const lerp = (a, b, n) => (1 - n) * a + n * b;
 
-export default class Scroll{
-  constructor(_options, _activeCallback) {
-
+export default class Scroll {
+  constructor(options) {
     this.DOM = {
-      scrollable: _options.dom,
-      scrollspeed : [],
-      scrollactive : [],
-      scrollspeedBackup : [],
+      scrollable: options.dom,
+      onScrollActivateElements: [],
     };
 
-    this.activeCallback = _options.activeCallback;
+    this.activeCallback = options.activeCallback;
 
-    this.docScroll = 0;
+    this.fixScrollTo = { htmlRef: null, margin: 0 }; //null | {ref: htmlRef, margin: Number}
     this.scrollToRender = 0;
     this.current = 0;
     this.ease = 0.1;
     this.speed = 0;
     this.speedTarget = 0;
-    this.scrollTo = {target: 0 , executed: true}
+    this.scrollSpeedBottomMargin = 250;
 
     this.setSize();
     this.getScroll();
     this.init();
     this.initEvents();
-
   }
 
-  init(){
-    // sets the initial value (no interpolation) - translate the scroll value
-    for (const key in this.renderedStyles) {
-      this.current = this.scrollToRender = this.getScroll();
-    }
-    // translate the scrollable element
-    this.setPosition();
-    this.shouldRender = true;
+  init() {
+    this.getScroll();
+    this.scrollToRender = this.current;
+    this.move();
   }
 
-  getScroll(){
-    this.docScroll = this.current = window.pageYOffset || document.documentElement.scrollTop;
-    return this.docScroll;
+  getScroll() {
+    this.current = window.scrollY || document.documentElement.scrollTop;
   }
-  resizeMobileBreakEvents(){
-    if(window.innerWidth < 768){
-      for (const item of this.DOM.scrollspeed) {
-        item.elNode.style.transform = `translate3d(0,0px,0)`;
-      }
-      for (const item of this.DOM.scrollactive) {
-        item.elNode.style.transform = `translate3d(0,0px,0)`;
-      }
-      if(this.DOM.scrollspeed.length > 0){
-        this.DOM.scrollspeedBackup = this.DOM.scrollspeed
-      }
-      this.DOM.scrollspeed = []
-    }else{
-      if(this.DOM.scrollspeed.length == 0 && this.DOM.scrollspeedBackup.length > 0){
-        this.DOM.scrollspeed = this.DOM.scrollspeedBackup
+
+  resizeMobileBreakEvents() {
+    if (window.innerWidth < 768) {
+      for (const item of this.DOM.onScrollActivateElements) {
+        if (item.options.fixToParentId) {
+          item.bounds = item.elNode.getBoundingClientRect();
+          item.containerBottom =
+            item.containerEl.getBoundingClientRect().bottom;
+        } else {
+          item.elNode.style.transform = `translate3d(0,0px,0)`;
+        }
       }
     }
   }
+
   initEvents() {
     window.addEventListener("resize", () => {
-
-        //update fixed elements position in scrollSpeed array
-        for (const item of this.DOM.scrollspeed) {
-          if(item.options?.includes('fixed') ) {
-            item.bounds = item.elNode.getBoundingClientRect();
-            item.containerBottom = item.containerEl.getBoundingClientRect().bottom;
-          }
-        }
-
-      this.resizeMobileBreakEvents()
-
-      this.setSize()
+      this.resizeMobileBreakEvents();
+      this.setSize();
     });
     window.addEventListener("scroll", () => {
       this.getScroll();
-    }
-  );
-
+    });
   }
 
   setSize() {
-    // set the heigh of the body in order to keep the scrollbar on the page
-    document.body.style.height = this.DOM.scrollable.scrollHeight > window.innerHeight ? `${this.DOM.scrollable.scrollHeight}px` : `${window.innerHeight}px`;
+    // set the height of the body in order to keep the scrollbar on the page
+    document.body.style.height =
+      this.DOM.scrollable.scrollHeight > window.innerHeight
+        ? `${this.DOM.scrollable.scrollHeight}px`
+        : `${window.innerHeight}px`;
   }
-  setSpeedElementsPosition(){
-    for (const item of this.DOM.scrollspeed) {
-      let speed = item.scrollSpeed || item.scrollSpeed === 0 ? item.scrollSpeed : false;
-      if(item.options?.includes('fixed') ){
-        const bounds = item.elNode.getBoundingClientRect();
-        const containerBottom = item.containerEl.getBoundingClientRect().bottom;
-        if( bounds.top < item.margin && containerBottom > item.margin + 250 ) {
-          const fixedPosition = window.innerWidth > 992 ? - bounds.top + item.margin : 0 ;
-          item.childEl.style.transform = `translate3d(0,${ fixedPosition }px,0)`;
-        }
-      } else {
-        const bounds = item.elNode.getBoundingClientRect();
-        if( bounds.top < window.innerHeight && bounds.bottom > 0 ) {
-          item.elNode.style.transform = `translate3d(0,${ -1 * (this.scrollToRender - bounds.top) * speed }px,0)`;
-        }
+
+  setElementActive(item, isActive) {
+    if (isActive) {
+      item.elNode.dataset.activeScroll = "true";
+      setScrollActiveElements(item.elNode, item.containedMeshIds, "true");
+      item.elNode.classList.add("active");
+      Canvas.onActiveElCallback(item);
+    } else {
+      item.elNode.dataset.activeScroll = "false";
+      setScrollActiveElements(item.elNode, item.containedMeshIds, "false");
+      if (!item.trackOnly) item.elNode.classList.remove("active");
+    }
+
+    if (item.containedMeshIds.length > 0 && !item.trackOnly) {
+      for (const meshId of item.containedMeshIds) {
+        Canvas.activateMesh(meshId, isActive);
       }
     }
   }
 
-  setElementActive(item, _status){
-    if(_status){
-      item.elNode.classList.add("active");
-    }else {
-      item.elNode.classList.remove("active");
-    }
-
-    Canvas.onActiveElCallback(item, _status);
-
-    if(item.containedMeshId){
-      Canvas.activateMesh(item.containedMeshId , _status);
-    }
-  }
-
-  setActiveElementsPosition() {
-    for (const item of this.DOM.scrollactive) {
-
+  setElementsScrollPositions() {
+    if (this.DOM.onScrollActivateElements.length === 0) return;
+    for (const item of this.DOM.onScrollActivateElements) {
       const bounds = item.elNode.getBoundingClientRect();
-      const activeRange = item.scrollActive ? (1 - item.scrollActive) * window.innerHeight : 0;
+      const itemRangeMargin = item.options.activeRangeMargin ?? 0;
+      let elementTrack = elementNearViewport(bounds, 200 + itemRangeMargin);
+      if (elementTrack) {
+        let activeRange = item.options.activeRange ?? 1;
+        let activeRangeOrigin = item.options.activeRangeOrigin ?? 1;
 
-        if( bounds.top < window.innerHeight - activeRange  && (item.rangeFromTop || bounds.bottom > activeRange)  ){
-          if(item.options?.includes('scroll')) Canvas.onScrollCallBack(item,   window.innerHeight - bounds.top , this.speed )
+        let activeRangeOriginPx = activeRangeOrigin * window.innerHeight;
 
-          if(!item.elNode.classList.contains("active")){
-            this.setElementActive(item, true )
+        let activeRangeInPx = (1 - activeRange) * activeRangeOriginPx;
+
+        const itemRangeMargin = item.options.activeRangeMargin ?? 0;
+        const activeFromTop =
+          bounds.top - itemRangeMargin <= activeRangeOriginPx - activeRangeInPx;
+        const activeFromBottom =
+          !item.options.bidirectionalActivation ||
+          bounds.bottom - itemRangeMargin >=
+            activeRangeInPx + activeRangeOriginPx;
+
+        if (activeFromTop && activeFromBottom) {
+          if (item.options.onScrollCallback)
+            item.options.onScrollCallback(item, this.speed);
+          if (item.elNode.dataset.activeScroll !== "true") {
+            this.setElementActive(item, true);
           }
-
         } else {
-          if(item.elNode.classList.contains("active") && !item.aniInOnly){
-            this.setElementActive(item, false )
+          if (
+            item.elNode.dataset.activeScroll === "true" &&
+            !item.options.activateOnce
+          ) {
+            this.setElementActive(item, false);
           }
         }
+      }
 
+      //SCROLL SPEED
+      if (typeof item.options.scrollSpeed?.value === "number") {
+        item.elNode.style.transition = `linear translate3d 0s`;
+
+        if (item.options.fixToParentId) {
+          const containerBounds = item.containerEl.getBoundingClientRect();
+          if (
+            bounds.top < item.margin &&
+            containerBounds.bottom > item.margin + this.scrollSpeedBottomMargin
+          ) {
+            const fixedPosition = item.margin - bounds.top;
+            item.childEl.style.transform = `translate3d(0,${fixedPosition}px,0)`;
+          }
+        } else {
+          let speedTrack = elementNearViewport(
+            bounds,
+            window.innerHeight * 0.75 + itemRangeMargin, // 0.75 = maximum amount of project VH bottom
+          );
+          if (speedTrack) {
+            let speed =
+              (window.innerHeight - bounds.top) *
+              item.options.scrollSpeed.value;
+            item.elNode.style.transform = `translate3d(0,${speed}px,0)`;
+          }
+        }
+      } else {
+        item.elNode.style.transition = `linear translate3d 0.3s`;
+        item.elNode.style.transform = `translate3d(0,0,0)`;
+      }
     }
   }
 
-  setPosition() {
-
-    // translate the scrollable container
-    if ( Math.round(this.scrollToRender) !==  Math.round(this.current) || this.scrollToRender < 10  || !this.scrollTo.executed ) {
+  setScrollPosition() {
+    if (
+      Math.round(this.scrollToRender) !== Math.round(this.current) ||
+      this.scrollToRender < 10
+    ) {
       this.DOM.scrollable.style.transform = `translate3d(0,${-1 * this.scrollToRender}px,0)`;
     }
+  }
 
-    if(this.DOM.scrollspeed.length > 0){
-      this.setSpeedElementsPosition()
-    }
-    if(this.DOM.scrollactive.length > 0){
-      this.setActiveElementsPosition()
-    }
+  scrollRenderToFluid(scrollTo) {
+    window.scrollBy(0, scrollTo.toString());
+    document.documentElement.scrollTop = scrollTo;
+  }
 
+  scrollRenderTo(scrollTo) {
+    this.scrollToRender = scrollTo;
+    window.scrollTo({
+      left: 0,
+      top: scrollTo,
+      behavior: "instant",
+    });
+    document.documentElement.scrollTop = scrollTo;
   }
-  scrollRenderToFluid(_scrollTo){
-    window.scrollBy( 0 , _scrollTo.toString() );
-    document.documentElement.scrollTop = _scrollTo
+
+  calculateScrollSpeed() {
+    this.speed =
+      Math.min(Math.abs(this.current - this.scrollToRender), 200) / 200;
+    this.speedTarget += (this.speed - this.speedTarget) * 0.2;
   }
-  scrollRenderTo(_scrollTo) {
-    this.scrollTo.executed = false;
-    this.scrollTo.target = Number(_scrollTo);
-    window.scrollBy( 0 , _scrollTo.toString());
-    document.documentElement.scrollTop = _scrollTo
+
+  move() {
+    this.setScrollPosition();
+    this.setElementsScrollPositions();
   }
-  scrollRender(){
-    this.scrollToRender = this.scrollTo.target;
-    const margin = 10;
-    this.docScroll = 0
-    if(this.current <= this.scrollToRender + margin ){
-      this.scrollTo.executed = true;
-    }
-  }
-  render(_scrollTo, _fluid) {
+
+  render(scrollTo, fluid) {
     this.setSize();
-    if(_scrollTo !== undefined && _fluid){
-     this.scrollRenderToFluid(_scrollTo)
-    }else if( _scrollTo !== undefined  && _fluid === false ){
-      this.scrollRenderTo(_scrollTo)
-    }else if ( !this.scrollTo.executed ) {
-     this.scrollRender()
-    }else {
+    if (this.fixScrollTo.htmlRef) {
+      const refPosition = this.fixScrollTo.htmlRef.getBoundingClientRect().top;
+      const fixScrollToPosition = Math.round(
+        this.scrollToRender + refPosition - this.fixScrollTo.margin,
+      );
+
+      this.scrollRenderTo(fixScrollToPosition);
+    } else if (scrollTo !== undefined && fluid) {
+      this.scrollRenderToFluid(scrollTo);
+    } else if (scrollTo !== undefined && fluid === false) {
+      this.scrollRenderTo(scrollTo);
+    } else {
       this.scrollToRender = Math.round(
-        lerp(
-          this.scrollToRender,
-          this.current,
-          this.ease
-        )
+        lerp(this.scrollToRender, this.current, this.ease),
       );
     }
 
-    this.speed = Math.min(Math.abs(this.current - this.scrollToRender), 200)/200;
-    this.speedTarget +=(this.speed - this.speedTarget)*0.2
-    this.setPosition();
+    this.calculateScrollSpeed();
+    this.move();
   }
-
 }

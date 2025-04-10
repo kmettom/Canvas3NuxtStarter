@@ -1,0 +1,191 @@
+//*************************
+// Common
+//*************************
+:root {
+  --light-color: #bfc0b2;
+  --dark-color: #1b1818;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  vertical-align: baseline;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  font-family: sans-serif;
+
+  //background-color: var(--dark-color);
+  color: var(--light-color);
+}
+
+//*************************
+//Normalization
+//*************************
+
+html {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+//*************************
+// Media Queries
+//*************************
+
+$w-xl: 1650px; // resolution just under 1920
+$w-l: 1450px; // resolution above 1366
+$w-m: 1280px; // ipad big resolution
+$w-m-s: 1080px; // ipad big resolution
+$w-s: 768px; // ipad small resolution
+$w-xs: 550px; // mobile resolution
+$w-xxs: 450px; // mobile resolution
+
+@mixin respond-width($media) {
+  $max-width: $media + 1px;
+
+  @media (max-width: #{$max-width}) {
+    @content;
+  }
+}
+
+// Usage:
+// @include respond-width($w-m-s) {
+
+//*************************
+//typography
+//*************************
+
+@font-face {
+  font-family: "PP Formula Black";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../../public/font/PPFormula-CondensedBlack.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "PP Neue Montreal Book";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../public/font/ppneuemontreal-book.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "PP Neue Montreal Bold";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../public/font/ppneuemontreal-bold.otf") format("truetype");
+}
+
+// ================================
+
+@mixin body-font {
+  font-family: "PP Neue Montreal Book", serif;
+  font-weight: 400;
+}
+
+@mixin body-font-bold {
+  font-family: "PP Neue Montreal Bold", serif;
+  font-weight: 700;
+}
+
+@mixin header-font {
+  font-family: "PP Formula Black", serif;
+  font-weight: 900;
+}
+
+.body-l {
+  @include body-font;
+  font-size: 30px;
+  line-height: 120%;
+  @include respond-width($w-m-s) {
+    font-size: 22px;
+  }
+  @include respond-width($w-s) {
+    font-size: 18px;
+  }
+  @include respond-width($w-xs) {
+    font-size: 16px;
+  }
+}
+
+.body-m {
+  @include body-font;
+  font-size: 16px;
+  line-height: 137.5%;
+
+  @include respond-width($w-s) {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+.body-xs {
+  @include body-font;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.heading-1 {
+  @include header-font;
+  font-size: 190px;
+  line-height: 100%;
+  @include respond-width($w-m-s) {
+    font-size: 175px;
+  }
+  @include respond-width($w-s) {
+    font-size: 140px;
+  }
+  @include respond-width($w-xs) {
+    font-size: 110px;
+  }
+  @include respond-width($w-xxs) {
+    font-size: 90px;
+  }
+}
+
+.heading-2 {
+  @include header-font;
+  font-size: 140px;
+  line-height: 100%;
+  @include respond-width($w-m-s) {
+    font-size: 145px;
+  }
+  @include respond-width($w-s) {
+    font-size: 120px;
+  }
+  @include respond-width($w-xs) {
+    font-size: 90px;
+  }
+  @include respond-width($w-xxs) {
+    font-size: 70px;
+  }
+}
+
+//*************************
+// animations
+//*************************
+
+.show-on-scroll {
+  //* {
+  //transition: ease opacity 0.5s;
+  //opacity: 0;
+  //}
+  //&.active {
+  //* {
+  //opacity: 1;
+  //}
+  //}
+}
+
+//*************************
+//layout
+//*************************
+
+.text-align-right {
+  text-align: right;
+}
