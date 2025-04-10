@@ -121,6 +121,8 @@ Example:
 ### Scroll Activate directive
 
 - adjusts the scroll speed of element
+- activate element with several parameters for flexibility
+- all child CanvasImage and CanvasText get uAniIn uniform passed automatically
 - automatically handles scroll difference for Scene's Mesh objects added through CanvasImage component
 - set fixed element
 
@@ -130,14 +132,13 @@ Options:
   {
     activeRange: Number, // optional, default 1
     activateOnce: Boolean, // default false
-    activateCallback: String,
+    activateCallback: (item) => void,
     trackOnly: Boolean,
     bidirectionalActivation: Boolean (default: false),
-    activeRangeOrigin: Number (0-1, 0 from top of screen, 1 bottom of the screen)
-    activeRangeMargin: Number
-    fixToParentId: String,
-    onScrollCallback: (item, speed) => {},
-    scrollSpeed: {value: Number},
+    activeRangeOrigin: Number, //(0-1, 0 from top of screen, 1 bottom of the screen)
+    activeRangeMargin: Number, //(in pixels)
+    fixToParentId: String (id of parent element),
+    onScrollCallback: (item, speed) => void,
     scrollSpeedSetTo: {value: Number, duration: Number}
   }
 ```
@@ -145,7 +146,7 @@ Options:
 Example:
 
 ```bash
-    <div v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }" ></div>
+    <div v-onScrollActivate="{ activeRange: 0.95, activateOnce: true }" ></div>
 ```
 
 If value is 0, scroll speed is normal, if the number is positive, the element will move faster upwards, if negative, the
@@ -156,40 +157,28 @@ For fixed element, the value should be the id of the parent element. The first c
 Example:
 
 ```bash
-  <div id="parentSection">
-    <div v-scrollSpeed="'parentSection'" >
+  <div id="parentSectionId">
+    <div v-onScrollActivate="{ scrollSpeed: 1, fixToParentId: 'parentSectionId' }" >
       <div>First child element of v-scrollSpeed will be fixed</div>
     </div>
   </div>
 ```
 
-### Scroll Active directive - Coming soon
+Additional options:
 
-- adds active class to element when it is in viewport
-- automatically includes appear animation for a Mesh object added through CanvasImage component
-
-Example:
-
-```bash
-    <div v-scrollActive="0.8" ></div>
-```
-
-Includes additional options:
-
-- show only once - once the element is active, it will stay active even after it is not visible in the viewport anymore.
-- activate from top - the element will be switched to active and non-active only scrolling in/out from top
-- Example:
+- activateOnce - once the element is active, it will stay active even after it is not visible in the viewport anymore.
+- bidirectionalActivation - the element will be switched to active and non-active scrolling in/out both from top and from bottom
+- Examples:
 
 ```bash
-    <div v-scrollActive:top="0.8" ></div>
-    <div v-scrollActive:once="0.8" ></div>
-    <div v-scrollActive:once:top="0.8" ></div>
+    <div v-onScrollActivate:once="{activeRange: 0.8, activateOnce: true }" ></div>
+    <div v-onScrollActivate:top="{activeRange: 0.8, bidirectionalActivation: true }" ></div>
 ```
 
 Value is the percentage of screen's height that should be in viewport to trigger the active class. Default value is 1,
 covering 100% of the screen.
 
-SctollActive elements will ge assigned a 'show-on-scroll' classes and 'active' class when active.
+v-onScrollActivate elements will ge assigned a 'show-on-scroll' classes and 'active' class when active.
 
 ```bash
     .show-on-scroll{
@@ -204,13 +193,5 @@ SctollActive elements will ge assigned a 'show-on-scroll' classes and 'active' c
 To trigger a specific call back function when element is activated or set to non-active, set a value to the directive and use this value in the Canvas.js file.
 
 ```bash
-    <div v-scrollActive:top:examplecallback="0.8" ></div>
-```
-
-```bash
-onActiveElCallback(_item, _active){
-  if(_item.options?.includes('examplecallback')) {
-    // do something when _active is true or false
-  }
-},
+    <div v-scrollActive"{activeRange: 0.7, activateCallback: (item) => {console.log('item activated -> ' , item)}}" ></div>
 ```

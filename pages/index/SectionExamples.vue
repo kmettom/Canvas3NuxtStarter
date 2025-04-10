@@ -12,7 +12,7 @@
       <div>
         <div class="examples-row">
           <div class="example-wrapper">
-            <h3 class="body-l">Add images to scene</h3>
+            <h3 class="body-l heading-example">Add images to scene 😌</h3>
             <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
             <CodeSnippet>
               <span> {{ String("<") }}</span
@@ -25,8 +25,9 @@
             @mouseenter="example1Hover = true"
             @mouseleave="example1Hover = false"
           >
-            <h3 class="body-l">
-              Add shader uniforms ( hover: {{ example1Hover }} )
+            <h3 class="body-l heading-example">
+              Add shader uniforms
+              <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
             <CanvasImage
               :src-link="'images/02.JPG'"
