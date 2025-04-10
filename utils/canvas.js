@@ -29,6 +29,9 @@ import example2Vertex from "./shaders/example2Vertex.glsl";
 import example3Fragment from "./shaders/example3Fragment.glsl";
 import example3Vertex from "./shaders/example3Vertex.glsl";
 
+import example4Fragment from "./shaders/example4Fragment.glsl";
+import example4Vertex from "./shaders/example4Vertex.glsl";
+
 import example6Fragment from "./shaders/example6Fragment.glsl";
 import example6Vertex from "./shaders/example6Vertex.glsl";
 
@@ -73,6 +76,10 @@ const CanvasOptions = {
   example3: {
     fragmentShader: example3Fragment,
     vertexShader: example3Vertex,
+  },
+  example4: {
+    fragmentShader: example4Fragment,
+    vertexShader: example4Vertex,
   },
   example6: {
     fragmentShader: example6Fragment,

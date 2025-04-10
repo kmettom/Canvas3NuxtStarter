@@ -122,7 +122,7 @@ Example:
 
 - adjusts the scroll speed of element
 - activate element with several parameters for flexibility
-- all child CanvasImage and CanvasText get uAniIn uniform passed automatically
+- all child CanvasImage and CanvasText get uAniInImage and uAniInText uniform passed automatically
 - automatically handles scroll difference for Scene's Mesh objects added through CanvasImage component
 - set fixed element
 

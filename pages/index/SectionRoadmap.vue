@@ -9,8 +9,7 @@
             activateOnce: true,
             activateCallback: textAniCallback,
           }"
-          class="about-txt about-1"
-          data-about-id="about-1"
+          class="roadmap-txt"
         >
           → CanvasText component dynamic colors<br />
           → 3D model imports<br />
@@ -36,13 +35,13 @@ import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 function textAniCallback(item) {
-  console.log("textAniCallback", item);
-  const selector = `.${item.elNode.dataset.aboutId}`;
+  const selector = item.elNode;
   const tl = gsap.timeline();
   const lines = new SplitText(selector, {
     type: "lines",
   }).lines;
   const wrappedLines = new SplitText(lines, { type: "lines" }).lines;
+  tl.set(wrappedLines, { opacity: 0, y: 50 });
   tl.set(selector, { opacity: 1, overflow: "hidden" });
   tl.set(lines, { opacity: 1, overflow: "hidden" });
   tl.fromTo(
@@ -74,7 +73,7 @@ function textAniCallback(item) {
     padding: 10vh 10px 125px 10px;
   }
 }
-.about-txt {
+.roadmap-txt {
   line-height: 1.5;
   opacity: 0;
   @include respond-width($w-m) {
@@ -86,6 +85,9 @@ function textAniCallback(item) {
   }
   div {
     opacity: 0;
+    * {
+      opacity: 0;
+    }
   }
 }
 </style>

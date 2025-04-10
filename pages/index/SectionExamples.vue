@@ -127,6 +127,7 @@
               <CanvasImage
                 :src-link="'images/04.JPG'"
                 :load-strategy="'eager'"
+                :shader="'example4'"
                 alt=""
               />
               <CodeSnippet>

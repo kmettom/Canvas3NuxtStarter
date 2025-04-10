@@ -3,10 +3,7 @@ varying vec2 vUv;
 uniform sampler2D uImage;
 
 uniform float uTime;
-uniform float uHover;
-uniform float uAniIn;
-uniform float uImageGallery;
-uniform float uImageGalleryActive;
+uniform float uAniInImage;
 
 uniform float scale; // = 4.0
 uniform float smoothness; // = 0.01
@@ -61,7 +58,7 @@ void main() {
     uv.x = uv.x * scale + (1.0 - scale) / 2.0; // Center the texture horizontally
   }
 
-  float t = uTime * 0.12;
+  float t = uTime * 0.12 ;
   // Convert to polar coordinates
   float angle = atan(uv.y, uv.x);
   float radius = length(uv);
@@ -73,5 +70,6 @@ void main() {
   vec4 texColor = texture2D(uImage, swirled);
 
   // Output the final color
-  gl_FragColor = texColor;
+  gl_FragColor = texColor * uAniInImage;
+
 }
