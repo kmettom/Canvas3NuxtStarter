@@ -3,10 +3,7 @@ varying vec2 vUv;
 uniform sampler2D uImage;
 
 uniform float uTime;
-uniform float uHover;
-uniform float uAniIn;
-uniform float uImageGallery;
-uniform float uImageGalleryActive;
+uniform float uScrollSpeed;
 
 uniform float scale; // = 4.0
 uniform float smoothness; // = 0.01

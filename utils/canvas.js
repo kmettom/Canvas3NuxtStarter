@@ -29,6 +29,9 @@ import example2Vertex from "./shaders/example2Vertex.glsl";
 import example3Fragment from "./shaders/example3Fragment.glsl";
 import example3Vertex from "./shaders/example3Vertex.glsl";
 
+import example6Fragment from "./shaders/example6Fragment.glsl";
+import example6Vertex from "./shaders/example6Vertex.glsl";
+
 import {
   generateBindingLogic,
   loadTexture,
@@ -70,6 +73,10 @@ const CanvasOptions = {
   example3: {
     fragmentShader: example3Fragment,
     vertexShader: example3Vertex,
+  },
+  example6: {
+    fragmentShader: example6Fragment,
+    vertexShader: example6Vertex,
   },
 };
 

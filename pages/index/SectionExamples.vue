@@ -45,7 +45,9 @@
           </div>
         </div>
         <div class="example-row-second">
-          <h3 class="body-l">Directive for scroll manipulation and feedback</h3>
+          <h3 class="body-l heading-example">
+            Directive for scroll manipulation and feedback
+          </h3>
           <p class="example-txt">
             Use directive for scroll manipulation and feedback. All CanvasImage
             or CanvasText get activated automatically by uAniIn uniform float
@@ -77,7 +79,7 @@
                   :uniforms="{
                     uScrollSpeed: { value: example3Speed, duration: 0 },
                   }"
-                  :shader="'example3'"
+                  :shader="'example6'"
                   :load-strategy="'eager'"
                   alt=""
                 />
@@ -160,6 +162,9 @@ const example2Hover = ref(false);
 .heading-2 {
   padding-top: 50px;
   padding-bottom: 20px;
+}
+.heading-example {
+  padding-bottom: 10px;
 }
 .examples-row {
   display: flex;

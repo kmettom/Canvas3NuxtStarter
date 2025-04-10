@@ -1,6 +1,5 @@
 uniform float uTime;
 uniform float uHover;
-uniform float uAniIn;
 varying float vNoise;
 varying vec2 vUv;
 
