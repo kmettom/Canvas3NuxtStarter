@@ -17,19 +17,6 @@
         >&nbsp;&nbsp;|&nbsp;&nbsp;</span
       ></span
     >
-    <span id="design"
-      >Design:
-      <a
-        v-set-data-attrs="{
-          cursoropacity: 0.7,
-          cursorsize: 70,
-          cursoricon: '🔥',
-        }"
-        href="https://jagodakondratiuk.com"
-        target="_blank"
-        >Jagoda Kondratiuk</a
-      ></span
-    >
   </div>
 </template>
 

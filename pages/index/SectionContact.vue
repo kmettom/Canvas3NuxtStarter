@@ -189,15 +189,15 @@ const splitLineAnimation = (item) => {
   flex-direction: column;
   justify-content: end;
   position: relative;
-  bottom: 75px;
+  bottom: 45px;
   gap: 5px;
   @include respond-width($w-m-s) {
-    bottom: 50px;
+    bottom: 40px;
   }
   @include respond-width($w-xs) {
     bottom: 0;
     display: block;
-    padding: 0 10px;
+    padding: 0;
   }
   &.social-media-list div {
     text-align: right;
