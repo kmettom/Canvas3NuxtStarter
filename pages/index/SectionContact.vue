@@ -158,9 +158,9 @@ const splitLineAnimation = (item) => {
   position: relative;
   color: var(--light-color);
   //background-color: var(--light-color);
-  padding: 10vh 0 7vh;
+  padding: 30vh 0 7vh;
   @include respond-width($w-xs) {
-    padding: 20vh 0 12vh;
+    padding: 35vh 0 12vh;
   }
 }
 .canvas-text-spacing {
