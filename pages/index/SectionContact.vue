@@ -203,7 +203,6 @@ const splitLineAnimation = (item) => {
     text-align: right;
   }
   a {
-    cursor: none;
     color: var(--light-color);
     text-decoration: none;
   }
