@@ -99,7 +99,7 @@
                   &nbsp;&nbsp;activateOnce: false,<br/>
                   &nbsp;&nbsp;onScrollCallback: (item, speed) => {
                   <br/>
-                  &nbsp;&nbsp;&nbsp;&nbsp;// do something with speed<br/>
+                  &nbsp;&nbsp;&nbsp;&nbsp;// do something on scroll<br/>
                   }"
                 </CodeSnippet>
               </div>
