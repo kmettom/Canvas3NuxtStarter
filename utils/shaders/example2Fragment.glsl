@@ -60,10 +60,10 @@ void main() {
 
   float t = uTime * 0.12 ;
   // Convert to polar coordinates
-  float angle = atan(uv.y, uv.x);
+  float angle = atan(uv.y, uv.x) ;
   float radius = length(uv);
   // Apply a swirling distortion using fractal noise
-  angle += fbm(uv * 3.0 + t);
+  angle += fbm(uv * 3.0 * uHover + t * uHover);
   vec2 swirled = vec2(cos(angle), sin(angle)) * radius;
   // Compute fractal noise pattern for the nebula texture
   // Sample the texture using the provided texture coordinates

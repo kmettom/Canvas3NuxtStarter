@@ -37,17 +37,17 @@
                 :src-link="'images/02.JPG'"
                 :shader="'example2'"
                 :uniforms="{
-                uHover: { value: example1Hover ? 1 : 0, duration: 1 },
+                uHover: { value: example1Hover ? 1 : 0, duration: 0 },
               }"
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span>CanvasImage <br/>
-              &nbsp;&nbsp;:src-link="'images/02.JPG'"
-              &nbsp;:shader="'example2'"<br/>
+              &nbsp;&nbsp;:src-link="'images/02.JPG'"<br/>
+              &nbsp;&nbsp;:shader="'example2'"<br/>
               &nbsp;&nbsp;:uniforms="{<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;uHover: {<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value: example1Hover ? 1 : 0,<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;duration: 1<br/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;duration: 0<br/>
               &nbsp;&nbsp;&nbsp;&nbsp;}<br/>
               &nbsp;&nbsp;}"<br/>
               />
