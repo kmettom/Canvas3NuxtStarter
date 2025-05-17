@@ -97,7 +97,6 @@ watch(
   text-align: right;
 }
 .navigation-item {
-  cursor: none;
   line-height: 20px;
   pointer-events: auto;
   overflow-y: hidden;

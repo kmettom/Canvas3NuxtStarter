@@ -63,17 +63,17 @@ const cursorInit = () => {
   Canvas.animations.cursorCallback = draw;
 
   // Track mouse movements
-  window.onmousemove = (event) => {
-    cursorTrack(event);
-  };
+  // window.onmousemove = (event) => {
+  //   cursorTrack(event);
+  // };
 
   // Handle mouse out of window
-  document.addEventListener("mouseout", (e) => {
-    const from = e.relatedTarget || e.toElement;
-    if (!from || from.nodeName === "HTML") {
-      state.curNewSize = 1;
-    }
-  });
+  // document.addEventListener("mouseout", (e) => {
+  //   const from = e.relatedTarget || e.toElement;
+  //   if (!from || from.nodeName === "HTML") {
+  //     state.curNewSize = 1;
+  //   }
+  // });
 };
 
 // Track mouse movement
@@ -148,24 +148,25 @@ const draw = () => {
 // Lifecycle hook: Mounted
 onMounted(() => {
   if (!displayStore.isMobile && !displayStore.prefersReducedMotion) {
-    cursorInit();
+    // cursorInit();
   }
 });
 </script>
 
 <style lang="scss" scoped>
 #uniqueCursor {
-  pointer-events: none;
-  position: fixed;
-  text-align: center;
-  z-index: 99;
-  background: var(--dark-color);
-  border-radius: 50%;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: none;
+  //pointer-events: none;
+  //position: fixed;
+  //text-align: center;
+  //z-index: 99;
+  //background: var(--dark-color);
+  //border-radius: 50%;
+  //top: 0;
+  //left: 0;
+  //display: flex;
+  //justify-content: center;
+  //align-items: center;
 }
 .cursor-icon {
   font-size: 31px;
