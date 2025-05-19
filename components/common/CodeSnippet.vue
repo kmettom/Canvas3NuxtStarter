@@ -1,10 +1,8 @@
 <template>
   <div class="code-container" :style="`width:${width}`">
     <code>
-
-    <slot />
+      <slot />
     </code>
-
   </div>
 </template>
 
@@ -12,13 +10,13 @@
 
 <style lang="scss" scoped>
 .code-container {
-  width: calc(100% - 30px);
-  max-width: calc(375px - 30px);
+  width: calc(100% - 20px);
+  max-width: calc(375px - 20px);
   display: inline-block;
-  border-radius: 5px;
+  border-radius: 0px;
   margin: 10px 0;
-  background: black;
-  padding: 15px;
-  border: 1px solid dimgray;
+  color: var(--dark-color);
+  background: var(--light-color);
+  padding: 10px;
 }
 </style>
