@@ -4,6 +4,7 @@ import {
   setScrollActiveElements,
 } from "~/utils/canvasHelpers";
 
+//TODO: add to canvas options to set different lerp function
 const lerp = (a, b, n) => (1 - n) * a + n * b;
 
 export default class Scroll {
@@ -54,10 +55,6 @@ export default class Scroll {
   }
 
   initEvents() {
-    // window.addEventListener("resize", () => {
-      // this.resizeMobileBreakEvents();
-      // this.setSize();
-    // });
     window.addEventListener("scroll", () => {
       this.getScroll();
     });
