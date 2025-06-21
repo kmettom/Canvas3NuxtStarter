@@ -184,15 +184,13 @@ const Canvas = {
       this.MSDFTextGeometryFont = font;
     });
   },
-  // setResizeListener() {
-  //   window.addEventListener("resize", () => {
-  //     this.resizeOnChange();
-  //   });
-  // },
+  //TODO: test refactored logic - displayService carries resize
   resizeOnChange() {
     this.setSize();
     this.resizeImageStore();
     this.resizeTextStore();
+    this.scroll.resizeMobileBreakEvents();
+    this.scroll.setSize();
   },
   resizeImageStore() {
     for (var i = 0; i < this.imageStore.length; i++) {
