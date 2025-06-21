@@ -1,4 +1,3 @@
-
 // Architecture notes
 // Canvas3
 // - 1 entry point

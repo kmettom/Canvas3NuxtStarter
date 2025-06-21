@@ -1,10 +1,15 @@
 <template>
   <div id="appContainer">
+    <CommonWelcomeScreen
+      :welcome-init="welcomeInit"
+      @welcome-complete="welcomeFinished()"
+    />
+
     <CommonNavigation :page-active="null" />
 
     <div id="scrollContainer">
       <div id="scrollableContent" ref="scrollableContent">
-        <slot />
+        <slot :page-active="contentActive" />
       </div>
     </div>
 
@@ -13,16 +18,28 @@
       ref="canvasEl"
       :class="{ 'back-layer': backLayerCanvas }"
     />
+    <CanvasCursor v-if="contentActive" />
+    <img
+      alt="hidden image for font"
+      loading="eager"
+      src="/font/PPFormula-CondensedBlack.png"
+      style="display: none"
+    />
   </div>
 </template>
 
 <script setup>
 //TODO: import Cursor and Welcome screen, for generalization and main entry component for Canvas3
+//TODO: fix first load render
+//TODO: Page transition scroll to top implement, check page navigation and page transition animations
+
+
 import { Canvas } from "~/utils/canvas";
 import { useDisplayStore } from "~/stores/display";
 import { useNavigationStore } from "~/stores/navigation";
 // import { useCanvas3Store } from "~/stores/canvas3";
 
+const welcomeInit = ref(false);
 
 const navigationStore = useNavigationStore();
 const displayStore = useDisplayStore();
@@ -37,6 +54,20 @@ const backLayerCanvas = computed(() => {
 const canvasEl = ref("canvasEl");
 
 const scrollableContent = ref("scrollableContent");
+
+watch(
+  () => navigationStore.canvasInitiated,
+  (newVal) => {
+    if (newVal) {
+      welcomeInit.value = true;
+    }
+  },
+);
+
+const contentActive = ref(false);
+const welcomeFinished = () => {
+  contentActive.value = true;
+};
 
 onMounted(async () => {
   await Canvas.init(canvasEl.value, scrollableContent.value);
