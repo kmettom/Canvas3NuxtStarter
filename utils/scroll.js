@@ -76,7 +76,10 @@ export default class Scroll {
       item.elNode.dataset.activeScroll = "true";
       setScrollActiveElements(item.elNode, item.containedMeshIds, "true");
       item.elNode.classList.add("active");
-      Canvas.onActiveElCallback(item);
+      // Canvas.onActiveElCallback(item);
+      if (item.options.activateCallback) {
+        item.options.activateCallback(item);
+      }
     } else {
       item.elNode.dataset.activeScroll = "false";
       setScrollActiveElements(item.elNode, item.containedMeshIds, "false");
@@ -85,6 +88,7 @@ export default class Scroll {
 
     if (item.containedMeshIds.length > 0 && !item.trackOnly) {
       for (const meshId of item.containedMeshIds) {
+        //TODO: refactor activate mesh to flexible easing and time - carry this on the item it self
         Canvas.activateMesh(meshId, isActive);
       }
     }

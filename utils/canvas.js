@@ -103,7 +103,7 @@ const Canvas = {
   currentScroll: 0,
   options: CanvasOptions,
   animations: {
-    cursorCallback: () => {},
+    // cursorCallback: () => {},
   },
   footerGameBall: { x: 0, y: 0 },
   mouse: { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 },
@@ -146,7 +146,7 @@ const Canvas = {
     this.setSize();
     this.composerPass();
 
-    this.setResizeListener();
+    // this.setResizeListener();
 
     this.render();
 
@@ -184,11 +184,11 @@ const Canvas = {
       this.MSDFTextGeometryFont = font;
     });
   },
-  setResizeListener() {
-    window.addEventListener("resize", () => {
-      this.resizeOnChange();
-    });
-  },
+  // setResizeListener() {
+  //   window.addEventListener("resize", () => {
+  //     this.resizeOnChange();
+  //   });
+  // },
   resizeOnChange() {
     this.setSize();
     this.resizeImageStore();
@@ -260,6 +260,7 @@ const Canvas = {
       });
     }
   },
+  //TODO: refactor activate mesh to flexible easing and time - carry this on the item it self
   activateMesh(id, isActive) {
     const mesh = this.scene.getObjectByName(id);
     if (!mesh) {
@@ -279,12 +280,6 @@ const Canvas = {
         value: isActive ? 1 : 0,
         ease: "power2.out",
       });
-    }
-  },
-
-  onActiveElCallback(item) {
-    if (item.options.activateCallback) {
-      item.options.activateCallback(item);
     }
   },
 
