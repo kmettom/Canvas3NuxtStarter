@@ -1,3 +1,11 @@
+
+// Architecture notes
+// Canvas3
+// - 1 entry point
+// - SDK pro - generic behavior, functionality in container
+// - SDK con - many imports ( display store, navigation store, text, image mesh components, scroll directives)
+// - SDK entry component - DefaultLayout - Cursor, Navigation, Welcome screen - OK
+
 //TODO: check better use case, if Store or Class, what is better for SDK usage
 import { defineStore } from "pinia";
 import * as THREE from "three";

@@ -17,6 +17,7 @@
 </template>
 
 <script setup>
+//TODO: import Cursor and Welcome screen, for generalization and main entry component for Canvas3
 import { Canvas } from "~/utils/canvas";
 import { useDisplayStore } from "~/stores/display";
 import { useNavigationStore } from "~/stores/navigation";
