@@ -1,3 +1,4 @@
+//TODO: check better use case, if Store or Class, what is better for SDK usage
 import { defineStore } from "pinia";
 import * as THREE from "three";
 import Scroll from "~/utils/scroll";
