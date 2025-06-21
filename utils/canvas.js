@@ -44,6 +44,7 @@ import {
 
 const { MSDFTextGeometry } = pkg;
 
+//TODO: adjust how shaders are loaded to more dynamic
 const CanvasOptions = {
   fonts: {
     PPFormula: {

@@ -10,7 +10,7 @@
 
     <div
       id="animationContainer"
-      ref="canvas"
+      ref="canvasEl"
       :class="{ 'back-layer': backLayerCanvas }"
     />
   </div>
@@ -19,9 +19,13 @@
 <script setup>
 import { Canvas } from "~/utils/canvas";
 import { useDisplayStore } from "~/stores/display";
+import { useNavigationStore } from "~/stores/navigation";
+// import { useCanvas3Store } from "~/stores/canvas3";
+
 
 const navigationStore = useNavigationStore();
 const displayStore = useDisplayStore();
+// const Canvas3 = useCanvas3Store();
 
 const backLayerCanvas = computed(() => {
   return (
@@ -29,14 +33,15 @@ const backLayerCanvas = computed(() => {
   );
 });
 
-const canvas = ref("canvas");
+const canvasEl = ref("canvasEl");
 
 const scrollableContent = ref("scrollableContent");
 
 onMounted(async () => {
-  await Canvas.init(canvas.value, scrollableContent.value);
+  await Canvas.init(canvasEl.value, scrollableContent.value);
   displayStore.init();
   navigationStore.canvasInitiated = true;
+  // await Canvas3.init(canvasEl.value, scrollableContent.value);
 });
 </script>
 
