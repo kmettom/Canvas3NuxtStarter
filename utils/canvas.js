@@ -44,7 +44,6 @@ import {
 
 const { MSDFTextGeometry } = pkg;
 
-//TODO: adjust how shaders are loaded to more dynamic
 const CanvasOptions = {
   fonts: {
     PPFormula: {
@@ -185,7 +184,6 @@ const Canvas = {
       this.MSDFTextGeometryFont = font;
     });
   },
-  //TODO: test refactored logic - displayService carries resize
   resizeOnChange() {
     this.setSize();
     this.resizeImageStore();
@@ -259,7 +257,6 @@ const Canvas = {
       });
     }
   },
-  //TODO: refactor activate mesh to flexible easing and time - carry this on the item it self
   activateMesh(id, isActive) {
     const mesh = this.scene.getObjectByName(id);
     if (!mesh) {

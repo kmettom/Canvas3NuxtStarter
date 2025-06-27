@@ -29,25 +29,24 @@
 </template>
 
 <script setup>
-//TODO: import Cursor and Welcome screen, for generalization and main entry component for Canvas3
 //TODO: fix first load render
 //TODO: Page transition scroll to top implement, check page navigation and page transition animations
 
-
-import { Canvas } from "~/utils/canvas";
-import { useDisplayStore } from "~/stores/display";
-import { useNavigationStore } from "~/stores/navigation";
-// import { useCanvas3Store } from "~/stores/canvas3";
+// import { Canvas } from "~/utils/canvas";
+// import { useDisplayStore } from "~/stores/display";
+// import { useNavigationStore } from "~/stores/navigation";
+import { useCanvas3Store } from "~/stores/canvas3";
 
 const welcomeInit = ref(false);
 
-const navigationStore = useNavigationStore();
-const displayStore = useDisplayStore();
-// const Canvas3 = useCanvas3Store();
+// const navigationStore = useNavigationStore();
+// const displayStore = useDisplayStore();
+const Canvas3 = useCanvas3Store();
 
 const backLayerCanvas = computed(() => {
   return (
-    navigationStore.activeNavItem === "home" || !navigationStore.navVisible
+    Canvas3.navigationStore?.activeNavItem === "home" ||
+    !Canvas3.navigationStore?.navVisible
   );
 });
 
@@ -56,7 +55,7 @@ const canvasEl = ref("canvasEl");
 const scrollableContent = ref("scrollableContent");
 
 watch(
-  () => navigationStore.canvasInitiated,
+  () => Canvas3.navigationStore?.canvasInitiated,
   (newVal) => {
     if (newVal) {
       welcomeInit.value = true;
@@ -70,10 +69,10 @@ const welcomeFinished = () => {
 };
 
 onMounted(async () => {
-  await Canvas.init(canvasEl.value, scrollableContent.value);
-  displayStore.init();
-  navigationStore.canvasInitiated = true;
-  // await Canvas3.init(canvasEl.value, scrollableContent.value);
+  // await Canvas.init(canvasEl.value, scrollableContent.value);
+  // displayStore.init();
+  // navigationStore.canvasInitiated = true;
+  await Canvas3.init(canvasEl.value, scrollableContent.value);
 });
 </script>
 

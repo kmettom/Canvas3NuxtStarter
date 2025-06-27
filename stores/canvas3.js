@@ -5,6 +5,8 @@
 // - SDK con - many imports ( display store, navigation store, text, image mesh components, scroll directives)
 // - SDK entry component - DefaultLayout - Cursor, Navigation, Welcome screen - OK
 
+// TODO: stop request animation frame, when page not focused
+
 //TODO: check better use case, if Store or Class, what is better for SDK usage
 import { defineStore } from "pinia";
 import * as THREE from "three";
@@ -40,12 +42,9 @@ import example6Fragment from "~/utils/shaders/example6Fragment.glsl";
 import example6Vertex from "~/utils/shaders/example6Vertex.glsl";
 
 import * as pkg from "three-msdf-text-utils/build/bundle";
-// import { useDisplayStore } from "~/stores/display";
+import { useDisplayStore } from "~/stores/display";
 
 const { MSDFTextGeometry } = pkg;
-
-// const displayStore = useDisplayStore();
-// const navigationStore = useNavigationStore();
 
 const CanvasOptions = {
   fonts: {
@@ -92,12 +91,14 @@ const CanvasOptions = {
 
 export const useCanvas3Store = defineStore("canvas3Store", {
   state: () => ({
+    navigationStore: null,
+    displayStore: null,
     scrollInProgress: false,
     animateImageMesh: false,
     canvasContainer: null,
     scrollableContent: null,
     time: 0,
-    scene: new THREE.Scene(),
+    // scene: new THREE.Scene(),
     MSDFTextGeometryAtlas: null,
     MSDFTextGeometryFont: null,
     materials: [],
@@ -139,6 +140,8 @@ export const useCanvas3Store = defineStore("canvas3Store", {
       this.canvasContainer.appendChild(this.renderer.domElement);
     },
     async init(canvasElement, scrollableContent) {
+      this.scene = new THREE.Scene();
+
       this.canvasContainer = canvasElement;
       this.scrollableContent = scrollableContent;
 
@@ -167,8 +170,12 @@ export const useCanvas3Store = defineStore("canvas3Store", {
           this.mouse.movementY = this.mouse.y;
         }
       });
-      // displayStore.init();
-      // navigationStore.canvasInitiated = true;
+
+      this.displayStore = useDisplayStore();
+      this.navigationStore = useNavigationStore();
+
+      this.displayStore.init();
+      this.navigationStore.canvasInitiated = true;
     },
     async loadFontMSDF() {
       const loadFontAtlas = (path) => {
@@ -653,7 +660,8 @@ export const useCanvas3Store = defineStore("canvas3Store", {
         }
       }
 
-      this.composer.render();
+      // TODO: use from class, not in Pinia as its only read and not expected output
+      // this.composer.render();
 
       for (const argumentsKey in this.animations) {
         if (this.animations[argumentsKey]) this.animations[argumentsKey]();
