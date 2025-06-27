@@ -2,7 +2,7 @@
 // Canvas3
 // - 1 entry point
 // - SDK pro - generic behavior, functionality in container
-// - SDK con - many imports ( display store, navigation store, text, image mesh components, scroll directives)
+// - SDK con - many imports ( display store - OKish, navigation store - OKish, text - OK, image mesh components - OK, scroll directives - OK)
 // - SDK entry component - DefaultLayout - Cursor, Navigation, Welcome screen - OK
 
 // TODO: stop request animation frame, when page not focused
