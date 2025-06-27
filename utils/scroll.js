@@ -1,8 +1,11 @@
-import { Canvas } from "./canvas";
+// import { Canvas } from "./canvas";
 import {
   elementNearViewport,
   setScrollActiveElements,
 } from "~/utils/canvasHelpers";
+
+// import { useCanvas3Store } from "~/stores/canvas3";
+// const Canvas3 = useCanvas3Store();
 
 //TODO: add to canvas options to set different lerp function
 const lerp = (a, b, n) => (1 - n) * a + n * b;
@@ -85,8 +88,10 @@ export default class Scroll {
 
     if (item.containedMeshIds.length > 0 && !item.trackOnly) {
       for (const meshId of item.containedMeshIds) {
+        console.log("meshId", meshId);
         //TODO: refactor activate mesh to flexible easing and time - carry this on the item it self
-        Canvas.activateMesh(meshId, isActive);
+        // Canvas3.activateMesh(meshId, isActive);
+        // item.options.activateCallback(item);
       }
     }
   }

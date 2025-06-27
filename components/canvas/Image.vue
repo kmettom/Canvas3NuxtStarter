@@ -3,7 +3,7 @@
     <img
       ref="image"
       class="webgl-img"
-      :class="{ 'reduced-motion': displayStore.prefersReducedMotion }"
+      :class="{ 'reduced-motion': Canvas3.displayStore?.prefersReducedMotion }"
       :alt="alt"
       :src="srcLink"
       :loading="loadStrategy === 'lazy' ? 'lazy' : 'eager'"
@@ -13,11 +13,15 @@
 </template>
 
 <script setup>
-import { Canvas } from "~/utils/canvas";
-import { useDisplayStore } from "~/stores/display";
+// import { Canvas } from "~/utils/canvas";
+import { useCanvas3Store } from "~/stores/canvas3";
 
-const displayStore = useDisplayStore();
-const navigationStore = useNavigationStore();
+// import { useDisplayStore } from "~/stores/display";
+
+// const displayStore = useDisplayStore();
+// const navigationStore = useNavigationStore();
+
+const Canvas3 = useCanvas3Store();
 
 const props = defineProps({
   alt: {
@@ -60,8 +64,8 @@ const meshUniforms = computed(() => {
 const addImageToCanvas = () => {
   if (
     imgAddedToCanvas.value ||
-    displayStore.isMobile ||
-    displayStore.prefersReducedMotion
+    Canvas3.displayStore?.isMobile ||
+    Canvas3.displayStore?.prefersReducedMotion
   )
     return;
   Canvas.addImageAsMesh(
@@ -79,7 +83,7 @@ onMounted(() => {
 });
 
 watch(
-  () => navigationStore.canvasInitiated,
+  () => Canvas3.navigationStore?.canvasInitiated,
   (newVal) => {
     if (newVal && image.value.naturalWidth !== 0) {
       addImageToCanvas();
@@ -90,13 +94,13 @@ watch(
 watch(
   () => props.uniforms,
   (uniforms) => {
-    Canvas.meshUniformsUpdate(generatedMeshId, uniforms);
+    Canvas3.meshUniformsUpdate(generatedMeshId, uniforms);
   },
   { deep: true },
 );
 
 onBeforeUnmount(() => {
-  Canvas.removeMesh(generatedMeshId);
+  Canvas3.removeMesh(generatedMeshId);
 });
 </script>
 
@@ -106,16 +110,19 @@ onBeforeUnmount(() => {
     overflow: hidden;
   }
 }
+
 .webgl-img {
   max-width: 100%;
   max-height: 100%;
   opacity: 0;
+
   &.reduced-motion {
     opacity: 1;
     object-fit: cover;
     width: 100%;
     height: 100%;
   }
+
   @include respond-width($w-s) {
     opacity: 1;
     object-fit: cover;
