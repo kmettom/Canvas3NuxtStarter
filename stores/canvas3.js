@@ -5,6 +5,7 @@
 // - SDK con - many imports ( display store - OKish, navigation store - OKish, text - OK, image mesh components - OK, scroll directives - OK)
 // - SDK entry component - DefaultLayout - Cursor, Navigation, Welcome screen - OK
 
+// TODO: 1. meshActivate should be on the item and flexible for timing
 // TODO: stop request animation frame, when page not focused
 
 //TODO: check better use case, if Store or Class, what is better for SDK usage
