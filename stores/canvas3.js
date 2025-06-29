@@ -5,7 +5,8 @@
 // - SDK con - many imports ( display store - OKish, navigation store - OKish, text - OK, image mesh components - OK, scroll directives - OK)
 // - SDK entry component - DefaultLayout - Cursor, Navigation, Welcome screen - OK
 
-// TODO: 1. meshActivate should be on the item and flexible for timing
+// TODO: fix add image as Mesh
+// TODO: 1. meshActivate with flexible timing
 // TODO: stop request animation frame, when page not focused
 
 //TODO: check better use case, if Store or Class, what is better for SDK usage
@@ -119,6 +120,7 @@ export const useCanvas3Store = defineStore("canvas3Store", {
     initScroll() {
       this.scroll = new Scroll({
         dom: this.scrollableContent,
+        activateMeshCallback: this.activateMesh.bind(this),
       });
     },
     setCanvasAndCamera() {
