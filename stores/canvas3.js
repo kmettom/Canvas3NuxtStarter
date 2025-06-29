@@ -5,7 +5,7 @@
 // - SDK con - many imports ( display store - OKish, navigation store - OKish, text - OK, image mesh components - OK, scroll directives - OK)
 // - SDK entry component - DefaultLayout - Cursor, Navigation, Welcome screen - OK
 
-// TODO: fix add image as Mesh
+// TODO: fix meshActivate
 // TODO: 1. meshActivate with flexible timing
 // TODO: stop request animation frame, when page not focused
 
@@ -283,6 +283,7 @@ export const useCanvas3Store = defineStore("canvas3Store", {
         console.error("no Mesh found with ID: " + id);
         return;
       }
+      console.log('activateMesh', mesh);
       if (mesh.material.uniforms.uAniInImage) {
         gsap.to(mesh.material.uniforms.uAniInImage, {
           duration: 1.0,

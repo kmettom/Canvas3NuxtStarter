@@ -68,7 +68,7 @@ const addImageToCanvas = () => {
     Canvas3.displayStore?.prefersReducedMotion
   )
     return;
-  Canvas.addImageAsMesh(
+  Canvas3.addImageAsMesh(
     image.value,
     props.shader,
     generatedMeshId,

@@ -66,7 +66,7 @@ watch(
       Canvas3.displayStore?.prefersReducedMotion
     )
       return;
-    Canvas.meshUniformsUpdate(meshId, uniforms);
+    Canvas3.meshUniformsUpdate(meshId, uniforms);
   },
   { deep: true },
 );
@@ -76,7 +76,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  Canvas.removeMesh(meshId);
+  Canvas3.removeMesh(meshId);
 });
 
 watch(
@@ -90,7 +90,7 @@ watch(
       return;
     // delay canvas initialization to wait for font loaded
     setTimeout(() => {
-      Canvas.addTextAsMSDF(
+      Canvas3.addTextAsMSDF(
         props.shader,
         meshId,
         htmlEl.value,
