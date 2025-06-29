@@ -61,7 +61,11 @@ const getTrimmedText = () => {
 watch(
   () => props.uniforms,
   (uniforms) => {
-    if (Canvas3.displayStore?.isMobile || Canvas3.displayStore?.prefersReducedMotion) return;
+    if (
+      Canvas3.displayStore?.isMobile ||
+      Canvas3.displayStore?.prefersReducedMotion
+    )
+      return;
     Canvas.meshUniformsUpdate(meshId, uniforms);
   },
   { deep: true },
@@ -78,7 +82,11 @@ onBeforeUnmount(() => {
 watch(
   () => Canvas3.navigationStore?.canvasInitiated,
   (newVal) => {
-    if (Canvas3.displayStore?.isMobile || !newVal || Canvas3.displayStore?.prefersReducedMotion)
+    if (
+      Canvas3.displayStore?.isMobile ||
+      !newVal ||
+      Canvas3.displayStore?.prefersReducedMotion
+    )
       return;
     // delay canvas initialization to wait for font loaded
     setTimeout(() => {
