@@ -1,11 +1,11 @@
-// import { Canvas } from "~/utils/canvas.js";
+import { Canvas3 } from "~/utils/canvas3.js";
 import { defineNuxtPlugin } from "#app";
-import { useCanvas3Store } from "~/stores/canvas3";
+// import { useCanvas3Store } from "~/stores/canvas3";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive("onScrollActivate", {
     mounted(el, binding) {
-      const Canvas3 = useCanvas3Store();
+      // const Canvas3 = useCanvas3Store();
 
       el.dataset.scrollActivateId = crypto.randomUUID();
 
@@ -35,7 +35,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     },
     updated(el, binding) {
-      const Canvas3 = useCanvas3Store();
+      // const Canvas3 = useCanvas3Store();
 
       Canvas3.updateOnScrollActiveElement({
         elNode: el,
@@ -44,7 +44,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       });
     },
     unmounted(el) {
-      const Canvas3 = useCanvas3Store();
+      // const Canvas3 = useCanvas3Store();
       Canvas3.removeScrollActiveElement(el);
     },
   });

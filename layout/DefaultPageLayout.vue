@@ -32,16 +32,15 @@
 //TODO: fix first load render
 //TODO: Page transition scroll to top implement, check page navigation and page transition animations
 
-// import { Canvas } from "~/utils/canvas";
+import { Canvas3 } from "~/utils/canvas3";
 // import { useDisplayStore } from "~/stores/display";
 // import { useNavigationStore } from "~/stores/navigation";
-import { useCanvas3Store } from "~/stores/canvas3";
+// import { useCanvas3Store } from "~/stores/canvas3";
 
 const welcomeInit = ref(false);
 
 // const navigationStore = useNavigationStore();
 // const displayStore = useDisplayStore();
-const Canvas3 = useCanvas3Store();
 
 const backLayerCanvas = computed(() => {
   return (
