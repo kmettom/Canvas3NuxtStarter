@@ -4,7 +4,7 @@
       name: 'pagetransition',
       onBeforeEnter: (el) => {
         //TODO: add this feature inside the component, then to Canvas Init Options
-        Canvas.scrollToTop(0);
+        // Canvas.scrollToTop(0);
       },
     }"
   >

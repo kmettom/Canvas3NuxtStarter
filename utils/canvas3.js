@@ -108,9 +108,7 @@ class Canvas3Class {
   mouse = { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 };
   // triggerSectionPositions= {};
 
-  constructor() {
-
-  }
+  constructor() {}
 
   initScroll() {
     this.scroll = new Scroll({
@@ -138,7 +136,6 @@ class Canvas3Class {
     this.canvasContainer.appendChild(this.renderer.domElement);
   }
   async init(canvasElement, scrollableContent) {
-
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 
