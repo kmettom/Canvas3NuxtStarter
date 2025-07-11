@@ -67,9 +67,9 @@ onMounted(() => {
   navigationFirstEnter();
 });
 
-onUnmounted(() => {
-  clearInterval(intervalId);
-});
+// onUnmounted(() => {
+//   clearInterval(intervalId);
+// });
 
 watch(
   () => navigationStore.navVisible,

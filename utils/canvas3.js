@@ -85,29 +85,6 @@ const CanvasOptions = {
   },
 };
 
-const runDefaultScene = () => {
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    const cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
-
-    camera.position.z = 5;
-
-    function animate() {
-        renderer.render( scene, camera );
-    }
-    renderer.setAnimationLoop( animate );
-
-};
-
 const canvasInitiated = ref(false);
 
 class Canvas3Class {
@@ -137,50 +114,77 @@ class Canvas3Class {
   // triggerSectionPositions= {};
   // constructor() {}
 
-    async init(canvasElement, scrollableContent){
-        console.log("scrollableContent", scrollableContent);
-        runDefaultScene();
+  // async init(canvasElement, scrollableContent){
+  //     console.log("scrollableContent", scrollableContent);
+  //     runDefaultScene();
+  // }
+
+  runDefaultScene = () => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000,
+    );
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    function animate() {
+      renderer.render(scene, camera);
     }
+    renderer.setAnimationLoop(animate);
+  };
 
-    async initB(canvasElement, scrollableContent) {
-        this.displayStore = useDisplayStore();
-        this.navigationStore = useNavigationStore();
+  async init(canvasElement, scrollableContent) {
+    this.runDefaultScene();
+    this.displayStore = useDisplayStore();
+    this.navigationStore = useNavigationStore();
 
-        // this.scene = new THREE.Scene();
+    // this.scene = new THREE.Scene();
 
-        this.canvasContainer = canvasElement;
-        this.scrollableContent = scrollableContent;
+    this.canvasContainer = canvasElement;
+    this.scrollableContent = scrollableContent;
 
-        await this.loadFontMSDF();
+    await this.loadFontMSDF();
 
-        this.initScroll();
+    this.initScroll();
 
-        this.setCanvasAndCamera();
+    this.setCanvasAndCamera();
 
-        this.setSize();
-        this.composerPass();
+    this.setSize();
+    this.composerPass();
 
-        // this.setResizeListener();
+    // this.setResizeListener();
 
-        this.render();
+    this.render();
 
-        window.addEventListener("mousemove", (event) => {
-            this.mouse.x = event.clientX / this.width;
-            this.mouse.y = event.clientY / this.height;
-            setTimeout(() => {
-                this.mouse.movementX = event.clientX / this.width;
-                this.mouse.movementY = event.clientY / this.height;
-            }, 70);
-            if (this.mouse.movementX === 0 && this.mouse.movementY === 0) {
-                this.mouse.movementX = this.mouse.x;
-                this.mouse.movementY = this.mouse.y;
-            }
-        });
+    window.addEventListener("mousemove", (event) => {
+      this.mouse.x = event.clientX / this.width;
+      this.mouse.y = event.clientY / this.height;
+      setTimeout(() => {
+        this.mouse.movementX = event.clientX / this.width;
+        this.mouse.movementY = event.clientY / this.height;
+      }, 70);
+      if (this.mouse.movementX === 0 && this.mouse.movementY === 0) {
+        this.mouse.movementX = this.mouse.x;
+        this.mouse.movementY = this.mouse.y;
+      }
+    });
 
-        this.displayStore.init();
-        this.navigationStore.canvasInitiated = true;
-        this.canvasInitiated.value = true;
-    }
+    this.displayStore.init();
+    this.navigationStore.canvasInitiated = true;
+    this.canvasInitiated.value = true;
+  }
 
   initScroll() {
     this.scroll = new Scroll({
@@ -208,8 +212,6 @@ class Canvas3Class {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     this.canvasContainer.appendChild(this.renderer.domElement);
   }
-
-
 
   async loadFontMSDF() {
     const loadFontAtlas = (path) => {
@@ -708,6 +710,8 @@ class Canvas3Class {
     for (const argumentsKey in this.animations) {
       if (this.animations[argumentsKey]) this.animations[argumentsKey]();
     }
+
+    // this.renderer.render(this.camera, this.scene);
 
     try {
       requestAnimationFrame(this.render.bind(this));
