@@ -136,6 +136,7 @@ class Canvas3Class {
     this.canvasContainer.appendChild(this.renderer.domElement);
   }
   async init(canvasElement, scrollableContent) {
+    console.log("init");
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 

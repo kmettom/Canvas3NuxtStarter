@@ -29,6 +29,7 @@ import {
 } from "~/utils/animations/navigation";
 import { gsap } from "gsap";
 import { useTemplateRefsList } from "@vueuse/core";
+import { Canvas3 } from "~/utils/canvas3";
 
 const navItemRefs = useTemplateRefsList();
 const navAniDuration = 0.15;
@@ -53,7 +54,7 @@ const navigationHoverAnimate = (index) => {
 const navigationStore = useNavigationStore();
 
 const goToSection = (sectionId) => {
-  Canvas.scrollToElBySelector(
+  Canvas3.scrollToElBySelector(
     `.page-section[data-nav-id="${sectionId}"]`,
     0.75,
   );

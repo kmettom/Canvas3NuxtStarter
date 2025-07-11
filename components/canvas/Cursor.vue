@@ -8,7 +8,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-// import { Canvas } from "~/utils/canvas";
+// import { Canvas3 } from "~/utils/canvas3";
 
 import { useDisplayStore } from "~/stores/display";
 
@@ -36,7 +36,7 @@ const state = reactive({
 
 // const cursorInit = () => {
 //   // Set up draw callback
-//   Canvas.animations.cursorCallback = draw;
+//   Canvas3.animations.cursorCallback = draw;
 //
 //   // Track mouse movements
 //   // window.onmousemove = (event) => {

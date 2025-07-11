@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Canvas } from "~/utils/canvas";
+import { Canvas3 } from "~/utils/canvas3";
 
 export const useDisplayStore = defineStore("displayStore", {
   state: () => ({
@@ -20,7 +20,7 @@ export const useDisplayStore = defineStore("displayStore", {
     resizeListener() {
       window.addEventListener("resize", () => {
         this.setScreenSize();
-        Canvas.resizeOnChange();
+        Canvas3.resizeOnChange();
       });
     },
     setScreenSize() {
