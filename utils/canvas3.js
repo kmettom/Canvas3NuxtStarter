@@ -85,6 +85,29 @@ const CanvasOptions = {
   },
 };
 
+const runDefaultScene = () => {
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const cube = new THREE.Mesh( geometry, material );
+    scene.add( cube );
+
+    camera.position.z = 5;
+
+    function animate() {
+        renderer.render( scene, camera );
+    }
+    renderer.setAnimationLoop( animate );
+
+};
+
 const canvasInitiated = ref(false);
 
 class Canvas3Class {
@@ -96,7 +119,7 @@ class Canvas3Class {
   canvasContainer = null;
   scrollableContent = null;
   time = 0;
-  // scene: new THREE.Scene(),
+  scene = new THREE.Scene();
   MSDFTextGeometryAtlas = null;
   MSDFTextGeometryFont = null;
   materials = [];
@@ -112,8 +135,52 @@ class Canvas3Class {
   mouse = { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 };
 
   // triggerSectionPositions= {};
+  // constructor() {}
 
-  constructor() {}
+    async init(canvasElement, scrollableContent){
+        console.log("scrollableContent", scrollableContent);
+        runDefaultScene();
+    }
+
+    async initB(canvasElement, scrollableContent) {
+        this.displayStore = useDisplayStore();
+        this.navigationStore = useNavigationStore();
+
+        // this.scene = new THREE.Scene();
+
+        this.canvasContainer = canvasElement;
+        this.scrollableContent = scrollableContent;
+
+        await this.loadFontMSDF();
+
+        this.initScroll();
+
+        this.setCanvasAndCamera();
+
+        this.setSize();
+        this.composerPass();
+
+        // this.setResizeListener();
+
+        this.render();
+
+        window.addEventListener("mousemove", (event) => {
+            this.mouse.x = event.clientX / this.width;
+            this.mouse.y = event.clientY / this.height;
+            setTimeout(() => {
+                this.mouse.movementX = event.clientX / this.width;
+                this.mouse.movementY = event.clientY / this.height;
+            }, 70);
+            if (this.mouse.movementX === 0 && this.mouse.movementY === 0) {
+                this.mouse.movementX = this.mouse.x;
+                this.mouse.movementY = this.mouse.y;
+            }
+        });
+
+        this.displayStore.init();
+        this.navigationStore.canvasInitiated = true;
+        this.canvasInitiated.value = true;
+    }
 
   initScroll() {
     this.scroll = new Scroll({
@@ -142,45 +209,7 @@ class Canvas3Class {
     this.canvasContainer.appendChild(this.renderer.domElement);
   }
 
-  async init(canvasElement, scrollableContent) {
-    this.displayStore = useDisplayStore();
-    this.navigationStore = useNavigationStore();
 
-    this.scene = new THREE.Scene();
-
-    this.canvasContainer = canvasElement;
-    this.scrollableContent = scrollableContent;
-
-    await this.loadFontMSDF();
-
-    this.initScroll();
-
-    this.setCanvasAndCamera();
-
-    this.setSize();
-    this.composerPass();
-
-    // this.setResizeListener();
-
-    this.render();
-
-    window.addEventListener("mousemove", (event) => {
-      this.mouse.x = event.clientX / this.width;
-      this.mouse.y = event.clientY / this.height;
-      setTimeout(() => {
-        this.mouse.movementX = event.clientX / this.width;
-        this.mouse.movementY = event.clientY / this.height;
-      }, 70);
-      if (this.mouse.movementX === 0 && this.mouse.movementY === 0) {
-        this.mouse.movementX = this.mouse.x;
-        this.mouse.movementY = this.mouse.y;
-      }
-    });
-
-    this.displayStore.init();
-    this.navigationStore.canvasInitiated = true;
-    this.canvasInitiated.value = true;
-  }
 
   async loadFontMSDF() {
     const loadFontAtlas = (path) => {
@@ -527,6 +556,7 @@ class Canvas3Class {
       vertexShader: vertexShader,
       transparent: true,
       name: meshId,
+      wireframe: true,
     });
 
     this.materials.push(material);
