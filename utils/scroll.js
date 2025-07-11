@@ -82,7 +82,6 @@ export default class Scroll {
 
     if (item.containedMeshIds.length > 0 && !item.trackOnly) {
       for (const meshId of item.containedMeshIds) {
-        console.log("meshId", meshId);
         this.activateMeshCallback(meshId, isActive);
       }
     }

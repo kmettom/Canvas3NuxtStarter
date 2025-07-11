@@ -143,7 +143,6 @@ class Canvas3Class {
   }
 
   async init(canvasElement, scrollableContent) {
-    console.log("init");
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 
