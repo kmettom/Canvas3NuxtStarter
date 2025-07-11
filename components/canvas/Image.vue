@@ -54,7 +54,6 @@ const meshUniforms = computed(() => {
 });
 
 const addImageToCanvas = () => {
-  console.log("addImageToCanvas");
   if (
     imgAddedToCanvas.value ||
     Canvas3.displayStore?.isMobile ||
