@@ -4,7 +4,6 @@ import { defineNuxtPlugin } from "#app";
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive("onScrollActivate", {
     mounted(el, binding) {
-
       el.dataset.scrollActivateId = crypto.randomUUID();
 
       if (binding.value?.scrollSpeedSetTo?.value) {
@@ -33,7 +32,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     },
     updated(el, binding) {
-
       Canvas3.updateOnScrollActiveElement({
         elNode: el,
         options: binding.value,

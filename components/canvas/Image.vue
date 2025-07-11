@@ -14,14 +14,6 @@
 
 <script setup>
 import { Canvas3 } from "~/utils/canvas3";
-// import { useCanvas3Store } from "~/stores/canvas3";
-
-// import { useDisplayStore } from "~/stores/display";
-
-// const displayStore = useDisplayStore();
-// const navigationStore = useNavigationStore();
-
-// const Canvas3 = useCanvas3Store();
 
 const props = defineProps({
   alt: {

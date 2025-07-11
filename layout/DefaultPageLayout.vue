@@ -34,14 +34,7 @@
 
 import { Canvas3 } from "~/utils/canvas3";
 
-// import { useDisplayStore } from "~/stores/display";
-// import { useNavigationStore } from "~/stores/navigation";
-// import { useCanvas3Store } from "~/stores/canvas3";
-
 const welcomeInit = ref(false);
-
-// const navigationStore = useNavigationStore();
-// const displayStore = useDisplayStore();
 
 const backLayerCanvas = computed(() => {
   return (
@@ -69,9 +62,6 @@ const welcomeFinished = () => {
 };
 
 onMounted(async () => {
-  // await Canvas.init(canvasEl.value, scrollableContent.value);
-  // displayStore.init();
-  // navigationStore.canvasInitiated = true;
   await Canvas3.init(canvasEl.value, scrollableContent.value);
 });
 </script>
