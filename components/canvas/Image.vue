@@ -1,19 +1,19 @@
 <template>
   <div class="webgl-img-wrapper">
     <img
-        ref="image"
-        class="webgl-img"
-        :class="{ 'reduced-motion': Canvas3.displayStore?.prefersReducedMotion }"
-        :alt="alt"
-        :src="srcLink"
-        :loading="loadStrategy === 'lazy' ? 'lazy' : 'eager'"
-        @load="addImageToCanvas"
+      ref="image"
+      class="webgl-img"
+      :class="{ 'reduced-motion': Canvas3.displayStore?.prefersReducedMotion }"
+      :alt="alt"
+      :src="srcLink"
+      :loading="loadStrategy === 'lazy' ? 'lazy' : 'eager'"
+      @load="addImageToCanvas"
     />
   </div>
 </template>
 
 <script setup>
-import {Canvas3} from "~/utils/canvas3";
+import { Canvas3 } from "~/utils/canvas3";
 
 const props = defineProps({
   alt: {
@@ -30,8 +30,7 @@ const props = defineProps({
   },
   uniforms: {
     type: Object,
-    default: () => {
-    },
+    default: () => {},
   },
   loadStrategy: {
     type: String,
@@ -55,19 +54,20 @@ const meshUniforms = computed(() => {
 });
 
 const addImageToCanvas = () => {
-  console.log("addImageToCanvas")
+  console.log("addImageToCanvas");
   if (
-      imgAddedToCanvas.value ||
-      Canvas3.displayStore?.isMobile ||
-      Canvas3.displayStore?.prefersReducedMotion
-  ) return;
+    imgAddedToCanvas.value ||
+    Canvas3.displayStore?.isMobile ||
+    Canvas3.displayStore?.prefersReducedMotion
+  )
+    return;
 
   Canvas3.addImageAsMesh(
-      image.value,
-      props.shader,
-      generatedMeshId,
-      false,
-      meshUniforms.value,
+    image.value,
+    props.shader,
+    generatedMeshId,
+    false,
+    meshUniforms.value,
   );
   imgAddedToCanvas.value = true;
 };
@@ -77,20 +77,20 @@ onMounted(() => {
 });
 
 watch(
-    () => Canvas3.canvasInitiated.value,
-    (newVal) => {
-      if (newVal && image.value.naturalWidth !== 0) {
-        addImageToCanvas();
-      }
-    },
+  () => Canvas3.canvasInitiated.value,
+  (newVal) => {
+    if (newVal && image.value.naturalWidth !== 0) {
+      addImageToCanvas();
+    }
+  },
 );
 
 watch(
-    () => props.uniforms,
-    (uniforms) => {
-      Canvas3.meshUniformsUpdate(generatedMeshId, uniforms);
-    },
-    {deep: true},
+  () => props.uniforms,
+  (uniforms) => {
+    Canvas3.meshUniformsUpdate(generatedMeshId, uniforms);
+  },
+  { deep: true },
 );
 
 onBeforeUnmount(() => {

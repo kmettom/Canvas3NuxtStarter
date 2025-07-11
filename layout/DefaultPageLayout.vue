@@ -55,7 +55,6 @@ const welcomeFinished = () => {
 onMounted(async () => {
   await Canvas3.init(canvasEl.value, scrollableContent.value);
   welcomeInit.value = true;
-
 });
 </script>
 

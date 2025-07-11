@@ -3,7 +3,6 @@ import {
   lerp,
   setScrollActiveElements,
 } from "~/utils/canvasHelpers";
-// import { Canvas3 } from "~/utils/canvas3";
 
 export default class Scroll {
   constructor(options) {
@@ -72,7 +71,6 @@ export default class Scroll {
       item.elNode.dataset.activeScroll = "true";
       setScrollActiveElements(item.elNode, item.containedMeshIds, "true");
       item.elNode.classList.add("active");
-      // Canvas3.onActiveElCallback(item);
       if (item.options.activateCallback) {
         item.options.activateCallback(item);
       }
