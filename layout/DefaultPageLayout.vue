@@ -47,14 +47,15 @@ const canvasEl = ref("canvasEl");
 
 const scrollableContent = ref("scrollableContent");
 
-watch(
-  () => Canvas3.navigationStore?.canvasInitiated,
-  (newVal) => {
-    if (newVal) {
-      welcomeInit.value = true;
-    }
-  },
-);
+// watch(
+//   () => Canvas3.navigationStore?.canvasInitiated,
+//   (newVal) => {
+//     console.log("canvas inited")
+//     if (newVal) {
+//       welcomeInit.value = true;
+//     }
+//   },
+// );
 
 const contentActive = ref(false);
 const welcomeFinished = () => {
@@ -63,6 +64,8 @@ const welcomeFinished = () => {
 
 onMounted(async () => {
   await Canvas3.init(canvasEl.value, scrollableContent.value);
+  welcomeInit.value = true;
+
 });
 </script>
 

@@ -171,9 +171,6 @@ class Canvas3Class {
       }
     });
 
-    // this.displayStore = useDisplayStore();
-    // this.navigationStore = useNavigationStore();
-
     this.displayStore.init();
     this.navigationStore.canvasInitiated = true;
   }
