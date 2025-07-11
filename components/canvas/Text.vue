@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
 });
 
 watch(
-  () => Canvas3.canvasInitiated,
+  () => Canvas3.canvasInitiated.value,
   (newVal) => {
     if (
       Canvas3.displayStore?.isMobile ||
