@@ -47,16 +47,6 @@ const canvasEl = ref("canvasEl");
 
 const scrollableContent = ref("scrollableContent");
 
-// watch(
-//   () => Canvas3.navigationStore?.canvasInitiated,
-//   (newVal) => {
-//     console.log("canvas inited")
-//     if (newVal) {
-//       welcomeInit.value = true;
-//     }
-//   },
-// );
-
 const contentActive = ref(false);
 const welcomeFinished = () => {
   contentActive.value = true;
