@@ -1,12 +1,13 @@
 <template>
-  <div class="code-container" :style="`width:${width}`">
+  <div class="code-container">
     <code>
       <slot />
     </code>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+</script>
 
 <style lang="scss" scoped>
 .code-container {
