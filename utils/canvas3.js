@@ -295,6 +295,12 @@ class Canvas3Class {
         duration: 1.0,
         value: isActive ? 1 : 0,
         ease: "power1.inOut",
+        // onUpdate: () => {
+        //   console.log(
+        //     "mesh.material.uniforms.uAniInImage",
+        //     mesh.material.uniforms.uAniInImage.value,
+        //   );
+        // },
       });
     }
     if (mesh.material.uniforms.uAniInText) {
@@ -501,7 +507,7 @@ class Canvas3Class {
         uTime: { value: 0 },
         uImage: { value: texture },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
-        uAniInImage: { value: meshUniforms.uAniInImage?.value ?? 0 },
+        uAniInImage: { value: 1 },
         uMouse: { value: new THREE.Vector2(0, 0) },
         uMouseMovement: { value: new THREE.Vector2(0, 0) },
         uMeshSize: { value: new THREE.Vector2(bounds.width, bounds.height) },
