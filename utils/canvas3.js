@@ -87,6 +87,32 @@ const CanvasOptions = {
 
 const canvasInitiated = ref(false);
 
+const runDefaultScene = () => {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000,
+  );
+
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+
+  camera.position.z = 5;
+
+  function animate() {
+    renderer.render(scene, camera);
+  }
+  renderer.setAnimationLoop(animate);
+};
+
 class Canvas3Class {
   canvasInitiated = canvasInitiated;
   navigationStore = null;
@@ -114,12 +140,7 @@ class Canvas3Class {
   // triggerSectionPositions= {};
   // constructor() {}
 
-  // async init(canvasElement, scrollableContent){
-  //     console.log("scrollableContent", scrollableContent);
-  //     runDefaultScene();
-  // }
-
-  runDefaultScene = () => {
+  runDefaultSceneInClass = () => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -135,22 +156,33 @@ class Canvas3Class {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
+
+    // this.scene.add(cube);
     scene.add(cube);
 
-    camera.position.z = 5;
+    this.camera.position.z = 5;
 
     function animate() {
+      // renderer.render(this.scene, this.camera);
       renderer.render(scene, camera);
     }
+    // this.animate = animate.bind(this);
+
     renderer.setAnimationLoop(animate);
   };
 
+  // async init(canvasElement, scrollableContent) {
+  //   console.log("scrollableContent", canvasElement, scrollableContent);
+  //   runDefaultScene();
+  // }
+
   async init(canvasElement, scrollableContent) {
-    this.runDefaultScene();
+    runDefaultScene();
+
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 
-    // this.scene = new THREE.Scene();
+    this.scene = new THREE.Scene();
 
     this.canvasContainer = canvasElement;
     this.scrollableContent = scrollableContent;
@@ -163,8 +195,6 @@ class Canvas3Class {
 
     this.setSize();
     this.composerPass();
-
-    // this.setResizeListener();
 
     this.render();
 
@@ -184,6 +214,7 @@ class Canvas3Class {
     this.displayStore.init();
     this.navigationStore.canvasInitiated = true;
     this.canvasInitiated.value = true;
+    // this.runDefaultSceneInClass();
   }
 
   initScroll() {
@@ -515,6 +546,11 @@ class Canvas3Class {
     mouseListeners,
     meshUniforms,
   ) {
+    const geometryT = new THREE.BoxGeometry(1, 1, 1);
+    const materialT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometryT, materialT);
+    this.scene.add(cube);
+
     let vertexShader = this.options.default.vertexShader;
     let fragmentShader = this.options.default.fragmentShader;
 
@@ -710,8 +746,6 @@ class Canvas3Class {
     for (const argumentsKey in this.animations) {
       if (this.animations[argumentsKey]) this.animations[argumentsKey]();
     }
-
-    // this.renderer.render(this.camera, this.scene);
 
     try {
       requestAnimationFrame(this.render.bind(this));
