@@ -578,7 +578,7 @@ class Canvas3Class {
       vertexShader: vertexShader,
       transparent: true,
       name: meshId,
-      wireframe: true,
+      // wireframe: true,
     });
 
     this.materials.push(material);
