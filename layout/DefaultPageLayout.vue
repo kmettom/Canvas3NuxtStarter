@@ -5,7 +5,7 @@
       @welcome-complete="welcomeFinished()"
     />
 
-    <CommonNavigation :page-active="null" />
+    <CommonNavigation :page-active="contentActive" />
 
     <div id="scrollContainer">
       <div id="scrollableContent" ref="scrollableContent">
@@ -48,6 +48,7 @@ const canvasEl = ref("canvasEl");
 const scrollableContent = ref("scrollableContent");
 
 const contentActive = ref(false);
+
 const welcomeFinished = () => {
   contentActive.value = true;
 };

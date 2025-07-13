@@ -112,56 +112,7 @@ class Canvas3Class {
   // triggerSectionPositions= {};
   // constructor() {}
 
-  runDefaultSceneInClass() {
-    console.log("runDefaultSceneInClass", this);
-    // const scene = new THREE.Scene();
-    // const camera = new THREE.PerspectiveCamera(
-    //   75,
-    //   window.innerWidth / window.innerHeight,
-    //   0.1,
-    //   1000,
-    // );
-
-    // this.scene = new THREE.Scene();
-    // this.camera = new THREE.PerspectiveCamera(
-    //   75,
-    //   window.innerWidth / window.innerHeight,
-    //   0.1,
-    //   1000,
-    // );
-
-    // this.renderer = new THREE.WebGLRenderer();
-    // this.renderer.setSize(window.innerWidth, window.innerHeight);
-    // document.body.appendChild(this.renderer.domElement);
-
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    cube.name = "cube";
-
-    // this.scene.add(cube);
-    // scene.add(cube);
-    // const camera.position.z = 5;
-    // this.camera.position.z = 5;
-
-    // renderer.setAnimationLoop(animate);
-    // this.renderer.setAnimationLoop(this.runDefaultSceneInClassAnimate.bind(this));
-  }
-
-  runDefaultSceneInClassAnimate() {
-    // this.renderer.render(this.scene, this.camera);
-    this.renderer.render(this.scene, this.camera);
-  }
-
-  async initA(canvasElement, scrollableContent) {
-    console.log("scrollableContent", canvasElement, scrollableContent);
-    // runDefaultScene();
-    this.runDefaultSceneInClass();
-  }
-
   async init(canvasElement, scrollableContent) {
-    // runDefaultScene();
-
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 
@@ -197,8 +148,6 @@ class Canvas3Class {
     this.displayStore.init();
     this.navigationStore.canvasInitiated = true;
     this.canvasInitiated.value = true;
-
-    this.runDefaultSceneInClass();
   }
 
   initScroll() {
@@ -336,20 +285,17 @@ class Canvas3Class {
       console.error("no Mesh found with ID: " + id);
       return;
     }
+      console.log("mesh.material.uniforms.uAniInImage", mesh.material.uniforms.uAniInImage);
     if (mesh.material.uniforms.uAniInImage) {
       gsap.to(mesh.material.uniforms.uAniInImage, {
         duration: 1.0,
         value: isActive ? 1 : 0,
         ease: "power1.inOut",
-        // onUpdate: () => {
-        //   console.log(
-        //     "mesh.material.uniforms.uAniInImage",
-        //     mesh.material.uniforms.uAniInImage.value,
-        //   );
-        // },
       });
     }
+      console.log("mesh.material.uniforms.uAniInText", mesh.material.uniforms.uAniInText);
     if (mesh.material.uniforms.uAniInText) {
+        console.log("isActive", isActive);
       gsap.to(mesh.material.uniforms.uAniInText, {
         duration: 1.5,
         value: isActive ? 1 : 0,
@@ -479,6 +425,7 @@ class Canvas3Class {
         uTime: { value: 0 },
         uMeshSize: { value: new THREE.Vector2(bounds.width, bounds.height) },
         uAniInText: { value: meshUniforms.uAniInText?.value ?? 0 },
+          // uAniInText: { value: 1 },
         ...meshUniforms,
       },
       vertexShader: vertexShader,
@@ -658,8 +605,7 @@ class Canvas3Class {
 
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-      this.renderer.render(this.scene, this.camera); // -> Also needed
-
+    this.renderer.render(this.scene, this.camera); // -> Also needed
   }
 
   scrollToTop(delay) {
