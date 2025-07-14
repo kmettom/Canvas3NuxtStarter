@@ -4,19 +4,19 @@ This is a starter template for Nuxt 3 with ThreeJS. It includes:
 
 - Smooth scroll
 - One RequestAnimation Frame call Renders both smooth scroll render, Three.js render and related logic
-- CanvasImage component
+- Canvas3Image component
   - adds the loaded image to Scene's Mesh
   - applies the defined shaders
   - define any uniform and connect it to the business logic
-- CanvasText component
+- Canvas3Text component
   - adds text to Scene's Mesh as MSDF font
   - applies the defined shaders
   - define any uniform and connect it to the business logic
 - Scroll Active directive
   - adjusts the scroll speed of element
-  - automatically handles scroll difference for Scene's Mesh objects added through CanvasImage component
+  - automatically handles scroll difference for Scene's Mesh objects added through Canvas3Image component
   - adds active class to element when it is in viewport
-  - automatically includes appear animation for a Mesh object added through CanvasImage component
+  - automatically includes appear animation for a Mesh object added through Canvas3Image component
 
 Working example and road map: https://nuxt-three-js-starter-pack.vercel.app
 
@@ -88,7 +88,7 @@ const CanvasOptions = {
 };
 ```
 
-### CanvasImage component
+### Canvas3Image component
 
 - adds the loaded image to Scene's Mesh
 - applies the defined shaders
@@ -97,7 +97,7 @@ const CanvasOptions = {
 Usage:
 
 ```bash
-<CanvasImage :srcLink="<String>" :shader="<String | undefined>"  :uniforms="<{uName: {value:Number , duration: Number}}>"  />
+<Canvas3Image :srcLink="<String>" :shader="<String | undefined>"  :uniforms="<{uName: {value:Number , duration: Number}}>"  />
 ```
 
 Props:
@@ -114,7 +114,7 @@ Example:
          @mouseover="imageHover=true"
          @mouseleave="imageHover=false"
     >
-      <CanvasImage :uniforms="{ uHover: {value: imageHover ? 1:0, duration: 0.5 }}" :shader="'example1'" :srcLink="'img/example1.jpg'" />
+      <Canvas3Image :uniforms="{ uHover: {value: imageHover ? 1:0, duration: 0.5 }}" :shader="'example1'" :srcLink="'img/example1.jpg'" />
     </div>
 ```
 
@@ -122,8 +122,8 @@ Example:
 
 - adjusts the scroll speed of element
 - activate element with several parameters for flexibility
-- all child CanvasImage and CanvasText get uAniInImage and uAniInText uniform passed automatically
-- automatically handles scroll difference for Scene's Mesh objects added through CanvasImage component
+- all child Canvas3Image and Canvas3Text get uAniInImage and uAniInText uniform passed automatically
+- automatically handles scroll difference for Scene's Mesh objects added through Canvas3Image component
 - set fixed element
 
 Options:

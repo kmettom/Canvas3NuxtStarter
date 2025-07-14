@@ -18,7 +18,7 @@
       ref="canvasEl"
       :class="{ 'back-layer': backLayerCanvas }"
     />
-    <CanvasCursor v-if="contentActive" />
+    <Canvas3Cursor v-if="contentActive" />
     <img
       alt="hidden image for font"
       loading="eager"

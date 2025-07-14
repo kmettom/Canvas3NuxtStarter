@@ -11,7 +11,7 @@
           }"
           class="roadmap-txt"
         >
-          → CanvasText component dynamic colors<br />
+          → Canvas3Text component dynamic colors<br />
           → 3D model imports<br />
           → Canvas initiation improvements<br />
           <!--          → Responsiveness management - improve Display store<br />-->
