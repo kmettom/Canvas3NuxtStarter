@@ -7,12 +7,12 @@
             <span
               v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
             >
-              <CanvasText :theme="'light'"> GET </CanvasText>
+              <Canvas3Text :theme="'light'"> GET </Canvas3Text>
               <span
                 v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
                 class="canvas-text-spacing"
               >
-                <CanvasText :theme="'light'"> IN </CanvasText>
+                <Canvas3Text :theme="'light'"> IN </Canvas3Text>
               </span>
             </span>
           </div>
@@ -118,7 +118,7 @@
             <span
               v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
             >
-              <CanvasText :theme="'light'"> TOUCH </CanvasText>
+              <Canvas3Text :theme="'light'"> TOUCH </Canvas3Text>
             </span>
           </div>
         </div>

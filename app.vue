@@ -1,31 +1,19 @@
 <template>
-  <CommonWelcomeScreen
-    :welcome-init="welcomeInit"
-    @welcome-complete="welcomeFinished()"
-  />
-  <DefaultPageLayout
+  <Canvas3PageLayout
     :transition="{
       name: 'pagetransition',
       onBeforeEnter: (el) => {
-        Canvas.scrollToTop(0);
+        //TODO: add this feature inside the component, then to Canvas Init Options
+        // Canvas3.scrollToTop(0);
       },
     }"
   >
-    <NuxtPage :page-active="contentActive" />
-  </DefaultPageLayout>
-  <CanvasCursor v-if="contentActive" />
-  <img
-    alt="hidden image for font"
-    loading="eager"
-    src="/font/PPFormula-CondensedBlack.png"
-    style="display: none"
-  />
+    <NuxtPage />
+  </Canvas3PageLayout>
 </template>
 <script setup>
-import DefaultPageLayout from "~/layout/DefaultPageLayout.vue";
-const navigationStore = useNavigationStore();
-
-const welcomeInit = ref(false);
+//TODO: add this feature inside the component, then to Canvas Init Options (page transition above)
+import Canvas3PageLayout from "~/layout/Canvas3PageLayout.vue";
 
 useHead({
   htmlAttrs: {
@@ -41,22 +29,4 @@ useHead({
     },
   ],
 });
-
-watch(
-  () => navigationStore.canvasInitiated,
-  (newVal) => {
-    if (newVal) {
-      welcomeInit.value = true;
-    }
-  },
-);
-
-// onMounted(() => {
-//   welcomeInit.value = true;
-// });
-
-const contentActive = ref(false);
-const welcomeFinished = () => {
-  contentActive.value = true;
-};
 </script>

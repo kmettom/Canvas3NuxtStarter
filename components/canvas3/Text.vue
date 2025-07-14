@@ -2,18 +2,14 @@
   <span
     ref="htmlEl"
     class="text-wrapper"
-    :class="{ 'reduced-motion': displayStore.prefersReducedMotion }"
+    :class="{ 'reduced-motion': Canvas3.displayStore?.prefersReducedMotion }"
   >
     <slot />
   </span>
 </template>
 
 <script setup>
-import { Canvas } from "~/utils/canvas";
-import { useDisplayStore } from "~/stores/display";
-
-const displayStore = useDisplayStore();
-const navigationStore = useNavigationStore();
+import { Canvas3 } from "~/utils/canvas3";
 
 const props = defineProps({
   shader: {
@@ -57,8 +53,14 @@ const getTrimmedText = () => {
 watch(
   () => props.uniforms,
   (uniforms) => {
-    if (displayStore.isMobile || displayStore.prefersReducedMotion) return;
-    Canvas.meshUniformsUpdate(meshId, uniforms);
+    if (
+      Canvas3.displayStore?.isMobile ||
+      Canvas3.displayStore?.prefersReducedMotion
+    )
+      return;
+    setTimeout(() => {
+      Canvas3.meshUniformsUpdate(meshId, uniforms);
+    }, 0);
   },
   { deep: true },
 );
@@ -68,17 +70,21 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  Canvas.removeMesh(meshId);
+  Canvas3.removeMesh(meshId);
 });
 
 watch(
-  () => navigationStore.canvasInitiated,
+  () => Canvas3.canvasInitiated.value,
   (newVal) => {
-    if (displayStore.isMobile || !newVal || displayStore.prefersReducedMotion)
+    if (
+      Canvas3.displayStore?.isMobile ||
+      !newVal ||
+      Canvas3.displayStore?.prefersReducedMotion
+    )
       return;
     // delay canvas initialization to wait for font loaded
     setTimeout(() => {
-      Canvas.addTextAsMSDF(
+      Canvas3.addTextAsMSDF(
         props.shader,
         meshId,
         htmlEl.value,
@@ -96,9 +102,11 @@ watch(
 .text-wrapper {
   opacity: 0;
   display: inline-block;
+
   &.reduced-motion {
     opacity: 1;
   }
+
   @include respond-width($w-s) {
     opacity: 1;
   }

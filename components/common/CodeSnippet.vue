@@ -1,5 +1,5 @@
 <template>
-  <div class="code-container" :style="`width:${width}`">
+  <div class="code-container">
     <code>
       <slot />
     </code>

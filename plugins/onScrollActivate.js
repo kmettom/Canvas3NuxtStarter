@@ -1,4 +1,4 @@
-import { Canvas } from "~/utils/canvas.js";
+import { Canvas3 } from "~/utils/canvas3.js";
 import { defineNuxtPlugin } from "#app";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -13,7 +13,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       const navigationStore = useNavigationStore();
 
       if (navigationStore.canvasInitiated) {
-        Canvas.addOnScrollActivateElement({
+        Canvas3.addOnScrollActivateElement({
           elNode: el,
           options: binding.value,
           arg: binding.arg,
@@ -21,7 +21,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       } else {
         const unsubscribe = navigationStore.$subscribe((mutation, state) => {
           if (state.canvasInitiated) {
-            Canvas.addOnScrollActivateElement({
+            Canvas3.addOnScrollActivateElement({
               elNode: el,
               options: binding.value,
               arg: binding.arg,
@@ -32,14 +32,14 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     },
     updated(el, binding) {
-      Canvas.updateOnScrollActiveElement({
+      Canvas3.updateOnScrollActiveElement({
         elNode: el,
         options: binding.value,
         arg: binding.arg,
       });
     },
     unmounted(el) {
-      Canvas.removeScrollActiveElement(el);
+      Canvas3.removeScrollActiveElement(el);
     },
   });
 });

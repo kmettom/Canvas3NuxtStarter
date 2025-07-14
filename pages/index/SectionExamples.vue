@@ -6,17 +6,17 @@
           v-onScrollActivate="{ activeRange: 0.9, activateOnce: true }"
           v-set-data-attrs="{ cursorcolor: 'light' }"
         >
-          <CanvasText :theme="'light'"> EXAMPLES </CanvasText>
+          <Canvas3Text :theme="'light'"> EXAMPLES </Canvas3Text>
         </span>
       </h2>
       <div>
         <div class="examples-row">
           <div class="example-wrapper">
             <h3 class="body-l heading-example">Add images to scene 😌</h3>
-            <CanvasImage :src-link="'images/01.JPG'" :shader="'example1'" />
+            <Canvas3Image :src-link="'images/01.JPG'" :shader="'example1'" />
             <CodeSnippet>
               <span> {{ String("<") }}</span
-              >CanvasImage <br />
+              >Canvas3Image <br />
               &nbsp;&nbsp;:src-link="'images/01.JPG'" <br />
               &nbsp;&nbsp;:shader="'example1'" <br />
               &nbsp;&nbsp;:load-strategy="'eager'"<br />
@@ -33,7 +33,7 @@
               Add shader uniforms
               <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
-            <CanvasImage
+            <Canvas3Image
               :src-link="'images/02.JPG'"
               :shader="'example2'"
               :uniforms="{
@@ -42,7 +42,7 @@
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span
-              >CanvasImage <br />
+              >Canvas3Image <br />
               &nbsp;&nbsp;:src-link="'images/02.JPG'"<br />
               &nbsp;&nbsp;:shader="'example2'"<br />
               &nbsp;&nbsp;:uniforms="{<br />
@@ -61,8 +61,8 @@
             Directive for scroll manipulation and feedback
           </h3>
           <p class="example-txt">
-            Use directive for scroll manipulation and feedback. All CanvasImage
-            or CanvasText get activated automatically by uAniIn uniform float
+            Use directive for scroll manipulation and feedback. All Canvas3Image
+            or Canvas3Text get activated automatically by uAniIn uniform float
             variable
           </p>
           <div class="examples-row">
@@ -86,7 +86,7 @@
                   Scroll speed: {{ example3Speed }}
                   <span class="scroll-speed-ani" />
                 </p>
-                <CanvasImage
+                <Canvas3Image
                   :src-link="'images/03.JPG'"
                   :uniforms="{
                     uScrollSpeed: { value: example3Speed, duration: 0 },
@@ -125,7 +125,7 @@
                 Set Scroll speed of elements
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
-              <CanvasImage
+              <Canvas3Image
                 :src-link="'images/04.JPG'"
                 :load-strategy="'eager'"
                 :shader="'example4'"
@@ -153,7 +153,7 @@
             >
               <div>
                 <p class="example-txt">Fix element to Parent</p>
-                <CanvasImage
+                <Canvas3Image
                   :src-link="'images/01.JPG'"
                   :uniforms="{
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },

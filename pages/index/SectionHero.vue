@@ -3,22 +3,22 @@
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-tomas">
         <h2 class="heading-1">
-          <CanvasText :theme="'dark'" :uniforms="mainTextInUniforms">
+          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
             NUXT
-          </CanvasText>
+          </Canvas3Text>
         </h2>
       </div>
 
       <div class="hero-content-line hero-line-kmet">
         <h2 class="heading-1">
-          <CanvasText :theme="'dark'" :uniforms="mainTextInUniforms">
+          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
             THREEJS
-          </CanvasText>
+          </Canvas3Text>
         </h2>
       </div>
     </Container>
     <div class="hero-bg-image">
-      <CanvasImage
+      <Canvas3Image
         :src-link="'images/08.JPG'"
         :uniforms="imageUniforms"
         :shader="'hero'"
@@ -41,6 +41,7 @@ const props = defineProps({
 
 const mainTextIn = ref(false);
 const imageIn = ref(false);
+
 const mainTextInUniforms = computed(() => {
   return {
     uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
@@ -55,10 +56,9 @@ const imageUniforms = computed(() => {
 
 const heroSectionAnimation = () => {
   imageIn.value = true;
-
   setTimeout(() => {
     mainTextIn.value = true;
-  }, 300);
+  }, 0);
 };
 
 watch(
@@ -67,6 +67,9 @@ watch(
     if (newValue) {
       heroSectionAnimation();
     }
+  },
+  {
+    deep: true,
   },
 );
 </script>

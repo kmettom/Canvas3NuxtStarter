@@ -1,46 +1,41 @@
-import { gsap } from "gsap";
+// TODO: 1. meshActivate with flexible timing
+// TODO: stop request animation frame, when page not focused
+
 import * as THREE from "three";
-import { FontLoader } from "three/addons/loaders/FontLoader.js";
-
-import * as pkg from "three-msdf-text-utils/build/bundle";
-
-import Scroll from "./scroll.js";
-
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-
-import scrollFragment from "./shaders/scrollFragment.glsl";
-import scrollVertex from "./shaders/scrollVertex.glsl";
-
-import projectBlurFragment from "./shaders/projectBlurFragment.glsl";
-import projectBlurVertex from "./shaders/projectBlurVertex.glsl";
-
-import heroBlurFragment from "./shaders/heroBlurFragment.glsl";
-import heroBlurVertex from "./shaders/heroBlurVertex.glsl";
-
-import TextBlurFragment from "./shaders/TextBlurFragment.glsl";
-import TextBlurVertex from "./shaders/TextBlurVertex.glsl";
-
-import example1Fragment from "./shaders/example1Fragment.glsl";
-import example1Vertex from "./shaders/example1Vertex.glsl";
-import example2Fragment from "./shaders/example2Fragment.glsl";
-import example2Vertex from "./shaders/example2Vertex.glsl";
-import example3Fragment from "./shaders/example3Fragment.glsl";
-import example3Vertex from "./shaders/example3Vertex.glsl";
-
-import example4Fragment from "./shaders/example4Fragment.glsl";
-import example4Vertex from "./shaders/example4Vertex.glsl";
-
-import example6Fragment from "./shaders/example6Fragment.glsl";
-import example6Vertex from "./shaders/example6Vertex.glsl";
-
+import Scroll from "~/utils/scroll";
+import { FontLoader } from "three/addons/loaders/FontLoader";
 import {
   generateBindingLogic,
-  loadTexture,
   getMSDFFontMeshScales,
   heightPositionCoef,
+  loadTexture,
 } from "~/utils/canvasHelpers";
+import { gsap } from "gsap";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer";
+import { RenderPass } from "three/addons/postprocessing/RenderPass";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass";
+import scrollFragment from "~/utils/shaders/scrollFragment.glsl";
+import scrollVertex from "~/utils/shaders/scrollVertex.glsl";
+import projectBlurFragment from "~/utils/shaders/projectBlurFragment.glsl";
+import projectBlurVertex from "~/utils/shaders/projectBlurVertex.glsl";
+import TextBlurFragment from "~/utils/shaders/TextBlurFragment.glsl";
+import TextBlurVertex from "~/utils/shaders/TextBlurVertex.glsl";
+import heroBlurFragment from "~/utils/shaders/heroBlurFragment.glsl";
+import heroBlurVertex from "~/utils/shaders/heroBlurVertex.glsl";
+import example1Fragment from "~/utils/shaders/example1Fragment.glsl";
+import example1Vertex from "~/utils/shaders/example1Vertex.glsl";
+import example2Fragment from "~/utils/shaders/example2Fragment.glsl";
+import example2Vertex from "~/utils/shaders/example2Vertex.glsl";
+import example3Fragment from "~/utils/shaders/example3Fragment.glsl";
+import example3Vertex from "~/utils/shaders/example3Vertex.glsl";
+import example4Fragment from "~/utils/shaders/example4Fragment.glsl";
+import example4Vertex from "~/utils/shaders/example4Vertex.glsl";
+import example6Fragment from "~/utils/shaders/example6Fragment.glsl";
+import example6Vertex from "~/utils/shaders/example6Vertex.glsl";
+
+import * as pkg from "three-msdf-text-utils/build/bundle";
+import { useDisplayStore } from "~/stores/display";
+// import { reactive } from 'vue';
 
 const { MSDFTextGeometry } = pkg;
 
@@ -87,53 +82,41 @@ const CanvasOptions = {
   },
 };
 
-const Canvas = {
-  scrollInProgress: false,
-  animateImageMesh: false,
-  canvasContainer: null,
-  scrollableContent: null,
-  time: 0,
-  scene: new THREE.Scene(),
-  MSDFTextGeometryAtlas: null,
-  MSDFTextGeometryFont: null,
-  materials: [],
-  imageStore: [],
-  textStore: [],
-  scroll: null,
-  currentScroll: 0,
-  options: CanvasOptions,
-  animations: {
-    cursorCallback: () => {},
-  },
-  footerGameBall: { x: 0, y: 0 },
-  mouse: { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 },
-  triggerSectionPositions: {},
+const canvasInitiated = ref(false);
 
-  initScroll() {
-    this.scroll = new Scroll({
-      dom: this.scrollableContent,
-    });
-  },
-  setCanvasAndCamera() {
-    this.width = this.canvasContainer.offsetWidth;
-    this.height = this.canvasContainer.offsetHeight;
+class Canvas3Class {
+  canvasInitiated = canvasInitiated;
+  navigationStore = null;
+  displayStore = null;
+  scrollInProgress = false;
+  animateImageMesh = false;
+  canvasContainer = null;
+  scrollableContent = null;
+  time = 0;
+  scene = new THREE.Scene();
+  MSDFTextGeometryAtlas = null;
+  MSDFTextGeometryFont = null;
+  materials = [];
+  imageStore = [];
+  textStore = [];
+  scroll = null;
+  currentScroll = 0;
+  options = CanvasOptions;
+  animations = {
+    // cursorCallback: () => {},
+  };
+  footerGameBall = { x: 0, y: 0 };
+  mouse = { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 };
 
-    this.camera = new THREE.PerspectiveCamera(
-      70,
-      this.width / this.height,
-      100,
-      2000,
-    );
-    this.camera.position.z = 600; // 600
-    this.camera.fov = 2 * Math.atan(this.height / 2 / 600) * (180 / Math.PI);
+  // triggerSectionPositions= {};
+  // constructor() {}
 
-    this.renderer = new THREE.WebGLRenderer({
-      alpha: true,
-    });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    this.canvasContainer.appendChild(this.renderer.domElement);
-  },
-  async init(canvasElement, scrollableContent) {
+  async initialize(canvasElement, scrollableContent) {
+    this.displayStore = useDisplayStore();
+    this.navigationStore = useNavigationStore();
+
+    this.scene = new THREE.Scene();
+
     this.canvasContainer = canvasElement;
     this.scrollableContent = scrollableContent;
 
@@ -145,8 +128,6 @@ const Canvas = {
 
     this.setSize();
     this.composerPass();
-
-    this.setResizeListener();
 
     this.render();
 
@@ -162,7 +143,39 @@ const Canvas = {
         this.mouse.movementY = this.mouse.y;
       }
     });
-  },
+
+    this.displayStore.init();
+    this.navigationStore.canvasInitiated = true;
+    this.canvasInitiated.value = true;
+  }
+
+  initScroll() {
+    this.scroll = new Scroll({
+      dom: this.scrollableContent,
+      activateMeshCallback: this.activateMesh.bind(this),
+    });
+  }
+
+  setCanvasAndCamera() {
+    this.width = this.canvasContainer.offsetWidth;
+    this.height = this.canvasContainer.offsetHeight;
+
+    this.camera = new THREE.PerspectiveCamera(
+      70,
+      this.width / this.height,
+      100,
+      2000,
+    );
+    this.camera.position.z = 600; // 600
+    this.camera.fov = 2 * Math.atan(this.height / 2 / 600) * (180 / Math.PI);
+
+    this.renderer = new THREE.WebGLRenderer({
+      // alpha: true,
+    });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    this.canvasContainer.appendChild(this.renderer.domElement);
+  }
+
   async loadFontMSDF() {
     const loadFontAtlas = (path) => {
       return new Promise((resolve) => {
@@ -183,17 +196,17 @@ const Canvas = {
       this.MSDFTextGeometryAtlas = atlas;
       this.MSDFTextGeometryFont = font;
     });
-  },
-  setResizeListener() {
-    window.addEventListener("resize", () => {
-      this.resizeOnChange();
-    });
-  },
+  }
+
+  //TODO: test refactored logic - displayService carries resize
   resizeOnChange() {
     this.setSize();
     this.resizeImageStore();
     this.resizeTextStore();
-  },
+    this.scroll.resizeMobileBreakEvents();
+    this.scroll.setSize();
+  }
+
   resizeImageStore() {
     for (var i = 0; i < this.imageStore.length; i++) {
       let bounds = this.imageStore[i].htmlEl.getBoundingClientRect();
@@ -206,7 +219,8 @@ const Canvas = {
       this.imageStore[i].height = bounds.height;
     }
     this.setImageMeshPositions();
-  },
+  }
+
   resizeTextStore() {
     for (var i = 0; i < this.textStore.length; i++) {
       let bounds = this.textStore[i].htmlEl.getBoundingClientRect();
@@ -219,7 +233,8 @@ const Canvas = {
       this.textStore[i].height = bounds.height * heightPositionCoef;
     }
     this.setTextMeshPositions();
-  },
+  }
+
   setImageMeshPositions() {
     if (this.imageStore.length === 0) return;
     for (var i = 0; i < this.imageStore.length; i++) {
@@ -232,7 +247,8 @@ const Canvas = {
         this.height / 2 -
         this.imageStore[i].height / 2;
     }
-  },
+  }
+
   setTextMeshPositions() {
     if (this.textStore.length === 0) return;
     for (var i = 0; i < this.textStore.length; i++) {
@@ -243,11 +259,13 @@ const Canvas = {
         this.height / 2 -
         this.textStore[i].height / 2;
     }
-  },
+  }
 
   meshUniformsUpdate(id, uniforms) {
     const mesh = this.scene.getObjectByName(id);
+
     if (!mesh) return;
+
     for (const uniKey in uniforms) {
       if (!mesh.material.uniforms[uniKey])
         mesh.material.uniforms[uniKey] = {
@@ -259,7 +277,9 @@ const Canvas = {
         value: uniforms[uniKey].value,
       });
     }
-  },
+  }
+
+  //TODO: refactor activate mesh to flexible easing and time - carry this on the item it self
   activateMesh(id, isActive) {
     const mesh = this.scene.getObjectByName(id);
     if (!mesh) {
@@ -280,22 +300,16 @@ const Canvas = {
         ease: "power2.out",
       });
     }
-  },
-
-  onActiveElCallback(item) {
-    if (item.options.activateCallback) {
-      item.options.activateCallback(item);
-    }
-  },
+  }
 
   setFixedScrollToElement(elNode, margin = 0) {
     this.scroll.fixScrollTo = { htmlRef: elNode ?? null, margin: margin };
-  },
+  }
 
   addOnScrollActivateElement(binding) {
     const newBinding = generateBindingLogic(binding);
     this.scroll.DOM.onScrollActivateElements.push(newBinding);
-  },
+  }
 
   updateOnScrollActiveElement(updatedBinding) {
     if (!this.scroll) return;
@@ -311,7 +325,7 @@ const Canvas = {
           generateBindingLogic(updatedBinding);
       }
     }
-  },
+  }
 
   removeScrollActiveElement(elNode) {
     if (!elNode || this.scroll.DOM.onScrollActivateElements.length === 0)
@@ -324,7 +338,7 @@ const Canvas = {
         break;
       }
     }
-  },
+  }
 
   removeMesh(id) {
     let toRemove = this.scene.getObjectByName(id);
@@ -341,7 +355,7 @@ const Canvas = {
         break;
       }
     }
-  },
+  }
 
   addTextAsMSDF(
     shader,
@@ -409,6 +423,7 @@ const Canvas = {
         uTime: { value: 0 },
         uMeshSize: { value: new THREE.Vector2(bounds.width, bounds.height) },
         uAniInText: { value: meshUniforms.uAniInText?.value ?? 0 },
+        // uAniInText: { value: 1 },
         ...meshUniforms,
       },
       vertexShader: vertexShader,
@@ -451,7 +466,8 @@ const Canvas = {
     }
 
     if (mouseListeners) this.meshMouseListeners(newMesh, material);
-  },
+  }
+
   async addImageAsMesh(
     imgHtmlEl,
     shader,
@@ -459,6 +475,11 @@ const Canvas = {
     mouseListeners,
     meshUniforms,
   ) {
+    const geometryT = new THREE.BoxGeometry(1, 1, 1);
+    const materialT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometryT, materialT);
+    this.scene.add(cube);
+
     let vertexShader = this.options.default.vertexShader;
     let fragmentShader = this.options.default.fragmentShader;
 
@@ -482,7 +503,7 @@ const Canvas = {
         uTime: { value: 0 },
         uImage: { value: texture },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
-        uAniInImage: { value: meshUniforms.uAniInImage?.value ?? 0 },
+        uAniInImage: { value: 1 },
         uMouse: { value: new THREE.Vector2(0, 0) },
         uMouseMovement: { value: new THREE.Vector2(0, 0) },
         uMeshSize: { value: new THREE.Vector2(bounds.width, bounds.height) },
@@ -502,6 +523,7 @@ const Canvas = {
       vertexShader: vertexShader,
       transparent: true,
       name: meshId,
+      // wireframe: true,
     });
 
     this.materials.push(material);
@@ -532,7 +554,7 @@ const Canvas = {
 
     this.setImageMeshPositions();
     if (mouseListeners) this.meshMouseListeners(newMesh, material);
-  },
+  }
 
   meshMouseListeners(mesh, material) {
     mesh.htmlEl.addEventListener("mouseenter", () => {
@@ -550,7 +572,8 @@ const Canvas = {
         value: 0,
       });
     });
-  },
+  }
+
   composerPass() {
     this.composer = new EffectComposer(this.renderer);
     this.renderPass = new RenderPass(this.scene, this.camera);
@@ -569,7 +592,8 @@ const Canvas = {
     this.customPass.renderToScreen = true;
 
     this.composer.addPass(this.customPass);
-  },
+  }
+
   setSize() {
     this.width = this.canvasContainer.offsetWidth;
     this.height = this.canvasContainer.offsetHeight;
@@ -580,19 +604,19 @@ const Canvas = {
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.render(this.scene, this.camera); // -> Also needed
-  },
+  }
 
   scrollToTop(delay) {
     setTimeout(() => {
       this.scroll.render(0, false);
     }, delay);
-  },
+  }
 
   scrollTo(position, delay = 0) {
     setTimeout(() => {
       this.scroll.render(position, true);
     }, delay);
-  },
+  }
 
   scrollToElBySelector(elQuerySelector, delay) {
     const element = document.querySelector(elQuerySelector);
@@ -601,7 +625,7 @@ const Canvas = {
     setTimeout(() => {
       this.scroll.render(position, true);
     }, delay);
-  },
+  }
 
   render() {
     // this.animations.footerBallGame();
@@ -645,11 +669,14 @@ const Canvas = {
       }
     }
 
-    this.composer.render();
+    // TODO: use from class, not in Pinia as its only read and not expected output
+    // this.composer.render();
 
     for (const argumentsKey in this.animations) {
       if (this.animations[argumentsKey]) this.animations[argumentsKey]();
     }
+
+    this.renderer.render(this.scene, this.camera); // -> Also needed
 
     try {
       requestAnimationFrame(this.render.bind(this));
@@ -657,7 +684,7 @@ const Canvas = {
       console.error(e);
       setImmediate(this.render.bind(this));
     }
-  },
-};
+  }
+}
 
-export { Canvas };
+export const Canvas3 = new Canvas3Class();

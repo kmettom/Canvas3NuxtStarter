@@ -1,10 +1,8 @@
-import { Canvas } from "./canvas";
 import {
   elementNearViewport,
+  lerp,
   setScrollActiveElements,
 } from "~/utils/canvasHelpers";
-
-const lerp = (a, b, n) => (1 - n) * a + n * b;
 
 export default class Scroll {
   constructor(options) {
@@ -13,6 +11,7 @@ export default class Scroll {
       onScrollActivateElements: [],
     };
 
+    this.activateMeshCallback = options.activateMeshCallback;
     this.activeCallback = options.activeCallback;
 
     this.fixScrollTo = { htmlRef: null, margin: 0 }; //null | {ref: htmlRef, margin: Number}
@@ -54,10 +53,6 @@ export default class Scroll {
   }
 
   initEvents() {
-    window.addEventListener("resize", () => {
-      this.resizeMobileBreakEvents();
-      this.setSize();
-    });
     window.addEventListener("scroll", () => {
       this.getScroll();
     });
@@ -76,7 +71,9 @@ export default class Scroll {
       item.elNode.dataset.activeScroll = "true";
       setScrollActiveElements(item.elNode, item.containedMeshIds, "true");
       item.elNode.classList.add("active");
-      Canvas.onActiveElCallback(item);
+      if (item.options.activateCallback) {
+        item.options.activateCallback(item);
+      }
     } else {
       item.elNode.dataset.activeScroll = "false";
       setScrollActiveElements(item.elNode, item.containedMeshIds, "false");
@@ -85,7 +82,7 @@ export default class Scroll {
 
     if (item.containedMeshIds.length > 0 && !item.trackOnly) {
       for (const meshId of item.containedMeshIds) {
-        Canvas.activateMesh(meshId, isActive);
+        this.activateMeshCallback(meshId, isActive);
       }
     }
   }

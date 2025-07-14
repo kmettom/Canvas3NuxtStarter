@@ -94,3 +94,6 @@ export function elementNearViewport(bounds, margin = 200) {
     (bounds.top <= -margin && bounds.bottom >= windowHeight)
   );
 }
+
+//TODO: add to canvas options to set different lerp function
+export const lerp = (a, b, n) => (1 - n) * a + n * b;
