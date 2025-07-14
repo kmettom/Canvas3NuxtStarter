@@ -58,7 +58,9 @@ watch(
       Canvas3.displayStore?.prefersReducedMotion
     )
       return;
-    Canvas3.meshUniformsUpdate(meshId, uniforms);
+    setTimeout(() => {
+      Canvas3.meshUniformsUpdate(meshId, uniforms);
+    }, 0);
   },
   { deep: true },
 );
@@ -100,9 +102,11 @@ watch(
 .text-wrapper {
   opacity: 0;
   display: inline-block;
+
   &.reduced-motion {
     opacity: 1;
   }
+
   @include respond-width($w-s) {
     opacity: 1;
   }

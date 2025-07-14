@@ -1,4 +1,3 @@
-// TODO: fix meshActivate
 // TODO: 1. meshActivate with flexible timing
 // TODO: stop request animation frame, when page not focused
 
@@ -112,7 +111,7 @@ class Canvas3Class {
   // triggerSectionPositions= {};
   // constructor() {}
 
-  async init(canvasElement, scrollableContent) {
+  async initialize(canvasElement, scrollableContent) {
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 
@@ -264,7 +263,9 @@ class Canvas3Class {
 
   meshUniformsUpdate(id, uniforms) {
     const mesh = this.scene.getObjectByName(id);
+
     if (!mesh) return;
+
     for (const uniKey in uniforms) {
       if (!mesh.material.uniforms[uniKey])
         mesh.material.uniforms[uniKey] = {
@@ -285,7 +286,6 @@ class Canvas3Class {
       console.error("no Mesh found with ID: " + id);
       return;
     }
-      console.log("mesh.material.uniforms.uAniInImage", mesh.material.uniforms.uAniInImage);
     if (mesh.material.uniforms.uAniInImage) {
       gsap.to(mesh.material.uniforms.uAniInImage, {
         duration: 1.0,
@@ -293,9 +293,7 @@ class Canvas3Class {
         ease: "power1.inOut",
       });
     }
-      console.log("mesh.material.uniforms.uAniInText", mesh.material.uniforms.uAniInText);
     if (mesh.material.uniforms.uAniInText) {
-        console.log("isActive", isActive);
       gsap.to(mesh.material.uniforms.uAniInText, {
         duration: 1.5,
         value: isActive ? 1 : 0,
@@ -425,7 +423,7 @@ class Canvas3Class {
         uTime: { value: 0 },
         uMeshSize: { value: new THREE.Vector2(bounds.width, bounds.height) },
         uAniInText: { value: meshUniforms.uAniInText?.value ?? 0 },
-          // uAniInText: { value: 1 },
+        // uAniInText: { value: 1 },
         ...meshUniforms,
       },
       vertexShader: vertexShader,

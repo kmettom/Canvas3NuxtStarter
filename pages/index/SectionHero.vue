@@ -35,15 +35,16 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
-// const props = defineProps({
-//   sectionActivate: Boolean,
-// });
+const props = defineProps({
+  sectionActivate: Boolean,
+});
 
 const mainTextIn = ref(false);
 const imageIn = ref(false);
+
 const mainTextInUniforms = computed(() => {
   return {
-    xxx: { value: mainTextIn.value ? 1 : 0, duration: 2 },
+    uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
   };
 });
 
@@ -55,23 +56,22 @@ const imageUniforms = computed(() => {
 
 const heroSectionAnimation = () => {
   imageIn.value = true;
-  mainTextIn.value = true;
-  // setTimeout(() => {
-  // }, 300);
+  setTimeout(() => {
+    mainTextIn.value = true;
+  }, 0);
 };
 
-// watch(
-//   () => props.sectionActivate,
-//   (newValue) => {
-//     if (newValue) {
-//       heroSectionAnimation();
-//     }
-//   },
-// );
-
-onMounted(() => {
-  heroSectionAnimation();
-})
+watch(
+  () => props.sectionActivate,
+  (newValue) => {
+    if (newValue) {
+      heroSectionAnimation();
+    }
+  },
+  {
+    deep: true,
+  },
+);
 </script>
 
 <style lang="scss" scoped>

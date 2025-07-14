@@ -5,11 +5,11 @@
       @welcome-complete="welcomeFinished()"
     />
 
-    <CommonNavigation :page-active="contentActive" />
+    <CommonNavigation />
 
     <div id="scrollContainer">
       <div id="scrollableContent" ref="scrollableContent">
-        <slot :page-active="contentActive" />
+        <NuxtPage :page-active="contentActive" />
       </div>
     </div>
 
@@ -54,7 +54,7 @@ const welcomeFinished = () => {
 };
 
 onMounted(async () => {
-  await Canvas3.init(canvasEl.value, scrollableContent.value);
+  await Canvas3.initialize(canvasEl.value, scrollableContent.value);
   welcomeInit.value = true;
 });
 </script>

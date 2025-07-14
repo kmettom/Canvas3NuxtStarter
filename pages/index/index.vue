@@ -5,7 +5,7 @@
       class="page-section"
       data-nav-id="home"
     >
-      <SectionHero :section-activate="pageActive" />
+      <SectionHero :section-activate="props.pageActive" />
     </div>
     <div
       v-onScrollActivate="setSectionActivationOptions('about', false)"
@@ -67,9 +67,9 @@ useSeoMeta({
 
 const navigationStore = useNavigationStore();
 
-// const props = defineProps({
-//   pageActive: Boolean,
-// });
+const props = defineProps({
+  pageActive: Boolean,
+});
 
 const setSectionActivationOptions = (sectionId, sectionContrast) => {
   return {
@@ -83,7 +83,6 @@ const setSectionActivationOptions = (sectionId, sectionContrast) => {
     activeRangeMargin: 100,
   };
 };
-
 </script>
 
 <style lang="scss"></style>

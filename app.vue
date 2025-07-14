@@ -1,5 +1,5 @@
 <template>
-  <DefaultPageLayout
+  <Canvas3PageLayout
     :transition="{
       name: 'pagetransition',
       onBeforeEnter: (el) => {
@@ -9,11 +9,11 @@
     }"
   >
     <NuxtPage />
-  </DefaultPageLayout>
+  </Canvas3PageLayout>
 </template>
 <script setup>
 //TODO: add this feature inside the component, then to Canvas Init Options (page transition above)
-import DefaultPageLayout from "~/layout/DefaultPageLayout.vue";
+import Canvas3PageLayout from "~/layout/Canvas3PageLayout.vue";
 
 useHead({
   htmlAttrs: {
