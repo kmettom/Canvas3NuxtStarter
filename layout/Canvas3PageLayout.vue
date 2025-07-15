@@ -33,6 +33,13 @@
 
 import { Canvas3 } from "~/utils/canvas3";
 
+const props = defineProps({
+  canvasOptions: {
+    type: Object,
+    default: () => {},
+  },
+});
+
 const welcomeInit = ref(false);
 
 const backLayerCanvas = computed(() => {
@@ -53,7 +60,11 @@ const welcomeFinished = () => {
 };
 
 onMounted(async () => {
-  await Canvas3.initialize(canvasEl.value, scrollableContent.value);
+  await Canvas3.initialize(
+    canvasEl.value,
+    scrollableContent.value,
+    props.canvasOptions,
+  );
   welcomeInit.value = true;
 });
 </script>

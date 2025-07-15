@@ -17,7 +17,6 @@ import { ShaderPass } from "three/addons/postprocessing/ShaderPass";
 
 import * as pkg from "three-msdf-text-utils/build/bundle";
 import { useDisplayStore } from "~/stores/display";
-import { CanvasOptions } from "~/utils/canvas3Options";
 
 const { MSDFTextGeometry } = pkg;
 
@@ -649,6 +648,4 @@ class Canvas3Class {
   }
 }
 
-export const Canvas3 = new Canvas3Class({
-  canvasOptions: CanvasOptions,
-});
+export const Canvas3 = new Canvas3Class();
