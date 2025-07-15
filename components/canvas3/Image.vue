@@ -42,20 +42,10 @@ const props = defineProps({
   },
 });
 
-const generatedMeshId = props.srcLink + crypto.randomUUID();
+const generatedMeshId = props.imageSettings.srcLink + crypto.randomUUID();
 
 const image = ref("image");
 const imgAddedToCanvas = ref(false);
-
-const meshUniforms = computed(() => {
-  const uni = {};
-  for (const key in props.canvas3Options.uniforms) {
-    uni[key] = {
-      value: 0,
-    };
-  }
-  return uni;
-});
 
 const addImageToCanvas = () => {
   if (
@@ -70,9 +60,10 @@ const addImageToCanvas = () => {
     props.canvas3Options.shaderName,
     generatedMeshId,
     false,
-    // props.canvas3Options.uniforms,
-    meshUniforms.value,
-    meshUniforms.value,
+    props.canvas3Options.uniforms,
+    props.canvas3Options.uniforms,
+    // meshUniforms.value,
+    // meshUniforms.value,
     // activateMeshUniforms.value,
   );
   imgAddedToCanvas.value = true;

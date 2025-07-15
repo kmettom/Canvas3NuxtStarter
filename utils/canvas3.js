@@ -226,11 +226,23 @@ class Canvas3Class {
       console.error("no Mesh found with ID: " + id);
       return;
     }
-    const meshUniforms = this.activateMeshUniformMap.get(id);
-    if (!meshUniforms) {
-      console.error("no MeUniforms found with ID: " + id);
-      return;
+
+    if (mesh.material.uniforms.uAniInImage) {
+      gsap.to(mesh.material.uniforms.uAniInImage, {
+        duration: this.options.activateMeshOptions.image.uAniInImage.duration,
+        value: isActive ? 1 : 0,
+        ease: this.options.activateMeshOptions.image.uAniInImage.ease,
+      });
     }
+    if (mesh.material.uniforms.uAniInText) {
+      gsap.to(mesh.material.uniforms.uAniInText, {
+        duration: this.options.activateMeshOptions.text.uAniInText.duration,
+        value: isActive ? 1 : 0,
+        ease: this.options.activateMeshOptions.text.uAniInText.ease,
+      });
+    }
+
+    // const meshUniforms = this.activateMeshUniformMap.get(id);
 
     // default in the settings, options on component props
 
@@ -242,23 +254,6 @@ class Canvas3Class {
     //         ease: "power1.inOut",
     //     });
     // }
-
-    console.log("mesh", mesh.material.uniforms, mesh);
-
-    if (mesh.material.uniforms.uAniInImage) {
-      gsap.to(mesh.material.uniforms.uAniInImage, {
-        duration: 1.0,
-        value: isActive ? 1 : 0,
-        ease: "power1.inOut",
-      });
-    }
-    if (mesh.material.uniforms.uAniInText) {
-      gsap.to(mesh.material.uniforms.uAniInText, {
-        duration: 1.5,
-        value: isActive ? 1 : 0,
-        ease: "power2.out",
-      });
-    }
   }
 
   setFixedScrollToElement(elNode, margin = 0) {
@@ -320,7 +315,7 @@ class Canvas3Class {
     shaderName,
     meshId,
     htmlEl,
-    content,
+    textContent,
     theme,
     mouseListeners,
     meshUniforms,
@@ -342,7 +337,7 @@ class Canvas3Class {
     //*****************************
 
     const geometry = new MSDFTextGeometry({
-      text: content.trim(),
+      text: textContent.trim(),
       font: this.MSDFTextGeometryFont.data,
     });
 
@@ -511,9 +506,10 @@ class Canvas3Class {
 
     this.imageStore.push(newMesh);
 
-    if (meshUniforms.uAniInImage || imgHtmlEl.dataset.activeScroll === "true") {
-      this.activateMesh(meshId, true);
-    }
+    //TODO: check what was the intended need for this
+    // if (meshUniforms.uAniInImage || imgHtmlEl.dataset.activeScroll === "true") {
+    //   this.activateMesh(meshId, true);
+    // }
 
     this.setImageMeshPositions();
     if (mouseListeners) this.meshMouseListeners(newMesh, material);

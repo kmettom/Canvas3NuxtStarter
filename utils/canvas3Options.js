@@ -62,10 +62,10 @@ export const CanvasOptions = {
   },
   activateMeshOptions: {
     image: {
-      uAniInImage: { value: 0, duration: 1 },
+      uAniInImage: { value: 0, duration: 1, ease: "power1.inOut" },
     },
     text: {
-      uAniInText: { value: 0, duration: 1.5 },
+      uAniInText: { value: 0, duration: 1.5, ease: "power2.out" },
     },
   },
 };
