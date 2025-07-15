@@ -29,7 +29,6 @@
 </template>
 
 <script setup>
-//TODO: fix first load render
 //TODO: Page transition scroll to top implement, check page navigation and page transition animations
 
 import { Canvas3 } from "~/utils/canvas3";

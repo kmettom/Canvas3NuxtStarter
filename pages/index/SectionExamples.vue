@@ -13,7 +13,14 @@
         <div class="examples-row">
           <div class="example-wrapper">
             <h3 class="body-l heading-example">Add images to scene 😌</h3>
-            <Canvas3Image :src-link="'images/01.JPG'" :shader="'example1'" />
+            <Canvas3Image
+              :image-settings="{
+                srcLink: 'images/01.JPG',
+                alt: 'building',
+              }"
+              :canvas3-options="{ shaderName: 'example1' }"
+            />
+            <!--            <Canvas3Image :src-link="'images/01.JPG'" :shader="'example1'" />-->
             <CodeSnippet>
               <span> {{ String("<") }}</span
               >Canvas3Image <br />
@@ -34,10 +41,15 @@
               <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
             <Canvas3Image
-              :src-link="'images/02.JPG'"
-              :shader="'example2'"
-              :uniforms="{
-                uHover: { value: example1Hover ? 1 : 0, duration: 0 },
+              :image-settings="{
+                srcLink: 'images/02.JPG',
+                alt: 'building',
+              }"
+              :canvas3-options="{
+                uniforms: {
+                  uHover: { value: example1Hover ? 1 : 0, duration: 0 },
+                },
+                shaderName: 'example2',
               }"
             />
             <CodeSnippet>
@@ -87,13 +99,16 @@
                   <span class="scroll-speed-ani" />
                 </p>
                 <Canvas3Image
-                  :src-link="'images/03.JPG'"
-                  :uniforms="{
-                    uScrollSpeed: { value: example3Speed, duration: 0 },
+                  :image-settings="{
+                    srcLink: 'images/03.JPG',
+                    alt: 'sky',
                   }"
-                  :shader="'example3'"
-                  :load-strategy="'eager'"
-                  alt=""
+                  :canvas3-options="{
+                    uniforms: {
+                      uScrollSpeed: { value: example3Speed, duration: 0 },
+                    },
+                    shaderName: 'example3',
+                  }"
                 />
                 <CodeSnippet>
                   v-onScrollActivate="{ <br />
@@ -126,10 +141,14 @@
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
               <Canvas3Image
-                :src-link="'images/04.JPG'"
-                :load-strategy="'eager'"
-                :shader="'example4'"
-                alt=""
+                :image-settings="{
+                  srcLink: 'images/04.JPG',
+                  alt: 'sky',
+                  loadStrategy: 'eager',
+                }"
+                :canvas3-options="{
+                  shaderName: 'example4',
+                }"
               />
               <CodeSnippet>
                 v-onScrollActivate="{ <br />
@@ -154,12 +173,14 @@
               <div>
                 <p class="example-txt">Fix element to Parent</p>
                 <Canvas3Image
-                  :src-link="'images/01.JPG'"
-                  :uniforms="{
+                  :image-settings="{
+                    srcLink: 'images/01.JPG',
+                    alt: 'building',
+                    loadStrategy: 'eager',
+                  }"
+                  :canvas3-options="{
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                   }"
-                  :load-strategy="'eager'"
-                  alt=""
                 />
                 <CodeSnippet>
                   v-onScrollActivate="{<br />

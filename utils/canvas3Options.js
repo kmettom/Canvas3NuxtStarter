@@ -24,38 +24,50 @@ export const CanvasOptions = {
       atlas: "/font/PPFormula-CondensedBlack.png",
     },
   },
-  scroll: {
-    fragmentShader: scrollFragment,
-    vertexShader: scrollVertex,
+  shaders: {
+    scroll: {
+      fragmentShader: scrollFragment,
+      vertexShader: scrollVertex,
+    },
+    default: {
+      fragmentShader: projectBlurFragment,
+      vertexShader: projectBlurVertex,
+      textFragment: TextBlurFragment,
+      textVertex: TextBlurVertex,
+    },
+    hero: {
+      fragmentShader: heroBlurFragment,
+      vertexShader: heroBlurVertex,
+    },
+    example1: {
+      fragmentShader: example1Fragment,
+      vertexShader: example1Vertex,
+    },
+    example2: {
+      fragmentShader: example2Fragment,
+      vertexShader: example2Vertex,
+    },
+    example3: {
+      fragmentShader: example3Fragment,
+      vertexShader: example3Vertex,
+    },
+    example4: {
+      fragmentShader: example4Fragment,
+      vertexShader: example4Vertex,
+    },
+    example6: {
+      fragmentShader: example6Fragment,
+      vertexShader: example6Vertex,
+    },
   },
-  default: {
-    fragmentShader: projectBlurFragment,
-    vertexShader: projectBlurVertex,
-    textFragment: TextBlurFragment,
-    textVertex: TextBlurVertex,
-  },
-  hero: {
-    fragmentShader: heroBlurFragment,
-    vertexShader: heroBlurVertex,
-  },
-  example1: {
-    fragmentShader: example1Fragment,
-    vertexShader: example1Vertex,
-  },
-  example2: {
-    fragmentShader: example2Fragment,
-    vertexShader: example2Vertex,
-  },
-  example3: {
-    fragmentShader: example3Fragment,
-    vertexShader: example3Vertex,
-  },
-  example4: {
-    fragmentShader: example4Fragment,
-    vertexShader: example4Vertex,
-  },
-  example6: {
-    fragmentShader: example6Fragment,
-    vertexShader: example6Vertex,
+  activateMeshOptions: {
+    image: {
+      uAniInImage: { value: 0, duration: 1 },
+    },
+    text: {
+      uAniInText: { value: 0, duration: 1.5 },
+    },
   },
 };
+
+// export default CanvasOptionDefaults = CanvasOptions;

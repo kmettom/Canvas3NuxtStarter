@@ -38,9 +38,10 @@ class Canvas3Class {
   materials = [];
   imageStore = [];
   textStore = [];
+  activateMeshUniformMap = new Map();
   scroll = null;
   currentScroll = 0;
-  options = CanvasOptions;
+  // options = CanvasOptions;
   animations = {
     // cursorCallback: () => {},
   };
@@ -48,7 +49,9 @@ class Canvas3Class {
   mouse = { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 };
 
   // triggerSectionPositions= {};
-  // constructor() {}
+  constructor({ canvasOptions }) {
+    this.options = canvasOptions;
+  }
 
   async initialize(canvasElement, scrollableContent) {
     this.displayStore = useDisplayStore();
@@ -129,8 +132,8 @@ class Canvas3Class {
       });
     };
     await Promise.all([
-      loadFontAtlas(CanvasOptions.fonts.PPFormula.atlas),
-      loadFont(CanvasOptions.fonts.PPFormula.fnt),
+      loadFontAtlas(this.options.fonts.PPFormula.atlas),
+      loadFont(this.options.fonts.PPFormula.fnt),
     ]).then(([atlas, font]) => {
       this.MSDFTextGeometryAtlas = atlas;
       this.MSDFTextGeometryFont = font;
@@ -202,9 +205,7 @@ class Canvas3Class {
 
   meshUniformsUpdate(id, uniforms) {
     const mesh = this.scene.getObjectByName(id);
-
     if (!mesh) return;
-
     for (const uniKey in uniforms) {
       if (!mesh.material.uniforms[uniKey])
         mesh.material.uniforms[uniKey] = {
@@ -225,7 +226,25 @@ class Canvas3Class {
       console.error("no Mesh found with ID: " + id);
       return;
     }
+    const meshUniforms = this.activateMeshUniformMap.get(id);
+    if (!meshUniforms) {
+      console.error("no MeUniforms found with ID: " + id);
+      return;
+    }
+
+    // default in the settings, options on component props
+
+    // for (const [key, value] in meshUniforms) {
+    //     mesh.material.uniforms
+    //     gsap.to(meshUniforms[key], {
+    //         duration: 1.0,
+    //         value: isActive ? 1 : 0,
+    //         ease: "power1.inOut",
+    //     });
+    // }
+
     console.log("mesh", mesh.material.uniforms, mesh);
+
     if (mesh.material.uniforms.uAniInImage) {
       gsap.to(mesh.material.uniforms.uAniInImage, {
         duration: 1.0,
@@ -298,20 +317,20 @@ class Canvas3Class {
   }
 
   addTextAsMSDF(
-    shader,
+    shaderName,
     meshId,
     htmlEl,
-    text,
+    content,
     theme,
     mouseListeners,
     meshUniforms,
   ) {
-    let vertexShader = this.options.default.textVertex;
-    let fragmentShader = this.options.default.textFragment;
+    let vertexShader = this.options.shaders.default.textVertex;
+    let fragmentShader = this.options.shaders.default.textFragment;
 
-    if (shader) {
-      vertexShader = this.options[shader].vertexShader;
-      fragmentShader = this.options[shader].fragmentShader;
+    if (shaderName) {
+      vertexShader = this.options.shaders[shaderName].vertexShader;
+      fragmentShader = this.options.shaders[shaderName].fragmentShader;
     }
 
     let bounds = htmlEl.getBoundingClientRect();
@@ -323,7 +342,7 @@ class Canvas3Class {
     //*****************************
 
     const geometry = new MSDFTextGeometry({
-      text: text.trim(),
+      text: content.trim(),
       font: this.MSDFTextGeometryFont.data,
     });
 
@@ -339,6 +358,7 @@ class Canvas3Class {
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uColor: {
+          //TODO: colors dynamic from component
           value: new THREE.Vector4(
             theme === "dark" ? 27 / 255 : 191 / 255, // R
             theme === "dark" ? 24 / 255 : 192 / 255, // G
@@ -410,22 +430,25 @@ class Canvas3Class {
 
   async addImageAsMesh(
     imgHtmlEl,
-    shader,
+    shaderName,
     meshId,
     mouseListeners,
     meshUniforms,
+    activateMeshUniforms,
   ) {
+    this.activateMeshUniformMap.set(meshId, activateMeshUniforms);
+
     const geometryT = new THREE.BoxGeometry(1, 1, 1);
     const materialT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometryT, materialT);
     this.scene.add(cube);
 
-    let vertexShader = this.options.default.vertexShader;
-    let fragmentShader = this.options.default.fragmentShader;
+    let vertexShader = this.options.shaders.default.vertexShader;
+    let fragmentShader = this.options.shaders.default.fragmentShader;
 
-    if (shader) {
-      vertexShader = this.options[shader].vertexShader;
-      fragmentShader = this.options[shader].fragmentShader;
+    if (shaderName) {
+      vertexShader = this.options.shaders[shaderName].vertexShader;
+      fragmentShader = this.options.shaders[shaderName].fragmentShader;
     }
 
     let bounds = imgHtmlEl.getBoundingClientRect();
@@ -524,8 +547,8 @@ class Canvas3Class {
         tDiffuse: { value: null },
         scrollSpeed: { value: null },
       },
-      vertexShader: this.options.scroll.vertexShader,
-      fragmentShader: this.options.scroll.fragmentShader,
+      vertexShader: this.options.shaders.scroll.vertexShader,
+      fragmentShader: this.options.shaders.scroll.fragmentShader,
     };
 
     this.customPass = new ShaderPass(this.myEffect);
@@ -627,4 +650,6 @@ class Canvas3Class {
   }
 }
 
-export const Canvas3 = new Canvas3Class();
+export const Canvas3 = new Canvas3Class({
+  canvasOptions: CanvasOptions,
+});
