@@ -4,9 +4,9 @@
       ref="image"
       class="webgl-img"
       :class="{ 'reduced-motion': Canvas3.displayStore?.prefersReducedMotion }"
-      :alt="alt"
-      :src="srcLink"
-      :loading="loadStrategy === 'lazy' ? 'lazy' : 'eager'"
+      :alt="imageSettings.alt"
+      :src="imageSettings.srcLink"
+      :loading="imageSettings.loadStrategy"
       @load="addImageToCanvas"
     />
   </div>
@@ -16,42 +16,40 @@
 import { Canvas3 } from "~/utils/canvas3";
 
 const props = defineProps({
-  alt: {
-    type: String,
-    default: "picture",
+  imageSettings: {
+    type: {
+      alt: { type: String, required: true },
+      srcLink: { type: String, required: true },
+      loadStrategy: { type: String, default: "lazy" },
+    },
+    default: () => ({
+      loadStrategy: "lazy",
+    }),
   },
-  srcLink: {
-    type: String,
-    required: true,
-  },
-  shader: {
-    type: String,
-    default: "default",
-  },
-  uniforms: {
-    type: Object,
-    default: () => {},
-  },
-  loadStrategy: {
-    type: String,
-    default: "lazy",
+  canvas3Options: {
+    type: {
+      shaderName: {
+        type: String,
+      },
+      uniforms: {
+        type: Object,
+        default: () => {},
+      },
+      activateMeshUniforms: {
+        type: Object,
+        default: () => {},
+      },
+    },
+    default: () => ({
+      shaderName: "default",
+    }),
   },
 });
 
-const generatedMeshId = props.srcLink + crypto.randomUUID();
+const generatedMeshId = props.imageSettings.srcLink + crypto.randomUUID();
 
 const image = ref("image");
 const imgAddedToCanvas = ref(false);
-
-const meshUniforms = computed(() => {
-  const uni = {};
-  for (const key in props.uniforms) {
-    uni[key] = {
-      value: 0,
-    };
-  }
-  return uni;
-});
 
 const addImageToCanvas = () => {
   if (
@@ -63,10 +61,14 @@ const addImageToCanvas = () => {
 
   Canvas3.addImageAsMesh(
     image.value,
-    props.shader,
+    props.canvas3Options.shaderName,
     generatedMeshId,
     false,
-    meshUniforms.value,
+    props.canvas3Options.uniforms,
+    props.canvas3Options.activateMeshUniforms,
+    // meshUniforms.value,
+    // meshUniforms.value,
+    // activateMeshUniforms.value,
   );
   imgAddedToCanvas.value = true;
 };
@@ -85,7 +87,7 @@ watch(
 );
 
 watch(
-  () => props.uniforms,
+  () => props.canvas3Options.uniforms,
   (uniforms) => {
     Canvas3.meshUniformsUpdate(generatedMeshId, uniforms);
   },

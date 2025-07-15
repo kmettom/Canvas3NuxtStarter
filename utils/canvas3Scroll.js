@@ -2,9 +2,9 @@ import {
   elementNearViewport,
   lerp,
   setScrollActiveElements,
-} from "~/utils/canvasHelpers";
+} from "~/utils/canvas3Helpers";
 
-export default class Scroll {
+export default class Canvas3Scroll {
   constructor(options) {
     this.DOM = {
       scrollable: options.dom,

@@ -4,6 +4,7 @@ uniform sampler2D uImage;
 
 uniform float uTime;
 uniform float uAniInImage;
+uniform float uAniInExample4;
 
 uniform float scale; // = 4.0
 uniform float smoothness; // = 0.01
@@ -70,6 +71,6 @@ void main() {
   vec4 texColor = texture2D(uImage, swirled);
 
   // Output the final color
-  gl_FragColor = texColor * uAniInImage;
+  gl_FragColor = texColor  * uAniInExample4;
 
 }

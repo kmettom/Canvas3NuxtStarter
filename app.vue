@@ -1,5 +1,6 @@
 <template>
   <Canvas3PageLayout
+    :canvas-options="CanvasOptions"
     :transition="{
       name: 'pagetransition',
       onBeforeEnter: (el) => {
@@ -14,6 +15,7 @@
 <script setup>
 //TODO: add this feature inside the component, then to Canvas Init Options (page transition above)
 import Canvas3PageLayout from "~/layout/Canvas3PageLayout.vue";
+import { CanvasOptions } from "~/utils/canvas3Options";
 
 useHead({
   htmlAttrs: {

@@ -29,10 +29,16 @@
 </template>
 
 <script setup>
-//TODO: fix first load render
 //TODO: Page transition scroll to top implement, check page navigation and page transition animations
 
 import { Canvas3 } from "~/utils/canvas3";
+
+const props = defineProps({
+  canvasOptions: {
+    type: Object,
+    default: () => {},
+  },
+});
 
 const welcomeInit = ref(false);
 
@@ -54,7 +60,11 @@ const welcomeFinished = () => {
 };
 
 onMounted(async () => {
-  await Canvas3.initialize(canvasEl.value, scrollableContent.value);
+  await Canvas3.initialize(
+    canvasEl.value,
+    scrollableContent.value,
+    props.canvasOptions,
+  );
   welcomeInit.value = true;
 });
 </script>

@@ -2,85 +2,23 @@
 // TODO: stop request animation frame, when page not focused
 
 import * as THREE from "three";
-import Scroll from "~/utils/scroll";
+import Canvas3Scroll from "~/utils/canvas3Scroll";
 import { FontLoader } from "three/addons/loaders/FontLoader";
 import {
   generateBindingLogic,
   getMSDFFontMeshScales,
   heightPositionCoef,
   loadTexture,
-} from "~/utils/canvasHelpers";
+} from "~/utils/canvas3Helpers";
 import { gsap } from "gsap";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer";
 import { RenderPass } from "three/addons/postprocessing/RenderPass";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass";
-import scrollFragment from "~/utils/shaders/scrollFragment.glsl";
-import scrollVertex from "~/utils/shaders/scrollVertex.glsl";
-import projectBlurFragment from "~/utils/shaders/projectBlurFragment.glsl";
-import projectBlurVertex from "~/utils/shaders/projectBlurVertex.glsl";
-import TextBlurFragment from "~/utils/shaders/TextBlurFragment.glsl";
-import TextBlurVertex from "~/utils/shaders/TextBlurVertex.glsl";
-import heroBlurFragment from "~/utils/shaders/heroBlurFragment.glsl";
-import heroBlurVertex from "~/utils/shaders/heroBlurVertex.glsl";
-import example1Fragment from "~/utils/shaders/example1Fragment.glsl";
-import example1Vertex from "~/utils/shaders/example1Vertex.glsl";
-import example2Fragment from "~/utils/shaders/example2Fragment.glsl";
-import example2Vertex from "~/utils/shaders/example2Vertex.glsl";
-import example3Fragment from "~/utils/shaders/example3Fragment.glsl";
-import example3Vertex from "~/utils/shaders/example3Vertex.glsl";
-import example4Fragment from "~/utils/shaders/example4Fragment.glsl";
-import example4Vertex from "~/utils/shaders/example4Vertex.glsl";
-import example6Fragment from "~/utils/shaders/example6Fragment.glsl";
-import example6Vertex from "~/utils/shaders/example6Vertex.glsl";
 
 import * as pkg from "three-msdf-text-utils/build/bundle";
 import { useDisplayStore } from "~/stores/display";
-// import { reactive } from 'vue';
 
 const { MSDFTextGeometry } = pkg;
-
-const CanvasOptions = {
-  fonts: {
-    PPFormula: {
-      fnt: "/font/PPFormula-CondensedBlack.fnt",
-      atlas: "/font/PPFormula-CondensedBlack.png",
-    },
-  },
-  scroll: {
-    fragmentShader: scrollFragment,
-    vertexShader: scrollVertex,
-  },
-  default: {
-    fragmentShader: projectBlurFragment,
-    vertexShader: projectBlurVertex,
-    textFragment: TextBlurFragment,
-    textVertex: TextBlurVertex,
-  },
-  hero: {
-    fragmentShader: heroBlurFragment,
-    vertexShader: heroBlurVertex,
-  },
-  example1: {
-    fragmentShader: example1Fragment,
-    vertexShader: example1Vertex,
-  },
-  example2: {
-    fragmentShader: example2Fragment,
-    vertexShader: example2Vertex,
-  },
-  example3: {
-    fragmentShader: example3Fragment,
-    vertexShader: example3Vertex,
-  },
-  example4: {
-    fragmentShader: example4Fragment,
-    vertexShader: example4Vertex,
-  },
-  example6: {
-    fragmentShader: example6Fragment,
-    vertexShader: example6Vertex,
-  },
-};
 
 const canvasInitiated = ref(false);
 
@@ -99,9 +37,10 @@ class Canvas3Class {
   materials = [];
   imageStore = [];
   textStore = [];
+  activateMeshUniformMap = new Map();
   scroll = null;
   currentScroll = 0;
-  options = CanvasOptions;
+  // options = CanvasOptions;
   animations = {
     // cursorCallback: () => {},
   };
@@ -109,9 +48,12 @@ class Canvas3Class {
   mouse = { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 };
 
   // triggerSectionPositions= {};
-  // constructor() {}
+  // constructor({ canvasOptions }) {
+  //   this.options = canvasOptions;
+  // }
 
-  async initialize(canvasElement, scrollableContent) {
+  async initialize(canvasElement, scrollableContent, canvas3Options) {
+    this.options = canvas3Options;
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 
@@ -150,7 +92,7 @@ class Canvas3Class {
   }
 
   initScroll() {
-    this.scroll = new Scroll({
+    this.scroll = new Canvas3Scroll({
       dom: this.scrollableContent,
       activateMeshCallback: this.activateMesh.bind(this),
     });
@@ -190,8 +132,8 @@ class Canvas3Class {
       });
     };
     await Promise.all([
-      loadFontAtlas(CanvasOptions.fonts.PPFormula.atlas),
-      loadFont(CanvasOptions.fonts.PPFormula.fnt),
+      loadFontAtlas(this.options.fonts.PPFormula.atlas),
+      loadFont(this.options.fonts.PPFormula.fnt),
     ]).then(([atlas, font]) => {
       this.MSDFTextGeometryAtlas = atlas;
       this.MSDFTextGeometryFont = font;
@@ -263,9 +205,7 @@ class Canvas3Class {
 
   meshUniformsUpdate(id, uniforms) {
     const mesh = this.scene.getObjectByName(id);
-
     if (!mesh) return;
-
     for (const uniKey in uniforms) {
       if (!mesh.material.uniforms[uniKey])
         mesh.material.uniforms[uniKey] = {
@@ -275,30 +215,45 @@ class Canvas3Class {
       gsap.to(mesh.material.uniforms[uniKey], {
         duration: uniforms[uniKey].duration,
         value: uniforms[uniKey].value,
+        ease: uniforms[uniKey].ease ?? "power1.inOut",
       });
     }
   }
 
-  //TODO: refactor activate mesh to flexible easing and time - carry this on the item it self
   activateMesh(id, isActive) {
     const mesh = this.scene.getObjectByName(id);
     if (!mesh) {
       console.error("no Mesh found with ID: " + id);
       return;
     }
+
     if (mesh.material.uniforms.uAniInImage) {
       gsap.to(mesh.material.uniforms.uAniInImage, {
-        duration: 1.0,
+        duration: this.options.activateMeshOptions.image.uAniInImage.duration,
         value: isActive ? 1 : 0,
-        ease: "power1.inOut",
+        ease: this.options.activateMeshOptions.image.uAniInImage.ease,
       });
     }
     if (mesh.material.uniforms.uAniInText) {
       gsap.to(mesh.material.uniforms.uAniInText, {
-        duration: 1.5,
+        duration: this.options.activateMeshOptions.text.uAniInText.duration,
         value: isActive ? 1 : 0,
-        ease: "power2.out",
+        ease: this.options.activateMeshOptions.text.uAniInText.ease,
       });
+    }
+
+    const activateMeshUniforms = this.activateMeshUniformMap.get(id);
+
+    if (activateMeshUniforms) {
+      for (const [key, value] of Object.entries(activateMeshUniforms)) {
+        if (mesh.material.uniforms[key]) {
+          gsap.to(mesh.material.uniforms[key], {
+            duration: value.duration,
+            value: isActive ? 1 : 0,
+            ease: value.ease ?? "power1.inOut",
+          });
+        }
+      }
     }
   }
 
@@ -358,20 +313,20 @@ class Canvas3Class {
   }
 
   addTextAsMSDF(
-    shader,
+    shaderName,
     meshId,
     htmlEl,
-    text,
+    textContent,
     theme,
     mouseListeners,
     meshUniforms,
   ) {
-    let vertexShader = this.options.default.textVertex;
-    let fragmentShader = this.options.default.textFragment;
+    let vertexShader = this.options.shaders.default.textVertex;
+    let fragmentShader = this.options.shaders.default.textFragment;
 
-    if (shader) {
-      vertexShader = this.options[shader].vertexShader;
-      fragmentShader = this.options[shader].fragmentShader;
+    if (shaderName) {
+      vertexShader = this.options.shaders[shaderName].vertexShader;
+      fragmentShader = this.options.shaders[shaderName].fragmentShader;
     }
 
     let bounds = htmlEl.getBoundingClientRect();
@@ -383,7 +338,7 @@ class Canvas3Class {
     //*****************************
 
     const geometry = new MSDFTextGeometry({
-      text: text.trim(),
+      text: textContent.trim(),
       font: this.MSDFTextGeometryFont.data,
     });
 
@@ -399,6 +354,7 @@ class Canvas3Class {
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uColor: {
+          //TODO: colors dynamic from component
           value: new THREE.Vector4(
             theme === "dark" ? 27 / 255 : 191 / 255, // R
             theme === "dark" ? 24 / 255 : 192 / 255, // G
@@ -470,22 +426,25 @@ class Canvas3Class {
 
   async addImageAsMesh(
     imgHtmlEl,
-    shader,
+    shaderName,
     meshId,
     mouseListeners,
     meshUniforms,
+    activateMeshUniforms,
   ) {
+    this.activateMeshUniformMap.set(meshId, activateMeshUniforms);
+
     const geometryT = new THREE.BoxGeometry(1, 1, 1);
     const materialT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometryT, materialT);
     this.scene.add(cube);
 
-    let vertexShader = this.options.default.vertexShader;
-    let fragmentShader = this.options.default.fragmentShader;
+    let vertexShader = this.options.shaders.default.vertexShader;
+    let fragmentShader = this.options.shaders.default.fragmentShader;
 
-    if (shader) {
-      vertexShader = this.options[shader].vertexShader;
-      fragmentShader = this.options[shader].fragmentShader;
+    if (shaderName) {
+      vertexShader = this.options.shaders[shaderName].vertexShader;
+      fragmentShader = this.options.shaders[shaderName].fragmentShader;
     }
 
     let bounds = imgHtmlEl.getBoundingClientRect();
@@ -518,6 +477,7 @@ class Canvas3Class {
           value: new THREE.Vector2(this.width, this.height),
         },
         ...meshUniforms,
+        ...activateMeshUniforms,
       },
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
@@ -548,9 +508,10 @@ class Canvas3Class {
 
     this.imageStore.push(newMesh);
 
-    if (meshUniforms.uAniInImage || imgHtmlEl.dataset.activeScroll === "true") {
-      this.activateMesh(meshId, true);
-    }
+    //TODO: check what was the intended need for this
+    // if (meshUniforms.uAniInImage || imgHtmlEl.dataset.activeScroll === "true") {
+    //   this.activateMesh(meshId, true);
+    // }
 
     this.setImageMeshPositions();
     if (mouseListeners) this.meshMouseListeners(newMesh, material);
@@ -584,8 +545,8 @@ class Canvas3Class {
         tDiffuse: { value: null },
         scrollSpeed: { value: null },
       },
-      vertexShader: this.options.scroll.vertexShader,
-      fragmentShader: this.options.scroll.fragmentShader,
+      vertexShader: this.options.shaders.scroll.vertexShader,
+      fragmentShader: this.options.shaders.scroll.fragmentShader,
     };
 
     this.customPass = new ShaderPass(this.myEffect);

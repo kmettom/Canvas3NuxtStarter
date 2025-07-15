@@ -12,7 +12,7 @@
 import { Canvas3 } from "~/utils/canvas3";
 
 const props = defineProps({
-  shader: {
+  shaderName: {
     type: String,
     default: null,
   },
@@ -85,7 +85,7 @@ watch(
     // delay canvas initialization to wait for font loaded
     setTimeout(() => {
       Canvas3.addTextAsMSDF(
-        props.shader,
+        props.shaderName,
         meshId,
         htmlEl.value,
         getTrimmedText(),
