@@ -49,11 +49,12 @@ class Canvas3Class {
   mouse = { x: 0, y: 0, movementX: 0, movementY: 0, xPrev: 0, yPrev: 0 };
 
   // triggerSectionPositions= {};
-  constructor({ canvasOptions }) {
-    this.options = canvasOptions;
-  }
+  // constructor({ canvasOptions }) {
+  //   this.options = canvasOptions;
+  // }
 
-  async initialize(canvasElement, scrollableContent) {
+  async initialize(canvasElement, scrollableContent, canvas3Options) {
+    this.options = canvas3Options;
     this.displayStore = useDisplayStore();
     this.navigationStore = useNavigationStore();
 
@@ -215,11 +216,11 @@ class Canvas3Class {
       gsap.to(mesh.material.uniforms[uniKey], {
         duration: uniforms[uniKey].duration,
         value: uniforms[uniKey].value,
+        ease: uniforms[uniKey].ease ?? "power1.inOut",
       });
     }
   }
 
-  //TODO: refactor activate mesh to flexible easing and time - carry this on the item it self
   activateMesh(id, isActive) {
     const mesh = this.scene.getObjectByName(id);
     if (!mesh) {
@@ -242,18 +243,19 @@ class Canvas3Class {
       });
     }
 
-    // const meshUniforms = this.activateMeshUniformMap.get(id);
+    const activateMeshUniforms = this.activateMeshUniformMap.get(id);
 
-    // default in the settings, options on component props
-
-    // for (const [key, value] in meshUniforms) {
-    //     mesh.material.uniforms
-    //     gsap.to(meshUniforms[key], {
-    //         duration: 1.0,
-    //         value: isActive ? 1 : 0,
-    //         ease: "power1.inOut",
-    //     });
-    // }
+    if (activateMeshUniforms) {
+      for (const [key, value] of Object.entries(activateMeshUniforms)) {
+        if (mesh.material.uniforms[key]) {
+          gsap.to(mesh.material.uniforms[key], {
+            duration: value.duration,
+            value: isActive ? 1 : 0,
+            ease: value.ease ?? "power1.inOut",
+          });
+        }
+      }
+    }
   }
 
   setFixedScrollToElement(elNode, margin = 0) {
@@ -476,6 +478,7 @@ class Canvas3Class {
           value: new THREE.Vector2(this.width, this.height),
         },
         ...meshUniforms,
+        ...activateMeshUniforms,
       },
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,

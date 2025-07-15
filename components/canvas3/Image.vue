@@ -35,6 +35,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
       },
+      activateMeshUniforms: {
+        type: Object,
+        default: () => {},
+      },
     },
     default: () => ({
       shaderName: "default",
@@ -61,7 +65,7 @@ const addImageToCanvas = () => {
     generatedMeshId,
     false,
     props.canvas3Options.uniforms,
-    props.canvas3Options.uniforms,
+    props.canvas3Options.activateMeshUniforms,
     // meshUniforms.value,
     // meshUniforms.value,
     // activateMeshUniforms.value,

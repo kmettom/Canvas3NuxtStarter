@@ -83,12 +83,7 @@
                 activeRange: 0.9,
                 activateOnce: false,
                 onScrollCallback: (item, speed) => {
-                  example3Speed = speed;
-                  gsap.to(item.elNode.querySelector('.scroll-speed-ani'), {
-                    width: `${speed * 100}%`,
-                    duration: 0.1,
-                  });
-                  example3Bounds = item.elNode.getBoundingClientRect().top;
+                  example3ScrollCallback(item, speed);
                 },
               }"
               class="example-wrapper"
@@ -148,6 +143,9 @@
                 }"
                 :canvas3-options="{
                   shaderName: 'example4',
+                  activateMeshUniforms: {
+                    uAniInExample4: { duration: 1 },
+                  },
                 }"
               />
               <CodeSnippet>
@@ -200,12 +198,19 @@
 <script setup>
 import Container from "~/components/common/Container.vue";
 import CodeSnippet from "~/components/common/CodeSnippet.vue";
-import { gsap } from "gsap";
+import gsap from "gsap";
 
 const example1Hover = ref(false);
 const example3Speed = ref(0);
-const example3Bounds = ref(0);
 const example2Hover = ref(false);
+
+const example3ScrollCallback = (item, speed) => {
+  example3Speed.value = speed;
+  gsap.to(item.elNode.querySelector(".scroll-speed-ani"), {
+    width: `${speed * 100}%`,
+    duration: 0.1,
+  });
+};
 </script>
 
 <style lang="scss" scoped>
