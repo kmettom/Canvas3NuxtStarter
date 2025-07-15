@@ -78,7 +78,6 @@ export function getMSDFFontMeshScales(boundsWidth, geometryWidth) {
 }
 
 export function setScrollActiveElements(elNode, meshIds, state) {
-  //TODO: carry the Html mesh elements in the item, make it as class Typescript
   if (!meshIds || meshIds.length === 0) return;
   for (const id of meshIds) {
     const el = elNode.querySelector(`[data-mesh-id="${id}"]`);
@@ -95,5 +94,4 @@ export function elementNearViewport(bounds, margin = 200) {
   );
 }
 
-//TODO: add to canvas options to set different lerp function
 export const lerp = (a, b, n) => (1 - n) * a + n * b;
