@@ -1,7 +1,7 @@
 {
   "name": "tomaskmet.com",
   "description": "",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "private": true,
   "engines": {
     "node": "22.x"
@@ -20,6 +20,7 @@
     "lintfix": "eslint . --fix && prettier --write --list-different ."
   },
   "devDependencies": {
+    "@783studio/canvas3-nuxt": "^1.0.0",
     "@nuxt-modules/compression": "^0.1.0",
     "@nuxt/content": "^3.4.0",
     "@nuxt/eslint": "^0.7.4",
@@ -44,8 +45,11 @@
     "three-msdf-text-utils": "^1.1.6",
     "typescript": "^5.7.2",
     "vite-plugin-compression": "^0.5.1",
-    "vite-plugin-glsl": "^1.1.2",
+    "vite-plugin-glsl": "^1.5.1",
     "vue": "^3.5.13",
     "vue-router": "^4.2.4"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0"
   }
 }
