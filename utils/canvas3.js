@@ -16,6 +16,7 @@ import { ShaderPass } from "three/addons/postprocessing/ShaderPass";
 
 import * as pkg from "three-msdf-text-utils/build/bundle";
 import { useDisplayStore } from "~/stores/display";
+import { useNavigationStore } from "~/stores/navigation";
 
 const { MSDFTextGeometry } = pkg;
 
