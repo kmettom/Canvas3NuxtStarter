@@ -1,5 +1,4 @@
 <template>
-  <MyComponent />
   <Canvas3PageLayout
     :canvas-options="CanvasOptions"
     :transition="{
@@ -17,7 +16,6 @@
 //TODO: add this feature inside the component, then to Canvas Init Options (page transition above)
 import Canvas3PageLayout from "~/layout/Canvas3PageLayout.vue";
 import { CanvasOptions } from "~/utils/canvas3Options";
-import { MyComponent } from "@783studio/canvas3-nuxt";
 
 useHead({
   htmlAttrs: {
