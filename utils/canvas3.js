@@ -3,7 +3,8 @@
 
 import * as THREE from "three";
 import Canvas3Scroll from "~/utils/canvas3Scroll";
-import { FontLoader } from "three/addons/loaders/FontLoader";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+// import { FontLoader } from "three/addons/loaders/FontLoader";
 import {
   generateBindingLogic,
   getMSDFFontMeshScales,
