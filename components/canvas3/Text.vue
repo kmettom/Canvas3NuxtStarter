@@ -90,7 +90,6 @@ watch(
         htmlEl.value,
         getTrimmedText(),
         props.theme,
-        false,
         meshUniforms.value,
       );
     }, 0);

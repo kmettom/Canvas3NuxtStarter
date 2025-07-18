@@ -2,7 +2,7 @@
 
 import * as THREE from "three";
 import Canvas3Scroll from "~/utils/canvas3Scroll";
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import {
   generateBindingLogic,
   getMSDFFontMeshScales,
@@ -149,7 +149,7 @@ class Canvas3Class {
   }
 
   resizeImageStore() {
-    for (var i = 0; i < this.imageStore.length; i++) {
+    for (let i = 0; i < this.imageStore.length; i++) {
       let bounds = this.imageStore[i].htmlEl.getBoundingClientRect();
       this.imageStore[i].mesh.scale.set(bounds.width, bounds.height);
       this.imageStore[i].mesh.material.uniforms.uMeshSize.value.set(
@@ -163,7 +163,7 @@ class Canvas3Class {
   }
 
   resizeTextStore() {
-    for (var i = 0; i < this.textStore.length; i++) {
+    for (let i = 0; i < this.textStore.length; i++) {
       let bounds = this.textStore[i].htmlEl.getBoundingClientRect();
       const { scaleX, scaleY } = getMSDFFontMeshScales(
         bounds.width,
@@ -178,7 +178,7 @@ class Canvas3Class {
 
   setImageMeshPositions() {
     if (this.imageStore.length === 0) return;
-    for (var i = 0; i < this.imageStore.length; i++) {
+    for (let i = 0; i < this.imageStore.length; i++) {
       this.imageStore[i].mesh.position.x =
         this.imageStore[i].htmlEl.getBoundingClientRect().left -
         this.width / 2 +
@@ -192,7 +192,7 @@ class Canvas3Class {
 
   setTextMeshPositions() {
     if (this.textStore.length === 0) return;
-    for (var i = 0; i < this.textStore.length; i++) {
+    for (let i = 0; i < this.textStore.length; i++) {
       this.textStore[i].mesh.position.x =
         this.textStore[i].htmlEl.getBoundingClientRect().left - this.width / 2;
       this.textStore[i].mesh.position.y =
@@ -284,7 +284,7 @@ class Canvas3Class {
   removeScrollActiveElement(elNode) {
     if (!elNode || this.scroll.DOM.onScrollActivateElements.length === 0)
       return;
-    for (var i = 0; i < this.scroll.DOM.onScrollActivateElements.length; i++) {
+    for (let i = 0; i < this.scroll.DOM.onScrollActivateElements.length; i++) {
       if (
         this.scroll.DOM.onScrollActivateElements[i].elNode.isEqualNode(elNode)
       ) {
@@ -300,9 +300,8 @@ class Canvas3Class {
     this.scene.remove(toRemove);
     toRemove.geometry.dispose();
     toRemove.material.dispose();
-    toRemove = undefined;
 
-    for (var i = 0; i < this.imageStore.length; i++) {
+    for (let i = 0; i < this.imageStore.length; i++) {
       if (this.imageStore[i].name === id) {
         this.imageStore.splice(i, 1);
         this.materials.splice(i, 1);
@@ -317,7 +316,6 @@ class Canvas3Class {
     htmlEl,
     textContent,
     theme,
-    mouseListeners,
     meshUniforms,
   ) {
     let vertexShader = this.options.shaders.default.textVertex;
@@ -419,15 +417,12 @@ class Canvas3Class {
     if (htmlEl.dataset.activeScroll === "true") {
       this.activateMesh(meshId, true);
     }
-
-    if (mouseListeners) this.meshMouseListeners(newMesh, material);
   }
 
   async addImageAsMesh(
     imgHtmlEl,
     shaderName,
     meshId,
-    mouseListeners,
     meshUniforms,
     activateMeshUniforms,
   ) {
@@ -513,25 +508,6 @@ class Canvas3Class {
     // }
 
     this.setImageMeshPositions();
-    if (mouseListeners) this.meshMouseListeners(newMesh, material);
-  }
-
-  meshMouseListeners(mesh, material) {
-    mesh.htmlEl.addEventListener("mouseenter", () => {
-      mesh.mesh.renderOrder = 1;
-      gsap.to(material.uniforms.hoverState, {
-        duration: 0.5,
-        value: 1,
-      });
-    });
-
-    mesh.htmlEl.addEventListener("mouseout", () => {
-      mesh.mesh.renderOrder = 0;
-      gsap.to(material.uniforms.hoverState, {
-        duration: 0.5,
-        value: 0,
-      });
-    });
   }
 
   composerPass() {
@@ -611,7 +587,7 @@ class Canvas3Class {
     }
 
     //animate on hover
-    for (var i = 0; i < this.materials.length; i++) {
+    for (let i = 0; i < this.materials.length; i++) {
       this.materials[i].uniforms.uTime.value = this.time;
       this.materials[i].uniforms.uMouse.value = new THREE.Vector2(
         this.mouse.x,

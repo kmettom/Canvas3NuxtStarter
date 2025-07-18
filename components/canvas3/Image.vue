@@ -63,12 +63,8 @@ const addImageToCanvas = () => {
     image.value,
     props.canvas3Options.shaderName,
     generatedMeshId,
-    false,
     props.canvas3Options.uniforms,
     props.canvas3Options.activateMeshUniforms,
-    // meshUniforms.value,
-    // meshUniforms.value,
-    // activateMeshUniforms.value,
   );
   imgAddedToCanvas.value = true;
 };
