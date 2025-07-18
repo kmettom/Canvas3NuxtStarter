@@ -1,20 +1,21 @@
 // TODO: stop request animation frame, when page not focused
 
 import * as THREE from "three";
-import Canvas3Scroll from "~/utils/canvas3Scroll";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
-import {
-  generateBindingLogic,
-  getMSDFFontMeshScales,
-  heightPositionCoef,
-  loadTexture,
-} from "~/utils/canvas3Helpers";
-import { gsap } from "gsap";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer";
-import { RenderPass } from "three/addons/postprocessing/RenderPass";
-import { ShaderPass } from "three/addons/postprocessing/ShaderPass";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 
+import { gsap } from "gsap";
 import * as pkg from "three-msdf-text-utils/build/bundle";
+import Canvas3Scroll from "~/utils/canvas3Scroll";
+import {
+    generateBindingLogic,
+    getMSDFFontMeshScales,
+    heightPositionCoef,
+    loadTexture,
+} from "~/utils/canvas3Helpers";
+
 import { useDisplayStore } from "~/stores/display";
 import { useNavigationStore } from "~/stores/navigation";
 
@@ -256,9 +257,9 @@ class Canvas3Class {
     }
   }
 
-  setFixedScrollToElement(elNode, margin = 0) {
-    this.scroll.fixScrollTo = { htmlRef: elNode ?? null, margin: margin };
-  }
+  // setFixedScrollToElement(elNode, margin = 0) {
+  //   this.scroll.fixScrollTo = { htmlRef: elNode ?? null, margin: margin };
+  // }
 
   addOnScrollActivateElement(binding) {
     const newBinding = generateBindingLogic(binding);
@@ -310,14 +311,7 @@ class Canvas3Class {
     }
   }
 
-  addTextAsMSDF(
-    shaderName,
-    meshId,
-    htmlEl,
-    textContent,
-    theme,
-    meshUniforms,
-  ) {
+  addTextAsMSDF(shaderName, meshId, htmlEl, textContent, theme, meshUniforms) {
     let vertexShader = this.options.shaders.default.textVertex;
     let fragmentShader = this.options.shaders.default.textFragment;
 
@@ -512,22 +506,22 @@ class Canvas3Class {
 
   composerPass() {
     this.composer = new EffectComposer(this.renderer);
-    this.renderPass = new RenderPass(this.scene, this.camera);
-    this.composer.addPass(this.renderPass);
+      this.renderPass = new RenderPass(this.scene, this.camera);
+      this.composer.addPass(this.renderPass);
 
-    this.myEffect = {
-      uniforms: {
-        tDiffuse: { value: null },
-        scrollSpeed: { value: null },
-      },
-      vertexShader: this.options.shaders.scroll.vertexShader,
-      fragmentShader: this.options.shaders.scroll.fragmentShader,
-    };
+      this.myEffect = {
+        uniforms: {
+          tDiffuse: { value: null },
+          scrollSpeed: { value: null },
+        },
+        vertexShader: this.options.shaders.scroll.vertexShader,
+        fragmentShader: this.options.shaders.scroll.fragmentShader,
+      };
 
-    this.customPass = new ShaderPass(this.myEffect);
-    this.customPass.renderToScreen = true;
+      this.customPass = new ShaderPass(this.myEffect);
+      this.customPass.renderToScreen = true;
 
-    this.composer.addPass(this.customPass);
+      this.composer.addPass(this.customPass);
   }
 
   setSize() {
