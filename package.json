@@ -44,8 +44,11 @@
     "three-msdf-text-utils": "^1.1.6",
     "typescript": "^5.7.2",
     "vite-plugin-compression": "^0.5.1",
-    "vite-plugin-glsl": "^1.1.2",
+    "vite-plugin-glsl": "^1.5.1",
     "vue": "^3.5.13",
     "vue-router": "^4.2.4"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0"
   }
 }

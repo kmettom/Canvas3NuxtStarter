@@ -1,5 +1,6 @@
 import { Canvas3 } from "~/utils/canvas3.js";
 import { defineNuxtPlugin } from "#app";
+import { useNavigationStore } from "~/stores/navigation";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive("onScrollActivate", {

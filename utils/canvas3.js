@@ -1,4 +1,3 @@
-// TODO: 1. meshActivate with flexible timing
 // TODO: stop request animation frame, when page not focused
 
 import * as THREE from "three";
@@ -17,6 +16,7 @@ import { ShaderPass } from "three/addons/postprocessing/ShaderPass";
 
 import * as pkg from "three-msdf-text-utils/build/bundle";
 import { useDisplayStore } from "~/stores/display";
+import { useNavigationStore } from "~/stores/navigation";
 
 const { MSDFTextGeometry } = pkg;
 
@@ -140,7 +140,6 @@ class Canvas3Class {
     });
   }
 
-  //TODO: test refactored logic - displayService carries resize
   resizeOnChange() {
     this.setSize();
     this.resizeImageStore();
@@ -630,14 +629,11 @@ class Canvas3Class {
       }
     }
 
-    // TODO: use from class, not in Pinia as its only read and not expected output
-    // this.composer.render();
+    this.composer.render();
 
     for (const argumentsKey in this.animations) {
       if (this.animations[argumentsKey]) this.animations[argumentsKey]();
     }
-
-    this.renderer.render(this.scene, this.camera); // -> Also needed
 
     try {
       requestAnimationFrame(this.render.bind(this));
