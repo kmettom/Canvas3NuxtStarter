@@ -10,10 +10,10 @@ import { gsap } from "gsap";
 import * as pkg from "three-msdf-text-utils/build/bundle";
 import Canvas3Scroll from "~/utils/canvas3Scroll";
 import {
-    generateBindingLogic,
-    getMSDFFontMeshScales,
-    heightPositionCoef,
-    loadTexture,
+  generateBindingLogic,
+  getMSDFFontMeshScales,
+  heightPositionCoef,
+  loadTexture,
 } from "~/utils/canvas3Helpers";
 
 import { useDisplayStore } from "~/stores/display";
@@ -506,22 +506,22 @@ class Canvas3Class {
 
   composerPass() {
     this.composer = new EffectComposer(this.renderer);
-      this.renderPass = new RenderPass(this.scene, this.camera);
-      this.composer.addPass(this.renderPass);
+    this.renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(this.renderPass);
 
-      this.myEffect = {
-        uniforms: {
-          tDiffuse: { value: null },
-          scrollSpeed: { value: null },
-        },
-        vertexShader: this.options.shaders.scroll.vertexShader,
-        fragmentShader: this.options.shaders.scroll.fragmentShader,
-      };
+    this.myEffect = {
+      uniforms: {
+        tDiffuse: { value: null },
+        scrollSpeed: { value: null },
+      },
+      vertexShader: this.options.shaders.scroll.vertexShader,
+      fragmentShader: this.options.shaders.scroll.fragmentShader,
+    };
 
-      this.customPass = new ShaderPass(this.myEffect);
-      this.customPass.renderToScreen = true;
+    this.customPass = new ShaderPass(this.myEffect);
+    this.customPass.renderToScreen = true;
 
-      this.composer.addPass(this.customPass);
+    this.composer.addPass(this.customPass);
   }
 
   setSize() {
