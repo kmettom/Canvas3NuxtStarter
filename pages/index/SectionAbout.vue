@@ -3,7 +3,7 @@
     <h2 class="body-s about-headline">About</h2>
     <div class="body-l">
       <p
-        v-onScrollActivate="{
+        v-action-on-scroll="{
           activeRange: 0.85,
           activateOnce: true,
           activateCallback: textAniCallback,
@@ -14,7 +14,7 @@
         Nuxt starter pack with integrated three.js canvas.
       </p>
       <p
-        v-onScrollActivate="{
+        v-action-on-scroll="{
           activeRange: 0.85,
           activateOnce: true,
           activateCallback: textAniCallback,

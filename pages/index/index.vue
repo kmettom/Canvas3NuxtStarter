@@ -1,21 +1,21 @@
 <template>
   <div>
     <div
-      v-onScrollActivate="setSectionActivationOptions('home', false)"
+      v-action-on-scroll="setSectionActivationOptions('home', false)"
       class="page-section"
       data-nav-id="home"
     >
       <SectionHero :section-activate="props.pageActive" />
     </div>
     <div
-      v-onScrollActivate="setSectionActivationOptions('about', false)"
+      v-action-on-scroll="setSectionActivationOptions('about', false)"
       class="page-section"
       data-nav-id="about"
     >
       <SectionAbout />
     </div>
     <!--    <div-->
-    <!--      v-onScrollActivate="setSectionActivationOptions('services', true)"-->
+    <!--      v-action-on-scroll="setSectionActivationOptions('services', true)"-->
     <!--      v-set-data-attrs="{ cursorcolor: 'dark' }"-->
     <!--      class="page-section"-->
     <!--      data-nav-id="services"-->
@@ -23,21 +23,21 @@
     <!--      <SectionServices />-->
     <!--    </div>-->
     <div
-      v-onScrollActivate="setSectionActivationOptions('examples', false)"
+      v-action-on-scroll="setSectionActivationOptions('examples', false)"
       class="page-section"
       data-nav-id="examples"
     >
       <SectionExamples />
     </div>
     <div
-      v-onScrollActivate="setSectionActivationOptions('roadmap', true)"
+      v-action-on-scroll="setSectionActivationOptions('roadmap', true)"
       class="page-section"
       data-nav-id="roadmap"
     >
       <SectionRoadmap />
     </div>
     <div
-      v-onScrollActivate="setSectionActivationOptions('contact', true)"
+      v-action-on-scroll="setSectionActivationOptions('contact', true)"
       v-set-data-attrs="{ cursorcolor: 'dark' }"
       class="page-section"
       data-nav-id="contact"

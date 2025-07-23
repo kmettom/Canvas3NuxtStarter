@@ -5,11 +5,11 @@
         <div class="contact-line">
           <div class="heading-1">
             <span
-              v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
+              v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
             >
               <Canvas3Text :theme="'light'"> GET </Canvas3Text>
               <span
-                v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
+                v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
                 class="canvas-text-spacing"
               >
                 <Canvas3Text :theme="'light'"> IN </Canvas3Text>
@@ -17,7 +17,7 @@
             </span>
           </div>
           <div
-            v-onScrollActivate="{
+            v-action-on-scroll="{
               activeRange: 0.85,
               activateOnce: true,
               activateCallback: (item) => {
@@ -56,7 +56,7 @@
         </div>
         <div class="contact-line align-right">
           <div
-            v-onScrollActivate="{
+            v-action-on-scroll="{
               activeRange: 0.85,
               activateOnce: true,
               activateCallback: (item) => {
@@ -116,7 +116,7 @@
           </div>
           <div class="heading-1">
             <span
-              v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
+              v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
             >
               <Canvas3Text :theme="'light'"> TOUCH </Canvas3Text>
             </span>

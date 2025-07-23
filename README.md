@@ -146,7 +146,7 @@ Options:
 Example:
 
 ```bash
-    <div v-onScrollActivate="{ activeRange: 0.95, activateOnce: true }" ></div>
+    <div v-action-on-scroll="{ activeRange: 0.95, activateOnce: true }" ></div>
 ```
 
 If value is 0, scroll speed is normal, if the number is positive, the element will move faster upwards, if negative, the
@@ -158,7 +158,7 @@ Example:
 
 ```bash
   <div id="parentSectionId">
-    <div v-onScrollActivate="{ scrollSpeed: 1, fixToParentId: 'parentSectionId' }" >
+    <div v-action-on-scroll="{ scrollSpeed: 1, fixToParentId: 'parentSectionId' }" >
       <div>First child element of v-scrollSpeed will be fixed</div>
     </div>
   </div>
@@ -171,14 +171,14 @@ Additional options:
 - Examples:
 
 ```bash
-    <div v-onScrollActivate:once="{activeRange: 0.8, activateOnce: true }" ></div>
-    <div v-onScrollActivate:top="{activeRange: 0.8, bidirectionalActivation: true }" ></div>
+    <div v-action-on-scroll:once="{activeRange: 0.8, activateOnce: true }" ></div>
+    <div v-action-on-scroll:top="{activeRange: 0.8, bidirectionalActivation: true }" ></div>
 ```
 
 Value is the percentage of screen's height that should be in viewport to trigger the active class. Default value is 1,
 covering 100% of the screen.
 
-v-onScrollActivate elements will ge assigned a 'show-on-scroll' classes and 'active' class when active.
+v-action-on-scroll elements will ge assigned a 'show-on-scroll' classes and 'active' class when active.
 
 ```bash
     .show-on-scroll{

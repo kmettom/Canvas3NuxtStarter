@@ -1,21 +1,18 @@
 <template>
-  <Canvas3PageLayout
-    :canvas-options="CanvasOptions"
-    :transition="{
-      name: 'pagetransition',
-      onBeforeEnter: (el) => {
-        //TODO: add this feature inside the component, then to Canvas Init Options
-        // Canvas3.scrollToTop(0);
-      },
-    }"
-  >
+  <NuxtLayout :name="layout" :canvas3options="Canvas3Options">
     <NuxtPage />
-  </Canvas3PageLayout>
+  </NuxtLayout>
+  <img
+    alt="hidden image for font"
+    loading="eager"
+    src="/font/PPFormula-CondensedBlack.png"
+    style="display: none"
+  />
 </template>
 <script setup>
-//TODO: add this feature inside the component, then to Canvas Init Options (page transition above)
-import Canvas3PageLayout from "~/layout/Canvas3PageLayout.vue";
-import { CanvasOptions } from "~/utils/canvas3Options";
+import { Canvas3Options } from "~/constants/canvas3-options";
+
+const layout = "canvas3";
 
 useHead({
   htmlAttrs: {

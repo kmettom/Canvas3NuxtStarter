@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "nuxt-viewport",
     "@pinia/nuxt",
+    "../Canvas3/canvas3-nuxt/src/module",
   ],
   image: {
     target: "static",

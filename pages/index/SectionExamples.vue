@@ -3,7 +3,7 @@
     <Container>
       <h2 class="heading-2">
         <span
-          v-onScrollActivate="{ activeRange: 0.9, activateOnce: true }"
+          v-action-on-scroll="{ activeRange: 0.9, activateOnce: true }"
           v-set-data-attrs="{ cursorcolor: 'light' }"
         >
           <Canvas3Text :theme="'light'"> EXAMPLES </Canvas3Text>
@@ -79,7 +79,7 @@
           </p>
           <div class="examples-row">
             <div
-              v-onScrollActivate="{
+              v-action-on-scroll="{
                 activeRange: 0.9,
                 activateOnce: false,
                 onScrollCallback: (item, speed) => {
@@ -106,7 +106,7 @@
                   }"
                 />
                 <CodeSnippet>
-                  v-onScrollActivate="{ <br />
+                  v-action-on-scroll="{ <br />
                   &nbsp;&nbsp;activeRange: 0.9,<br />
                   &nbsp;&nbsp;activateOnce: false,<br />
                   &nbsp;&nbsp;onScrollCallback: (item, speed) => {
@@ -117,7 +117,7 @@
               </div>
             </div>
             <div
-              v-onScrollActivate="{
+              v-action-on-scroll="{
                 activeRange: 0.7,
                 activateOnce: false,
                 scrollSpeedSetTo: { value: 0.3 },
@@ -149,7 +149,7 @@
                 }"
               />
               <CodeSnippet>
-                v-onScrollActivate="{ <br />
+                v-action-on-scroll="{ <br />
                 &nbsp;&nbsp;activeRange: 0.7,<br />
                 &nbsp;&nbsp;scrollSpeedSetTo: { value: 0.3 },<br />
                 &nbsp;&nbsp;bidirectionalActivation: true,<br />
@@ -162,7 +162,7 @@
             </div>
             <div
               id="fixedParent"
-              v-onScrollActivate="{
+              v-action-on-scroll="{
                 activeRange: 0.9,
                 fixToParentId: 'fixedParent',
               }"
@@ -181,7 +181,7 @@
                   }"
                 />
                 <CodeSnippet>
-                  v-onScrollActivate="{<br />
+                  v-action-on-scroll="{<br />
                   &nbsp;&nbsp;activeRange: 0.9,<br />
                   &nbsp;&nbsp;fixToParentId: 'fixedParent',<br />
                   }"
