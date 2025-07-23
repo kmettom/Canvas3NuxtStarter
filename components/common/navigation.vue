@@ -29,7 +29,7 @@ import {
 } from "~/utils/animations/navigation";
 import { gsap } from "gsap";
 import { useTemplateRefsList } from "@vueuse/core";
-import { Canvas3 } from "~/utils/canvas3";
+// import { Canvas3 } from "~/utils/canvas3";
 
 const navItemRefs = useTemplateRefsList();
 const navAniDuration = 0.15;
@@ -54,10 +54,12 @@ const navigationHoverAnimate = (index) => {
 const navigationStore = useNavigationStore();
 
 const goToSection = (sectionId) => {
-  Canvas3.scrollToElBySelector(
-    `.page-section[data-nav-id="${sectionId}"]`,
-    0.75,
-  );
+  console.log("sectionId", sectionId);
+  //TODO: navigation go to section scroll
+  // Canvas3.scrollToElBySelector(
+  //   `.page-section[data-nav-id="${sectionId}"]`,
+  //   0.75,
+  // );
 };
 
 const navigationItems = computed(() => navigationStore.navigationItems);
@@ -93,17 +95,21 @@ watch(
   flex-direction: column;
   text-align: right;
 }
+
 .navigation-item {
   line-height: 20px;
   pointer-events: auto;
   overflow-y: hidden;
+
   span {
     display: inline-block;
     position: relative;
   }
+
   &:hover span {
     font-weight: bold;
   }
+
   &:before {
     opacity: 0;
     content: "👉";
@@ -113,8 +119,10 @@ watch(
     transform: translateX(-10px);
     transition: ease all 0.3s;
   }
+
   &.active {
     font-weight: bold;
+
     &::before {
       transform: translateX(0px);
       opacity: 1;

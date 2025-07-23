@@ -3,6 +3,7 @@
     :welcome-init="welcomeInit"
     @welcome-complete="welcomeFinished()"
   />
+  <CommonNavigation />
   <NuxtLayout
     :name="layout"
     :canvas3options="Canvas3Options"
