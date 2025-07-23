@@ -65,6 +65,7 @@ const heroSectionAnimation = () => {
 watch(
   () => props.sectionActivate,
   (newValue) => {
+    console.log("section HERO activate");
     if (newValue) {
       heroSectionAnimation();
     }

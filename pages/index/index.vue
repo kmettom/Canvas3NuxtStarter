@@ -59,10 +59,10 @@ import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 
 useSeoMeta({
-  title: "NUXTTHREEJSSTARTERPACK",
-  ogTitle: "NUXTTHREEJSSTARTERPACK",
-  description: "NUXTTHREEJSSTARTERPACK",
-  ogDescription: "NUXTTHREEJSSTARTERPACK",
+  title: "Canvas3 Starter",
+  ogTitle: "Canvas3 Starter",
+  description: "Canvas3 Starter",
+  ogDescription: "Canvas3 Starter",
 });
 
 const navigationStore = useNavigationStore();

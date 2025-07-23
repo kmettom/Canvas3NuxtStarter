@@ -1,54 +1,60 @@
+<script setup lang="ts">
+import { ref, watch, defineEmits } from "vue";
+import { gsap } from "gsap";
+
+// Define props
+const props = defineProps({
+  welcomeInit: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+// Define emits
+const emit = defineEmits(["welcomeComplete"]);
+
+// Reactive state
+const welcomeAniDuration = ref(0.5); // 0.5
+// const welcomeAniDelay = ref(0.25); // 0.25
+const welcomeHideDuration = ref(0.5); // 0.5
+const welcomeHideDelay = ref(0.5); // 0.5
+
+// Function for animation
+function welcomeAnimation() {
+  gsap.to(".welcome", {
+    duration: welcomeHideDuration.value,
+    delay: welcomeAniDuration.value + welcomeHideDelay.value,
+    opacity: 0,
+    height: 0,
+    ease: "power4.in",
+    onComplete: () => {
+      welcomeComplete();
+    },
+  });
+}
+
+// Emit function
+function welcomeComplete() {
+  console.log("welcomeComplete");
+  emit("welcomeComplete");
+}
+
+// Watch for changes in 'welcomeInit' prop
+watch(
+  () => props.welcomeInit,
+  (newValue) => {
+    console.log("welcomeInit");
+    if (newValue) {
+      welcomeAnimation();
+    }
+  },
+);
+</script>
+
 <template>
   <div class="welcome" />
 </template>
-<script>
-import { gsap } from "gsap";
 
-export default {
-  props: {
-    welcomeInit: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  emits: ["welcomeComplete"],
-
-  data() {
-    return {
-      show: false,
-      welcomeAniDuration: 0.0, //0.5
-      welcomeAniDelay: 0.25, //0.25
-      welcomeHideDuration: 0, //0.5
-      welcomeHideDelay: 0.5, //0.5
-    };
-  },
-  watch: {
-    welcomeInit(newValue) {
-      if (newValue) {
-        this.welcomeAnimation();
-      }
-    },
-  },
-  mounted() {},
-  methods: {
-    welcomeAnimation() {
-      gsap.to(".welcome", {
-        duration: this.welcomeHideDuration,
-        delay: this.welcomeAniDuration + this.welcomeHideDelay,
-        opacity: 0,
-        height: 0,
-        ease: "power4.in",
-        onComplete: () => {
-          this.welcomeComplete();
-        },
-      });
-    },
-    welcomeComplete() {
-      this.$emit("welcomeComplete");
-    },
-  },
-};
-</script>
 <style lang="scss" scoped>
 .welcome {
   position: fixed;

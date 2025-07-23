@@ -1,6 +1,14 @@
 <template>
-  <NuxtLayout :name="layout" :canvas3options="Canvas3Options">
-    <NuxtPage />
+  <WelcomeScreen
+    :welcome-init="welcomeInit"
+    @welcome-complete="welcomeFinished()"
+  />
+  <NuxtLayout
+    :name="layout"
+    :canvas3options="Canvas3Options"
+    :canvas3enabled="contentActive"
+  >
+    <NuxtPage :page-active="contentActive" />
   </NuxtLayout>
   <img
     alt="hidden image for font"
@@ -11,9 +19,7 @@
 </template>
 <script setup>
 import { Canvas3Options } from "~/constants/canvas3-options";
-
-const layout = "canvas3";
-
+import WelcomeScreen from "~/components/common/WelcomeScreen.vue";
 useHead({
   htmlAttrs: {
     lang: "en",
@@ -28,4 +34,26 @@ useHead({
     },
   ],
 });
+
+const layout = "canvas3";
+
+const welcomeInit = ref(false);
+
+// watch(
+//     () => Canvas3.options.canvasInitiated,
+//     (newVal) => {
+//       if (newVal) {
+//         welcomeInit.value = true;
+//       }
+//     },
+// );
+
+onMounted(() => {
+  welcomeInit.value = true;
+});
+
+const contentActive = ref(false);
+const welcomeFinished = () => {
+  contentActive.value = true;
+};
 </script>
