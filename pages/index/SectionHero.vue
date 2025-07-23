@@ -4,15 +4,7 @@
       <div class="hero-content-line hero-line-tomas">
         <h2 class="heading-1">
           <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
-            NUXT
-          </Canvas3Text>
-        </h2>
-      </div>
-
-      <div class="hero-content-line hero-line-kmet">
-        <h2 class="heading-1">
-          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
-            THREEJS
+            Canvas3
           </Canvas3Text>
         </h2>
       </div>
@@ -59,13 +51,12 @@ const heroSectionAnimation = () => {
   imageIn.value = true;
   setTimeout(() => {
     mainTextIn.value = true;
-  }, 0);
+  }, 100);
 };
 
 watch(
   () => props.sectionActivate,
   (newValue) => {
-    console.log("section HERO activate");
     if (newValue) {
       heroSectionAnimation();
     }

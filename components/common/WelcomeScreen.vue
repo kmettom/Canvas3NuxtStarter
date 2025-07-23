@@ -14,10 +14,10 @@ const props = defineProps({
 const emit = defineEmits(["welcomeComplete"]);
 
 // Reactive state
-const welcomeAniDuration = ref(0.5); // 0.5
+const welcomeAniDuration = ref(0); // 0.5
 // const welcomeAniDelay = ref(0.25); // 0.25
-const welcomeHideDuration = ref(0.5); // 0.5
-const welcomeHideDelay = ref(0.5); // 0.5
+const welcomeHideDuration = ref(0); // 0.5
+const welcomeHideDelay = ref(0); // 0.5
 
 // Function for animation
 function welcomeAnimation() {
@@ -35,7 +35,6 @@ function welcomeAnimation() {
 
 // Emit function
 function welcomeComplete() {
-  console.log("welcomeComplete");
   emit("welcomeComplete");
 }
 
@@ -43,7 +42,6 @@ function welcomeComplete() {
 watch(
   () => props.welcomeInit,
   (newValue) => {
-    console.log("welcomeInit");
     if (newValue) {
       welcomeAnimation();
     }

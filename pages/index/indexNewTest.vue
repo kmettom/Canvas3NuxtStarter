@@ -11,10 +11,10 @@
 
 <script setup>
 useSeoMeta({
-  title: "Canvas3 Starter",
-  ogTitle: "Canvas3 Starter",
-  description: "Canvas3 Starter",
-  ogDescription: "Canvas3 Starter",
+  title: "Canvas3 NUXT Starter",
+  ogTitle: "Canvas3 NUXT Starter",
+  description: "Canvas3 NUXT Starter",
+  ogDescription: "Canvas3 NUXT Starter",
 });
 
 // const navigationStore = useNavigationStore();

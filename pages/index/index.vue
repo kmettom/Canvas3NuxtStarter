@@ -14,14 +14,6 @@
     >
       <SectionAbout />
     </div>
-    <!--    <div-->
-    <!--      v-action-on-scroll="setSectionActivationOptions('services', true)"-->
-    <!--      v-set-data-attrs="{ cursorcolor: 'dark' }"-->
-    <!--      class="page-section"-->
-    <!--      data-nav-id="services"-->
-    <!--    >-->
-    <!--      <SectionServices />-->
-    <!--    </div>-->
     <div
       v-action-on-scroll="setSectionActivationOptions('examples', false)"
       class="page-section"
@@ -59,10 +51,10 @@ import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 
 useSeoMeta({
-  title: "Canvas3 Starter",
-  ogTitle: "Canvas3 Starter",
-  description: "Canvas3 Starter",
-  ogDescription: "Canvas3 Starter",
+  title: "Canvas3 NUXT Starter",
+  ogTitle: "Canvas3 NUXT Starter",
+  description: "Canvas3 NUXT Starter",
+  ogDescription: "Canvas3 NUXT Starter",
 });
 
 const navigationStore = useNavigationStore();
