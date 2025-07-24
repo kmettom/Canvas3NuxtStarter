@@ -49,8 +49,11 @@ const welcomeInit = ref(false);
 //     },
 // );
 
+const displayStore = useDisplayStore();
+
 onMounted(() => {
   welcomeInit.value = true;
+  displayStore.init();
 });
 
 const contentActive = ref(false);
