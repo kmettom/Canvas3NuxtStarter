@@ -18,11 +18,9 @@ import example6Fragment from "./shaders/example6Fragment.glsl";
 import example6Vertex from "./shaders/example6Vertex.glsl";
 
 export const Canvas3Options = {
-  fonts: {
-    PPFormula: {
-      fnt: "./font/PPFormula-CondensedBlack.fnt",
-      atlas: "./font/PPFormula-CondensedBlack.png",
-    },
+  font: {
+    fnt: "./font/PPFormula-CondensedBlack.fnt",
+    atlas: "./font/PPFormula-CondensedBlack.png",
   },
   shaders: {
     scroll: {

@@ -20,6 +20,9 @@
       data-nav-id="examples"
     >
       <SectionExamples />
+      <SectionExamples />
+      <SectionExamples />
+      <SectionExamples />
     </div>
     <div
       v-action-on-scroll="setSectionActivationOptions('roadmap', true)"
