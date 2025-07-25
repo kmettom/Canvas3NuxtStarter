@@ -2,10 +2,7 @@
   <div class="">
     <Container>
       <h2 class="heading-2">
-        <span
-          v-action-on-scroll="{ activeRange: 0.9, activateOnce: true }"
-          v-set-data-attrs="{ cursorcolor: 'light' }"
-        >
+        <span v-action-on-scroll="{ activeRange: 0.9, activateOnce: true }">
           <Canvas3Text :theme="'light'"> EXAMPLES </Canvas3Text>
         </span>
       </h2>
@@ -32,6 +29,10 @@
           </div>
 
           <div
+            v-set-data-attributes="{
+              cursorsize: 55,
+              cursoropacity: 0.75,
+            }"
             class="example-wrapper"
             @mouseenter="example1Hover = true"
             @mouseleave="example1Hover = false"
