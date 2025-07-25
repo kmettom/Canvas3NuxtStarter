@@ -28,7 +28,7 @@
           >
             <div>
               <a
-                v-set-data-attrs="{
+                v-set-data-attributes="{
                   cursoropacity: 0.7,
                   cursorsize: 70,
                   cursoricon: '📞',
@@ -41,7 +41,7 @@
             </div>
             <div>
               <a
-                v-set-data-attrs="{
+                v-set-data-attributes="{
                   cursoropacity: 0.7,
                   cursorsize: 70,
                   cursoricon: '📮',
@@ -67,7 +67,7 @@
           >
             <div>
               <a
-                v-set-data-attrs="{
+                v-set-data-attributes="{
                   cursoropacity: 0.7,
                   cursorsize: 70,
                   cursoricon: '📷',
@@ -79,7 +79,7 @@
             </div>
             <div>
               <a
-                v-set-data-attrs="{
+                v-set-data-attributes="{
                   cursoropacity: 0.7,
                   cursorsize: 70,
                   cursoricon: '𝕏',
@@ -91,7 +91,7 @@
             </div>
             <div>
               <a
-                v-set-data-attrs="{
+                v-set-data-attributes="{
                   cursoropacity: 0.7,
                   cursorsize: 70,
                   cursoricon: '👀',
@@ -103,7 +103,7 @@
             </div>
             <div>
               <a
-                v-set-data-attrs="{
+                v-set-data-attributes="{
                   cursoropacity: 0.7,
                   cursorsize: 70,
                   cursoricon: '📮',

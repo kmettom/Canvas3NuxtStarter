@@ -2,7 +2,7 @@
   <div id="footer" class="body-xs">
     <a
       id="rights"
-      v-set-data-attrs="{
+      v-set-data-attributes="{
         cursoropacity: 0.7,
         cursorsize: 70,
       }"
