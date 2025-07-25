@@ -50,6 +50,6 @@
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",
-    "canvas3-nuxt": "0.0.12"
+    "canvas3-nuxt": "0.0.13"
   }
 }
