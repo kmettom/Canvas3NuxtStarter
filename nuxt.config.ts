@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "nuxt-viewport",
     "@pinia/nuxt",
     // "../canvas3-nuxt/src/module", // Canvas3 Nuxt module local dev path
+    // "../canvas3-nuxt/dist", // Canvas3 Nuxt module local BUILD
     "canvas3-nuxt",
   ],
   image: {
