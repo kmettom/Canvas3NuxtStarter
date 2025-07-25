@@ -20,7 +20,7 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ["gsap"],
+    transpile: ["gsap", "canvas3-nuxt"],
   },
 
   vite: {
