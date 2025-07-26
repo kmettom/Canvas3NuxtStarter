@@ -11,7 +11,7 @@
   >
     <NuxtPage :page-active="contentActive" />
   </NuxtLayout>
-  <Cursor />
+  <!--  <Cursor />-->
   <img
     alt="hidden image for font"
     loading="eager"
@@ -22,7 +22,7 @@
 <script setup>
 import { Canvas3Options } from "~/constants/canvas3-options";
 import WelcomeScreen from "~/components/common/WelcomeScreen.vue";
-import Cursor from "~/components/common/Cursor.vue";
+// import Cursor from "~/components/common/Cursor.vue";
 useHead({
   htmlAttrs: {
     lang: "en",

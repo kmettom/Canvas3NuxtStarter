@@ -1,10 +1,6 @@
 <template>
   <div id="footer" class="body-xs">
-    <a
-      id="rights"
-      href="https://783studio.com"
-      target="_blank"
-    >
+    <a id="rights" href="https://783studio.com" target="_blank">
       © {{ new Date().getFullYear() }} Studio 783&nbsp;&nbsp;|&nbsp;&nbsp;All
       rights reserved
     </a>

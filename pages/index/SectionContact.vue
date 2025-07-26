@@ -27,10 +27,7 @@
             class="side-list action-list body-m"
           >
             <div>
-              <a
-                href="https://calendly.com/tomaskmet/meeting"
-                target="_blank"
-              >
+              <a href="https://calendly.com/tomaskmet/meeting" target="_blank">
                 <span>📞 Book a call</span>
               </a>
             </div>
@@ -56,23 +53,15 @@
             class="side-list social-media-list body-m"
           >
             <div>
-              <a
-                href="https://www.instagram.com/kmettom"
-                target="_blank"
+              <a href="https://www.instagram.com/kmettom" target="_blank"
                 >Instagram</a
               >
             </div>
             <div>
-              <a
-                href="https://x.com/KmetTom"
-                target="_blank"
-                >X (Twitter)</a
-              >
+              <a href="https://x.com/KmetTom" target="_blank">X (Twitter)</a>
             </div>
             <div>
-              <a
-                href="https://www.linkedin.com/in/tomas-kmet/"
-                target="_blank"
+              <a href="https://www.linkedin.com/in/tomas-kmet/" target="_blank"
                 >LinkedIn</a
               >
             </div>
