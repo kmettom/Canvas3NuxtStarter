@@ -30,7 +30,6 @@
     </div>
     <div
       v-action-on-scroll="setSectionActivationOptions('contact', true)"
-      v-set-data-attributes="{ cursorcolor: 'dark' }"
       class="page-section"
       data-nav-id="contact"
     >

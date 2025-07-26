@@ -2,10 +2,6 @@
   <div id="footer" class="body-xs">
     <a
       id="rights"
-      v-set-data-attributes="{
-        cursoropacity: 0.7,
-        cursorsize: 70,
-      }"
       href="https://783studio.com"
       target="_blank"
     >

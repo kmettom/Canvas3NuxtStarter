@@ -28,11 +28,6 @@
           >
             <div>
               <a
-                v-set-data-attributes="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📞',
-                }"
                 href="https://calendly.com/tomaskmet/meeting"
                 target="_blank"
               >
@@ -41,11 +36,6 @@
             </div>
             <div>
               <a
-                v-set-data-attributes="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📮',
-                }"
                 href="mailto:hello@tomaskmet.com"
                 data-email="hello@tomaskmet.com"
               >
@@ -67,11 +57,6 @@
           >
             <div>
               <a
-                v-set-data-attributes="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📷',
-                }"
                 href="https://www.instagram.com/kmettom"
                 target="_blank"
                 >Instagram</a
@@ -79,11 +64,6 @@
             </div>
             <div>
               <a
-                v-set-data-attributes="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '𝕏',
-                }"
                 href="https://x.com/KmetTom"
                 target="_blank"
                 >X (Twitter)</a
@@ -91,11 +71,6 @@
             </div>
             <div>
               <a
-                v-set-data-attributes="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '👀',
-                }"
                 href="https://www.linkedin.com/in/tomas-kmet/"
                 target="_blank"
                 >LinkedIn</a
@@ -103,11 +78,6 @@
             </div>
             <div>
               <a
-                v-set-data-attributes="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📮',
-                }"
                 href="mailto:hello@tomaskmet.com"
                 data-email="hello@tomaskmet.com"
                 >Email</a

@@ -5,11 +5,6 @@
         v-for="(navItem, index) in navigationItems"
         :key="navItem.id"
         :ref="navItemRefs.set"
-        v-set-data-attrs="{
-          cursorsize: 25,
-          cursoropacity: 0.65,
-          cursorcolor: 'light',
-        }"
         class="navigation-item"
         :class="{ active: activeNav === navItem.id }"
         @click="goToSection(navItem.id)"
