@@ -48,10 +48,10 @@ const navigationHoverAnimate = (index) => {
 const navigationStore = useNavigationStore();
 
 const goToSection = (sectionId) => {
-  Canvas3.scrollToElBySelector(
-    `.page-section[data-nav-id="${sectionId}"]`,
-    0.75,
-  );
+  // Canvas3.scrollToElBySelector(
+  //   `.page-section[data-nav-id="${sectionId}"]`,
+  //   0.75,
+  // );
 };
 
 const navigationItems = computed(() => navigationStore.navigationItems);
