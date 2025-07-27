@@ -3,9 +3,9 @@
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-tomas">
         <h2 class="heading-1">
-<!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
-<!--            Canvas3-->
-<!--          </Canvas3Text>-->
+          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
+            Canvas3
+          </Canvas3Text>
         </h2>
       </div>
     </Container>
