@@ -3,21 +3,21 @@
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-tomas">
         <h2 class="heading-1">
-          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
-            Canvas3
-          </Canvas3Text>
+          <!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
+          <!--            Canvas3-->
+          <!--          </Canvas3Text>-->
         </h2>
       </div>
     </Container>
     <div class="hero-bg-image">
-<!--      <Canvas3Image-->
-<!--        :image-settings="{-->
-<!--          srcLink: 'images/08.JPG',-->
-<!--          alt: 'background wave on beach',-->
-<!--          loadStrategy: 'preload',-->
-<!--        }"-->
-<!--        :canvas3-options="{ uniforms: imageUniforms, shaderName: 'hero' }"-->
-<!--      />-->
+      <Canvas3Image
+        :image-settings="{
+          srcLink: 'images/08.JPG',
+          alt: 'background wave on beach',
+          loadStrategy: 'preload',
+        }"
+        :canvas3-options="{ uniforms: imageUniforms, shaderName: 'hero' }"
+      />
     </div>
   </div>
 </template>
@@ -54,7 +54,9 @@ const heroSectionAnimation = () => {
   }, 100);
 };
 
-const sectionActivated = computed(() => {return props.sectionActivate})
+const sectionActivated = computed(() => {
+  return props.sectionActivate;
+});
 
 watch(
   () => sectionActivated,

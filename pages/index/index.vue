@@ -1,19 +1,19 @@
 <template>
   <div>
-        <div
-          v-action-on-scroll="setSectionActivationOptions('home', false)"
-          class="page-section"
-          data-nav-id="home"
-        >
-          <SectionHero :section-activate="props.pageActive" />
-        </div>
-        <div
-          v-action-on-scroll="setSectionActivationOptions('about', false)"
-          class="page-section"
-          data-nav-id="about"
-        >
-          <SectionAbout />
-        </div>
+    <div
+      v-action-on-scroll="setSectionActivationOptions('home', false)"
+      class="page-section"
+      data-nav-id="home"
+    >
+      <SectionHero :section-activate="props.pageActive" />
+    </div>
+    <div
+      v-action-on-scroll="setSectionActivationOptions('about', false)"
+      class="page-section"
+      data-nav-id="about"
+    >
+      <SectionAbout />
+    </div>
     <!--    <div-->
     <!--      v-action-on-scroll="setSectionActivationOptions('examples', false)"-->
     <!--      class="page-section"-->
