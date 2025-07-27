@@ -14,27 +14,27 @@
     >
       <SectionAbout />
     </div>
-    <!--    <div-->
-    <!--      v-action-on-scroll="setSectionActivationOptions('examples', false)"-->
-    <!--      class="page-section"-->
-    <!--      data-nav-id="examples"-->
-    <!--    >-->
-    <!--      <SectionExamples />-->
-    <!--    </div>-->
-    <!--    <div-->
-    <!--      v-action-on-scroll="setSectionActivationOptions('roadmap', true)"-->
-    <!--      class="page-section"-->
-    <!--      data-nav-id="roadmap"-->
-    <!--    >-->
-    <!--      <SectionRoadmap />-->
-    <!--    </div>-->
-    <!--    <div-->
-    <!--      v-action-on-scroll="setSectionActivationOptions('contact', true)"-->
-    <!--      class="page-section"-->
-    <!--      data-nav-id="contact"-->
-    <!--    >-->
-    <!--      <SectionContact />-->
-    <!--    </div>-->
+    <div
+      v-action-on-scroll="setSectionActivationOptions('examples', false)"
+      class="page-section"
+      data-nav-id="examples"
+    >
+      <SectionExamples />
+    </div>
+    <div
+      v-action-on-scroll="setSectionActivationOptions('roadmap', true)"
+      class="page-section"
+      data-nav-id="roadmap"
+    >
+      <SectionRoadmap />
+    </div>
+    <div
+      v-action-on-scroll="setSectionActivationOptions('contact', true)"
+      class="page-section"
+      data-nav-id="contact"
+    >
+      <SectionContact />
+    </div>
     <div>
       <Footer />
     </div>
