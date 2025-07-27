@@ -54,8 +54,10 @@ const heroSectionAnimation = () => {
   }, 100);
 };
 
+const sectionActivated = computed(() => {return props.sectionActivate})
+
 watch(
-  () => props.sectionActivate,
+  () => sectionActivated,
   (newValue) => {
     if (newValue) {
       heroSectionAnimation();
