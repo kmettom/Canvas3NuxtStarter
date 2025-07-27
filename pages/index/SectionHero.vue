@@ -10,14 +10,14 @@
       </div>
     </Container>
     <div class="hero-bg-image">
-      <Canvas3Image
-        :image-settings="{
-          srcLink: 'images/08.JPG',
-          alt: 'background wave on beach',
-          loadStrategy: 'preload',
-        }"
-        :canvas3-options="{ uniforms: imageUniforms, shaderName: 'hero' }"
-      />
+<!--      <Canvas3Image-->
+<!--        :image-settings="{-->
+<!--          srcLink: 'images/08.JPG',-->
+<!--          alt: 'background wave on beach',-->
+<!--          loadStrategy: 'preload',-->
+<!--        }"-->
+<!--        :canvas3-options="{ uniforms: imageUniforms, shaderName: 'hero' }"-->
+<!--      />-->
     </div>
   </div>
 </template>
