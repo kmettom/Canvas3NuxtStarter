@@ -35,7 +35,7 @@ const state = reactive({
 
 const cursorInit = () => {
   // Set up draw callback
-  Canvas3.addAnimationToRender("cursorDraw", draw);
+  // Canvas3.addAnimationToRender("cursorDraw", draw);
 
   // Track mouse movements
   window.onmousemove = (event) => {
@@ -110,7 +110,7 @@ const draw = () => {
 // Lifecycle hook: Mounted
 onMounted(() => {
   if (!displayStore.isMobile && !displayStore.prefersReducedMotion) {
-    cursorInit();
+    // cursorInit();
   }
 });
 </script>
