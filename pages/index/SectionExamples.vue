@@ -29,6 +29,10 @@
           </div>
 
           <div
+            v-set-data-attributes="{
+              cursorsize: 55,
+              cursoropacity: 0.9,
+            }"
             class="example-wrapper"
             @mouseenter="example1Hover = true"
             @mouseleave="example1Hover = false"
