@@ -3,7 +3,8 @@
     <Container>
       <h2 class="heading-2">
         <span v-action-on-scroll="{ activeRange: 0.9, activateOnce: true }">
-          <Canvas3Text :theme="'light'"> EXAMPLES </Canvas3Text>
+          <!--          <Canvas3Text :theme="'light'"> EXAMPLES </Canvas3Text>-->
+          EXAMPLES
         </span>
       </h2>
       <div>

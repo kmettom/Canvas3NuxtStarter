@@ -7,12 +7,14 @@
             <span
               v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
             >
-              <Canvas3Text :theme="'light'"> GET </Canvas3Text>
+              <!--              <Canvas3Text :theme="'light'"> GET </Canvas3Text>-->
+              GET
               <span
                 v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
                 class="canvas-text-spacing"
               >
-                <Canvas3Text :theme="'light'"> IN </Canvas3Text>
+                <!--                <Canvas3Text :theme="'light'"> IN </Canvas3Text>-->
+                IN
               </span>
             </span>
           </div>
@@ -77,7 +79,8 @@
             <span
               v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
             >
-              <Canvas3Text :theme="'light'"> TOUCH </Canvas3Text>
+              <!--              <Canvas3Text :theme="'light'"> TOUCH </Canvas3Text>-->
+              TOUCH
             </span>
           </div>
         </div>

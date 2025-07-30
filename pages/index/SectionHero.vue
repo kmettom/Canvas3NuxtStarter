@@ -3,9 +3,9 @@
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-tomas">
         <h2 class="heading-1">
-          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
-            Canvas3
-          </Canvas3Text>
+          <!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
+          Canvas3
+          <!--          </Canvas3Text>-->
         </h2>
       </div>
     </Container>
@@ -35,11 +35,11 @@ const props = defineProps({
 const mainTextIn = ref(false);
 const imageIn = ref(false);
 
-const mainTextInUniforms = computed(() => {
-  return {
-    uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
-  };
-});
+// const mainTextInUniforms = computed(() => {
+//   return {
+//     uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
+//   };
+// });
 
 const imageUniforms = computed(() => {
   return {
