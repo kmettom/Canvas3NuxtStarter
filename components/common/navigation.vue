@@ -5,11 +5,6 @@
         v-for="(navItem, index) in navigationItems"
         :key="navItem.id"
         :ref="navItemRefs.set"
-        v-set-data-attrs="{
-          cursorsize: 25,
-          cursoropacity: 0.65,
-          cursorcolor: 'light',
-        }"
         class="navigation-item"
         :class="{ active: activeNav === navItem.id }"
         @click="goToSection(navItem.id)"
@@ -29,7 +24,6 @@ import {
 } from "~/utils/animations/navigation";
 import { gsap } from "gsap";
 import { useTemplateRefsList } from "@vueuse/core";
-import { Canvas3 } from "~/utils/canvas3";
 
 const navItemRefs = useTemplateRefsList();
 const navAniDuration = 0.15;
@@ -93,17 +87,21 @@ watch(
   flex-direction: column;
   text-align: right;
 }
+
 .navigation-item {
   line-height: 20px;
   pointer-events: auto;
   overflow-y: hidden;
+
   span {
     display: inline-block;
     position: relative;
   }
+
   &:hover span {
     font-weight: bold;
   }
+
   &:before {
     opacity: 0;
     content: "👉";
@@ -113,8 +111,10 @@ watch(
     transform: translateX(-10px);
     transition: ease all 0.3s;
   }
+
   &.active {
     font-weight: bold;
+
     &::before {
       transform: translateX(0px);
       opacity: 1;

@@ -14,9 +14,12 @@ html {
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
   font-family: sans-serif;
+  background-color: #1b1818;
 
   //background-color: var(--dark-color);
   color: var(--light-color);
+
+  cursor: none;
 }
 
 //*************************

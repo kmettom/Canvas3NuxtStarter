@@ -3,28 +3,21 @@
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-tomas">
         <h2 class="heading-1">
-          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
-            NUXT
-          </Canvas3Text>
-        </h2>
-      </div>
-
-      <div class="hero-content-line hero-line-kmet">
-        <h2 class="heading-1">
-          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">
-            THREEJS
-          </Canvas3Text>
+          <!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
+          Canvas3
+          <!--          </Canvas3Text>-->
         </h2>
       </div>
     </Container>
     <div class="hero-bg-image">
       <Canvas3Image
-        :image-settings="{
-          srcLink: 'images/08.JPG',
+        :options="{
+          src: 'images/08.JPG',
           alt: 'background wave on beach',
           loadStrategy: 'preload',
+          uniforms: imageUniforms,
+          shaderName: 'hero',
         }"
-        :canvas3-options="{ uniforms: imageUniforms, shaderName: 'hero' }"
       />
     </div>
   </div>
@@ -43,11 +36,11 @@ const props = defineProps({
 const mainTextIn = ref(false);
 const imageIn = ref(false);
 
-const mainTextInUniforms = computed(() => {
-  return {
-    uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
-  };
-});
+// const mainTextInUniforms = computed(() => {
+//   return {
+//     uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
+//   };
+// });
 
 const imageUniforms = computed(() => {
   return {
@@ -59,11 +52,15 @@ const heroSectionAnimation = () => {
   imageIn.value = true;
   setTimeout(() => {
     mainTextIn.value = true;
-  }, 0);
+  }, 100);
 };
 
+const sectionActivated = computed(() => {
+  return props.sectionActivate;
+});
+
 watch(
-  () => props.sectionActivate,
+  () => sectionActivated,
   (newValue) => {
     if (newValue) {
       heroSectionAnimation();

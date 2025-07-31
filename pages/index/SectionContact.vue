@@ -5,19 +5,21 @@
         <div class="contact-line">
           <div class="heading-1">
             <span
-              v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
+              v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
             >
-              <Canvas3Text :theme="'light'"> GET </Canvas3Text>
+              <!--              <Canvas3Text :theme="'light'"> GET </Canvas3Text>-->
+              GET
               <span
-                v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
+                v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
                 class="canvas-text-spacing"
               >
-                <Canvas3Text :theme="'light'"> IN </Canvas3Text>
+                <!--                <Canvas3Text :theme="'light'"> IN </Canvas3Text>-->
+                IN
               </span>
             </span>
           </div>
           <div
-            v-onScrollActivate="{
+            v-action-on-scroll="{
               activeRange: 0.85,
               activateOnce: true,
               activateCallback: (item) => {
@@ -27,25 +29,12 @@
             class="side-list action-list body-m"
           >
             <div>
-              <a
-                v-set-data-attrs="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📞',
-                }"
-                href="https://calendly.com/tomaskmet/meeting"
-                target="_blank"
-              >
+              <a href="https://calendly.com/tomaskmet/meeting" target="_blank">
                 <span>📞 Book a call</span>
               </a>
             </div>
             <div>
               <a
-                v-set-data-attrs="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📮',
-                }"
                 href="mailto:hello@tomaskmet.com"
                 data-email="hello@tomaskmet.com"
               >
@@ -56,7 +45,7 @@
         </div>
         <div class="contact-line align-right">
           <div
-            v-onScrollActivate="{
+            v-action-on-scroll="{
               activeRange: 0.85,
               activateOnce: true,
               activateCallback: (item) => {
@@ -66,48 +55,20 @@
             class="side-list social-media-list body-m"
           >
             <div>
-              <a
-                v-set-data-attrs="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📷',
-                }"
-                href="https://www.instagram.com/kmettom"
-                target="_blank"
+              <a href="https://www.instagram.com/kmettom" target="_blank"
                 >Instagram</a
               >
             </div>
             <div>
-              <a
-                v-set-data-attrs="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '𝕏',
-                }"
-                href="https://x.com/KmetTom"
-                target="_blank"
-                >X (Twitter)</a
-              >
+              <a href="https://x.com/KmetTom" target="_blank">X (Twitter)</a>
             </div>
             <div>
-              <a
-                v-set-data-attrs="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '👀',
-                }"
-                href="https://www.linkedin.com/in/tomas-kmet/"
-                target="_blank"
+              <a href="https://www.linkedin.com/in/tomas-kmet/" target="_blank"
                 >LinkedIn</a
               >
             </div>
             <div>
               <a
-                v-set-data-attrs="{
-                  cursoropacity: 0.7,
-                  cursorsize: 70,
-                  cursoricon: '📮',
-                }"
                 href="mailto:hello@tomaskmet.com"
                 data-email="hello@tomaskmet.com"
                 >Email</a
@@ -116,9 +77,10 @@
           </div>
           <div class="heading-1">
             <span
-              v-onScrollActivate="{ activeRange: 0.99, activateOnce: true }"
+              v-action-on-scroll="{ activeRange: 0.99, activateOnce: true }"
             >
-              <Canvas3Text :theme="'light'"> TOUCH </Canvas3Text>
+              <!--              <Canvas3Text :theme="'light'"> TOUCH </Canvas3Text>-->
+              TOUCH
             </span>
           </div>
         </div>

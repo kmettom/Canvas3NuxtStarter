@@ -2,11 +2,9 @@
   <div class="">
     <Container>
       <h2 class="heading-2">
-        <span
-          v-onScrollActivate="{ activeRange: 0.9, activateOnce: true }"
-          v-set-data-attrs="{ cursorcolor: 'light' }"
-        >
-          <Canvas3Text :theme="'light'"> EXAMPLES </Canvas3Text>
+        <span v-action-on-scroll="{ activeRange: 0.9, activateOnce: true }">
+          <!--          <Canvas3Text :theme="'light'"> EXAMPLES </Canvas3Text>-->
+          EXAMPLES
         </span>
       </h2>
       <div>
@@ -14,13 +12,12 @@
           <div class="example-wrapper">
             <h3 class="body-l heading-example">Add images to scene 😌</h3>
             <Canvas3Image
-              :image-settings="{
-                srcLink: 'images/01.JPG',
+              :options="{
+                src: 'images/01.JPG',
                 alt: 'building',
+                shaderName: 'example1',
               }"
-              :canvas3-options="{ shaderName: 'example1' }"
             />
-            <!--            <Canvas3Image :src-link="'images/01.JPG'" :shader="'example1'" />-->
             <CodeSnippet>
               <span> {{ String("<") }}</span
               >Canvas3Image <br />
@@ -32,6 +29,10 @@
           </div>
 
           <div
+            v-set-data-attributes="{
+              cursorsize: 55,
+              cursoropacity: 0.9,
+            }"
             class="example-wrapper"
             @mouseenter="example1Hover = true"
             @mouseleave="example1Hover = false"
@@ -41,11 +42,9 @@
               <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
             <Canvas3Image
-              :image-settings="{
-                srcLink: 'images/02.JPG',
+              :options="{
+                src: 'images/02.JPG',
                 alt: 'building',
-              }"
-              :canvas3-options="{
                 uniforms: {
                   uHover: { value: example1Hover ? 1 : 0, duration: 0 },
                 },
@@ -79,7 +78,7 @@
           </p>
           <div class="examples-row">
             <div
-              v-onScrollActivate="{
+              v-action-on-scroll="{
                 activeRange: 0.9,
                 activateOnce: false,
                 onScrollCallback: (item, speed) => {
@@ -94,11 +93,9 @@
                   <span class="scroll-speed-ani" />
                 </p>
                 <Canvas3Image
-                  :image-settings="{
-                    srcLink: 'images/03.JPG',
+                  :options="{
+                    src: 'images/03.JPG',
                     alt: 'sky',
-                  }"
-                  :canvas3-options="{
                     uniforms: {
                       uScrollSpeed: { value: example3Speed, duration: 0 },
                     },
@@ -106,7 +103,7 @@
                   }"
                 />
                 <CodeSnippet>
-                  v-onScrollActivate="{ <br />
+                  v-action-on-scroll="{ <br />
                   &nbsp;&nbsp;activeRange: 0.9,<br />
                   &nbsp;&nbsp;activateOnce: false,<br />
                   &nbsp;&nbsp;onScrollCallback: (item, speed) => {
@@ -117,7 +114,7 @@
               </div>
             </div>
             <div
-              v-onScrollActivate="{
+              v-action-on-scroll="{
                 activeRange: 0.7,
                 activateOnce: false,
                 scrollSpeedSetTo: { value: 0.3 },
@@ -136,12 +133,10 @@
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
               <Canvas3Image
-                :image-settings="{
-                  srcLink: 'images/04.JPG',
+                :options="{
+                  src: 'images/04.JPG',
                   alt: 'sky',
                   loadStrategy: 'eager',
-                }"
-                :canvas3-options="{
                   shaderName: 'example4',
                   activateMeshUniforms: {
                     uAniInExample4: { duration: 1 },
@@ -149,7 +144,7 @@
                 }"
               />
               <CodeSnippet>
-                v-onScrollActivate="{ <br />
+                v-action-on-scroll="{ <br />
                 &nbsp;&nbsp;activeRange: 0.7,<br />
                 &nbsp;&nbsp;scrollSpeedSetTo: { value: 0.3 },<br />
                 &nbsp;&nbsp;bidirectionalActivation: true,<br />
@@ -162,7 +157,7 @@
             </div>
             <div
               id="fixedParent"
-              v-onScrollActivate="{
+              v-action-on-scroll="{
                 activeRange: 0.9,
                 fixToParentId: 'fixedParent',
               }"
@@ -171,17 +166,15 @@
               <div>
                 <p class="example-txt">Fix element to Parent</p>
                 <Canvas3Image
-                  :image-settings="{
-                    srcLink: 'images/01.JPG',
+                  :options="{
+                    src: 'images/01.JPG',
                     alt: 'building',
                     loadStrategy: 'eager',
-                  }"
-                  :canvas3-options="{
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                   }"
                 />
                 <CodeSnippet>
-                  v-onScrollActivate="{<br />
+                  v-action-on-scroll="{<br />
                   &nbsp;&nbsp;activeRange: 0.9,<br />
                   &nbsp;&nbsp;fixToParentId: 'fixedParent',<br />
                   }"

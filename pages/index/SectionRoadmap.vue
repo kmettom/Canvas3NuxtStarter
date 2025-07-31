@@ -4,7 +4,7 @@
       <h2 class="body-s about-headline">Road map</h2>
       <div class="body-l">
         <p
-          v-onScrollActivate="{
+          v-action-on-scroll="{
             activeRange: 0.85,
             activateOnce: true,
             activateCallback: textAniCallback,
