@@ -12,13 +12,12 @@
           <div class="example-wrapper">
             <h3 class="body-l heading-example">Add images to scene 😌</h3>
             <Canvas3Image
-              :image-settings="{
-                srcLink: 'images/01.JPG',
+              :options="{
+                src: 'images/01.JPG',
                 alt: 'building',
+                shaderName: 'example1',
               }"
-              :canvas3-options="{ shaderName: 'example1' }"
             />
-            <!--            <Canvas3Image :src-link="'images/01.JPG'" :shader="'example1'" />-->
             <CodeSnippet>
               <span> {{ String("<") }}</span
               >Canvas3Image <br />
@@ -43,11 +42,9 @@
               <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
             <Canvas3Image
-              :image-settings="{
-                srcLink: 'images/02.JPG',
+              :options="{
+                src: 'images/02.jpg',
                 alt: 'building',
-              }"
-              :canvas3-options="{
                 uniforms: {
                   uHover: { value: example1Hover ? 1 : 0, duration: 0 },
                 },
@@ -96,11 +93,9 @@
                   <span class="scroll-speed-ani" />
                 </p>
                 <Canvas3Image
-                  :image-settings="{
-                    srcLink: 'images/03.JPG',
+                  :options="{
+                    src: 'images/03.jpg',
                     alt: 'sky',
-                  }"
-                  :canvas3-options="{
                     uniforms: {
                       uScrollSpeed: { value: example3Speed, duration: 0 },
                     },
@@ -138,12 +133,10 @@
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
               <Canvas3Image
-                :image-settings="{
-                  srcLink: 'images/04.JPG',
+                :options="{
+                  src: 'images/04.JPG',
                   alt: 'sky',
                   loadStrategy: 'eager',
-                }"
-                :canvas3-options="{
                   shaderName: 'example4',
                   activateMeshUniforms: {
                     uAniInExample4: { duration: 1 },
@@ -173,12 +166,10 @@
               <div>
                 <p class="example-txt">Fix element to Parent</p>
                 <Canvas3Image
-                  :image-settings="{
-                    srcLink: 'images/01.JPG',
+                  :options="{
+                    src: 'images/01.JPG',
                     alt: 'building',
                     loadStrategy: 'eager',
-                  }"
-                  :canvas3-options="{
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                   }"
                 />
