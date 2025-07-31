@@ -12,7 +12,7 @@
     <div class="hero-bg-image">
       <Canvas3Image
         :options="{
-          src: 'images/08.jpg',
+          src: 'images/08.JPG',
           alt: 'background wave on beach',
           loadStrategy: 'preload',
           uniforms: imageUniforms,

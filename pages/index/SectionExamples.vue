@@ -43,7 +43,7 @@
             </h3>
             <Canvas3Image
               :options="{
-                src: 'images/02.jpg',
+                src: 'images/02.JPG',
                 alt: 'building',
                 uniforms: {
                   uHover: { value: example1Hover ? 1 : 0, duration: 0 },
@@ -94,7 +94,7 @@
                 </p>
                 <Canvas3Image
                   :options="{
-                    src: 'images/03.jpg',
+                    src: 'images/03.JPG',
                     alt: 'sky',
                     uniforms: {
                       uScrollSpeed: { value: example3Speed, duration: 0 },
