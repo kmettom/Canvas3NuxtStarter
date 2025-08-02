@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   ],
   sanity: {
     projectId: "25j4gher",
+    dataset: "production",
   },
   build: {
     transpile: ["gsap", "canvas3-nuxt"],
