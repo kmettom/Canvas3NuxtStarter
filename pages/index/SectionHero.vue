@@ -1,7 +1,7 @@
 <template>
   <div class="hero-section-wrapper">
     <Container additional-class="hero-section">
-      <div class="hero-content-line hero-line-tomas">
+      <div class="hero-content-line hero-line-canvas">
         <h2 class="heading-1">
           <!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
           Canvas3
@@ -96,6 +96,9 @@ watch(
   text-align: center;
   margin: 0 auto;
   justify-content: center;
+}
+.hero-line-canvas {
+  color: var(--dark-color);
 }
 
 .hero-content-sm {
