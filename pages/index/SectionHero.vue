@@ -29,6 +29,11 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
+const query = groq`*[_type == "content"`;
+const { data } = useSanityQuery(query);
+
+console.log("data", data);
+
 const props = defineProps({
   sectionActivate: Boolean,
 });

@@ -10,12 +10,11 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     // "../canvas3-nuxt/src/module", // Canvas3 Nuxt module local dev path
     "canvas3-nuxt",
+    "@nuxtjs/sanity",
   ],
-  image: {
-    target: "static",
-    dir: "public/",
+  sanity: {
+    projectId: "25j4gher",
   },
-
   build: {
     transpile: ["gsap", "canvas3-nuxt"],
   },
