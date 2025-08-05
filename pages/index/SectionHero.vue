@@ -27,22 +27,7 @@
 import Container from "~/components/common/Container.vue";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-
 gsap.registerPlugin(SplitText);
-
-const query = groq`*[_type == "website"][0]{
-  section1 {
-    paragraph1,
-    paragraph2
-  },
-  section2 {
-    paragraph1,
-    paragraph2
-  }
-}`;
-
-const { data, refresh } = await useSanityQuery(query);
-console.log("sanity hero test ", data, refresh);
 
 const props = defineProps({
   sectionActivate: Boolean,
