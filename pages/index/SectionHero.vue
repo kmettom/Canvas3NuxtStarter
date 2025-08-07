@@ -27,6 +27,7 @@
 import Container from "~/components/common/Container.vue";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { fetchContent } from "~/server/utils/sanity";
 gsap.registerPlugin(SplitText);
 
 const props = defineProps({
@@ -35,6 +36,10 @@ const props = defineProps({
 
 const mainTextIn = ref(false);
 const imageIn = ref(false);
+
+const content = await fetchContent();
+
+console.log("content", content);
 
 // const mainTextInUniforms = computed(() => {
 //   return {
