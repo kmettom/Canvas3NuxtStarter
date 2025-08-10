@@ -22,17 +22,16 @@
   "devDependencies": {
     "@nuxt-modules/compression": "^0.1.0",
     "@nuxt/eslint": "^0.7.4",
-    "@nuxtjs/sanity": "^1.14.1",
+    "@nuxtjs/sanity": "^1.13.3",
     "@nuxtjs/style-resources": "^1.2.1",
     "@pinia/nuxt": "^0.9.0",
     "@vercel/speed-insights": "^1.2.0",
     "@vueuse/core": "^12.4.0",
+    "groq": "^4.3.0",
     "gsap": "npm:@gsap/business@^3.13.0",
-    "nuxt": "^4.0.0",
+    "nuxt": "^3.15.4",
     "prettier": "^3.6.2",
     "sass-embedded": "^1.89.2",
-    "three": "^0.171.0",
-    "three-msdf-text-utils": "^1.1.6",
     "typescript": "^5.7.2",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-glsl": "^1.5.1",
@@ -40,6 +39,6 @@
     "vue-router": "^4.5.1"
   },
   "dependencies": {
-    "canvas3-nuxt": "0.0.45"
+    "canvas3-nuxt": "0.0.46"
   }
 }

@@ -3,6 +3,7 @@
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-canvas">
         <h2 class="heading-1">
+          {{ post }}
           <!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
           Canvas3
           <!--          </Canvas3Text>-->
@@ -27,7 +28,7 @@
 import Container from "~/components/common/Container.vue";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { fetchContent } from "~/server/utils/sanity";
+// import { contentQuery } from "~/sanity/queries";
 gsap.registerPlugin(SplitText);
 
 const props = defineProps({
@@ -37,9 +38,11 @@ const props = defineProps({
 const mainTextIn = ref(false);
 const imageIn = ref(false);
 
-const content = await fetchContent();
+// console.log("useSanityQuery", useSanityQuery);
+// const { data: post } = await useSanityQuery(contentQuery);
 
-console.log("content", content);
+// const content = await fetchContent();
+// console.log("content", post);
 
 // const mainTextInUniforms = computed(() => {
 //   return {
