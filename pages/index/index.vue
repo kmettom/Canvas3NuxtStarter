@@ -1,8 +1,9 @@
 <template>
   <div>
-    <!--    <div v-if="posts">-->
-    <!--      {{ posts.length }}-->
-    <!--    </div>-->
+    <div v-if="posts">
+      {{ posts.length }}
+    </div>
+
     <div
       v-action-on-scroll="setSectionActivationOptions('home', false)"
       class="page-section"
@@ -52,8 +53,8 @@ import SectionRoadmap from "~/pages/index/SectionRoadmap.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 
-// import { contentQuery } from "~/sanity/queries";
-// const { data: posts } = await useSanityQuery(contentQuery);
+import { contentQuery } from "~/sanity/queries";
+const { data: posts } = await useSanityQuery(contentQuery);
 
 useSeoMeta({
   title: "Canvas3 NUXT Starter",
