@@ -39,6 +39,7 @@
     "vue-router": "^4.5.1"
   },
   "dependencies": {
-    "canvas3-nuxt": "0.0.45"
+    "canvas3-nuxt": "0.0.66",
+    "gsap": "npm:@gsap/business@^3.13.0"
   }
 }
