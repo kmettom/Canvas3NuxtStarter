@@ -4,20 +4,20 @@
       <h2 class="body-s about-headline">Road map</h2>
       <div class="body-l">
         <p
-            v-action-on-scroll="{
+          v-action-on-scroll="{
             activeRange: 0.85,
             activateOnce: true,
             activateCallback: textAniCallback,
           }"
-            class="roadmap-txt"
+          class="roadmap-txt"
         >
-          → Canvas initiation improvements<br/>
-          → 3D model imports<br/>
+          → Canvas initiation improvements<br />
+          → 3D model imports<br />
           <!--          → Responsiveness management - improve Display store<br />-->
-          → Enable/Disable canvas animations dynamically<br/>
+          → Enable/Disable canvas animations dynamically<br />
           <!--          → Side scroll sections<br />-->
-          → Create Type for working with TypeScript<br/>
-          → Canvas3Text MSDF font implement<br/>
+          → Create Type for working with TypeScript<br />
+          → Canvas3Text MSDF font implement<br />
 
           <!--          → Create SDK for generic usage<br />-->
           <!--          → Refactor to Typescript <br/>-->
@@ -30,8 +30,8 @@
 <script setup>
 import Container from "~/components/common/Container.vue";
 
-import {gsap} from "gsap";
-import {SplitText} from "gsap/SplitText";
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(SplitText);
 
@@ -41,19 +41,19 @@ function textAniCallback(item) {
   const lines = new SplitText(selector, {
     type: "lines",
   }).lines;
-  const wrappedLines = new SplitText(lines, {type: "lines"}).lines;
-  tl.set(wrappedLines, {opacity: 0, y: 50});
-  tl.set(selector, {opacity: 1, overflow: "hidden"});
-  tl.set(lines, {opacity: 1, overflow: "hidden"});
+  const wrappedLines = new SplitText(lines, { type: "lines" }).lines;
+  tl.set(wrappedLines, { opacity: 0, y: 50 });
+  tl.set(selector, { opacity: 1, overflow: "hidden" });
+  tl.set(lines, { opacity: 1, overflow: "hidden" });
   tl.fromTo(
-      wrappedLines,
-      {y: 50, opacity: 1},
-      {
-        duration: 0.3,
-        opacity: 1,
-        y: 0,
-        stagger: 0.1,
-      },
+    wrappedLines,
+    { y: 50, opacity: 1 },
+    {
+      duration: 0.3,
+      opacity: 1,
+      y: 0,
+      stagger: 0.1,
+    },
   );
 }
 </script>

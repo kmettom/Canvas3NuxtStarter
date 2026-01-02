@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@pinia/nuxt",
     // "../canvas3-nuxt/src/module", // Canvas3 Nuxt module local dev path
-    "canvas3-nuxt",
+    "@canvas3/nuxt",
   ],
   image: {
     target: "static",
@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ["gsap", "canvas3-nuxt"],
+    transpile: ["gsap", "@canvas3/nuxt"],
   },
 
   vite: {

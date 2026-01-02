@@ -26,12 +26,11 @@
     "@pinia/nuxt": "^0.9.0",
     "@vercel/speed-insights": "^1.2.0",
     "@vueuse/core": "^12.4.0",
-    "gsap": "npm:@gsap/business@^3.13.0",
+    "gsap": "3.14.2",
     "nuxt": "^4.0.0",
     "prettier": "^3.6.2",
     "sass-embedded": "^1.89.2",
-    "three": "^0.171.0",
-    "three-msdf-text-utils": "^1.1.6",
+    "three": "^0.178.0",
     "typescript": "^5.7.2",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-glsl": "^1.5.1",
@@ -39,7 +38,6 @@
     "vue-router": "^4.5.1"
   },
   "dependencies": {
-    "canvas3-nuxt": "0.0.66",
-    "gsap": "npm:@gsap/business@^3.13.0"
+    "@canvas3/nuxt": "^0.0.3"
   }
 }
