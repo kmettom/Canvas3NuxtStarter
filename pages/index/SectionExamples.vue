@@ -188,7 +188,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Container from "~/components/common/Container.vue";
 import CodeSnippet from "~/components/common/CodeSnippet.vue";
 import gsap from "gsap";

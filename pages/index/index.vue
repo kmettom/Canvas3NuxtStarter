@@ -41,7 +41,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import SectionExamples from "~/pages/index/SectionExamples.vue";
 import SectionHero from "~/pages/index/SectionHero.vue";
 import SectionAbout from "~/pages/index/SectionAbout.vue";

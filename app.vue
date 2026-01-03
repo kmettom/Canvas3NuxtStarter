@@ -54,4 +54,5 @@ const contentActive = ref(false);
 const welcomeFinished = () => {
   contentActive.value = true;
 };
+// TODO: convert to TS
 </script>

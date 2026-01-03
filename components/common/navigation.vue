@@ -17,7 +17,7 @@
     </nav>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import {
   navigationFirstEnter,
   navigationShow,

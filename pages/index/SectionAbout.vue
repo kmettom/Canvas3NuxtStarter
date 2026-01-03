@@ -31,7 +31,7 @@
   </Container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Container from "~/components/common/Container.vue";
 
 import { gsap } from "gsap";
