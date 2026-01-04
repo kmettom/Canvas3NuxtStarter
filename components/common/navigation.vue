@@ -14,6 +14,7 @@
           {{ navItem.name }}
         </span>
       </div>
+      <NuxtLink href="/playground"> Playground </NuxtLink>
     </nav>
   </div>
 </template>
