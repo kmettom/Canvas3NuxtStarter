@@ -15,10 +15,10 @@ export const useNavigationStore = defineStore("navigationStore", {
     ],
   }),
   actions: {
-    setActiveNavItem(id) {
+    setActiveNavItem(id: string) {
       this.activeNavItem = id;
     },
-    setNavContrast(contrastSwitched) {
+    setNavContrast(contrastSwitched: boolean) {
       this.navContrastSwitched = contrastSwitched;
     },
   },

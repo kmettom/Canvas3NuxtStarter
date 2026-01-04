@@ -62,7 +62,10 @@ const props = defineProps({
   pageActive: Boolean,
 });
 
-const setSectionActivationOptions = (sectionId, sectionContrast) => {
+const setSectionActivationOptions = (
+  sectionId: string,
+  sectionContrast: boolean,
+) => {
   return {
     trackOnly: true,
     activateCallback: () => {

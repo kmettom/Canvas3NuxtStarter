@@ -81,7 +81,7 @@
               v-action-on-scroll="{
                 activeRange: 0.9,
                 activateOnce: false,
-                onScrollCallback: (item, speed) => {
+                onScrollCallback: (item: any, speed: number) => {
                   example3ScrollCallback(item, speed);
                 },
               }"

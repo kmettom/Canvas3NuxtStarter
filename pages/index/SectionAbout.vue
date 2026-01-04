@@ -33,13 +33,15 @@
 
 <script setup lang="ts">
 import Container from "~/components/common/Container.vue";
-
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
+//TODO: proper type import export
+import type { ScrollActionBinding } from "../../../canvas3-nuxt/dist/runtime/types/types";
+
 
 gsap.registerPlugin(SplitText);
 
-function textAniCallback(item) {
+function textAniCallback(item: ScrollActionBinding) {
   const selector = `.${item.elNode.dataset.aboutId}`;
   const tl = gsap.timeline();
   const lines = new SplitText(selector, {
