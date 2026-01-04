@@ -38,7 +38,6 @@ import { SplitText } from "gsap/SplitText";
 //TODO: proper type import export
 import type { ScrollActionBinding } from "../../../canvas3-nuxt/dist/runtime/types/types";
 
-
 gsap.registerPlugin(SplitText);
 
 function textAniCallback(item: ScrollActionBinding) {

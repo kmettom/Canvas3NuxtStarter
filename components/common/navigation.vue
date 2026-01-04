@@ -29,7 +29,7 @@ const navItemRefs = useTemplateRefsList();
 const navAniDuration = 0.15;
 const navAniY = 10;
 
-const navigationHoverAnimate = (index) => {
+const navigationHoverAnimate = (index: number) => {
   const tl = gsap.timeline();
   const text = navItemRefs.value[index].querySelector("span");
   tl.to(text, {
@@ -47,7 +47,7 @@ const navigationHoverAnimate = (index) => {
 
 const navigationStore = useNavigationStore();
 
-const goToSection = (sectionId) => {
+const goToSection = (sectionId: string) => {
   Canvas3.scrollToElBySelector(
     `.page-section[data-nav-id="${sectionId}"]`,
     0.75,

@@ -81,7 +81,10 @@
               v-action-on-scroll="{
                 activeRange: 0.9,
                 activateOnce: false,
-                onScrollCallback: (item: any, speed: number) => {
+                onScrollCallback: (
+                  item: ScrollActionBinding,
+                  speed: number,
+                ) => {
                   example3ScrollCallback(item, speed);
                 },
               }"
@@ -119,7 +122,7 @@
                 activateOnce: false,
                 scrollSpeedSetTo: { value: 0.3 },
                 bidirectionalActivation: true,
-                activateCallback: (item) => {
+                activateCallback: (item: ScrollActionBinding) => {
                   const el = item.elNode.querySelector('.example-activate-txt');
                   const tl = gsap.timeline();
                   tl.to(el, { x: -10, opacity: 1, duration: 0.5 });
@@ -193,11 +196,14 @@ import Container from "~/components/common/Container.vue";
 import CodeSnippet from "~/components/common/CodeSnippet.vue";
 import gsap from "gsap";
 
+//TODO: proper type import export
+import type { ScrollActionBinding } from "../../../canvas3-nuxt/dist/runtime/types/types";
+
 const example1Hover = ref(false);
 const example3Speed = ref(0);
 const example2Hover = ref(false);
 
-const example3ScrollCallback = (item, speed) => {
+const example3ScrollCallback = (item: ScrollActionBinding, speed: number) => {
   example3Speed.value = speed;
   gsap.to(item.elNode.querySelector(".scroll-speed-ani"), {
     width: `${speed * 100}%`,

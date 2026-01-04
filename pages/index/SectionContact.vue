@@ -22,7 +22,7 @@
             v-action-on-scroll="{
               activeRange: 0.85,
               activateOnce: true,
-              activateCallback: (item) => {
+              activateCallback: (item: ScrollActionBinding) => {
                 splitLineAnimation(item.elNode);
               },
             }"
@@ -48,7 +48,7 @@
             v-action-on-scroll="{
               activeRange: 0.85,
               activateOnce: true,
-              activateCallback: (item) => {
+              activateCallback: (item: ScrollActionBinding) => {
                 splitLineAnimation(item.elNode);
               },
             }"
@@ -94,9 +94,12 @@ import Container from "~/components/common/Container.vue";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 
+//TODO: proper type import export
+import type { ScrollActionBinding } from "../../../canvas3-nuxt/dist/runtime/types/types";
+
 gsap.registerPlugin(SplitText);
 
-const splitLineAnimation = (item) => {
+const splitLineAnimation = (item: HTMLElement) => {
   const tl = gsap.timeline({ delay: 0.5 });
   const lines = new SplitText(item, {
     type: "lines",
