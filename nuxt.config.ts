@@ -8,8 +8,8 @@ export default defineNuxtConfig({
     "@nuxt-modules/compression",
     "@nuxt/eslint",
     "@pinia/nuxt",
-    "../canvas3-nuxt/src/module", // Canvas3 Nuxt module local dev path
-    // "@canvas3/nuxt",
+    // "../canvas3-nuxt/src/module", // Canvas3 Nuxt module local dev path
+    "@canvas3/nuxt",
   ],
   // image: {
   //   target: "static",

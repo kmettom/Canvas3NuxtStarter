@@ -38,6 +38,6 @@
     "vue-router": "^4.5.1"
   },
   "dependencies": {
-    "@canvas3/nuxt": "^0.0.3"
+    "@canvas3/nuxt": "^0.0.5"
   }
 }
