@@ -2,33 +2,33 @@
   <div class="page-container">
     <h1 class="heading-1 play-headline">Playground</h1>
     <div class="playground-projects">
-      <nuxt-link href="/playground/1">
-        <div class="play-1">
-          <h3 class="body-l">Shaders playground</h3>
-          <p class="body-s">Exploring shaders and 3d geometry equations</p>
-          <Canvas3Image
-            :options="{
-              src: 'images/play/play1.jpg',
-              alt: '',
-              shaderName: 'play1',
-            }"
-          />
-        </div>
-      </nuxt-link>
-      <nuxt-link href="/playground/2">
-        <div class="play-1">
-          <h3 class="body-l">Infinite scroll</h3>
-          <p class="body-s">Infinite scroll playground</p>
-          <Canvas3Image
-            :options="{
-              src: 'images/play/play1.jpg',
-              alt: '',
-              shaderName: 'play1',
-            }"
-          />
-        </div>
-      </nuxt-link>
-      <nuxt-link href="/playground/crypto">
+<!--      <nuxt-link href="/playground/1">-->
+<!--        <div class="play-1">-->
+<!--          <h3 class="body-l">Shaders playground</h3>-->
+<!--          <p class="body-s">Exploring shaders and 3d geometry equations</p>-->
+<!--          <Canvas3Image-->
+<!--            :options="{-->
+<!--              src: 'images/play/play1.jpg',-->
+<!--              alt: '',-->
+<!--              shaderName: 'play1',-->
+<!--            }"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </nuxt-link>-->
+<!--      <nuxt-link href="/playground/2">-->
+<!--        <div class="play-1">-->
+<!--          <h3 class="body-l">Infinite scroll</h3>-->
+<!--          <p class="body-s">Infinite scroll playground</p>-->
+<!--          <Canvas3Image-->
+<!--            :options="{-->
+<!--              src: 'images/play/play1.jpg',-->
+<!--              alt: '',-->
+<!--              shaderName: 'play1',-->
+<!--            }"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </nuxt-link>-->
+      <nuxt-link href="/playground/eth-blocks">
         <div class="play-1">
           <h3 class="body-l">Ethereum network</h3>
           <p class="body-s">Ethereum network listener interaction</p>

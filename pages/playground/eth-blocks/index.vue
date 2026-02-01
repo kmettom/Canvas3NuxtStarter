@@ -3,24 +3,28 @@
     <h1 class="headline">ETHEREUM - {{ currentBlock?.transactions.length }}</h1>
 
     <div class="eth-blocks">
-
-    <div v-for="block in blocks" :key="block.transactions.length" class="eth-block">
-      <div>
-        {{ block.transactions.length }}
-      </div>
-      <Canvas3Image
+      <div
+        v-for="block in blocks"
+        :key="block.transactions.length"
+        class="eth-block"
+      >
+        <div>
+          <div>Transactions: {{ block.transactions.length }} </div>
+          <div>Withdrawals: {{ block.withdrawals.length }} </div>
+          <div>gasUsed: {{ block.gasUsed }} </div>
+        </div>
+        <Canvas3Image
           class="eth-block-image"
           :options="{
-          src: '/images/08.JPG',
-          alt: 'background wave on beach',
-          loadStrategy: 'preload',
-          uniforms: imageUniforms,
-          shaderName: 'play1',
-        }"
-      />
+            src: '/images/08.JPG',
+            alt: 'background wave on beach',
+            loadStrategy: 'preload',
+            uniforms: imageUniforms,
+            shaderName: 'play1',
+          }"
+        />
+      </div>
     </div>
-    </div>
-
   </div>
 </template>
 <script setup>
@@ -39,7 +43,7 @@ let unwatchBlocks;
 
 const imageUniforms = computed(() => {
   return {
-    uAniInImage: { value: 1 , duration: 1.25 },
+    uAniInImage: { value: 1, duration: 1.25 },
   };
 });
 
@@ -66,11 +70,20 @@ onUnmounted(() => {
   padding-top: 300px;
 }
 
-.eth-block{
+.eth-block {
+  border: 1px solid red;
   height: 33vh;
+  width: 100%;
+  position: relative;
 }
-.eth-block-image{
+
+.eth-block-image {
   height: 100%;
+  width: 100%;
+  position: absolute;
+  top:0;
+  left: 0;
+  object-fit: cover;
 }
 
 .play-1-img-wrapper {
