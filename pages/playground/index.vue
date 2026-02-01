@@ -1,33 +1,44 @@
 <template>
   <div class="page-container">
-    <h1 class="heading-1 play-headline">
-      <CanvasText
-        :theme="'light'"
-        :uniforms="{ uAniInText: { active: true, duration: 0 } }"
-      >
-        Playground
-      </CanvasText>
-    </h1>
+    <h1 class="heading-1 play-headline">Playground</h1>
     <div class="playground-projects">
       <nuxt-link href="/playground/1">
         <div class="play-1">
           <h3 class="body-l">Shaders playground</h3>
           <p class="body-s">Exploring shaders and 3d geometry equations</p>
-          <CanvasImage :src-link="'images/play/play1.jpg'" :shader="'play1'" />
+          <Canvas3Image
+            :options="{
+              src: 'images/play/play1.jpg',
+              alt: '',
+              shaderName: 'play1',
+            }"
+          />
         </div>
       </nuxt-link>
       <nuxt-link href="/playground/2">
         <div class="play-1">
           <h3 class="body-l">Infinite scroll</h3>
           <p class="body-s">Infinite scroll playground</p>
-          <CanvasImage :src-link="'images/play/play1.jpg'" />
+          <Canvas3Image
+            :options="{
+              src: 'images/play/play1.jpg',
+              alt: '',
+              shaderName: 'play1',
+            }"
+          />
         </div>
       </nuxt-link>
       <nuxt-link href="/playground/crypto">
         <div class="play-1">
           <h3 class="body-l">Ethereum network</h3>
           <p class="body-s">Ethereum network listener interaction</p>
-          <CanvasImage :src-link="'images/play/play1.jpg'" />
+          <Canvas3Image
+            :options="{
+              src: 'images/play/play1.jpg',
+              alt: '',
+              shaderName: 'play1',
+            }"
+          />
         </div>
       </nuxt-link>
     </div>
@@ -37,10 +48,10 @@
 // import { onMounted, watch } from 'vue';
 
 useSeoMeta({
-  title: 'Tomas Kmet - Web developer - Playground',
-  ogTitle: 'Tomas Kmet - Web developer - Playground',
-  description: 'Tomas Kmet - Web developer - Playground',
-  ogDescription: 'Tomas Kmet - Web developer - Playground',
+  title: "Tomas Kmet - Web developer - Playground",
+  ogTitle: "Tomas Kmet - Web developer - Playground",
+  description: "Tomas Kmet - Web developer - Playground",
+  ogDescription: "Tomas Kmet - Web developer - Playground",
 });
 //
 // const props = defineProps({
@@ -67,11 +78,31 @@ useSeoMeta({
 // );
 </script>
 <style lang="scss" scoped>
+.page-container {
+  //min-height: 100vh;
+}
 .play-headline {
-  padding-top: 150px;
+  text-transform: capitalize;
+  text-align: center;
+  padding-top: 100px;
+  opacity: 0;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  line-height: 190px;
+}
+
+.playground-projects {
+  position: relative;
 }
 .play-1 {
   margin-left: 200px;
-  width: 400px;
+  width: 500px;
+  max-width: 100%;
+  @include respond-width($w-m) {
+    margin-left: 50px;
+  }
+  @include respond-width($w-xs) {
+    margin-left: 10px;
+  }
 }
 </style>

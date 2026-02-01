@@ -37,22 +37,22 @@
   </div>
 </template>
 <script setup>
-import { onMounted } from 'vue';
-import { infiniteLoopScrollSection } from '~/utils/play/play2';
+import { onMounted } from "vue";
+import { infiniteLoopScrollSection } from "~/utils/play/play2";
 
 useSeoMeta({
-  title: 'Tomas Kmet - Web developer - Playground',
-  ogTitle: 'Tomas Kmet - Web developer - Playground',
-  description: 'Tomas Kmet - Web developer - Playground',
-  ogDescription: 'Tomas Kmet - Web developer - Playground',
+  title: "Tomas Kmet - Web developer - Playground",
+  ogTitle: "Tomas Kmet - Web developer - Playground",
+  description: "Tomas Kmet - Web developer - Playground",
+  ogDescription: "Tomas Kmet - Web developer - Playground",
 });
 
 const mainTextInUniforms = {
   uAniInText: { value: 1, duration: 1 },
 };
 
-const play2el = ref('play2el');
-const infiniteParent = ref('infiniteParent');
+const play2el = ref("play2el");
+const infiniteParent = ref("infiniteParent");
 
 onMounted(() => {
   setTimeout(() => {

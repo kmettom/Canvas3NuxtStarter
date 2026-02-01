@@ -9,25 +9,25 @@
   </div>
 </template>
 <script setup>
-import { onMounted } from 'vue';
-import { addObjectPlay1 } from '~/utils/play/play1';
+import { onMounted } from "vue";
+// import { addObjectPlay1 } from "~/utils/play/play1";
 
 useSeoMeta({
-  title: 'Tomas Kmet - Web developer - Playground',
-  ogTitle: 'Tomas Kmet - Web developer - Playground',
-  description: 'Tomas Kmet - Web developer - Playground',
-  ogDescription: 'Tomas Kmet - Web developer - Playground',
+  title: "Tomas Kmet - Web developer - Playground",
+  ogTitle: "Tomas Kmet - Web developer - Playground",
+  description: "Tomas Kmet - Web developer - Playground",
+  ogDescription: "Tomas Kmet - Web developer - Playground",
 });
 
 const mainTextInUniforms = {
   uAniInText: { value: 1, duration: 1 },
 };
 
-const play1el = ref('play1el');
+const play1el = ref("play1el");
 
 onMounted(() => {
   setTimeout(() => {
-    addObjectPlay1(play1el.value, { uAniInImage: { value: 1, duration: 1 } });
+    // addObjectPlay1(play1el.value, { uAniInImage: { value: 1, duration: 1 } });
   }, 1000);
 });
 </script>
