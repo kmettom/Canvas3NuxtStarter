@@ -1,7 +1,7 @@
 <template>
   <div class="eth-blocks-page page-container">
-    <h1 class="headline">ETHEREUM - {{ currentBlock?.transactions.length }}</h1>
-
+    <!--    <div class="eth-first-block-preload">-->
+    <!--    </div>-->
     <div class="eth-blocks">
       <div
         v-for="block in blocks"
@@ -9,9 +9,18 @@
         class="eth-block"
       >
         <div>
-          <div>Transactions: {{ block.transactions.length }} </div>
-          <div>Withdrawals: {{ block.withdrawals.length }} </div>
-          <div>gasUsed: {{ block.gasUsed }} </div>
+          <div>Transactions: {{ block.transactions.length }}</div>
+          <div>Withdrawals: {{ block.withdrawals.length }}</div>
+          <div>
+            GasUsed: {{ blockGasUsedPercent(block.gasLimit, block.gasUsed) }}
+          </div>
+          <div>
+            Gas target:
+            {{ blockGasTargetPercent(block.gasLimit, block.gasUsed) }}
+          </div>
+          <div>burned ETH: {{blockETHBurned(block.baseFeePerGas, block.gasUsed)}}</div>
+          <div>∑ withdrawals: {{blockWithdrawalsSum(block.withdrawals)}}</div>
+          <div>ETH BURN vs issue: {{}}</div>
         </div>
         <Canvas3Image
           class="eth-block-image"
@@ -19,8 +28,7 @@
             src: '/images/08.JPG',
             alt: 'background wave on beach',
             loadStrategy: 'preload',
-            uniforms: imageUniforms,
-            shaderName: 'play1',
+            uniforms: 'playEthBlock',
           }"
         />
       </div>
@@ -29,8 +37,41 @@
 </template>
 <script setup>
 import { onMounted } from "vue";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, http, hexToNumber, formatGwei } from "viem";
 import { mainnet } from "viem/chains";
+import { BlockExample } from "~/pages/playground/eth-blocks/block-example";
+
+const blockWithdrawalsSum = (withdrawals) => {
+  let sum = 0;
+  for (let i = 0; i < withdrawals.length; i++) {
+    const withNum = hexToNumber(withdrawals[i].amount);
+    sum += withNum;
+  }
+  return sum ;
+}
+
+const blockETHBurned = (baseFeePerGas, gasUsed) => {
+  const baseFeePerGasNum = hexToNumber(baseFeePerGas);
+  const gasUsedNum = hexToNumber(gasUsed);
+
+  return baseFeePerGasNum * gasUsedNum;
+};
+
+const blockGasUsedPercent = (gasLimit, gasUsed) => {
+  const gasUsedNum = hexToNumber(gasUsed);
+  const gasLimitNum = hexToNumber(gasLimit);
+
+  return Number((gasUsedNum / gasLimitNum) * 100).toFixed(2) + "%";
+};
+
+const blockGasTargetPercent = (gasLimit, gasUsed) => {
+  const gasUsedNum = hexToNumber(gasUsed);
+  const gasLimitNum = hexToNumber(gasLimit);
+  const gasTargetZeroPoint = gasLimitNum / 2;
+  const gasTargetCoef = (gasUsedNum - gasTargetZeroPoint) / gasTargetZeroPoint;
+
+  return Number(gasTargetCoef * 100).toFixed(2) + "%";
+};
 
 const client = createPublicClient({
   chain: mainnet,
@@ -38,7 +79,6 @@ const client = createPublicClient({
 });
 
 const blocks = ref([]);
-const currentBlock = ref(null);
 let unwatchBlocks;
 
 const imageUniforms = computed(() => {
@@ -47,22 +87,27 @@ const imageUniforms = computed(() => {
   };
 });
 
+const addBlockListener = () => {
+  blocks.value.push(BlockExample.result);
+
+  // unwatchBlocks = client.watchBlocks({
+  //   onBlock: (block) => {
+  //     blocks.value.push(block);
+  //     console.log("block", block);
+  //     currentBlock.value = block;
+  //   },
+  // });
+};
+
 onMounted(async () => {
+  addBlockListener();
   // blockNumber.value = await client.getBlockNumber();
   // currentBlock.value = await client.getBlock();
   // console.log('block', currentBlock.value);
-
-  unwatchBlocks = client.watchBlocks({
-    onBlock: (block) => {
-      blocks.value.push(block);
-      console.log("block", block);
-      currentBlock.value = block;
-    },
-  });
 });
 
 onUnmounted(() => {
-  unwatchBlocks();
+  // unwatchBlocks();
 });
 </script>
 <style lang="scss" scoped>
@@ -81,7 +126,7 @@ onUnmounted(() => {
   height: 100%;
   width: 100%;
   position: absolute;
-  top:0;
+  top: 0;
   left: 0;
   object-fit: cover;
 }

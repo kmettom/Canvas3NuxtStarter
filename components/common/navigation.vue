@@ -14,7 +14,9 @@
           {{ navItem.name }}
         </span>
       </div>
-      <NuxtLink href="/playground"> Playground </NuxtLink>
+      <NuxtLink class="navigation-item" href="/playground">
+        <span> Playground </span>
+      </NuxtLink>
     </nav>
   </div>
 </template>
@@ -32,7 +34,8 @@ const navAniY = 10;
 
 const navigationHoverAnimate = (index: number) => {
   const tl = gsap.timeline();
-  const text = navItemRefs.value[index].querySelector("span");
+  const text = navItemRefs.value[index]?.querySelector("span");
+  if (!text) return;
   tl.to(text, {
     duration: navAniDuration,
     y: navAniY,
@@ -78,7 +81,7 @@ watch(
   display: flex;
   justify-content: space-between;
   padding: 20px;
-  z-index: 9;
+  z-index: 99;
   opacity: 0;
   pointer-events: none;
 }
