@@ -23,12 +23,11 @@
             <div class="content-block">
               <span class="content-title">Gas target:</span>
               <span class="content-value">{{
-                  block.blockGasTargetPercent
-                }}</span>
+                block.blockGasTargetPercent
+              }}</span>
             </div>
           </div>
           <div class="content-row">
-
             <div class="content-block">
               <span class="content-title">Burned ETH:</span>
               <span class="content-value">{{ block.blockETHBurned }}</span>
@@ -173,7 +172,7 @@ onUnmounted(() => {
     flex-direction: column;
     justify-content: space-around;
   }
-  .content-row{
+  .content-row {
     justify-items: center;
     align-items: center;
     justify-content: space-between;
@@ -194,5 +193,4 @@ onUnmounted(() => {
   width: 100%;
   //height: 100px;
 }
-
 </style>
