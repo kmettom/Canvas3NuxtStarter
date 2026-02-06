@@ -95,9 +95,9 @@ vec3 applySepia(vec3 color) {
     float b = color.b;
 
     vec3 sepiaColor = vec3(
-    clamp(r * 0.358 + g * 0.704 + b * 0.138, 0.0, 1.0),
-    clamp(r * 0.357 + g * 0.705 + b * 0.141, 0.0, 1.0),
-    clamp(r * 0.3 + g * 0.497 + b * 0.203, 0.0, 1.0)
+    clamp(r * 0.10 + g * 0.10 + b * 0.10, 0.0, 1.0),
+    clamp(r * 0.10 + g * 0.10 + b * 0.10, 0.0, 1.0),
+    clamp(r * 0.10 + g * 0.10 + b * 0.10, 0.0, 1.0)
     );
     return mix(sepiaColor, vec3(0.5), 0.5);
 }

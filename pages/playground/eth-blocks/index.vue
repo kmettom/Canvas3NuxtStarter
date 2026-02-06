@@ -1,32 +1,58 @@
 <template>
   <div class="eth-blocks-page page-container">
-    <!--    <div class="eth-first-block-preload">-->
-    <!--    </div>-->
     <div class="eth-blocks">
       <div
         v-for="block in blocks"
         :key="block.transactions.length"
         class="eth-block"
       >
-        <div>
-          <div>Transactions: {{ block.transactions.length }}</div>
-          <div>Withdrawals: {{ block.withdrawals.length }}</div>
-          <div>GasUsed: {{ block.blockGasUsedPercent }}</div>
-          <div>
-            Gas target:
-            {{ block.blockGasTargetPercent }}
+        <div class="content-wrapper">
+          <div class="content-row">
+            <div class="content-block">
+              <span class="content-title">Transactions:</span>
+              <span class="content-value">{{ block.transactions.length }}</span>
+            </div>
+            <div class="content-block">
+              <span class="content-title">Withdrawals:</span>
+              <span class="content-value">{{ block.withdrawals.length }}</span>
+            </div>
+            <div class="content-block">
+              <span class="content-title">Gas used:</span>
+              <span class="content-value">{{ block.blockGasUsedPercent }}</span>
+            </div>
+            <div class="content-block">
+              <span class="content-title">Gas target:</span>
+              <span class="content-value">{{
+                  block.blockGasTargetPercent
+                }}</span>
+            </div>
           </div>
-          <div>burned ETH: {{ block.blockETHBurned }}</div>
-          <div>∑ withdrawals: {{ block.blockWithdrawalsSum }}</div>
-          <div>ETH BURN vs issue: {{ block.blockNetIssuanceETH }}</div>
+          <div class="content-row">
+
+            <div class="content-block">
+              <span class="content-title">Burned ETH:</span>
+              <span class="content-value">{{ block.blockETHBurned }}</span>
+            </div>
+            <div class="content-block">
+              <span class="content-title">∑ Withdrawals:</span>
+              <span class="content-value">{{ block.blockWithdrawalsSum }}</span>
+            </div>
+            <div class="content-block">
+              <span class="content-title">ETH burn vs issuance:</span>
+              <span class="content-value">{{ block.blockNetIssuanceETH }}</span>
+            </div>
+          </div>
         </div>
         <Canvas3Image
           class="eth-block-image"
           :options="{
-            src: '/images/08.JPG',
+            src: '/images/play/playeth-example-block.png',
             alt: 'background wave on beach',
             loadStrategy: 'preload',
-            uniforms: 'playEthBlock',
+            uniforms: {
+              uAniInImage: { value: 1, duration: 0 },
+            },
+            shaderName: 'playEthBlock',
           }"
         />
       </div>
@@ -38,6 +64,8 @@ import { onMounted } from "vue";
 import { createPublicClient, http, hexToNumber } from "viem";
 import { sepolia } from "viem/chains";
 import { BlockExample } from "~/pages/playground/eth-blocks/block-example";
+
+const maxBlocks = 3;
 
 const blockWithdrawalsSum = (withdrawals) => {
   let sum = 0;
@@ -107,15 +135,15 @@ const addBlockListener = () => {
   const newBlockWithData = generateBlockData(block);
   blocks.value.push(newBlockWithData);
 
-  // unwatchBlocks = client.watchBlocks({
-  //   onBlock: (block) => {
-  //     const newBlockWithData = generateBlockData(block);
-  //     blocks.value.push(newBlockWithData);
-  //     if(blocks.value.length > 10) {
-  //       unwatchBlocks();
-  //     }
-  //   },
-  // });
+  unwatchBlocks = client.watchBlocks({
+    onBlock: (block) => {
+      const newBlockWithData = generateBlockData(block);
+      blocks.value.push(newBlockWithData);
+      if (blocks.value.length > maxBlocks) {
+        unwatchBlocks();
+      }
+    },
+  });
 };
 
 onMounted(async () => {
@@ -132,30 +160,39 @@ onUnmounted(() => {
 }
 
 .eth-block {
-  border: 1px solid red;
-  height: 33vh;
   width: 100%;
   position: relative;
+  .content-wrapper {
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  .content-row{
+    justify-items: center;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+  }
+  .content-block {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    padding: 25px;
+  }
+  .content-title {
+    padding-right: 10px;
+  }
 }
 
 .eth-block-image {
-  height: 100%;
   width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  object-fit: cover;
+  //height: 100px;
 }
 
-.play-1-img-wrapper {
-  margin-left: 200px;
-  width: 700px;
-}
-
-.play1-el {
-  margin: 100px;
-  width: 300px;
-  height: 300px;
-  //border: 1px solid green;
-}
 </style>
