@@ -6,7 +6,7 @@
         :key="block.transactions.length"
         class="eth-block"
       >
-        <div class="content-wrapper">
+        <div class="content-wrapper" v-if="block.inProgress">
           <div class="content-row">
             <div class="content-block">
               <span class="content-title">Transactions:</span>
@@ -42,6 +42,7 @@
             </div>
           </div>
         </div>
+        <div v-else>xxx</div>
         <Canvas3Image
           class="eth-block-image"
           :options="{
@@ -123,7 +124,7 @@ const generateBlockData = (blockData) => {
   );
   newBlock.blockETHBurned = blockETHBurnedVal;
   newBlock.blockNetIssuanceETH = blockWithdrawalsSumVal - blockETHBurnedVal;
-
+  newBlock.inProgress = false;
   return newBlock;
 };
 
@@ -159,7 +160,8 @@ onUnmounted(() => {
 }
 
 .eth-block {
-  width: 100%;
+  width: 50%;
+  display: inline-block;
   position: relative;
   .content-wrapper {
     z-index: 10;
@@ -194,3 +196,10 @@ onUnmounted(() => {
   //height: 100px;
 }
 </style>
+
+<!--TODO:-->
+<!-- ->Navigation update  -->
+<!-- ->Playground main page finish  -->
+<!-- ->Page transition - easy overlay 1st version ->   -->
+<!-- ->Playground eth - animation in  -->
+<!-- ->Playground eth - block loading time - avegage block time loading - shader slowly loading + loader text  -->
