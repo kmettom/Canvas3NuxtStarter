@@ -10,15 +10,24 @@
       </div>
     </Container>
     <div class="hero-bg-image">
-      <Canvas3Image
-        :options="{
-          src: 'images/08.JPG',
-          alt: 'background wave on beach',
-          loadStrategy: 'preload',
+      <img
+        src="/images/08.jpg"
+        alt="background wave on beach"
+        v-canvas3-image="{
+          loadStrategy: 'eager',
           uniforms: imageUniforms,
           shaderName: 'hero',
         }"
       />
+      <!--      <Canvas3Image-->
+      <!--        :options="{-->
+      <!--          src: 'images/08.JPG',-->
+      <!--          alt: 'background wave on beach',-->
+      <!--          loadStrategy: 'eager',-->
+      <!--          uniforms: imageUniforms,-->
+      <!--          shaderName: 'hero',-->
+      <!--        }"-->
+      <!--      />-->
     </div>
   </div>
 </template>
@@ -44,7 +53,7 @@ const imageIn = ref(false);
 
 const imageUniforms = computed(() => {
   return {
-    uAniInImage: { value: imageIn.value ? 1 : 0, duration: 1.25 },
+    uAniInImage: { value: imageIn.value ? 1 : 0, duration: 1.25, ease: "ease" },
   };
 });
 

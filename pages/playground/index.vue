@@ -28,17 +28,16 @@
       <!--          />-->
       <!--        </div>-->
       <!--      </nuxt-link>-->
-      <nuxt-link href="/playground/eth-blocks">
+      <nuxt-link class="play-link" href="/playground/eth-blocks">
         <div class="play-1">
           <h3 class="body-l">Ethereum network</h3>
           <p class="body-s">Ethereum network listener interaction</p>
-          <Canvas3Image
-            :options="{
-              src: 'images/play/play1.jpg',
-              alt: '',
-              shaderName: 'play1',
-            }"
-          />
+          <!--          <Canvas3Image-->
+          <!--            :options="{-->
+          <!--              src: '/images/play/play1.jpg',-->
+          <!--              alt: '',-->
+          <!--            }"-->
+          <!--          />-->
         </div>
       </nuxt-link>
     </div>
@@ -78,6 +77,10 @@ useSeoMeta({
 // );
 </script>
 <style lang="scss" scoped>
+.play-link {
+  color: inherit;
+  text-decoration: none;
+}
 .page-container {
   //min-height: 100vh;
 }

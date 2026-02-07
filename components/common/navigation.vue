@@ -1,6 +1,6 @@
 <template>
   <div class="body-xs navigation-bar">
-    <nav class="navigation-items">
+    <nav v-if="homePage" class="navigation-items">
       <div
         v-for="(navItem, index) in navigationItems"
         :key="navItem.id"
@@ -14,6 +14,24 @@
           {{ navItem.name }}
         </span>
       </div>
+    </nav>
+    <nav v-else class="navigation-items">
+      <NuxtLink
+        :ref="navItemRefs.set"
+        href="/"
+        class="navigation-item nav-play nav-link-home"
+        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-home')"
+      >
+        <span> Home </span>
+      </NuxtLink>
+      <NuxtLink
+        :ref="navItemRefs.set"
+        href="/playground"
+        class="navigation-item nav-play nav-link-play"
+        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-play')"
+      >
+        <span> Playground </span>
+      </NuxtLink>
     </nav>
   </div>
 </template>
@@ -29,10 +47,21 @@ const navItemRefs = useTemplateRefsList();
 const navAniDuration = 0.15;
 const navAniY = 10;
 
-const navigationHoverAnimate = (index: number) => {
-  const tl = gsap.timeline();
-  const text = navItemRefs.value[index]?.querySelector("span");
+const route = useRoute();
+
+const homePage = computed(() => {
+  return route.name === "index";
+});
+
+const navigationHoverAnimatePlay = (el, elClassName) => {
+  console.log("el", el);
+  const text = el?.querySelector(`.${elClassName} span`);
+  animateTextSpan(text);
+};
+
+const animateTextSpan = (text) => {
   if (!text) return;
+  const tl = gsap.timeline();
   tl.to(text, {
     duration: navAniDuration,
     y: navAniY,
@@ -44,6 +73,11 @@ const navigationHoverAnimate = (index: number) => {
     duration: navAniDuration,
     y: 0,
   });
+};
+
+const navigationHoverAnimate = (index: number) => {
+  const text = navItemRefs.value[index]?.querySelector("span");
+  animateTextSpan(text);
 };
 
 const navigationStore = useNavigationStore();
@@ -87,6 +121,10 @@ watch(
   display: flex;
   flex-direction: column;
   text-align: right;
+}
+.nav-play {
+  color: inherit;
+  text-decoration: none;
 }
 
 .navigation-item {
