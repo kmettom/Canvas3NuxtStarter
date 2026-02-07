@@ -6,6 +6,8 @@
         v-for="[blockId, block] in [...blocks].reverse()"
         :key="blockId"
         class="eth-block"
+        @mouseenter="hoverBlock($event, true)"
+        @mouseleave="hoverBlock($event, false)"
       >
         <div v-if="block.inProgress" class="content-wrapper">
           <div class="block-loader">Block incoming</div>
@@ -64,42 +66,24 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { createPublicClient, http, hexToNumber } from "viem";
+import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
-// import { BlockExample } from "~/pages/playground/eth-blocks/block-example";
+import {
+  blockETHBurned,
+  blockGasTargetPercent,
+  blockGasUsedPercent,
+  blockWithdrawalsSum,
+} from "~/utils/play/play-eth-blocks";
+import { gsap } from "gsap";
 
 const maxBlocks = 10;
 
-const blockWithdrawalsSum = (withdrawals) => {
-  let sum = 0;
-  for (let i = 0; i < withdrawals.length; i++) {
-    const withNum = hexToNumber(withdrawals[i].amount);
-    sum += withNum;
-  }
-  return sum;
-};
-
-const blockETHBurned = (baseFeePerGas, gasUsed) => {
-  const baseFeePerGasNum = hexToNumber(baseFeePerGas);
-  const gasUsedNum = hexToNumber(gasUsed);
-
-  return baseFeePerGasNum * gasUsedNum;
-};
-
-const blockGasUsedPercent = (gasLimit, gasUsed) => {
-  const gasUsedNum = hexToNumber(gasUsed);
-  const gasLimitNum = hexToNumber(gasLimit);
-
-  return Number((gasUsedNum / gasLimitNum) * 100).toFixed(2) + "%";
-};
-
-const blockGasTargetPercent = (gasLimit, gasUsed) => {
-  const gasUsedNum = hexToNumber(gasUsed);
-  const gasLimitNum = hexToNumber(gasLimit);
-  const gasTargetZeroPoint = gasLimitNum / 2;
-  const gasTargetCoef = (gasUsedNum - gasTargetZeroPoint) / gasTargetZeroPoint;
-
-  return Number(gasTargetCoef * 100).toFixed(2) + "%";
+const hoverBlock = (event, status) => {
+  console.log("hoverBlock, ", event, status);
+  const titles = event.target.querySelectorAll(".content-title");
+  if (titles.length < 1) return;
+  const tl = gsap.timeline({});
+  tl.to(titles, { opacity: status ? 1 : 0 });
 };
 
 const client = createPublicClient({
