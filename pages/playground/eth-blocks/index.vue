@@ -1,15 +1,15 @@
 <template>
   <div class="eth-blocks-page page-container">
     <div class="eth-blocks">
-      {{ averageBlockTime }}
       <div
         v-for="[blockId, block] in [...blocks].reverse()"
         :key="blockId"
         class="eth-block"
+        :class="`${block.inProgress ? ' block-in-progress' : ''}`"
         @mouseenter="hoverBlock($event, true)"
         @mouseleave="hoverBlock($event, false)"
       >
-        <div v-if="block.inProgress" class="content-wrapper">
+        <div v-if="block.inProgress" class="content-wrapper ">
           <div class="block-loader">Block incoming</div>
         </div>
         <div v-else class="content-wrapper">
@@ -79,7 +79,6 @@ import { gsap } from "gsap";
 const maxBlocks = 10;
 
 const hoverBlock = (event, status) => {
-  console.log("hoverBlock, ", event, status);
   const titles = event.target.querySelectorAll(".content-title");
   if (titles.length < 1) return;
   const tl = gsap.timeline({});
@@ -122,11 +121,18 @@ const emptyLoadingBlock = { inProgress: true };
 
 const nextBlockRefIdGenerated = ref(crypto.randomUUID());
 
+const animateNewBlockInProgress = () => {
+  console.log("animateNewBlockInProgress")
+  const tl = gsap.timeline({})
+  setTimeout(() => {
+    tl.fromTo('.block-in-progress',{height:0},{height:'200px', duration: averageBlockTime.value})
+  },10);
+}
+
+
 const addBlockListener = () => {
   nextBlockRefIdGenerated.value = crypto.randomUUID();
   blocks.value.set(nextBlockRefIdGenerated.value, emptyLoadingBlock);
-
-  console.log("blocks.value", blocks.value);
 
   unwatchBlocks = client.watchBlocks({
     onBlock: (block) => {
@@ -137,6 +143,7 @@ const addBlockListener = () => {
       }
       nextBlockRefIdGenerated.value = crypto.randomUUID();
       blocks.value.set(nextBlockRefIdGenerated.value, emptyLoadingBlock);
+      animateNewBlockInProgress()
     },
   });
 };
@@ -148,6 +155,7 @@ const getLastBlock = async () => {
     nextBlockRefIdGenerated.value,
     generateBlockData(latestBlock),
   );
+  animateNewBlockInProgress();
 };
 
 onMounted(async () => {
@@ -196,6 +204,7 @@ onUnmounted(() => {
     padding: 25px;
   }
   .content-title {
+    opacity: 0;
     padding-right: 10px;
   }
 }
