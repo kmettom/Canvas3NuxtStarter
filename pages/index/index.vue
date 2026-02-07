@@ -22,6 +22,13 @@
       <SectionExamples />
     </div>
     <div
+      v-action-on-scroll="setSectionActivationOptions('playground', true)"
+      class="page-section"
+      data-nav-id="playground"
+    >
+      <SectionPlayground />
+    </div>
+    <div
       v-action-on-scroll="setSectionActivationOptions('roadmap', true)"
       class="page-section"
       data-nav-id="roadmap"
@@ -48,6 +55,7 @@ import SectionAbout from "~/pages/index/SectionAbout.vue";
 import SectionRoadmap from "~/pages/index/SectionRoadmap.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
+import SectionPlayground from "~/pages/index/SectionPlayground.vue";
 
 useSeoMeta({
   title: "Canvas3 NUXT Starter",

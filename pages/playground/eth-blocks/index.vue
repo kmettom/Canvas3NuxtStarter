@@ -6,7 +6,7 @@
         :key="block.transactions.length"
         class="eth-block"
       >
-        <div class="content-wrapper" v-if="block.inProgress">
+        <div v-if="block.inProgress" class="content-wrapper">
           <div class="content-row">
             <div class="content-block">
               <span class="content-title">Transactions:</span>
