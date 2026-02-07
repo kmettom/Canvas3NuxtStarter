@@ -1,6 +1,7 @@
 <template>
   <div class="eth-blocks-page page-container">
     <div class="eth-blocks">
+      {{ averageBlockTime }}
       <div
         v-for="[blockId, block] in [...blocks].reverse()"
         :key="blockId"
@@ -222,8 +223,7 @@ onUnmounted(() => {
 </style>
 
 <!--TODO:-->
-<!-- ->Navigation update  -->
-<!-- ->Playground main page finish  -->
-<!-- ->Page transition - easy overlay 1st version ->   -->
 <!-- ->Playground eth - animation in  -->
 <!-- ->Playground eth - block loading time - avegage block time loading - shader slowly loading + loader text  -->
+<!-- ->Playground main page finish  -->
+<!-- ->Page transition - easy overlay 1st version ->   -->
