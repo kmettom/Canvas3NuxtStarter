@@ -3,10 +3,15 @@
     <div class="eth-blocks">
       <div
         v-for="block in blocks"
-        :key="block.transactions.length"
+        :key="block.nextBlockRefId"
         class="eth-block"
       >
         <div v-if="block.inProgress" class="content-wrapper">
+          <div class="block-loader">
+            Block incoming
+          </div>
+        </div>
+        <div v-else class="content-wrapper">
           <div class="content-row">
             <div class="content-block">
               <span class="content-title">Transactions:</span>
@@ -42,7 +47,6 @@
             </div>
           </div>
         </div>
-        <div v-else>xxx</div>
         <Canvas3Image
           class="eth-block-image"
           :options="{
@@ -63,9 +67,9 @@
 import { onMounted } from "vue";
 import { createPublicClient, http, hexToNumber } from "viem";
 import { sepolia } from "viem/chains";
-import { BlockExample } from "~/pages/playground/eth-blocks/block-example";
+// import { BlockExample } from "~/pages/playground/eth-blocks/block-example";
 
-const maxBlocks = 3;
+const maxBlocks = 4;
 
 const blockWithdrawalsSum = (withdrawals) => {
   let sum = 0;
@@ -131,17 +135,18 @@ const generateBlockData = (blockData) => {
 let unwatchBlocks;
 
 const addBlockListener = () => {
-  const block = BlockExample.result;
-  const newBlockWithData = generateBlockData(block);
-  blocks.value.push(newBlockWithData);
+  const nextBlockRefId = blocks.value.length
+  const block = {inProgress : true, nextBlockRefId:nextBlockRefId };
+  blocks.value.push(block);
 
   unwatchBlocks = client.watchBlocks({
     onBlock: (block) => {
-      const newBlockWithData = generateBlockData(block);
-      blocks.value.push(newBlockWithData);
+      blocks.value[blocks.value.length - 1] = generateBlockData(block);
       if (blocks.value.length > maxBlocks) {
         unwatchBlocks();
+        return;
       }
+      blocks.value.push({ inProgress: true });
     },
   });
 };
@@ -156,11 +161,11 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .eth-blocks-page {
-  padding-top: 300px;
+  padding-top: 100px;
 }
 
 .eth-block {
-  width: 50%;
+  width: 100%;
   display: inline-block;
   position: relative;
   .content-wrapper {
@@ -193,7 +198,7 @@ onUnmounted(() => {
 
 .eth-block-image {
   width: 100%;
-  //height: 100px;
+  //height: 200px;
 }
 </style>
 

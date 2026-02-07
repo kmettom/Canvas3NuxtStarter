@@ -54,7 +54,6 @@ const homePage = computed(() => {
 });
 
 const navigationHoverAnimatePlay = (el, elClassName) => {
-  console.log("el", el);
   const text = el?.querySelector(`.${elClassName} span`);
   animateTextSpan(text);
 };

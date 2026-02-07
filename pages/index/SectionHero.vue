@@ -11,13 +11,13 @@
     </Container>
     <div class="hero-bg-image">
       <img
-        src="/images/08.jpg"
-        alt="background wave on beach"
         v-canvas3-image="{
           loadStrategy: 'eager',
           uniforms: imageUniforms,
           shaderName: 'hero',
         }"
+        src="/images/08.jpg"
+        alt="background wave on beach"
       />
       <!--      <Canvas3Image-->
       <!--        :options="{-->
