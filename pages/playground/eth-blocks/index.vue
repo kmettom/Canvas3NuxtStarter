@@ -2,14 +2,12 @@
   <div class="eth-blocks-page page-container">
     <div class="eth-blocks">
       <div
-        v-for="block in blocks"
-        :key="block.nextBlockRefId"
+        v-for="[blockId, block] in [...blocks].reverse()"
+        :key="blockId"
         class="eth-block"
       >
         <div v-if="block.inProgress" class="content-wrapper">
-          <div class="block-loader">
-            Block incoming
-          </div>
+          <div class="block-loader">Block incoming</div>
         </div>
         <div v-else class="content-wrapper">
           <div class="content-row">
@@ -47,29 +45,29 @@
             </div>
           </div>
         </div>
-        <Canvas3Image
-          class="eth-block-image"
-          :options="{
-            src: '/images/play/playeth-example-block.png',
-            alt: 'background wave on beach',
-            loadStrategy: 'preload',
-            uniforms: {
-              uAniInImage: { value: 1, duration: 0 },
-            },
-            shaderName: 'playEthBlock',
-          }"
-        />
+        <!--        <Canvas3Image-->
+        <!--          class="eth-block-image"-->
+        <!--          :options="{-->
+        <!--            src: '/images/play/playeth-example-block.png',-->
+        <!--            alt: 'background wave on beach',-->
+        <!--            loadStrategy: 'preload',-->
+        <!--            uniforms: {-->
+        <!--              uAniInImage: { value: 1, duration: 0 },-->
+        <!--            },-->
+        <!--            shaderName: 'playEthBlock',-->
+        <!--          }"-->
+        <!--        />-->
       </div>
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { onMounted } from "vue";
 import { createPublicClient, http, hexToNumber } from "viem";
 import { sepolia } from "viem/chains";
 // import { BlockExample } from "~/pages/playground/eth-blocks/block-example";
 
-const maxBlocks = 4;
+const maxBlocks = 10;
 
 const blockWithdrawalsSum = (withdrawals) => {
   let sum = 0;
@@ -108,7 +106,9 @@ const client = createPublicClient({
   transport: http(),
 });
 
-const blocks = ref([]);
+const blocks = ref(new Map());
+const defaultBlockTimeAverage = 12;
+const averageBlockTime = ref(defaultBlockTimeAverage);
 
 const generateBlockData = (blockData) => {
   const newBlock = blockData;
@@ -132,31 +132,48 @@ const generateBlockData = (blockData) => {
   return newBlock;
 };
 
-let unwatchBlocks;
+let unwatchBlocks: () => void;
+const emptyLoadingBlock = { inProgress: true };
+
+const nextBlockRefIdGenerated = ref(crypto.randomUUID());
 
 const addBlockListener = () => {
-  const nextBlockRefId = blocks.value.length
-  const block = {inProgress : true, nextBlockRefId:nextBlockRefId };
-  blocks.value.push(block);
+  nextBlockRefIdGenerated.value = crypto.randomUUID();
+  blocks.value.set(nextBlockRefIdGenerated.value, emptyLoadingBlock);
+
+  console.log("blocks.value", blocks.value);
 
   unwatchBlocks = client.watchBlocks({
     onBlock: (block) => {
-      blocks.value[blocks.value.length - 1] = generateBlockData(block);
-      if (blocks.value.length > maxBlocks) {
+      blocks.value.set(nextBlockRefIdGenerated.value, generateBlockData(block));
+      if (blocks.value.size > maxBlocks) {
         unwatchBlocks();
         return;
       }
-      blocks.value.push({ inProgress: true });
+      nextBlockRefIdGenerated.value = crypto.randomUUID();
+      blocks.value.set(nextBlockRefIdGenerated.value, emptyLoadingBlock);
     },
   });
 };
 
+const getLastBlock = async () => {
+  const latestBlockNumber = await client.getBlockNumber();
+  const latestBlock = await client.getBlock({ latestBlockNumber });
+  blocks.value.set(
+    nextBlockRefIdGenerated.value,
+    generateBlockData(latestBlock),
+  );
+};
+
 onMounted(async () => {
+  await getLastBlock();
   addBlockListener();
 });
 
 onUnmounted(() => {
-  unwatchBlocks();
+  if (unwatchBlocks) {
+    unwatchBlocks();
+  }
 });
 </script>
 <style lang="scss" scoped>
@@ -165,6 +182,8 @@ onUnmounted(() => {
 }
 
 .eth-block {
+  height: 200px;
+  border: 1px solid red;
   width: 100%;
   display: inline-block;
   position: relative;
