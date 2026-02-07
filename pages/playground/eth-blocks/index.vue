@@ -9,7 +9,7 @@
         @mouseenter="hoverBlock($event, true)"
         @mouseleave="hoverBlock($event, false)"
       >
-        <div v-if="block.inProgress" class="content-wrapper ">
+        <div v-if="block.inProgress" class="content-wrapper">
           <div class="block-loader">Block incoming</div>
         </div>
         <div v-else class="content-wrapper">
@@ -122,13 +122,16 @@ const emptyLoadingBlock = { inProgress: true };
 const nextBlockRefIdGenerated = ref(crypto.randomUUID());
 
 const animateNewBlockInProgress = () => {
-  console.log("animateNewBlockInProgress")
-  const tl = gsap.timeline({})
+  console.log("animateNewBlockInProgress");
+  const tl = gsap.timeline({});
   setTimeout(() => {
-    tl.fromTo('.block-in-progress',{height:0},{height:'200px', duration: averageBlockTime.value})
-  },10);
-}
-
+    tl.fromTo(
+      ".block-in-progress",
+      { height: 0 },
+      { height: "200px", duration: averageBlockTime.value },
+    );
+  }, 10);
+};
 
 const addBlockListener = () => {
   nextBlockRefIdGenerated.value = crypto.randomUUID();
@@ -143,7 +146,7 @@ const addBlockListener = () => {
       }
       nextBlockRefIdGenerated.value = crypto.randomUUID();
       blocks.value.set(nextBlockRefIdGenerated.value, emptyLoadingBlock);
-      animateNewBlockInProgress()
+      animateNewBlockInProgress();
     },
   });
 };
