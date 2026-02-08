@@ -3,7 +3,7 @@
     <div class="block-in-progress" />
     <div class="eth-blocks">
       <div
-        v-for="[blockId, block] in [...blocks].reverse()"
+        v-for="[blockId, block] in blocksToRender"
         :id="blockId"
         :key="blockId"
         :ref="blockItemRefs.set"
@@ -77,6 +77,11 @@ const blockItemRefs = useTemplateRefsList();
 
 const maxBlocks = 10;
 
+const blocksToRender = computed(() => {
+  return [...blocks.value];
+  //TODO: order by timestamp
+});
+
 const hoverBlock = (event, status) => {
   const titles = event.target.querySelectorAll(".content-title");
   if (titles.length < 1) return;
@@ -111,26 +116,28 @@ const animateNewBlockAdded = async (newBlockId: string): Promise<void> => {
     const el = blockItemRefs.value.find((e) => e?.id === newBlockId);
     if (!el) return resolve();
 
-    tlNewBlockAniIn.clear();
-    tlNewBlockAniIn.eventCallback("onComplete", () => resolve());
+    setTimeout(() => {
+      tlNewBlockAniIn.clear();
+      tlNewBlockAniIn.eventCallback("onComplete", () => resolve());
 
-    tlNewBlockAniIn.fromTo(
-      `#${newBlockId}`,
-      { height: 0 },
-      { height: "200px" },
-    );
-
-    const valuesElements = el.querySelectorAll<HTMLElement>(".content-value");
-    if (valuesElements.length) {
       tlNewBlockAniIn.fromTo(
-        valuesElements,
-        { opacity: 0 },
-        { opacity: 1, stagger: 0.1 },
-        ">", // after height animation
+        `#${newBlockId}`,
+        { height: 0 },
+        { height: "200px" },
       );
-    }
 
-    tlNewBlockAniIn.play();
+      const valuesElements = el.querySelectorAll<HTMLElement>(".content-value");
+      if (valuesElements.length) {
+        tlNewBlockAniIn.fromTo(
+          valuesElements,
+          { opacity: 0 },
+          { opacity: 1, stagger: 0.1 },
+          ">", // after height animation
+        );
+      }
+
+      tlNewBlockAniIn.play();
+    }, 100);
   });
 };
 
