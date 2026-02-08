@@ -1,21 +1,19 @@
 <template>
   <div class="eth-blocks-page page-container">
-    <div class="block-in-progress"></div>
+    <div class="block-in-progress" />
     <div class="eth-blocks">
       <div
         v-for="[blockId, block] in [...blocks].reverse()"
+        :id="blockId"
         :key="blockId"
         :ref="blockItemRefs.set"
         :data-block-id="blockId"
         class="eth-block"
-        :id="blockId"
         @mouseenter="hoverBlock($event, true)"
         @mouseleave="hoverBlock($event, false)"
       >
-        <div v-if="block.inProgress" class="content-wrapper">
-          <div class="block-loader">Block incoming</div>
-        </div>
-        <div v-else class="content-wrapper">
+        {{blockId}}
+        <div class="content-wrapper">
           <div class="content-row">
             <div class="content-block">
               <span class="content-title">Transactions:</span>
@@ -68,7 +66,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, nextTick } from "vue";
 import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
 import { generateBlockData } from "~/utils/play/play-eth-blocks";
@@ -96,9 +94,6 @@ const defaultBlockTimeAverage = 12;
 const averageBlockTime = ref(defaultBlockTimeAverage);
 
 let unwatchBlocks: () => void;
-const emptyLoadingBlock = { inProgress: true };
-
-const nextBlockRefIdGenerated = ref(crypto.randomUUID());
 
 const tlInProgress = gsap.timeline({});
 
@@ -110,46 +105,47 @@ const animateNewBlockInProgress = () => {
     { width: "100%", duration: averageBlockTime.value },
   );
 };
-
 const tlNewBlockAniIn = gsap.timeline({});
-const animateNewBlockAdded = (newBlockId: string) => {
-  setTimeout(() => {
-    for (let i = 0; i < blockItemRefs.value.length; i++) {
-      if (blockItemRefs.value[i]?.id === newBlockId) {
-        const valuesElements =
-          blockItemRefs.value[i]?.querySelectorAll(".content-value");
-        tlNewBlockAniIn.fromTo(
-          `#${newBlockId}`,
-          { height: 0 },
-          { height: "200px" },
-        );
-        if (valuesElements) {
-          console.log("valuesElements", valuesElements);
-          tlNewBlockAniIn.fromTo(
-            valuesElements,
-            { opacity: 0 },
-            { opacity: 1, stagger: 0.1 },
-          );
-        }
-      }
+const animateNewBlockAdded = async (newBlockId: string): Promise<void> => {
+  return new Promise((resolve) => {
+    const el = blockItemRefs.value.find((e) => e?.id === newBlockId);
+    if (!el) return resolve();
+
+    tlNewBlockAniIn.clear();
+    tlNewBlockAniIn.eventCallback("onComplete", () => resolve());
+
+    tlNewBlockAniIn.fromTo(
+      `#${newBlockId}`,
+      { height: 0 },
+      { height: "200px" },
+    );
+
+    const valuesElements = el.querySelectorAll<HTMLElement>(".content-value");
+    if (valuesElements.length) {
+      tlNewBlockAniIn.fromTo(
+        valuesElements,
+        { opacity: 0 },
+        { opacity: 1, stagger: 0.1 },
+        ">", // after height animation
+      );
     }
-  }, 100);
+
+    tlNewBlockAniIn.play();
+  });
 };
 
 const addBlockListener = () => {
-  nextBlockRefIdGenerated.value = crypto.randomUUID();
-  blocks.value.set(nextBlockRefIdGenerated.value, emptyLoadingBlock);
 
   unwatchBlocks = client.watchBlocks({
-    onBlock: (block) => {
-      blocks.value.set(nextBlockRefIdGenerated.value, generateBlockData(block));
-      animateNewBlockAdded(nextBlockRefIdGenerated.value);
+    onBlock: async (block) => {
+      const nextBlockRefIdGenerated = crypto.randomUUID();
+      blocks.value.set(nextBlockRefIdGenerated, generateBlockData(block));
+      await nextTick();
+      await animateNewBlockAdded(nextBlockRefIdGenerated);
       if (blocks.value.size > maxBlocks) {
         unwatchBlocks();
         return;
       }
-      nextBlockRefIdGenerated.value = crypto.randomUUID();
-      blocks.value.set(nextBlockRefIdGenerated.value, emptyLoadingBlock);
       animateNewBlockInProgress();
     },
   });
@@ -158,10 +154,13 @@ const addBlockListener = () => {
 const getLastBlock = async () => {
   const latestBlockNumber = await client.getBlockNumber();
   const latestBlock = await client.getBlock({ latestBlockNumber });
+  const nextBlockRefIdGenerated = crypto.randomUUID();
   blocks.value.set(
-    nextBlockRefIdGenerated.value,
+    nextBlockRefIdGenerated,
     generateBlockData(latestBlock),
   );
+  await nextTick();
+  await animateNewBlockAdded(nextBlockRefIdGenerated);
   animateNewBlockInProgress();
 };
 
@@ -188,7 +187,7 @@ onUnmounted(() => {
 }
 
 .eth-block {
-  height: 100px;
+  height: 50px;
   border: 1px solid red;
   width: 100%;
   display: inline-block;

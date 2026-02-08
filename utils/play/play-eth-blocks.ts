@@ -50,6 +50,5 @@ export const generateBlockData = (blockData) => {
   );
   newBlock.blockETHBurned = blockETHBurnedVal;
   newBlock.blockNetIssuanceETH = blockWithdrawalsSumVal - blockETHBurnedVal;
-  newBlock.inProgress = false;
   return newBlock;
 };
