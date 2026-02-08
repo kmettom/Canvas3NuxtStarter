@@ -12,7 +12,7 @@
         @mouseenter="hoverBlock($event, true)"
         @mouseleave="hoverBlock($event, false)"
       >
-        {{blockId}}
+        {{ blockId }}
         <div class="content-wrapper">
           <div class="content-row">
             <div class="content-block">
@@ -135,7 +135,6 @@ const animateNewBlockAdded = async (newBlockId: string): Promise<void> => {
 };
 
 const addBlockListener = () => {
-
   unwatchBlocks = client.watchBlocks({
     onBlock: async (block) => {
       const nextBlockRefIdGenerated = crypto.randomUUID();
@@ -155,10 +154,7 @@ const getLastBlock = async () => {
   const latestBlockNumber = await client.getBlockNumber();
   const latestBlock = await client.getBlock({ latestBlockNumber });
   const nextBlockRefIdGenerated = crypto.randomUUID();
-  blocks.value.set(
-    nextBlockRefIdGenerated,
-    generateBlockData(latestBlock),
-  );
+  blocks.value.set(nextBlockRefIdGenerated, generateBlockData(latestBlock));
   await nextTick();
   await animateNewBlockAdded(nextBlockRefIdGenerated);
   animateNewBlockInProgress();
