@@ -1,11 +1,14 @@
 <template>
   <div class="eth-blocks-page page-container">
+    <div class="block-in-progress"></div>
     <div class="eth-blocks">
       <div
         v-for="[blockId, block] in [...blocks].reverse()"
         :key="blockId"
+        :ref="blockItemRefs.set"
+        :data-block-id="blockId"
         class="eth-block"
-        :class="`${block.inProgress ? ' block-in-progress' : ''}`"
+        :id="blockId"
         @mouseenter="hoverBlock($event, true)"
         @mouseleave="hoverBlock($event, false)"
       >
@@ -68,13 +71,11 @@
 import { onMounted } from "vue";
 import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
-import {
-  blockETHBurned,
-  blockGasTargetPercent,
-  blockGasUsedPercent,
-  blockWithdrawalsSum,
-} from "~/utils/play/play-eth-blocks";
+import { generateBlockData } from "~/utils/play/play-eth-blocks";
 import { gsap } from "gsap";
+import { useTemplateRefsList } from "@vueuse/core";
+
+const blockItemRefs = useTemplateRefsList();
 
 const maxBlocks = 10;
 
@@ -94,43 +95,45 @@ const blocks = ref(new Map());
 const defaultBlockTimeAverage = 12;
 const averageBlockTime = ref(defaultBlockTimeAverage);
 
-const generateBlockData = (blockData) => {
-  const newBlock = blockData;
-  newBlock.blockGasUsedPercent = blockGasUsedPercent(
-    newBlock.gasLimit,
-    newBlock.gasUsed,
-  );
-  newBlock.blockGasTargetPercent = blockGasTargetPercent(
-    newBlock.gasLimit,
-    newBlock.gasUsed,
-  );
-  const blockWithdrawalsSumVal = blockWithdrawalsSum(newBlock.withdrawals);
-  newBlock.blockWithdrawalsSum = blockWithdrawalsSumVal;
-  const blockETHBurnedVal = blockETHBurned(
-    newBlock.baseFeePerGas,
-    newBlock.gasUsed,
-  );
-  newBlock.blockETHBurned = blockETHBurnedVal;
-  newBlock.blockNetIssuanceETH = blockWithdrawalsSumVal - blockETHBurnedVal;
-  newBlock.inProgress = false;
-  return newBlock;
-};
-
 let unwatchBlocks: () => void;
 const emptyLoadingBlock = { inProgress: true };
 
 const nextBlockRefIdGenerated = ref(crypto.randomUUID());
 
+const tlInProgress = gsap.timeline({});
+
 const animateNewBlockInProgress = () => {
-  console.log("animateNewBlockInProgress");
-  const tl = gsap.timeline({});
+  tlInProgress.clear();
+  tlInProgress.fromTo(
+    ".block-in-progress",
+    { width: 0 },
+    { width: "100%", duration: averageBlockTime.value },
+  );
+};
+
+const tlNewBlockAniIn = gsap.timeline({});
+const animateNewBlockAdded = (newBlockId: string) => {
   setTimeout(() => {
-    tl.fromTo(
-      ".block-in-progress",
-      { height: 0 },
-      { height: "200px", duration: averageBlockTime.value },
-    );
-  }, 10);
+    for (let i = 0; i < blockItemRefs.value.length; i++) {
+      if (blockItemRefs.value[i]?.id === newBlockId) {
+        const valuesElements =
+          blockItemRefs.value[i]?.querySelectorAll(".content-value");
+        tlNewBlockAniIn.fromTo(
+          `#${newBlockId}`,
+          { height: 0 },
+          { height: "200px" },
+        );
+        if (valuesElements) {
+          console.log("valuesElements", valuesElements);
+          tlNewBlockAniIn.fromTo(
+            valuesElements,
+            { opacity: 0 },
+            { opacity: 1, stagger: 0.1 },
+          );
+        }
+      }
+    }
+  }, 100);
 };
 
 const addBlockListener = () => {
@@ -140,6 +143,7 @@ const addBlockListener = () => {
   unwatchBlocks = client.watchBlocks({
     onBlock: (block) => {
       blocks.value.set(nextBlockRefIdGenerated.value, generateBlockData(block));
+      animateNewBlockAdded(nextBlockRefIdGenerated.value);
       if (blocks.value.size > maxBlocks) {
         unwatchBlocks();
         return;
@@ -177,8 +181,14 @@ onUnmounted(() => {
   padding-top: 100px;
 }
 
+.block-in-progress {
+  border: 4px solid grey;
+  height: 0;
+  width: 0;
+}
+
 .eth-block {
-  height: 200px;
+  height: 100px;
   border: 1px solid red;
   width: 100%;
   display: inline-block;
@@ -209,6 +219,9 @@ onUnmounted(() => {
   .content-title {
     opacity: 0;
     padding-right: 10px;
+  }
+  .content-value {
+    opacity: 0;
   }
 }
 

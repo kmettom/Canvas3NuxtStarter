@@ -31,3 +31,25 @@ export const blockGasTargetPercent = (gasLimit, gasUsed) => {
 
   return Number(gasTargetCoef * 100).toFixed(2) + "%";
 };
+
+export const generateBlockData = (blockData) => {
+  const newBlock = blockData;
+  newBlock.blockGasUsedPercent = blockGasUsedPercent(
+    newBlock.gasLimit,
+    newBlock.gasUsed,
+  );
+  newBlock.blockGasTargetPercent = blockGasTargetPercent(
+    newBlock.gasLimit,
+    newBlock.gasUsed,
+  );
+  const blockWithdrawalsSumVal = blockWithdrawalsSum(newBlock.withdrawals);
+  newBlock.blockWithdrawalsSum = blockWithdrawalsSumVal;
+  const blockETHBurnedVal = blockETHBurned(
+    newBlock.baseFeePerGas,
+    newBlock.gasUsed,
+  );
+  newBlock.blockETHBurned = blockETHBurnedVal;
+  newBlock.blockNetIssuanceETH = blockWithdrawalsSumVal - blockETHBurnedVal;
+  newBlock.inProgress = false;
+  return newBlock;
+};
