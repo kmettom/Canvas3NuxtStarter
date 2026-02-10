@@ -16,7 +16,7 @@
               <span class="content-title">Transactions:</span>
               <span class="content-value">{{ block.transactions.length }}</span>
             </div>
-            <div class="content-block" v-if="block.withdrawals">
+            <div v-if="block.withdrawals" class="content-block">
               <span class="content-title">Withdrawals:</span>
               <span class="content-value">{{ block.withdrawals.length }}</span>
             </div>
@@ -32,19 +32,19 @@
             </div>
           </div>
           <div class="content-row">
-            <div class="content-block">
+            <div v-if="block.blockETHBurned" class="content-block">
               <span class="content-title">Burned ETH:</span>
               <span class="content-value">{{
                 formatEther(block.blockETHBurned)
               }}</span>
             </div>
-            <div class="content-block">
+            <div v-if="block.blockWithdrawalsSum" class="content-block">
               <span class="content-title">∑ Withdrawals:</span>
               <span class="content-value">{{
                 formatEther(block.blockWithdrawalsSum)
               }}</span>
             </div>
-            <div class="content-block">
+            <div v-if="block.blockNetIssuanceETH" class="content-block">
               <span class="content-title">ETH burn vs issuance:</span>
               <span class="content-value">{{
                 formatEther(block.blockNetIssuanceETH)
@@ -59,7 +59,7 @@
         <!--            alt: 'background wave on beach',-->
         <!--            loadStrategy: 'preload',-->
         <!--            uniforms: {-->
-        <!--              uAniInImage: { value: 1, duration: 0 },-->
+        <!--              uAniInImage: { value: 1, duration: 0, ease: 'linear' },-->
         <!--            },-->
         <!--            shaderName: 'playEthBlock',-->
         <!--          }"-->
@@ -128,6 +128,9 @@ const animateNewBlockAdded = (
   const valuesElements = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value",
   );
+  // for (let i = 0; i < valuesElements.length; i++) {
+  //   valuesElements[i]
+  // }
   if (valuesElements.length) {
     tlNewBlockAniIn.fromTo(
       valuesElements,
