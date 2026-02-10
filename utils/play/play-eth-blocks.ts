@@ -4,9 +4,9 @@ import Big from "big.js";
 export type BlockExtended = Block & {
   blockGasTargetPercent?: string;
   blockGasUsedPercent?: string;
-  blockETHBurned?: string | number;
-  blockWithdrawalsSum?: string | number;
-  blockNetIssuanceETH?: string | number;
+  blockETHBurned?: bigint;
+  blockWithdrawalsSum?: bigint;
+  blockNetIssuanceETH?: bigint;
 };
 
 const GWEI_TO_WEI = 1_000_000_000n;

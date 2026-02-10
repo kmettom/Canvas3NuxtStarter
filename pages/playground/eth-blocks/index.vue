@@ -34,15 +34,21 @@
           <div class="content-row">
             <div class="content-block">
               <span class="content-title">Burned ETH:</span>
-              <span class="content-value">{{ block.blockETHBurned }}</span>
+              <span class="content-value">{{
+                formatEther(block.blockETHBurned)
+              }}</span>
             </div>
             <div class="content-block">
               <span class="content-title">∑ Withdrawals:</span>
-              <span class="content-value">{{ block.blockWithdrawalsSum }}</span>
+              <span class="content-value">{{
+                formatEther(block.blockWithdrawalsSum)
+              }}</span>
             </div>
             <div class="content-block">
               <span class="content-title">ETH burn vs issuance:</span>
-              <span class="content-value">{{ block.blockNetIssuanceETH }}</span>
+              <span class="content-value">{{
+                formatEther(block.blockNetIssuanceETH)
+              }}</span>
             </div>
           </div>
         </div>
@@ -64,7 +70,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, nextTick } from "vue";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, formatEther, http } from "viem";
 import { sepolia } from "viem/chains";
 import {
   generateBlockData,
