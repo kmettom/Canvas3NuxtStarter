@@ -65,9 +65,9 @@ export const generateBlockData = (blockData: Block) => {
   const withdrawalsWei = blockWithdrawalsSumWei(newBlock.withdrawals ?? []);
   const burnedWei = blockETHBurnedWei(newBlock.baseFeePerGas, newBlock.gasUsed);
 
-  newBlock.blockWithdrawalsSum = withdrawalsWei.toString();
-  newBlock.blockETHBurned = burnedWei.toString();
-  newBlock.blockNetIssuanceETH = (withdrawalsWei - burnedWei).toString();
+  newBlock.blockWithdrawalsSum = withdrawalsWei;
+  newBlock.blockETHBurned = burnedWei;
+  newBlock.blockNetIssuanceETH = (withdrawalsWei - burnedWei);
 
   return newBlock;
 };
