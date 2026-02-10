@@ -9,24 +9,20 @@ export type BlockExtended = Block & {
   blockNetIssuanceETH?: string | number;
 };
 
-export const blockWithdrawalsSum = (withdrawals: Withdrawal[]) => {
-  let sum = 0n;
+const GWEI_TO_WEI = 1_000_000_000n;
 
-  for (let i = 0; i < withdrawals.length; i++) {
-    const w = withdrawals[i];
-    if (w) {
-      sum += BigInt(w.amount);
-    }
-  }
-  return sum;
+export const blockWithdrawalsSumWei = (withdrawals: Withdrawal[]) => {
+  let sumGwei = 0n;
+  for (const w of withdrawals) sumGwei += BigInt(w.amount);
+  return sumGwei * GWEI_TO_WEI; // ✅ now wei
 };
 
-export const blockETHBurned = (
+export const blockETHBurnedWei = (
   baseFeePerGas: bigint | null,
   gasUsed: bigint,
-): bigint => {
+) => {
   if (!baseFeePerGas) return 0n;
-  return baseFeePerGas * gasUsed;
+  return baseFeePerGas * gasUsed; // ✅ wei
 };
 
 export const blockGasUsedPercent = (
@@ -65,17 +61,13 @@ export const generateBlockData = (blockData: Block) => {
     newBlock.gasLimit,
     newBlock.gasUsed,
   );
-  const blockWithdrawalsSumVal = blockWithdrawalsSum(
-    newBlock.withdrawals ?? [],
-  );
-  newBlock.blockWithdrawalsSum = blockWithdrawalsSumVal.toString();
-  const blockETHBurnedVal = blockETHBurned(
-    newBlock.baseFeePerGas,
-    newBlock.gasUsed,
-  );
-  newBlock.blockETHBurned = blockETHBurnedVal.toString();
-  newBlock.blockNetIssuanceETH = (
-    blockWithdrawalsSumVal - blockETHBurnedVal
-  ).toString();
+
+  const withdrawalsWei = blockWithdrawalsSumWei(newBlock.withdrawals ?? []);
+  const burnedWei = blockETHBurnedWei(newBlock.baseFeePerGas, newBlock.gasUsed);
+
+  newBlock.blockWithdrawalsSum = withdrawalsWei.toString();
+  newBlock.blockETHBurned = burnedWei.toString();
+  newBlock.blockNetIssuanceETH = (withdrawalsWei - burnedWei).toString();
+
   return newBlock;
 };

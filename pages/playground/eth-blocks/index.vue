@@ -1,6 +1,6 @@
 <template>
   <div class="eth-blocks-page page-container">
-    <div class="block-in-progress" />
+    <div class="block-in-progress-loader" />
     <div class="eth-blocks">
       <div
         v-for="block in blocksToRender"
@@ -104,7 +104,7 @@ const tlInProgress = gsap.timeline({});
 const animateNewBlockInProgress = () => {
   tlInProgress.clear();
   tlInProgress.fromTo(
-    ".block-in-progress",
+    ".block-in-progress-loader",
     { width: 0 },
     { width: "100%", duration: averageBlockTime.value },
   );
@@ -127,7 +127,7 @@ const animateNewBlockAdded = (
       valuesElements,
       { opacity: 0 },
       { opacity: 1, stagger: 0.1 },
-      ">", // after height animation
+      ">",
     );
   }
   tlNewBlockAniIn.play();
@@ -174,15 +174,15 @@ onUnmounted(() => {
   padding-top: 100px;
 }
 
-.block-in-progress {
+.block-in-progress-loader {
   border: 4px solid grey;
   height: 0;
   width: 0;
 }
 
 .eth-block {
-  height: 50px;
   border: 1px solid red;
+  height: 0;
   width: 100%;
   display: inline-block;
   position: relative;
