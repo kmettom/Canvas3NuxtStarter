@@ -67,7 +67,7 @@ export const generateBlockData = (blockData: Block) => {
 
   newBlock.blockWithdrawalsSum = withdrawalsWei;
   newBlock.blockETHBurned = burnedWei;
-  newBlock.blockNetIssuanceETH = (withdrawalsWei - burnedWei);
+  newBlock.blockNetIssuanceETH = withdrawalsWei - burnedWei;
 
   return newBlock;
 };
