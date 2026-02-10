@@ -94,7 +94,7 @@ const client = createPublicClient({
 });
 
 const blocks = ref<Map<string, BlockExtended>>(new Map());
-const defaultBlockTimeAverage = 12;
+const defaultBlockTimeAverage = 15;
 const averageBlockTime = ref(defaultBlockTimeAverage);
 
 let unwatchBlocks: () => void;
@@ -140,7 +140,6 @@ const addBlockListener = () => {
       const nextBlockRefIdGenerated = crypto.randomUUID();
       blocks.value.set(nextBlockRefIdGenerated, generateBlockData(block));
       await nextTick();
-      // await animateNewBlockAdded(nextBlockRefIdGenerated);
       if (blocks.value.size > maxBlocks) {
         unwatchBlocks();
         return;
