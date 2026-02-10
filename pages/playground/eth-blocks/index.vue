@@ -3,23 +3,20 @@
     <div class="block-in-progress" />
     <div class="eth-blocks">
       <div
-        v-for="[blockId, block] in blocksToRender"
-        :id="blockId"
-        :key="blockId"
-        :ref="blockItemRefs.set"
-        :data-block-id="blockId"
+        v-for="block in blocksToRender"
+        :key="block.timestamp.toString()"
+        :ref="(el) => animateNewBlockAdded(el)"
         class="eth-block"
         @mouseenter="hoverBlock($event, true)"
         @mouseleave="hoverBlock($event, false)"
       >
-        {{ blockId }}
         <div class="content-wrapper">
           <div class="content-row">
             <div class="content-block">
               <span class="content-title">Transactions:</span>
               <span class="content-value">{{ block.transactions.length }}</span>
             </div>
-            <div class="content-block">
+            <div class="content-block" v-if="block.withdrawals">
               <span class="content-title">Withdrawals:</span>
               <span class="content-value">{{ block.withdrawals.length }}</span>
             </div>
@@ -69,21 +66,23 @@
 import { onMounted, nextTick } from "vue";
 import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
-import { generateBlockData } from "~/utils/play/play-eth-blocks";
+import {
+  generateBlockData,
+  type BlockExtended,
+} from "~/utils/play/play-eth-blocks";
 import { gsap } from "gsap";
-import { useTemplateRefsList } from "@vueuse/core";
-
-const blockItemRefs = useTemplateRefsList();
 
 const maxBlocks = 10;
 
-const blocksToRender = computed(() => {
-  return [...blocks.value];
-  //TODO: order by timestamp
+const blocksToRender = computed<BlockExtended[]>(() => {
+  return [...blocks.value.values()].sort((a, b) =>
+    a.timestamp > b.timestamp ? -1 : 1,
+  );
 });
 
-const hoverBlock = (event, status) => {
-  const titles = event.target.querySelectorAll(".content-title");
+const hoverBlock = (event: Event, status: boolean) => {
+  const target = event.target as Element;
+  const titles = target.querySelectorAll(".content-title");
   if (titles.length < 1) return;
   const tl = gsap.timeline({});
   tl.to(titles, { opacity: status ? 1 : 0 });
@@ -94,7 +93,7 @@ const client = createPublicClient({
   transport: http(),
 });
 
-const blocks = ref(new Map());
+const blocks = ref<Map<string, BlockExtended>>(new Map());
 const defaultBlockTimeAverage = 12;
 const averageBlockTime = ref(defaultBlockTimeAverage);
 
@@ -111,34 +110,28 @@ const animateNewBlockInProgress = () => {
   );
 };
 const tlNewBlockAniIn = gsap.timeline({});
-const animateNewBlockAdded = async (newBlockId: string): Promise<void> => {
-  return new Promise((resolve) => {
-    const el = blockItemRefs.value.find((e) => e?.id === newBlockId);
-    if (!el) return resolve();
+const animateNewBlockAdded = (
+  target: Element | ComponentPublicInstance | null,
+) => {
+  if (!target) return;
+  const el = target as Element;
+  if (el.classList.contains("block-added")) return;
 
-    setTimeout(() => {
-      tlNewBlockAniIn.clear();
-      tlNewBlockAniIn.eventCallback("onComplete", () => resolve());
+  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.5 });
 
-      tlNewBlockAniIn.fromTo(
-        `#${newBlockId}`,
-        { height: 0 },
-        { height: "200px" },
-      );
-
-      const valuesElements = el.querySelectorAll<HTMLElement>(".content-value");
-      if (valuesElements.length) {
-        tlNewBlockAniIn.fromTo(
-          valuesElements,
-          { opacity: 0 },
-          { opacity: 1, stagger: 0.1 },
-          ">", // after height animation
-        );
-      }
-
-      tlNewBlockAniIn.play();
-    }, 100);
-  });
+  const valuesElements = (el as Element).querySelectorAll<HTMLElement>(
+    ".content-value",
+  );
+  if (valuesElements.length) {
+    tlNewBlockAniIn.fromTo(
+      valuesElements,
+      { opacity: 0 },
+      { opacity: 1, stagger: 0.1 },
+      ">", // after height animation
+    );
+  }
+  tlNewBlockAniIn.play();
+  el.classList.add("block-added");
 };
 
 const addBlockListener = () => {
@@ -147,7 +140,7 @@ const addBlockListener = () => {
       const nextBlockRefIdGenerated = crypto.randomUUID();
       blocks.value.set(nextBlockRefIdGenerated, generateBlockData(block));
       await nextTick();
-      await animateNewBlockAdded(nextBlockRefIdGenerated);
+      // await animateNewBlockAdded(nextBlockRefIdGenerated);
       if (blocks.value.size > maxBlocks) {
         unwatchBlocks();
         return;
@@ -159,11 +152,10 @@ const addBlockListener = () => {
 
 const getLastBlock = async () => {
   const latestBlockNumber = await client.getBlockNumber();
-  const latestBlock = await client.getBlock({ latestBlockNumber });
+  const latestBlock = await client.getBlock({ blockNumber: latestBlockNumber });
   const nextBlockRefIdGenerated = crypto.randomUUID();
   blocks.value.set(nextBlockRefIdGenerated, generateBlockData(latestBlock));
   await nextTick();
-  await animateNewBlockAdded(nextBlockRefIdGenerated);
   animateNewBlockInProgress();
 };
 

@@ -1,39 +1,62 @@
-import { hexToNumber } from "viem";
+import type { Block, Withdrawal } from "viem";
+import Big from "big.js";
 
-export const blockWithdrawalsSum = (withdrawals) => {
-  let sum = 0;
+export type BlockExtended = Block & {
+  blockGasTargetPercent?: string;
+  blockGasUsedPercent?: string;
+  blockETHBurned?: string | number;
+  blockWithdrawalsSum?: string | number;
+  blockNetIssuanceETH?: string | number;
+};
+
+export const blockWithdrawalsSum = (withdrawals: Withdrawal[]) => {
+  let sum = 0n;
+
   for (let i = 0; i < withdrawals.length; i++) {
-    const withNum = hexToNumber(withdrawals[i].amount);
-    sum += withNum;
+    const w = withdrawals[i];
+    if (w) {
+      sum += BigInt(w.amount);
+    }
   }
   return sum;
 };
 
-export const blockETHBurned = (baseFeePerGas, gasUsed) => {
-  const baseFeePerGasNum = hexToNumber(baseFeePerGas);
-  const gasUsedNum = hexToNumber(gasUsed);
-
-  return baseFeePerGasNum * gasUsedNum;
+export const blockETHBurned = (
+  baseFeePerGas: bigint | null,
+  gasUsed: bigint,
+): bigint => {
+  if (!baseFeePerGas) return 0n;
+  return baseFeePerGas * gasUsed;
 };
 
-export const blockGasUsedPercent = (gasLimit, gasUsed) => {
-  const gasUsedNum = hexToNumber(gasUsed);
-  const gasLimitNum = hexToNumber(gasLimit);
+export const blockGasUsedPercent = (
+  gasLimit: bigint,
+  gasUsed: bigint,
+): string => {
+  if (gasLimit === 0n) return "0.00%";
 
-  return Number((gasUsedNum / gasLimitNum) * 100).toFixed(2) + "%";
+  const used = new Big(gasUsed.toString());
+  const limit = new Big(gasLimit.toString());
+
+  return used.div(limit).times(100).toFixed(2) + "%";
 };
 
-export const blockGasTargetPercent = (gasLimit, gasUsed) => {
-  const gasUsedNum = hexToNumber(gasUsed);
-  const gasLimitNum = hexToNumber(gasLimit);
-  const gasTargetZeroPoint = gasLimitNum / 2;
-  const gasTargetCoef = (gasUsedNum - gasTargetZeroPoint) / gasTargetZeroPoint;
+export const blockGasTargetPercent = (
+  gasLimit: bigint,
+  gasUsed: bigint,
+): string => {
+  if (gasLimit === 0n) return "0.00%";
 
-  return Number(gasTargetCoef * 100).toFixed(2) + "%";
+  const limit = new Big(gasLimit.toString());
+  const used = new Big(gasUsed.toString());
+
+  const target = limit.div(2);
+
+  return used.minus(target).div(target).times(100).toFixed(2) + "%";
 };
 
-export const generateBlockData = (blockData) => {
-  const newBlock = blockData;
+export const generateBlockData = (blockData: Block) => {
+  const newBlock: BlockExtended = { ...blockData };
   newBlock.blockGasUsedPercent = blockGasUsedPercent(
     newBlock.gasLimit,
     newBlock.gasUsed,
@@ -42,13 +65,17 @@ export const generateBlockData = (blockData) => {
     newBlock.gasLimit,
     newBlock.gasUsed,
   );
-  const blockWithdrawalsSumVal = blockWithdrawalsSum(newBlock.withdrawals);
-  newBlock.blockWithdrawalsSum = blockWithdrawalsSumVal;
+  const blockWithdrawalsSumVal = blockWithdrawalsSum(
+    newBlock.withdrawals ?? [],
+  );
+  newBlock.blockWithdrawalsSum = blockWithdrawalsSumVal.toString();
   const blockETHBurnedVal = blockETHBurned(
     newBlock.baseFeePerGas,
     newBlock.gasUsed,
   );
-  newBlock.blockETHBurned = blockETHBurnedVal;
-  newBlock.blockNetIssuanceETH = blockWithdrawalsSumVal - blockETHBurnedVal;
+  newBlock.blockETHBurned = blockETHBurnedVal.toString();
+  newBlock.blockNetIssuanceETH = (
+    blockWithdrawalsSumVal - blockETHBurnedVal
+  ).toString();
   return newBlock;
 };
