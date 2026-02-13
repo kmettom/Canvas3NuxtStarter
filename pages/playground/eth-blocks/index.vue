@@ -16,10 +16,6 @@
               <span class="content-title">Transactions:</span>
               <span class="content-value">{{ block.transactions.length }}</span>
             </div>
-            <!--            <div v-if="block.withdrawals" class="content-block">-->
-            <!--              <span class="content-title">Withdrawals:</span>-->
-            <!--              <span class="content-value">{{ block.withdrawals.length }}</span>-->
-            <!--            </div>-->
             <div class="content-block">
               <span class="content-title">Gas used:</span>
               <span class="content-value">{{ block.blockGasUsedPercent }}</span>
@@ -33,28 +29,27 @@
           </div>
           <div class="content-row">
             <div v-if="block.blockETHBurned" class="content-block">
-              <span class="content-title">Burned ETH:</span>
-              <span class="content-value"
-                >{{ formatEther(block.blockETHBurned) }}//
+              <span class="content-title">Burned</span>
+              <span class="content-value">
                 {{ formatEth2(block.blockETHBurned) }}</span
               >
+              <span class="content-title">ETH</span>
             </div>
             <div v-if="block.blockWithdrawalsSum" class="content-block">
-              <span class="content-title">∑ Withdrawals:</span>
-              <span class="content-value"
-                >{{ formatEther(block.blockWithdrawalsSum) }} //
+              <span class="content-title">Withdrawed:</span>
+              <span class="content-value">
                 {{ formatEth2(block.blockWithdrawalsSum) }}</span
               >
             </div>
             <div v-if="block.blockNetIssuanceETH" class="content-block">
-              <span class="content-title">ETH:</span>
-              <span class="content-value"
-                >{{ formatEther(block.blockNetIssuanceETH) }} //
+              <span class="content-title">Supply Delta Δ:</span>
+              <span class="content-value">
                 {{ formatEth2(block.blockNetIssuanceETH) }}</span
               >
             </div>
           </div>
         </div>
+        {{block.blockGasTargetCoef}}
         <img
           v-canvas3-image="{
             src: '/images/play/playeth-example-block.png',
@@ -63,7 +58,12 @@
             uniforms: {
               uAniInImage: {
                 value: block.blockAniIn ? 1 : 0,
-                duration: 2.5,
+                duration: 0.5,
+                ease: 'linear',
+              },
+              uBlockColor: {
+                value: block.blockGasTargetCoef,
+                duration: 0.5,
                 ease: 'linear',
               },
               uHover: {
@@ -84,7 +84,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, nextTick } from "vue";
-import { createPublicClient, formatEther, http } from "viem";
+import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
 import {
   formatEth2,
@@ -153,7 +153,7 @@ const animateNewBlockAdded = (
   const el = target as Element;
   if (el.classList.contains("block-added")) return;
 
-  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.4 });
+  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.5 });
 
   const valuesElements = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value",
@@ -170,8 +170,8 @@ const animateNewBlockAdded = (
         tlNewBlockAniIn.fromTo(
           splitValues.chars,
           { opacity: 0, y: 5 },
-          { opacity: 1, y: 0, stagger: 0.05 },
-          "<=+0.4",
+          { opacity: 1, y: 0, stagger: 0.05 , duration: 0.05 },
+          "<=+0.1",
         );
       }
     }
@@ -245,6 +245,7 @@ onUnmounted(() => {
 }
 
 .eth-block {
+  overflow: hidden;
   height: 0;
   width: 100%;
   display: inline-block;
@@ -293,7 +294,9 @@ onUnmounted(() => {
 </style>
 
 <!--TODO:-->
+<!-- ->Playground eth - get last 3 blocks?  -->
 <!-- ->Playground eth - layout  -->
+<!-- ->Playground eth - SHADER & Images  -->
 <!-- ->Playground eth - block loading time - avegage block time loading - shader slowly loading + loader text  -->
 <!-- ->Playground main page finish  -->
 <!-- ->Page transition - easy overlay 1st version ->   -->

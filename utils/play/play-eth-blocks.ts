@@ -3,6 +3,7 @@ import Big from "big.js";
 
 export type BlockExtended = Block & {
   blockGasTargetPercent?: string;
+  blockGasTargetCoef?: number;
   blockGasUsedPercent?: string;
   blockETHBurned?: bigint;
   blockWithdrawalsSum?: bigint;
@@ -43,14 +44,14 @@ export const blockGasTargetPercent = (
   gasLimit: bigint,
   gasUsed: bigint,
 ): string => {
-  if (gasLimit === 0n) return "0.00%";
+  if (gasLimit === 0n) return "0.00";
 
   const limit = new Big(gasLimit.toString());
   const used = new Big(gasUsed.toString());
 
   const target = limit.div(2);
 
-  return used.minus(target).div(target).times(100).toFixed(2) + "%";
+  return used.minus(target).div(target).times(100).toFixed(2);
 };
 
 export const generateBlockData = (blockData: Block) => {
@@ -59,14 +60,19 @@ export const generateBlockData = (blockData: Block) => {
     blockAniIn: false,
     blockHovered: false,
   };
+
   newBlock.blockGasUsedPercent = blockGasUsedPercent(
     newBlock.gasLimit,
     newBlock.gasUsed,
   );
-  newBlock.blockGasTargetPercent = blockGasTargetPercent(
+
+  const blockGasTarget = blockGasTargetPercent(
     newBlock.gasLimit,
     newBlock.gasUsed,
   );
+
+  newBlock.blockGasTargetCoef = (Number(blockGasTarget) + 100) / 200;
+  newBlock.blockGasTargetPercent = blockGasTarget + "%";
 
   const withdrawalsWei = blockWithdrawalsSumWei(newBlock.withdrawals ?? []);
   const burnedWei = blockETHBurnedWei(newBlock.baseFeePerGas, newBlock.gasUsed);

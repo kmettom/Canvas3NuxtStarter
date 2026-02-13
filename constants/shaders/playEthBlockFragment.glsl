@@ -4,23 +4,50 @@ varying vec2 vUv;
 uniform sampler2D uImage;
 uniform float uAniInImage;
 uniform float uHover;
+uniform float uBlockColor;
 
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 
-// Function to apply a sepia tone to a given RGB color
-vec3 applySepia(vec3 color) {
-    float r = color.r;
-    float g = color.g;
-    float b = color.b;
 
-    vec3 sepiaColor = vec3(
-    clamp(r * 0.10 + g * 0.10 + b * 0.10, 0.0, 1.0),
-    clamp(r * 0.10 + g * 0.10 + b * 0.10, 0.0, 1.0),
-    clamp(r * 0.10 + g * 0.10 + b * 0.10, 0.0, 1.0)
-    );
-    return mix(sepiaColor, vec3(0.5), 0.5);
+
+//vec3 applyColor(vec3 color) {
+//    float r = color.r;
+//    float g = color.g;
+//    float b = color.b;
+//
+//    vec3 redColor = vec3(0.3216, 0.1020, 0.0471);
+//    vec3 blueColor = vec3(0.6549, 0.3569, 0.1922);
+//
+//    return mix(redColor * uBlockColor, vec3(0.5), 0.5);
+//}
+
+vec3 blockRampColor(float t) {
+    vec3 redColor  = vec3(82.0/255.0, 26.0/255.0, 12.0/255.0); // #521A0C
+    vec3 blueColor = vec3(0.0/255.0, 1.0/255.0, 66.0/255.0);   // #000142
+    vec3 neutral   = vec3(0.5);
+
+    t = clamp(t, 0.0, 1.0);
+
+    return (t < 0.5)
+    ? mix(redColor, neutral, t / 0.5)
+    : mix(neutral, blueColor, (t - 0.5) / 0.5);
 }
+
+vec3 applyColor(vec3 color) {
+    vec3 tint = blockRampColor(uBlockColor);
+
+    // luminance (perceptual grayscale)
+    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+
+    // build a tinted version that preserves shading
+    vec3 tinted = tint * luma;
+
+    // mix original image with tinted image
+    float strength = 1.0; // or make it a uniform, e.g. uTintStrength
+    return mix(color, tinted, strength);
+}
+
 
 void main() {
     float meshAspect = uMeshSize.x / uMeshSize.y;
@@ -39,7 +66,7 @@ void main() {
 
     float sepiaMix = 1.0;
 
-    vec3 color = mix(tex.rgb, applySepia(tex.rgb), sepiaMix);
+    vec3 color = mix(tex.rgb, applyColor(tex.rgb), sepiaMix);
 
     gl_FragColor = vec4(color, 1.0 * uAniInImage);
 }
