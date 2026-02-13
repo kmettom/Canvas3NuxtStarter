@@ -49,10 +49,9 @@
             </div>
           </div>
         </div>
+<!--        src: '/images/play/playeth-example-block.png',-->
         <img
           v-canvas3-image="{
-            src: '/images/play/playeth-example-block.png',
-            alt: '',
             loadStrategy: 'preload',
             uniforms: {
               uAniInImage: {
@@ -73,7 +72,7 @@
             },
             shaderName: 'playEthBlock',
           }"
-          src="/images/play/playeth-example-block.png"
+          :src="`/images/${generateImage()}.jpg`"
           alt=""
           class="eth-block-image"
         />
@@ -96,6 +95,13 @@ import SplitText from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 const maxBlocks = 10;
+let imageIndex = 0
+
+const generateImage = () => {
+  imageIndex++
+  if(imageIndex === 9) imageIndex = 1
+  return "0"+imageIndex;
+}
 
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
@@ -187,6 +193,10 @@ const animateNewBlockAdded = (
     "<=+0.3",
   );
 
+  tlNewBlockAniIn.call(() => {
+    animateNewBlockInProgress();
+  });
+
   tlNewBlockAniIn.play();
   el.classList.add("block-added");
 };
@@ -202,7 +212,7 @@ const addBlockListener = () => {
         unwatchBlocks();
         return;
       }
-      animateNewBlockInProgress();
+      // animateNewBlockInProgress();
     },
   });
 };
@@ -215,7 +225,6 @@ const getLastBlock = async () => {
     generateBlockData(latestBlock),
   );
   await nextTick();
-  animateNewBlockInProgress();
 };
 
 onMounted(async () => {
