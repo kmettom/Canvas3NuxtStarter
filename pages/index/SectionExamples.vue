@@ -11,10 +11,10 @@
         <div class="examples-row">
           <div class="example-wrapper">
             <h3 class="body-l heading-example">Add images to scene 😌</h3>
-            <Canvas3Image
-              :options="{
-                src: 'images/01.JPG',
-                alt: 'building',
+            <img
+              src="/images/01.jpg"
+              alt="building"
+              v-canvas3-image="{
                 shaderName: 'example1',
               }"
             />
@@ -41,10 +41,10 @@
               Add shader uniforms
               <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
-            <Canvas3Image
-              :options="{
-                src: 'images/02.JPG',
-                alt: 'building',
+            <img
+              src="/images/02.jpg"
+              alt="building"
+              v-canvas3-image="{
                 uniforms: {
                   uHover: { value: example1Hover ? 1 : 0, duration: 0 },
                 },
@@ -95,10 +95,10 @@
                   Scroll speed: {{ example3Speed }}
                   <span class="scroll-speed-ani" />
                 </p>
-                <Canvas3Image
-                  :options="{
-                    src: 'images/03.JPG',
-                    alt: 'sky',
+                <img
+                  src="/images/03.jpg"
+                  alt="sky"
+                  v-canvas3-image="{
                     uniforms: {
                       uScrollSpeed: { value: example3Speed, duration: 0 },
                     },
@@ -135,10 +135,10 @@
                 Set Scroll speed of elements
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
-              <Canvas3Image
-                :options="{
-                  src: 'images/04.JPG',
-                  alt: 'sky',
+              <img
+                src="/images/04.jpg"
+                alt="sky"
+                v-canvas3-image="{
                   loadStrategy: 'eager',
                   shaderName: 'example4',
                   activateMeshUniforms: {
@@ -168,10 +168,10 @@
             >
               <div>
                 <p class="example-txt">Fix element to Parent</p>
-                <Canvas3Image
-                  :options="{
-                    src: 'images/01.JPG',
-                    alt: 'building',
+                <img
+                  src="/images/01.jpg"
+                  alt="building"
+                  v-canvas3-image="{
                     loadStrategy: 'eager',
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                   }"
