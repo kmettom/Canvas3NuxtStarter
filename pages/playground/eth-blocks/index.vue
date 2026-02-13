@@ -290,6 +290,7 @@ onUnmounted(() => {
 .eth-block-image {
   width: 100%;
   height: 200px;
+  opacity: 0;
 }
 </style>
 
