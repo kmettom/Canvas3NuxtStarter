@@ -16,10 +16,10 @@
               <span class="content-title">Transactions:</span>
               <span class="content-value">{{ block.transactions.length }}</span>
             </div>
-            <div v-if="block.withdrawals" class="content-block">
-              <span class="content-title">Withdrawals:</span>
-              <span class="content-value">{{ block.withdrawals.length }}</span>
-            </div>
+            <!--            <div v-if="block.withdrawals" class="content-block">-->
+            <!--              <span class="content-title">Withdrawals:</span>-->
+            <!--              <span class="content-value">{{ block.withdrawals.length }}</span>-->
+            <!--            </div>-->
             <div class="content-block">
               <span class="content-title">Gas used:</span>
               <span class="content-value">{{ block.blockGasUsedPercent }}</span>
@@ -34,28 +34,28 @@
           <div class="content-row">
             <div v-if="block.blockETHBurned" class="content-block">
               <span class="content-title">Burned ETH:</span>
-              <span class="content-value">{{
-                formatEther(block.blockETHBurned)
-              }}</span>
+              <span class="content-value"
+                >{{ formatEther(block.blockETHBurned) }}//
+                {{ formatEth2(block.blockETHBurned) }}</span
+              >
             </div>
             <div v-if="block.blockWithdrawalsSum" class="content-block">
               <span class="content-title">∑ Withdrawals:</span>
-              <span class="content-value">{{
-                formatEther(block.blockWithdrawalsSum)
-              }}</span>
+              <span class="content-value"
+                >{{ formatEther(block.blockWithdrawalsSum) }} //
+                {{ formatEth2(block.blockWithdrawalsSum) }}</span
+              >
             </div>
             <div v-if="block.blockNetIssuanceETH" class="content-block">
-              <span class="content-title">ETH burn vs issuance:</span>
-              <span class="content-value">{{
-                formatEther(block.blockNetIssuanceETH)
-              }}</span>
+              <span class="content-title">ETH:</span>
+              <span class="content-value"
+                >{{ formatEther(block.blockNetIssuanceETH) }} //
+                {{ formatEth2(block.blockNetIssuanceETH) }}</span
+              >
             </div>
           </div>
         </div>
         <img
-          src="/images/play/playeth-example-block.png"
-          alt=""
-          class="eth-block-image"
           v-canvas3-image="{
             src: '/images/play/playeth-example-block.png',
             alt: '',
@@ -74,6 +74,9 @@
             },
             shaderName: 'playEthBlock',
           }"
+          src="/images/play/playeth-example-block.png"
+          alt=""
+          class="eth-block-image"
         />
       </div>
     </div>
@@ -84,6 +87,7 @@ import { onMounted, nextTick } from "vue";
 import { createPublicClient, formatEther, http } from "viem";
 import { sepolia } from "viem/chains";
 import {
+  formatEth2,
   generateBlockData,
   type BlockExtended,
 } from "~/utils/play/play-eth-blocks";

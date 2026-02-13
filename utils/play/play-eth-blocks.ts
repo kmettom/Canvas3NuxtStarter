@@ -1,4 +1,4 @@
-import type { Block, Withdrawal } from "viem";
+import { type Block, formatEther, type Withdrawal } from "viem";
 import Big from "big.js";
 
 export type BlockExtended = Block & {
@@ -76,4 +76,16 @@ export const generateBlockData = (blockData: Block) => {
   newBlock.blockNetIssuanceETH = withdrawalsWei - burnedWei;
 
   return newBlock;
+};
+
+export const formatEth2 = (wei: bigint) => {
+  const numString = formatEther(wei).toString();
+  let nonZeroIndex = 0;
+  for (let i = 0; i < numString.length; i++) {
+    if (numString[i] !== "0" && numString[i] !== "." && numString[i] !== "-") {
+      nonZeroIndex = numString.includes("-") ? i - 1 : i;
+      break;
+    }
+  }
+  return Number(numString).toFixed(nonZeroIndex);
 };
