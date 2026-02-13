@@ -7,8 +7,8 @@
         :key="block.timestamp.toString()"
         :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
         class="eth-block"
-        @mouseenter="hoverBlock($event, true)"
-        @mouseleave="hoverBlock($event, false)"
+        @mouseenter="hoverBlock($event, true, block.timestamp.toString())"
+        @mouseleave="hoverBlock($event, false, block.timestamp.toString())"
       >
         <div class="content-wrapper">
           <div class="content-row">
@@ -66,6 +66,11 @@
                 duration: 2.5,
                 ease: 'linear',
               },
+              uHover: {
+                value: block.blockHovered ? 1 : 0,
+                duration: 0.5,
+                ease: 'linear',
+              },
             },
             shaderName: 'playEthBlock',
           }"
@@ -95,12 +100,23 @@ const blocksToRender = computed<BlockExtended[]>(() => {
   );
 });
 
-const hoverBlock = (event: Event, status: boolean) => {
+const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
   const target = event.target as Element;
   const titles = target.querySelectorAll(".content-title");
   if (titles.length < 1) return;
   const tl = gsap.timeline({});
   tl.to(titles, { opacity: status ? 1 : 0 });
+
+  tl.call(
+    () => {
+      const blockToAnimate = blocks.value.get(blockTimestamp);
+      if (blockToAnimate) {
+        blockToAnimate.blockHovered = status;
+      }
+    },
+    undefined,
+    "<",
+  );
 };
 
 const client = createPublicClient({
@@ -127,13 +143,13 @@ const animateNewBlockInProgress = () => {
 const tlNewBlockAniIn = gsap.timeline({});
 const animateNewBlockAdded = (
   target: Element | ComponentPublicInstance | null,
-  timestamp: string,
+  blockTimestamp: string,
 ) => {
   if (!target) return;
   const el = target as Element;
   if (el.classList.contains("block-added")) return;
 
-  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.5 });
+  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.4 });
 
   const valuesElements = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value",
@@ -149,9 +165,9 @@ const animateNewBlockAdded = (
         });
         tlNewBlockAniIn.fromTo(
           splitValues.chars,
-          { opacity: 0 },
-          { opacity: 1, stagger: 0.05 },
-          "<",
+          { opacity: 0, y: 5 },
+          { opacity: 1, y: 0, stagger: 0.05 },
+          "<=+0.4",
         );
       }
     }
@@ -159,7 +175,7 @@ const animateNewBlockAdded = (
 
   tlNewBlockAniIn.call(
     () => {
-      const blockToAnimate = blocks.value.get(timestamp);
+      const blockToAnimate = blocks.value.get(blockTimestamp);
       if (blockToAnimate) {
         blockToAnimate.blockAniIn = true;
       }
@@ -219,10 +235,12 @@ onUnmounted(() => {
   border: 4px solid grey;
   height: 0;
   width: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .eth-block {
-  border: 1px solid red;
   height: 0;
   width: 100%;
   display: inline-block;
@@ -271,9 +289,7 @@ onUnmounted(() => {
 </style>
 
 <!--TODO:-->
-<!-- ->Playground eth - laypout  -->
-<!-- ->Playground eth - add image & start shader  -->
-<!-- ->Playground eth - animation in  -->
+<!-- ->Playground eth - layout  -->
 <!-- ->Playground eth - block loading time - avegage block time loading - shader slowly loading + loader text  -->
 <!-- ->Playground main page finish  -->
 <!-- ->Page transition - easy overlay 1st version ->   -->
