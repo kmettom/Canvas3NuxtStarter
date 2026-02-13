@@ -49,7 +49,6 @@
             </div>
           </div>
         </div>
-        {{block.blockGasTargetCoef}}
         <img
           v-canvas3-image="{
             src: '/images/play/playeth-example-block.png',
@@ -170,7 +169,7 @@ const animateNewBlockAdded = (
         tlNewBlockAniIn.fromTo(
           splitValues.chars,
           { opacity: 0, y: 5 },
-          { opacity: 1, y: 0, stagger: 0.05 , duration: 0.05 },
+          { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
           "<=+0.1",
         );
       }
@@ -220,6 +219,7 @@ const getLastBlock = async () => {
 };
 
 onMounted(async () => {
+  Canvas3.setMeshPositionsUpdate(true);
   await getLastBlock();
   addBlockListener();
 });
