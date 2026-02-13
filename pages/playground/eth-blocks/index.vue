@@ -5,7 +5,7 @@
       <div
         v-for="block in blocksToRender"
         :key="block.timestamp.toString()"
-        :ref="(el) => animateNewBlockAdded(el)"
+        :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
         class="eth-block"
         @mouseenter="hoverBlock($event, true)"
         @mouseleave="hoverBlock($event, false)"
@@ -52,18 +52,24 @@
             </div>
           </div>
         </div>
-        <!--        <Canvas3Image-->
-        <!--          class="eth-block-image"-->
-        <!--          :options="{-->
-        <!--            src: '/images/play/playeth-example-block.png',-->
-        <!--            alt: 'background wave on beach',-->
-        <!--            loadStrategy: 'preload',-->
-        <!--            uniforms: {-->
-        <!--              uAniInImage: { value: 1, duration: 0, ease: 'linear' },-->
-        <!--            },-->
-        <!--            shaderName: 'playEthBlock',-->
-        <!--          }"-->
-        <!--        />-->
+        <img
+          src="/images/play/playeth-example-block.png"
+          alt=""
+          class="eth-block-image"
+          v-canvas3-image="{
+            src: '/images/play/playeth-example-block.png',
+            alt: '',
+            loadStrategy: 'preload',
+            uniforms: {
+              uAniInImage: {
+                value: block.blockAniIn ? 1 : 0,
+                duration: 2.5,
+                ease: 'linear',
+              },
+            },
+            shaderName: 'playEthBlock',
+          }"
+        />
       </div>
     </div>
   </div>
@@ -121,6 +127,7 @@ const animateNewBlockInProgress = () => {
 const tlNewBlockAniIn = gsap.timeline({});
 const animateNewBlockAdded = (
   target: Element | ComponentPublicInstance | null,
+  timestamp: string,
 ) => {
   if (!target) return;
   const el = target as Element;
@@ -143,12 +150,23 @@ const animateNewBlockAdded = (
         tlNewBlockAniIn.fromTo(
           splitValues.chars,
           { opacity: 0 },
-          { opacity: 1, stagger: 0.5 },
-            '<'
+          { opacity: 1, stagger: 0.05 },
+          "<",
         );
       }
     }
   }
+
+  tlNewBlockAniIn.call(
+    () => {
+      const blockToAnimate = blocks.value.get(timestamp);
+      if (blockToAnimate) {
+        blockToAnimate.blockAniIn = true;
+      }
+    },
+    undefined,
+    "<=+0.3",
+  );
 
   tlNewBlockAniIn.play();
   el.classList.add("block-added");
@@ -157,9 +175,10 @@ const animateNewBlockAdded = (
 const addBlockListener = () => {
   unwatchBlocks = client.watchBlocks({
     onBlock: async (block) => {
-      const nextBlockRefIdGenerated = crypto.randomUUID();
-      blocks.value.set(nextBlockRefIdGenerated, generateBlockData(block));
+      if (blocks.value.has(block.timestamp.toString())) return;
+      blocks.value.set(block.timestamp.toString(), generateBlockData(block));
       await nextTick();
+      //TODO: remove? or set to 100?
       if (blocks.value.size > maxBlocks) {
         unwatchBlocks();
         return;
@@ -172,8 +191,10 @@ const addBlockListener = () => {
 const getLastBlock = async () => {
   const latestBlockNumber = await client.getBlockNumber();
   const latestBlock = await client.getBlock({ blockNumber: latestBlockNumber });
-  const nextBlockRefIdGenerated = crypto.randomUUID();
-  blocks.value.set(nextBlockRefIdGenerated, generateBlockData(latestBlock));
+  blocks.value.set(
+    latestBlock.timestamp.toString(),
+    generateBlockData(latestBlock),
+  );
   await nextTick();
   animateNewBlockInProgress();
 };
@@ -238,17 +259,14 @@ onUnmounted(() => {
     padding-right: 10px;
   }
 
-  .content-value {
-    //opacity: 0;
-  }
-  .content-char{
+  .content-char {
     opacity: 0;
   }
 }
 
 .eth-block-image {
   width: 100%;
-  //height: 200px;
+  height: 200px;
 }
 </style>
 

@@ -7,6 +7,8 @@ export type BlockExtended = Block & {
   blockETHBurned?: bigint;
   blockWithdrawalsSum?: bigint;
   blockNetIssuanceETH?: bigint;
+  blockAniIn: boolean;
+  blockHovered: boolean;
 };
 
 const GWEI_TO_WEI = 1_000_000_000n;
@@ -52,7 +54,11 @@ export const blockGasTargetPercent = (
 };
 
 export const generateBlockData = (blockData: Block) => {
-  const newBlock: BlockExtended = { ...blockData };
+  const newBlock: BlockExtended = {
+    ...blockData,
+    blockAniIn: false,
+    blockHovered: false,
+  };
   newBlock.blockGasUsedPercent = blockGasUsedPercent(
     newBlock.gasLimit,
     newBlock.gasUsed,
