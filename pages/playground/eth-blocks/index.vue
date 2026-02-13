@@ -295,9 +295,9 @@ onUnmounted(() => {
 </style>
 
 <!--TODO:-->
-<!-- ->Playground eth - get last 3 blocks?  -->
+<!-- ->Playground eth - SHADER - transaction related & multi Images logic  -->
 <!-- ->Playground eth - layout  -->
-<!-- ->Playground eth - SHADER & Images  -->
+<!-- ->Playground eth - get last 3 blocks?  -->
 <!-- ->Playground eth - block loading time - avegage block time loading - shader slowly loading + loader text  -->
 <!-- ->Playground main page finish  -->
 <!-- ->Page transition - easy overlay 1st version ->   -->
