@@ -72,7 +72,7 @@
             },
             shaderName: 'playEthBlock',
           }"
-          :src="`/images/${generateImage()}.jpg`"
+          :src="`/images/${block.imageId}.jpg`"
           alt=""
           class="eth-block-image"
         />
@@ -95,13 +95,6 @@ import SplitText from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 const maxBlocks = 10;
-let imageIndex = 0;
-
-const generateImage = () => {
-  imageIndex++;
-  if (imageIndex === 9) imageIndex = 1;
-  return "0" + imageIndex;
-};
 
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>

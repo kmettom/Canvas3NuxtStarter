@@ -10,6 +10,7 @@ export type BlockExtended = Block & {
   blockNetIssuanceETH?: bigint;
   blockAniIn: boolean;
   blockHovered: boolean;
+  imageId: string;
 };
 
 const GWEI_TO_WEI = 1_000_000_000n;
@@ -54,11 +55,20 @@ export const blockGasTargetPercent = (
   return used.minus(target).div(target).times(100).toFixed(2);
 };
 
+let imageIndex = 0;
+const imageAmount = 8;
+const generateImage = () => {
+  imageIndex++;
+  if (imageIndex === imageAmount + 1) imageIndex = 1;
+  return "0" + imageIndex;
+};
+
 export const generateBlockData = (blockData: Block) => {
   const newBlock: BlockExtended = {
     ...blockData,
     blockAniIn: false,
     blockHovered: false,
+    imageId: generateImage(),
   };
 
   newBlock.blockGasUsedPercent = blockGasUsedPercent(
