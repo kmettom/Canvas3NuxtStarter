@@ -77,6 +77,9 @@ import {
   type BlockExtended,
 } from "~/utils/play/play-eth-blocks";
 import { gsap } from "gsap";
+import SplitText from "gsap/SplitText";
+
+gsap.registerPlugin(SplitText);
 
 const maxBlocks = 10;
 
@@ -128,17 +131,25 @@ const animateNewBlockAdded = (
   const valuesElements = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value",
   );
-  // for (let i = 0; i < valuesElements.length; i++) {
-  //   valuesElements[i]
-  // }
+
   if (valuesElements.length) {
-    tlNewBlockAniIn.fromTo(
-      valuesElements,
-      { opacity: 0 },
-      { opacity: 1, stagger: 0.1 },
-      ">",
-    );
+    for (let i = 0; i < valuesElements.length; i++) {
+      if (valuesElements[i]) {
+        const splitValues = new SplitText(valuesElements[i] as HTMLElement, {
+          type: "chars",
+          linesClass: "content-char",
+          reduceWhiteSpace: false,
+        });
+        tlNewBlockAniIn.fromTo(
+          splitValues.chars,
+          { opacity: 0 },
+          { opacity: 1, stagger: 0.5 },
+            '<'
+        );
+      }
+    }
   }
+
   tlNewBlockAniIn.play();
   el.classList.add("block-added");
 };
@@ -195,6 +206,7 @@ onUnmounted(() => {
   width: 100%;
   display: inline-block;
   position: relative;
+
   .content-wrapper {
     z-index: 10;
     width: 100%;
@@ -206,23 +218,30 @@ onUnmounted(() => {
     flex-direction: column;
     justify-content: space-around;
   }
+
   .content-row {
     justify-items: center;
     align-items: center;
     justify-content: space-between;
     display: flex;
   }
+
   .content-block {
     display: flex;
     justify-content: center;
     align-items: baseline;
     padding: 25px;
   }
+
   .content-title {
     opacity: 0;
     padding-right: 10px;
   }
+
   .content-value {
+    //opacity: 0;
+  }
+  .content-char{
     opacity: 0;
   }
 }
@@ -234,6 +253,8 @@ onUnmounted(() => {
 </style>
 
 <!--TODO:-->
+<!-- ->Playground eth - laypout  -->
+<!-- ->Playground eth - add image & start shader  -->
 <!-- ->Playground eth - animation in  -->
 <!-- ->Playground eth - block loading time - avegage block time loading - shader slowly loading + loader text  -->
 <!-- ->Playground main page finish  -->

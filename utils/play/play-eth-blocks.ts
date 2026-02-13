@@ -14,7 +14,7 @@ const GWEI_TO_WEI = 1_000_000_000n;
 export const blockWithdrawalsSumWei = (withdrawals: Withdrawal[]) => {
   let sumGwei = 0n;
   for (const w of withdrawals) sumGwei += BigInt(w.amount);
-  return sumGwei * GWEI_TO_WEI; // ✅ now wei
+  return sumGwei * GWEI_TO_WEI;
 };
 
 export const blockETHBurnedWei = (
@@ -22,7 +22,7 @@ export const blockETHBurnedWei = (
   gasUsed: bigint,
 ) => {
   if (!baseFeePerGas) return 0n;
-  return baseFeePerGas * gasUsed; // ✅ wei
+  return baseFeePerGas * gasUsed;
 };
 
 export const blockGasUsedPercent = (
