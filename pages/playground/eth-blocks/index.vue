@@ -14,15 +14,19 @@
           <div class="content-row">
             <div class="content-block">
               <span class="content-title">Transactions:</span>
-              <span class="content-value">{{ block.transactions.length }}</span>
+              <span class="content-value ani-index-0">{{
+                block.transactions.length
+              }}</span>
             </div>
             <div class="content-block">
               <span class="content-title">Gas used:</span>
-              <span class="content-value">{{ block.blockGasUsedPercent }}</span>
+              <span class="content-value ani-index-0">{{
+                block.blockGasUsedPercent
+              }}</span>
             </div>
             <div class="content-block">
               <span class="content-title">Gas target:</span>
-              <span class="content-value">{{
+              <span class="content-value ani-index-0">{{
                 block.blockGasTargetPercent
               }}</span>
             </div>
@@ -30,22 +34,24 @@
           <div class="content-row">
             <div v-if="block.blockETHBurned" class="content-block">
               <span class="content-title">Burned</span>
-              <span class="content-value">
+              <span class="content-value ani-index-0">
                 {{ formatEth2(block.blockETHBurned) }}</span
               >
-              <span class="content-title">ETH</span>
+              <span class="content-value ani-index-1">ETH</span>
             </div>
             <div v-if="block.blockWithdrawalsSum" class="content-block">
               <span class="content-title">Withdrawed:</span>
-              <span class="content-value">
+              <span class="content-value ani-index-0">
                 {{ formatEth2(block.blockWithdrawalsSum) }}</span
               >
+              <span class="content-value ani-index-1">ETH</span>
             </div>
             <div v-if="block.blockNetIssuanceETH" class="content-block">
               <span class="content-title">Supply Delta Δ:</span>
-              <span class="content-value">
+              <span class="content-value ani-index-0">
                 {{ formatEth2(block.blockNetIssuanceETH) }}</span
               >
+              <span class="content-value ani-index-1">ETH</span>
             </div>
           </div>
         </div>
@@ -153,27 +159,35 @@ const animateNewBlockAdded = (
 
   tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.5 });
 
-  const valuesElements = (el as Element).querySelectorAll<HTMLElement>(
-    ".content-value",
-  );
-
-  if (valuesElements.length) {
-    for (let i = 0; i < valuesElements.length; i++) {
-      if (valuesElements[i]) {
-        const splitValues = new SplitText(valuesElements[i] as HTMLElement, {
-          type: "chars",
-          linesClass: "content-char",
-          reduceWhiteSpace: false,
-        });
-        tlNewBlockAniIn.fromTo(
-          splitValues.chars,
-          { opacity: 0, y: 5 },
-          { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
-          "<=+0.1",
-        );
+  const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
+    if (elementsToAni.length) {
+      for (let i = 0; i < elementsToAni.length; i++) {
+        if (elementsToAni[i]) {
+          const splitValues = new SplitText(elementsToAni[i] as HTMLElement, {
+            type: "chars",
+            linesClass: "content-char",
+            reduceWhiteSpace: false,
+          });
+          tlNewBlockAniIn.fromTo(
+            splitValues.chars,
+            { opacity: 0, y: 5 },
+            { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
+            "<=+0.1",
+          );
+        }
       }
     }
-  }
+  };
+
+  const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
+    ".content-value.ani-index-0",
+  );
+  aniContentValues(valuesElementsIndex0);
+
+  const valuesElementsIndex1 = (el as Element).querySelectorAll<HTMLElement>(
+    ".content-value.ani-index-1",
+  );
+  aniContentValues(valuesElementsIndex1);
 
   tlNewBlockAniIn.call(
     () => {

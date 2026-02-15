@@ -12,11 +12,11 @@
           <div class="example-wrapper">
             <h3 class="body-l heading-example">Add images to scene 😌</h3>
             <img
-              src="/images/01.jpg"
-              alt="building"
               v-canvas3-image="{
                 shaderName: 'example1',
               }"
+              src="/images/01.jpg"
+              alt="building"
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span
@@ -42,14 +42,14 @@
               <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
             <img
-              src="/images/02.jpg"
-              alt="building"
               v-canvas3-image="{
                 uniforms: {
                   uHover: { value: example1Hover ? 1 : 0, duration: 0 },
                 },
                 shaderName: 'example2',
               }"
+              src="/images/02.jpg"
+              alt="building"
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span
@@ -96,14 +96,14 @@
                   <span class="scroll-speed-ani" />
                 </p>
                 <img
-                  src="/images/03.jpg"
-                  alt="sky"
                   v-canvas3-image="{
                     uniforms: {
                       uScrollSpeed: { value: example3Speed, duration: 0 },
                     },
                     shaderName: 'example3',
                   }"
+                  src="/images/03.jpg"
+                  alt="sky"
                 />
                 <CodeSnippet>
                   v-action-on-scroll="{ <br />
@@ -136,8 +136,6 @@
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
               <img
-                src="/images/04.jpg"
-                alt="sky"
                 v-canvas3-image="{
                   loadStrategy: 'eager',
                   shaderName: 'example4',
@@ -145,6 +143,8 @@
                     uAniInExample4: { duration: 1 },
                   },
                 }"
+                src="/images/04.jpg"
+                alt="sky"
               />
               <CodeSnippet>
                 v-action-on-scroll="{ <br />
@@ -169,12 +169,12 @@
               <div>
                 <p class="example-txt">Fix element to Parent</p>
                 <img
-                  src="/images/01.jpg"
-                  alt="building"
                   v-canvas3-image="{
                     loadStrategy: 'eager',
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                   }"
+                  src="/images/01.jpg"
+                  alt="building"
                 />
                 <CodeSnippet>
                   v-action-on-scroll="{<br />
