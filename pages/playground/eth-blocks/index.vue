@@ -70,7 +70,7 @@
                 duration: 0.5,
                 ease: 'linear',
               },
-               uBlocks: {
+              uBlocks: {
                 value: 100,
                 duration: 0,
                 ease: 'linear',
