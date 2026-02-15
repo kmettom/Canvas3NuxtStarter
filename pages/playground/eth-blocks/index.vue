@@ -164,10 +164,10 @@ const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
           reduceWhiteSpace: false,
         });
         tlNewBlockAniIn.fromTo(
-            splitValues.chars,
-            { opacity: 0, y: 5 },
-            { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
-            "<=+0.1",
+          splitValues.chars,
+          { opacity: 0, y: 5 },
+          { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
+          "<=+0.1",
         );
       }
     }
@@ -183,17 +183,21 @@ const animateNewBlockAdded = (
   const el = target as Element;
   if (el.classList.contains("block-added")) return;
 
-  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.35 });
+  tlNewBlockAniIn.fromTo(
+    el,
+    { height: 0 },
+    { height: "200px", duration: 0.35 },
+  );
 
   tlNewBlockAniIn.call(
-      () => {
-        const blockToAnimate = blocks.value.get(blockTimestamp);
-        if (blockToAnimate) {
-          blockToAnimate.blockAniIn = true;
-        }
-      },
-      undefined,
-      "<=+0.1",
+    () => {
+      const blockToAnimate = blocks.value.get(blockTimestamp);
+      if (blockToAnimate) {
+        blockToAnimate.blockAniIn = true;
+      }
+    },
+    undefined,
+    "<=+0.1",
   );
 
   const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
