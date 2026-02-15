@@ -70,6 +70,11 @@
                 duration: 0.5,
                 ease: 'linear',
               },
+               uBlocks: {
+                value: 100,
+                duration: 0,
+                ease: 'linear',
+              },
               uHover: {
                 value: block.blockHovered ? 1 : 0,
                 duration: 0.5,

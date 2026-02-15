@@ -5,6 +5,7 @@ uniform sampler2D uImage;
 uniform float uAniInImage;
 uniform float uHover;
 uniform float uBlockColor;
+uniform float uBlocks;
 
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
