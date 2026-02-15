@@ -2,32 +2,19 @@
   <div class="hero-section-wrapper">
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-canvas">
-        <h2 class="heading-1">
-          <!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
-          Canvas3
-          <!--          </Canvas3Text>-->
-        </h2>
+        <h2 class="heading-1">Canvas3</h2>
       </div>
     </Container>
     <div class="hero-bg-image">
       <img
+        src="/images/08.jpg"
+        alt="background wave on beach"
         v-canvas3-image="{
           loadStrategy: 'eager',
           uniforms: imageUniforms,
           shaderName: 'hero',
         }"
-        src="/images/08.jpg"
-        alt="background wave on beach"
       />
-      <!--      <Canvas3Image-->
-      <!--        :options="{-->
-      <!--          src: 'images/08.JPG',-->
-      <!--          alt: 'background wave on beach',-->
-      <!--          loadStrategy: 'eager',-->
-      <!--          uniforms: imageUniforms,-->
-      <!--          shaderName: 'hero',-->
-      <!--        }"-->
-      <!--      />-->
     </div>
   </div>
 </template>
@@ -58,9 +45,9 @@ const imageUniforms = computed(() => {
 });
 
 const heroSectionAnimation = () => {
-  imageIn.value = true;
   setTimeout(() => {
     mainTextIn.value = true;
+    imageIn.value = true;
   }, 100);
 };
 
