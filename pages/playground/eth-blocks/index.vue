@@ -62,7 +62,7 @@
             uniforms: {
               uAniInImage: {
                 value: block.blockAniIn ? 1 : 0,
-                duration: 0.5,
+                duration: 0.75,
                 ease: 'linear',
               },
               uBlockColor: {
@@ -71,7 +71,7 @@
                 ease: 'linear',
               },
               uBlocks: {
-                value: 100,
+                value: block.transactions.length,
                 duration: 0,
                 ease: 'linear',
               },
@@ -153,6 +153,27 @@ const animateNewBlockInProgress = () => {
     { width: "100%", duration: averageBlockTime.value },
   );
 };
+
+const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
+  if (elementsToAni.length) {
+    for (let i = 0; i < elementsToAni.length; i++) {
+      if (elementsToAni[i]) {
+        const splitValues = new SplitText(elementsToAni[i] as HTMLElement, {
+          type: "chars",
+          linesClass: "content-char",
+          reduceWhiteSpace: false,
+        });
+        tlNewBlockAniIn.fromTo(
+            splitValues.chars,
+            { opacity: 0, y: 5 },
+            { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
+            "<=+0.1",
+        );
+      }
+    }
+  }
+};
+
 const tlNewBlockAniIn = gsap.timeline({});
 const animateNewBlockAdded = (
   target: Element | ComponentPublicInstance | null,
@@ -162,27 +183,18 @@ const animateNewBlockAdded = (
   const el = target as Element;
   if (el.classList.contains("block-added")) return;
 
-  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.5 });
+  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "200px", duration: 0.35 });
 
-  const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
-    if (elementsToAni.length) {
-      for (let i = 0; i < elementsToAni.length; i++) {
-        if (elementsToAni[i]) {
-          const splitValues = new SplitText(elementsToAni[i] as HTMLElement, {
-            type: "chars",
-            linesClass: "content-char",
-            reduceWhiteSpace: false,
-          });
-          tlNewBlockAniIn.fromTo(
-            splitValues.chars,
-            { opacity: 0, y: 5 },
-            { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
-            "<=+0.1",
-          );
+  tlNewBlockAniIn.call(
+      () => {
+        const blockToAnimate = blocks.value.get(blockTimestamp);
+        if (blockToAnimate) {
+          blockToAnimate.blockAniIn = true;
         }
-      }
-    }
-  };
+      },
+      undefined,
+      "<=+0.1",
+  );
 
   const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value.ani-index-0",
@@ -193,17 +205,6 @@ const animateNewBlockAdded = (
     ".content-value.ani-index-1",
   );
   aniContentValues(valuesElementsIndex1);
-
-  tlNewBlockAniIn.call(
-    () => {
-      const blockToAnimate = blocks.value.get(blockTimestamp);
-      if (blockToAnimate) {
-        blockToAnimate.blockAniIn = true;
-      }
-    },
-    undefined,
-    "<=+0.3",
-  );
 
   tlNewBlockAniIn.call(() => {
     animateNewBlockInProgress();
