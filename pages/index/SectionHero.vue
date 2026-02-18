@@ -23,10 +23,11 @@
 import Container from "~/components/common/Container.vue";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import heroImage from "/images/08.jpg";
+
 
 gsap.registerPlugin(SplitText);
 
+const heroImage = "/images/08.jpg";
 
 const props = defineProps({
   sectionActivate: Boolean,
