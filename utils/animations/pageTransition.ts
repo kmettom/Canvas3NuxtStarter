@@ -1,7 +1,34 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
 
-export const pageTransition = {
+// Replace with your real Canvas3 import/type
+declare const Canvas3: {
+  addMeshToScene: (mesh: THREE.Mesh) => void;
+  getMeshFromSceneByName: (name: string) => THREE.Mesh | null;
+  addAnimationToRender: (name: string, cb: () => void) => void;
+  setMeshPositionsUpdate: (flag: boolean) => void;
+};
+
+type TransitionSetup = {
+  positionX: { value: number };
+  scaleX: { value: number };
+  meshId: string;
+  mesh: THREE.Mesh | null;
+  duration: number;
+};
+
+type PageTransition = {
+  setup: TransitionSetup;
+  addMeshRectangle: (meshName: string, color: string) => THREE.Mesh | null;
+  init: () => void;
+  curtainShow: (positionX?: number, scaleX?: number) => void;
+  render: () => void;
+  start: () => Promise<void>;
+  end: () => Promise<void>;
+  reset: () => void;
+};
+
+export const pageTransition: PageTransition = {
   setup: {
     positionX: { value: 0 },
     scaleX: { value: 0 },
@@ -9,17 +36,21 @@ export const pageTransition = {
     mesh: null,
     duration: 0.5,
   },
-  addMeshRectangle: (meshName:string, color:string) => {
+
+  addMeshRectangle: (meshName: string, color: string): THREE.Mesh | null => {
     const geometry = new THREE.PlaneGeometry(1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: color });
+    const material = new THREE.MeshBasicMaterial({ color });
     const rectangle = new THREE.Mesh(geometry, material);
+
     rectangle.name = meshName;
     rectangle.position.set(0, 0, 0);
     rectangle.scale.set(0, window.innerHeight, 0);
+
     Canvas3.addMeshToScene(rectangle);
     return Canvas3.getMeshFromSceneByName(meshName);
   },
-  init: () => {
+
+  init: (): void => {
     pageTransition.setup.mesh = pageTransition.addMeshRectangle(
       "curtain",
       "rgb(0, 0, 245)",
@@ -27,16 +58,21 @@ export const pageTransition = {
     Canvas3.addAnimationToRender("pageTransition", pageTransition.render);
     pageTransition.reset();
   },
-  curtainShow: (positionX = 0, scaleX = window.innerWidth) => {
+
+  curtainShow: (positionX: number = 0, scaleX: number = window.innerWidth): void => {
     pageTransition.setup.positionX.value = positionX;
     pageTransition.setup.scaleX.value = scaleX;
   },
-  render: () => {
-    pageTransition.setup.mesh.position.x = pageTransition.setup.positionX.value;
-    pageTransition.setup.mesh.scale.x = pageTransition.setup.scaleX.value;
+
+  render: (): void => {
+    const { mesh, positionX, scaleX } = pageTransition.setup;
+    if (!mesh) return;
+    mesh.position.x = positionX.value;
+    mesh.scale.x = scaleX.value;
   },
-  start: async () => {
-    return new Promise((resolve) => {
+
+  start: (): Promise<void> => {
+    return new Promise<void>((resolve) => {
       const tl = gsap.timeline({
         defaults: {
           ease: "power2.out",
@@ -49,6 +85,7 @@ export const pageTransition = {
           resolve();
         },
       });
+
       tl.to(
         pageTransition.setup.scaleX,
         {
@@ -57,6 +94,7 @@ export const pageTransition = {
         },
         "<=",
       );
+
       tl.to(
         pageTransition.setup.positionX,
         {
@@ -67,8 +105,9 @@ export const pageTransition = {
       );
     });
   },
-  end: () => {
-    return new Promise((resolve) => {
+
+  end: (): Promise<void> => {
+    return new Promise<void>((resolve) => {
       const tl = gsap.timeline({
         defaults: {
           ease: "power2.in",
@@ -78,6 +117,7 @@ export const pageTransition = {
           resolve();
         },
       });
+
       tl.to(
         pageTransition.setup.positionX,
         {
@@ -87,6 +127,7 @@ export const pageTransition = {
         },
         "<=",
       );
+
       tl.to(
         pageTransition.setup.scaleX,
         {
@@ -97,7 +138,8 @@ export const pageTransition = {
       );
     });
   },
-  reset: () => {
+
+  reset: (): void => {
     pageTransition.setup.positionX.value = -window.innerWidth / 2;
     pageTransition.setup.scaleX.value = 0;
   },
