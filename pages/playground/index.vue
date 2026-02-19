@@ -29,25 +29,32 @@
       <!--        </div>-->
       <!--      </nuxt-link>-->
       <nuxt-link class="play-link" href="/playground/eth-blocks">
-        <div class="play-1">
-          <h3 class="body-l">Ethereum network</h3>
-          <p class="body-s">Ethereum network listener interaction</p>
+        <div
+          class="play-1"
+          @mouseenter="ethBlockHover = true"
+          @mouseleave="ethBlockHover = false"
+        >
+          <h3 class="body-l">Ethereum blocks</h3>
+          <p class="body-s">
+            Ethereum network listener with interaction for new blocks added to
+            the blockchain
+          </p>
           <img
             v-canvas3-image="{
               loadStrategy: 'preload',
               uniforms: {
                 uAniInImage: {
-                  value: ethBlockImageAniIn ? 1 : 0,
+                  value: ethBlockImageAniIn ? (ethBlockHover ? 0.85 : 1) : 0,
                   duration: 0.5,
                   ease: 'linear',
                 },
                 uBlockColor: {
-                  value: 0.5,
+                  value: ethBlockHover ? 0.6 : 0.5,
                   duration: 0.5,
                   ease: 'linear',
                 },
                 uBlocks: {
-                  value: 150,
+                  value: 10,
                   duration: 0,
                   ease: 'linear',
                 },
@@ -81,6 +88,7 @@ useSeoMeta({
 const navigationStore = useNavigationStore();
 
 const ethBlockImageAniIn = ref(false);
+const ethBlockHover = ref(false);
 
 onMounted(() => {
   const timeDelay = navigationStore.webFirstLoadDone
@@ -125,6 +133,7 @@ onMounted(() => {
   }
 }
 .play-block-image {
+  margin-top: 15px;
   width: 450px;
 }
 </style>
