@@ -8,6 +8,7 @@
     :name="layout"
     :canvas3options="Canvas3Options"
     :canvas3enabled="contentActive"
+    @canvas3-ready="onCanvas3Ready"
   >
     <NuxtPage
       :page-active="contentActive"
@@ -37,6 +38,7 @@ import { Canvas3Options } from "~/constants/canvas3-options";
 import WelcomeScreen from "~/components/common/WelcomeScreen.vue";
 import Cursor from "~/components/common/Cursor.vue";
 import { waitOutDone } from "~/composables/useOutPromise";
+import {pageTransition} from "~/utils/animations/pageTransition";
 
 useHead({
   htmlAttrs: {
@@ -58,6 +60,11 @@ const layout = "canvas3";
 const welcomeInit = ref(false);
 
 const displayStore = useDisplayStore();
+
+const onCanvas3Ready = () => {
+  console.log("onCanvas3Ready")
+  pageTransition.init();
+}
 
 onMounted(() => {
   welcomeInit.value = true;

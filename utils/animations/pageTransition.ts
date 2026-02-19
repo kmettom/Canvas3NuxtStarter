@@ -36,8 +36,16 @@ export const pageTransition: PageTransition = {
     mesh: null,
     duration: 0.5,
   },
-
+  init: (): void => {
+    pageTransition.setup.mesh = pageTransition.addMeshRectangle(
+      "curtain",
+      "rgb(0, 0, 245)",
+    );
+    Canvas3.addAnimationToRender("pageTransition", pageTransition.render);
+    pageTransition.reset();
+  },
   addMeshRectangle: (meshName: string, color: string): THREE.Mesh | null => {
+    console.log("addMeshRectangle")
     const geometry = new THREE.PlaneGeometry(1, 1);
     const material = new THREE.MeshBasicMaterial({ color });
     const rectangle = new THREE.Mesh(geometry, material);
@@ -48,15 +56,6 @@ export const pageTransition: PageTransition = {
 
     Canvas3.addMeshToScene(rectangle);
     return Canvas3.getMeshFromSceneByName(meshName);
-  },
-
-  init: (): void => {
-    pageTransition.setup.mesh = pageTransition.addMeshRectangle(
-      "curtain",
-      "rgb(0, 0, 245)",
-    );
-    Canvas3.addAnimationToRender("pageTransition", pageTransition.render);
-    pageTransition.reset();
   },
 
   curtainShow: (positionX: number = 0, scaleX: number = window.innerWidth): void => {
