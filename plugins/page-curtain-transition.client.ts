@@ -1,11 +1,18 @@
 import { defineNuxtPlugin } from "#app";
 import { Canvas3 } from "#canvas3-nuxt/utils/canvas3/canvas3";
 import { setOutPromise } from "~/composables/useOutPromise";
-import { pageTransition } from "~/utils/animations/pageTransition";
+import {
+  pageTransition,
+  waitForPageTransitionDone,
+} from "~/utils/animations/pageTransition";
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const navigationStore = useNavigationStore();
+
   nuxtApp.hook("page:start", () => {
     const p = (async () => {
+      navigationStore.setPageTransitionInProgress(true);
+
       Canvas3.setMeshPositionsUpdate(true);
       await pageTransition.start();
       Canvas3.scrollToTop(0);
@@ -13,16 +20,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     setOutPromise(p);
   });
   nuxtApp.hook("page:finish", async () => {
-    // await waitForPageTransitionDone();
-
+    await waitForPageTransitionDone();
     await pageTransition.end();
     Canvas3.setMeshPositionsUpdate(false);
-    // navigationStore.setPageTransitionOverlayOutProgress(false);
   });
-
-  // nuxtApp.hook("page:error", () => {
-  //   // navigationStore.setPageTransitionInProgress(false);
-  //   // pageTransition.end();
-  //   Canvas3.setMeshPositionsUpdate(false);
-  // });
 });

@@ -6,6 +6,7 @@ export const useNavigationStore = defineStore("navigationStore", {
     activeNavItem: "home",
     navVisible: true,
     navContrastSwitched: false,
+    pageTransitionInProgress: false,
     navigationItems: [
       { name: "Home", id: "home" },
       { name: "About", id: "about" },
@@ -21,6 +22,9 @@ export const useNavigationStore = defineStore("navigationStore", {
     },
     setNavContrast(contrastSwitched: boolean) {
       this.navContrastSwitched = contrastSwitched;
+    },
+    setPageTransitionInProgress(status: boolean) {
+      this.pageTransitionInProgress = status;
     },
   },
 });

@@ -146,3 +146,20 @@ export const pageTransition: PageTransition = {
     pageTransition.setup.scaleX.value = 0;
   },
 };
+
+export function waitForPageTransitionDone(): Promise<void> {
+  const navigationStore = useNavigationStore();
+
+  if (!navigationStore.pageTransitionInProgress) {
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((resolve) => {
+    const stop = navigationStore.$subscribe((_, state) => {
+      if (!state.pageTransitionInProgress) {
+        stop();
+        resolve();
+      }
+    });
+  });
+}
