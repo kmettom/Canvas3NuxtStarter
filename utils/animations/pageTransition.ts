@@ -45,7 +45,7 @@ export const pageTransition: PageTransition = {
     pageTransition.reset();
   },
   addMeshRectangle: (meshName: string, color: string): THREE.Mesh | null => {
-    console.log("addMeshRectangle")
+    console.log("addMeshRectangle");
     const geometry = new THREE.PlaneGeometry(1, 1);
     const material = new THREE.MeshBasicMaterial({ color });
     const rectangle = new THREE.Mesh(geometry, material);
@@ -58,7 +58,10 @@ export const pageTransition: PageTransition = {
     return Canvas3.getMeshFromSceneByName(meshName);
   },
 
-  curtainShow: (positionX: number = 0, scaleX: number = window.innerWidth): void => {
+  curtainShow: (
+    positionX: number = 0,
+    scaleX: number = window.innerWidth,
+  ): void => {
     pageTransition.setup.positionX.value = positionX;
     pageTransition.setup.scaleX.value = scaleX;
   },

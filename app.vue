@@ -38,7 +38,7 @@ import { Canvas3Options } from "~/constants/canvas3-options";
 import WelcomeScreen from "~/components/common/WelcomeScreen.vue";
 import Cursor from "~/components/common/Cursor.vue";
 import { waitOutDone } from "~/composables/useOutPromise";
-import {pageTransition} from "~/utils/animations/pageTransition";
+import { pageTransition } from "~/utils/animations/pageTransition";
 
 useHead({
   htmlAttrs: {
@@ -62,9 +62,9 @@ const welcomeInit = ref(false);
 const displayStore = useDisplayStore();
 
 const onCanvas3Ready = () => {
-  console.log("onCanvas3Ready")
+  console.log("onCanvas3Ready");
   pageTransition.init();
-}
+};
 
 onMounted(() => {
   welcomeInit.value = true;
