@@ -13,10 +13,10 @@ import { onMounted } from "vue";
 // import { addObjectPlay1 } from "~/utils/play/play1";
 
 useSeoMeta({
-  title: "Tomas Kmet - Web developer - Playground",
-  ogTitle: "Tomas Kmet - Web developer - Playground",
-  description: "Tomas Kmet - Web developer - Playground",
-  ogDescription: "Tomas Kmet - Web developer - Playground",
+  title: "Canvas3 - Playground",
+  ogTitle: "Canvas3 - Playground",
+  description: "Canvas3 - Playground",
+  ogDescription: "Canvas3 - Playground",
 });
 
 const mainTextInUniforms = {
