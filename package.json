@@ -24,21 +24,24 @@
     "@nuxt/eslint": "^0.7.4",
     "@nuxtjs/style-resources": "^1.2.1",
     "@pinia/nuxt": "^0.9.0",
+    "@types/big.js": "^6.2.2",
+    "@types/three": "^0.183.0",
     "@vercel/speed-insights": "^1.2.0",
     "@vueuse/core": "^12.4.0",
-    "gsap": "npm:@gsap/business@^3.13.0",
+    "big.js": "^7.0.1",
+    "gsap": "3.14.2",
     "nuxt": "^4.0.0",
     "prettier": "^3.6.2",
     "sass-embedded": "^1.89.2",
-    "three": "^0.171.0",
-    "three-msdf-text-utils": "^1.1.6",
+    "three": "^0.178.0",
     "typescript": "^5.7.2",
+    "viem": "^2.45.1",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-glsl": "^1.5.1",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
   },
   "dependencies": {
-    "canvas3-nuxt": "0.0.45"
+    "@canvas3/nuxt": "^0.0.6"
   }
 }

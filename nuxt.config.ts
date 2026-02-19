@@ -9,15 +9,15 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@pinia/nuxt",
     // "../canvas3-nuxt/src/module", // Canvas3 Nuxt module local dev path
-    "canvas3-nuxt",
+    "@canvas3/nuxt",
   ],
-  image: {
-    target: "static",
-    dir: "public/",
-  },
+  // image: {
+  //   target: "static",
+  //   dir: "public/",
+  // },
 
   build: {
-    transpile: ["gsap", "canvas3-nuxt"],
+    transpile: ["gsap", "@canvas3/nuxt"],
   },
 
   vite: {
@@ -37,7 +37,7 @@ export default defineNuxtConfig({
       const css = manifest["node_modules/nuxt/dist/app/entry.js"]?.css;
       if (css) {
         for (let i = css.length - 1; i >= 0; i--) {
-          if (css[i].startsWith("entry")) css.splice(i, 1);
+          if (css[i]?.startsWith("entry")) css.splice(i, 1);
         }
       }
     },

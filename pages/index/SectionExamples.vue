@@ -11,12 +11,12 @@
         <div class="examples-row">
           <div class="example-wrapper">
             <h3 class="body-l heading-example">Add images to scene 😌</h3>
-            <Canvas3Image
-              :options="{
-                src: 'images/01.JPG',
-                alt: 'building',
+            <img
+              v-canvas3-image="{
                 shaderName: 'example1',
               }"
+              :src="'/images/01.jpg'"
+              alt="building"
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span
@@ -41,15 +41,15 @@
               Add shader uniforms
               <span class="">(hover: {{ example1Hover ? "👍" : "👎" }})</span>
             </h3>
-            <Canvas3Image
-              :options="{
-                src: 'images/02.JPG',
-                alt: 'building',
+            <img
+              v-canvas3-image="{
                 uniforms: {
                   uHover: { value: example1Hover ? 1 : 0, duration: 0 },
                 },
                 shaderName: 'example2',
               }"
+              :src="'/images/02.jpg'"
+              alt="building"
             />
             <CodeSnippet>
               <span> {{ String("<") }}</span
@@ -81,7 +81,10 @@
               v-action-on-scroll="{
                 activeRange: 0.9,
                 activateOnce: false,
-                onScrollCallback: (item, speed) => {
+                onScrollCallback: (
+                  item: ScrollActionBinding,
+                  speed: number,
+                ) => {
                   example3ScrollCallback(item, speed);
                 },
               }"
@@ -92,15 +95,15 @@
                   Scroll speed: {{ example3Speed }}
                   <span class="scroll-speed-ani" />
                 </p>
-                <Canvas3Image
-                  :options="{
-                    src: 'images/03.JPG',
-                    alt: 'sky',
+                <img
+                  v-canvas3-image="{
                     uniforms: {
                       uScrollSpeed: { value: example3Speed, duration: 0 },
                     },
                     shaderName: 'example3',
                   }"
+                  :src="'/images/03.jpg'"
+                  alt="sky"
                 />
                 <CodeSnippet>
                   v-action-on-scroll="{ <br />
@@ -119,7 +122,7 @@
                 activateOnce: false,
                 scrollSpeedSetTo: { value: 0.3 },
                 bidirectionalActivation: true,
-                activateCallback: (item) => {
+                activateCallback: (item: ScrollActionBinding) => {
                   const el = item.elNode.querySelector('.example-activate-txt');
                   const tl = gsap.timeline();
                   tl.to(el, { x: -10, opacity: 1, duration: 0.5 });
@@ -132,16 +135,16 @@
                 Set Scroll speed of elements
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
-              <Canvas3Image
-                :options="{
-                  src: 'images/04.JPG',
-                  alt: 'sky',
+              <img
+                v-canvas3-image="{
                   loadStrategy: 'eager',
                   shaderName: 'example4',
                   activateMeshUniforms: {
                     uAniInExample4: { duration: 1 },
                   },
                 }"
+                :src="'/images/04.jpg'"
+                alt="sky"
               />
               <CodeSnippet>
                 v-action-on-scroll="{ <br />
@@ -165,13 +168,13 @@
             >
               <div>
                 <p class="example-txt">Fix element to Parent</p>
-                <Canvas3Image
-                  :options="{
-                    src: 'images/01.JPG',
-                    alt: 'building',
+                <img
+                  v-canvas3-image="{
                     loadStrategy: 'eager',
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                   }"
+                  :src="'/images/01.jpg'"
+                  alt="building"
                 />
                 <CodeSnippet>
                   v-action-on-scroll="{<br />
@@ -188,16 +191,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Container from "~/components/common/Container.vue";
 import CodeSnippet from "~/components/common/CodeSnippet.vue";
 import gsap from "gsap";
+
+//TODO: proper type import export
+import type { ScrollActionBinding } from "../../../canvas3-nuxt/dist/runtime/types/types";
 
 const example1Hover = ref(false);
 const example3Speed = ref(0);
 const example2Hover = ref(false);
 
-const example3ScrollCallback = (item, speed) => {
+const example3ScrollCallback = (item: ScrollActionBinding, speed: number) => {
   example3Speed.value = speed;
   gsap.to(item.elNode.querySelector(".scroll-speed-ani"), {
     width: `${speed * 100}%`,

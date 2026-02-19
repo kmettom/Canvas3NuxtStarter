@@ -5,7 +5,7 @@
       class="page-section"
       data-nav-id="home"
     >
-      <SectionHero :section-activate="props.pageActive" />
+      <SectionHero />
     </div>
     <div
       v-action-on-scroll="setSectionActivationOptions('about', false)"
@@ -20,6 +20,13 @@
       data-nav-id="examples"
     >
       <SectionExamples />
+    </div>
+    <div
+      v-action-on-scroll="setSectionActivationOptions('playground', true)"
+      class="page-section"
+      data-nav-id="playground"
+    >
+      <SectionPlayground />
     </div>
     <div
       v-action-on-scroll="setSectionActivationOptions('roadmap', true)"
@@ -41,13 +48,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import SectionExamples from "~/pages/index/SectionExamples.vue";
 import SectionHero from "~/pages/index/SectionHero.vue";
 import SectionAbout from "~/pages/index/SectionAbout.vue";
 import SectionRoadmap from "~/pages/index/SectionRoadmap.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
+import SectionPlayground from "~/pages/index/SectionPlayground.vue";
 
 useSeoMeta({
   title: "Canvas3 NUXT Starter",
@@ -58,11 +66,10 @@ useSeoMeta({
 
 const navigationStore = useNavigationStore();
 
-const props = defineProps({
-  pageActive: Boolean,
-});
-
-const setSectionActivationOptions = (sectionId, sectionContrast) => {
+const setSectionActivationOptions = (
+  sectionId: string,
+  sectionContrast: boolean,
+) => {
   return {
     trackOnly: true,
     activateCallback: () => {

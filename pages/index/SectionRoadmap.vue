@@ -11,30 +11,33 @@
           }"
           class="roadmap-txt"
         >
-          → Canvas3Text component dynamic colors<br />
-          → 3D model imports<br />
           → Canvas initiation improvements<br />
+          → 3D model imports<br />
           <!--          → Responsiveness management - improve Display store<br />-->
           → Enable/Disable canvas animations dynamically<br />
           <!--          → Side scroll sections<br />-->
           → Create Type for working with TypeScript<br />
-          → Create SDK for generic usage<br />
-          → Refactor to Typescript <br />
+          → Canvas3Text MSDF font implement<br />
+
+          <!--          → Create SDK for generic usage<br />-->
+          <!--          → Refactor to Typescript <br/>-->
         </p>
       </div>
     </Container>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Container from "~/components/common/Container.vue";
-
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 
+//TODO: proper type import export
+import type { ScrollActionBinding } from "../../../canvas3-nuxt/dist/runtime/types/types";
+
 gsap.registerPlugin(SplitText);
 
-function textAniCallback(item) {
+function textAniCallback(item: ScrollActionBinding) {
   const selector = item.elNode;
   const tl = gsap.timeline();
   const lines = new SplitText(selector, {
@@ -62,6 +65,7 @@ function textAniCallback(item) {
   margin-left: 20px;
   font-weight: lighter;
 }
+
 .roadmap-section {
   display: grid;
   grid-template-columns: 6fr 14fr;
@@ -73,6 +77,7 @@ function textAniCallback(item) {
     padding: 10vh 10px 125px 10px;
   }
 }
+
 .roadmap-txt {
   line-height: 1.5;
   opacity: 0;
@@ -83,8 +88,10 @@ function textAniCallback(item) {
     margin-top: 10px;
     margin-bottom: 10px;
   }
+
   div {
     opacity: 0;
+
     * {
       opacity: 0;
     }

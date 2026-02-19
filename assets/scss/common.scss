@@ -3,7 +3,7 @@
 //*************************
 :root {
   --light-color: #bfc0b2;
-  --dark-color: #1b1818;
+  --dark-color: rgb(20, 20, 20);
 }
 
 html {
@@ -14,12 +14,10 @@ html {
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
   font-family: sans-serif;
-  background-color: #1b1818;
-
-  //background-color: var(--dark-color);
+  background-color: var(--dark-color);
   color: var(--light-color);
 
-  cursor: none;
+  //cursor: none;
 }
 
 //*************************

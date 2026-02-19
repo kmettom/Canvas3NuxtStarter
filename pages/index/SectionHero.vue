@@ -2,74 +2,56 @@
   <div class="hero-section-wrapper">
     <Container additional-class="hero-section">
       <div class="hero-content-line hero-line-canvas">
-        <h2 class="heading-1">
-          <!--          <Canvas3Text :theme="'dark'" :uniforms="mainTextInUniforms">-->
-          Canvas3
-          <!--          </Canvas3Text>-->
-        </h2>
+        <h2 class="heading-1">Canvas3</h2>
       </div>
     </Container>
     <div class="hero-bg-image">
-      <Canvas3Image
-        :options="{
-          src: 'images/08.JPG',
-          alt: 'background wave on beach',
-          loadStrategy: 'preload',
+      <img
+        v-canvas3-image="{
+          loadStrategy: 'eager',
           uniforms: imageUniforms,
           shaderName: 'hero',
         }"
+        :src="heroImage"
+        alt="background wave on beach"
       />
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Container from "~/components/common/Container.vue";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { pageTransition } from "~/utils/animations/pageTransition";
+
 gsap.registerPlugin(SplitText);
 
-const props = defineProps({
-  sectionActivate: Boolean,
-});
+const heroImage = "/images/08.jpg";
 
-const mainTextIn = ref(false);
 const imageIn = ref(false);
-
-// const mainTextInUniforms = computed(() => {
-//   return {
-//     uAniInText: { value: mainTextIn.value ? 1 : 0, duration: 2 },
-//   };
-// });
 
 const imageUniforms = computed(() => {
   return {
-    uAniInImage: { value: imageIn.value ? 1 : 0, duration: 1.25 },
+    uAniInImage: { value: imageIn.value ? 1 : 0, duration: 1.25, ease: "ease" },
   };
 });
 
+const navigationStore = useNavigationStore();
+
 const heroSectionAnimation = () => {
-  imageIn.value = true;
+  const timeDelay = navigationStore.webFirstLoadDone
+    ? pageTransition.setup.duration * 2500
+    : 100;
+
   setTimeout(() => {
-    mainTextIn.value = true;
-  }, 100);
+    imageIn.value = true;
+  }, timeDelay);
 };
 
-const sectionActivated = computed(() => {
-  return props.sectionActivate;
+onMounted(() => {
+  heroSectionAnimation();
 });
-
-watch(
-  () => sectionActivated,
-  (newValue) => {
-    if (newValue) {
-      heroSectionAnimation();
-    }
-  },
-  {
-    deep: true,
-  },
-);
 </script>
 
 <style lang="scss" scoped>
