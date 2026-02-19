@@ -39,7 +39,7 @@ export const pageTransition: PageTransition = {
   init: (): void => {
     pageTransition.setup.mesh = pageTransition.addMeshRectangle(
       "curtain",
-      "rgb(191, 192, 178)",
+      "rgb(20, 20, 20)",
     );
     Canvas3.addAnimationToRender("pageTransition", pageTransition.render);
     pageTransition.reset();
