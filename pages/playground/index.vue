@@ -69,6 +69,7 @@
   </div>
 </template>
 <script setup>
+import { pageTransition } from "~/utils/animations/pageTransition";
 
 useSeoMeta({
   title: "Canvas3 - Playground",
@@ -77,12 +78,19 @@ useSeoMeta({
   ogDescription: "Canvas3 - Playground",
 });
 
+const navigationStore = useNavigationStore();
+
 const ethBlockImageAniIn = ref(false);
 
 onMounted(() => {
-  ethBlockImageAniIn.value = true;
-});
+  const timeDelay = navigationStore.webFirstLoadDone
+    ? pageTransition.setup.duration * 2500
+    : 100;
 
+  setTimeout(() => {
+    ethBlockImageAniIn.value = true;
+  }, timeDelay);
+});
 </script>
 <style lang="scss" scoped>
 .play-link {
