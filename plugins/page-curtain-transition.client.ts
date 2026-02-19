@@ -7,47 +7,47 @@ import { Canvas3 } from "#canvas3-nuxt/utils/canvas3/canvas3";
 //   waitForPageTransitionDone,
 // } from "~/utils/animations/pageTransition";
 // import { directorsOverlayHideOnPageChange } from "~/utils/animations/navigation";
-// import { setOutPromise } from "~/composables/useCurtainSync";
+import { setOutPromise } from "~/composables/useOutPromise";
 
 export default defineNuxtPlugin((nuxtApp) => {
   // const navigationStore = useNavigationStore();
   // const { $navigationAniToFinal } = nuxtApp;
 
   nuxtApp.hook("page:start", () => {
-    // const p = (async () => {
-    console.log("start transition");
-    // navigationStore.setPageTransitionInProgress(true);
+    const p = (async () => {
+      console.log("start transition");
+      // navigationStore.setPageTransitionInProgress(true);
 
-    Canvas3.setMeshPositionsUpdate(true);
+      Canvas3.setMeshPositionsUpdate(true);
 
-    // if (!navigationStore.navigationFinalLayout) {
-    //   navigationStore.toggleShowDirectors(false);
-    //   if (
-    //     $navigationAniToFinal &&
-    //     typeof $navigationAniToFinal.transformToFinal === "function"
-    //   ) {
-    //     await $navigationAniToFinal.transformToFinal(0.65);
-    //   }
-    // }
+      // if (!navigationStore.navigationFinalLayout) {
+      //   navigationStore.toggleShowDirectors(false);
+      //   if (
+      //     $navigationAniToFinal &&
+      //     typeof $navigationAniToFinal.transformToFinal === "function"
+      //   ) {
+      //     await $navigationAniToFinal.transformToFinal(0.65);
+      //   }
+      // }
 
-    // navigationStore.setNavTheme("greyDark", true);
+      // navigationStore.setNavTheme("greyDark", true);
 
-    // if (navigationStore.showDirectors) {
-    //   await directorsOverlayHideOnPageChange();
-    // }
+      // if (navigationStore.showDirectors) {
+      //   await directorsOverlayHideOnPageChange();
+      // }
 
-    // if (navigationStore.filmPlayerVimeoId) {
-    //   await transitionVideoPlayerAni(false);
-    // }
+      // if (navigationStore.filmPlayerVimeoId) {
+      //   await transitionVideoPlayerAni(false);
+      // }
 
-    // await pageTransition.start();
+      // await pageTransition.start();
 
-    Canvas3.scrollToTop(0);
+      Canvas3.scrollToTop(0);
 
-    // navigationStore.setFilmPlayerId("");
-    // navigationStore.setPageTransitionInProgress(false);
-    // })();
-    // setOutPromise(p);
+      // navigationStore.setFilmPlayerId("");
+      // navigationStore.setPageTransitionInProgress(false);
+    })();
+    setOutPromise(p);
   });
   nuxtApp.hook("page:finish", async () => {
     // navigationStore.setPageTransitionOverlayOutProgress(true);

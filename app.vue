@@ -9,7 +9,20 @@
     :canvas3options="Canvas3Options"
     :canvas3enabled="contentActive"
   >
-    <NuxtPage :page-active="contentActive" />
+    <NuxtPage
+      :page-active="contentActive"
+      :transition="{
+        name: 'curtain',
+        mode: 'out-in',
+        async onLeave(_el, done) {
+          try {
+            await waitOutDone(); // ⬅️ blocks until OUT finishes
+          } finally {
+            done();
+          }
+        },
+      }"
+    />
   </NuxtLayout>
   <Cursor />
   <img
@@ -23,6 +36,7 @@
 import { Canvas3Options } from "~/constants/canvas3-options";
 import WelcomeScreen from "~/components/common/WelcomeScreen.vue";
 import Cursor from "~/components/common/Cursor.vue";
+import { waitOutDone } from "~/composables/useOutPromise";
 
 useHead({
   htmlAttrs: {

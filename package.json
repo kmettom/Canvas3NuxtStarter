@@ -25,6 +25,7 @@
     "@nuxtjs/style-resources": "^1.2.1",
     "@pinia/nuxt": "^0.9.0",
     "@types/big.js": "^6.2.2",
+    "@types/three": "^0.183.0",
     "@vercel/speed-insights": "^1.2.0",
     "@vueuse/core": "^12.4.0",
     "big.js": "^7.0.1",
