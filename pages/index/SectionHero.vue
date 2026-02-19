@@ -7,13 +7,13 @@
     </Container>
     <div class="hero-bg-image">
       <img
-        :src="heroImage"
-        alt="background wave on beach"
         v-canvas3-image="{
           loadStrategy: 'eager',
           uniforms: imageUniforms,
           shaderName: 'hero',
         }"
+        :src="heroImage"
+        alt="background wave on beach"
       />
     </div>
   </div>
@@ -23,7 +23,6 @@
 import Container from "~/components/common/Container.vue";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-
 
 gsap.registerPlugin(SplitText);
 
