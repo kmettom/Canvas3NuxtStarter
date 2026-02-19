@@ -71,8 +71,11 @@ const welcomeInit = ref(false);
 const displayStore = useDisplayStore();
 
 const onCanvas3Ready = () => {
-  console.log("onCanvas3Ready");
   pageTransition.init();
+  setTimeout(() => {
+    //TODO: temporary delay as there is no welcome animation
+    navigationStore.setWebFirstLoadDone(true);
+  }, 1000);
 };
 
 onMounted(() => {

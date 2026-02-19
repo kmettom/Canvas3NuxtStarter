@@ -23,12 +23,12 @@
 import Container from "~/components/common/Container.vue";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { pageTransition } from "~/utils/animations/pageTransition";
 
 gsap.registerPlugin(SplitText);
 
 const heroImage = "/images/08.jpg";
 
-const mainTextIn = ref(false);
 const imageIn = ref(false);
 
 const imageUniforms = computed(() => {
@@ -37,11 +37,16 @@ const imageUniforms = computed(() => {
   };
 });
 
+const navigationStore = useNavigationStore();
+
 const heroSectionAnimation = () => {
+  const timeDelay = navigationStore.webFirstLoadDone
+    ? pageTransition.setup.duration * 2500
+    : 100;
+
   setTimeout(() => {
-    mainTextIn.value = true;
     imageIn.value = true;
-  }, 100);
+  }, timeDelay);
 };
 
 onMounted(() => {

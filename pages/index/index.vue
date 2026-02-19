@@ -66,10 +66,6 @@ useSeoMeta({
 
 const navigationStore = useNavigationStore();
 
-const props = defineProps({
-  pageActive: Boolean,
-});
-
 const setSectionActivationOptions = (
   sectionId: string,
   sectionContrast: boolean,

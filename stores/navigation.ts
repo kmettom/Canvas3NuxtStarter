@@ -8,6 +8,7 @@ export const useNavigationStore = defineStore("navigationStore", {
     navVisible: true,
     navContrastSwitched: false,
     pageTransitionInProgress: false,
+    webFirstLoadDone: false,
     navigationItems: [
       { name: "Home", id: "home" },
       { name: "About", id: "about" },
@@ -27,8 +28,11 @@ export const useNavigationStore = defineStore("navigationStore", {
     setPageTransitionInProgress(status: boolean) {
       this.pageTransitionInProgress = status;
     },
-    setCanvas3zIndex(zIndex) {
+    setCanvas3zIndex(zIndex: number) {
       this.canvas3zIndex = zIndex;
+    },
+    setWebFirstLoadDone(status: boolean) {
+      this.webFirstLoadDone = status;
     },
   },
 });
