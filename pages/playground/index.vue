@@ -32,19 +32,43 @@
         <div class="play-1">
           <h3 class="body-l">Ethereum network</h3>
           <p class="body-s">Ethereum network listener interaction</p>
-          <!--          <Canvas3Image-->
-          <!--            :options="{-->
-          <!--              src: '/images/play/play1.jpg',-->
-          <!--              alt: '',-->
-          <!--            }"-->
-          <!--          />-->
+          <img
+            v-canvas3-image="{
+              loadStrategy: 'preload',
+              uniforms: {
+                uAniInImage: {
+                  value: ethBlockImageAniIn ? 1 : 0,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+                uBlockColor: {
+                  value: 0.5,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+                uBlocks: {
+                  value: 150,
+                  duration: 0,
+                  ease: 'linear',
+                },
+                uHover: {
+                  value: 1,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+              },
+              shaderName: 'playEthBlock',
+            }"
+            :src="`/images/01.jpg`"
+            alt=""
+            class="play-block-image"
+          />
         </div>
       </nuxt-link>
     </div>
   </div>
 </template>
 <script setup>
-// import { onMounted, watch } from 'vue';
 
 useSeoMeta({
   title: "Canvas3 - Playground",
@@ -52,29 +76,13 @@ useSeoMeta({
   description: "Canvas3 - Playground",
   ogDescription: "Canvas3 - Playground",
 });
-//
-// const props = defineProps({
-//   pageActive: Boolean,
-// });
-//
-// const pageAnimateIn = () => {
-//   // console.log('Example method - animate page transition');
-// };
-//
-// onMounted(() => {
-//   if (props.pageActive) {
-//     pageAnimateIn();
-//   }
-// });
-//
-// watch(
-//   () => props.pageActive,
-//   (newValue) => {
-//     if (newValue) {
-//       pageAnimateIn();
-//     }
-//   },
-// );
+
+const ethBlockImageAniIn = ref(false);
+
+onMounted(() => {
+  ethBlockImageAniIn.value = true;
+});
+
 </script>
 <style lang="scss" scoped>
 .play-link {
@@ -107,5 +115,8 @@ useSeoMeta({
   @include respond-width($w-xs) {
     margin-left: 10px;
   }
+}
+.play-block-image {
+  width: 450px;
 }
 </style>
