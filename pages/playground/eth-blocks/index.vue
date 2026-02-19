@@ -143,7 +143,14 @@ const averageBlockTime = ref(defaultBlockTimeAverage);
 
 let unwatchBlocks: () => void;
 
-const tlInProgress = gsap.timeline({});
+const tlInProgress = gsap.timeline({
+  onStart: () => {
+    Canvas3.setMeshPositionsUpdate(true);
+  },
+  onComplete: () => {
+    Canvas3.setMeshPositionsUpdate(false);
+  },
+});
 
 const animateNewBlockInProgress = () => {
   tlInProgress.clear();
@@ -245,7 +252,6 @@ const getLastBlock = async () => {
 };
 
 onMounted(async () => {
-  Canvas3.setMeshPositionsUpdate(true);
   await getLastBlock();
   addBlockListener();
 });

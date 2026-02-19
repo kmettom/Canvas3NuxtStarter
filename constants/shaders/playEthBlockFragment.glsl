@@ -77,12 +77,9 @@ void main() {
     float rnd = hash21(tileId);
 
     // reveal timing:
-    // mostly left->right (x01), plus small random offset
-    float jitter = (rnd - 0.5) * 0.15;     // tweak 0.15 for more/less chaos
-    float t0 = clamp(x01 + jitter, 0.0, 1.0);
-
-    // tile “fade width” (how soft the tile appears). smaller = snappier tiles.
+    float jitter = (rnd - 0.5) * 0.15;
     float w = 0.10;
+    float t0 = clamp(x01 + jitter, 0.0, 1.0 - w);
 
     // progress drives the reveal
     float tileMask = smoothstep(t0, t0 + w, clamp(uAniInImage, 0.0, 1.0));
