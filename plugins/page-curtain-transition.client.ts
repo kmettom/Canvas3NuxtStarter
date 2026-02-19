@@ -12,7 +12,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook("page:start", () => {
     const p = (async () => {
       navigationStore.setPageTransitionInProgress(true);
-
+      navigationStore.setCanvas3zIndex(10);
       Canvas3.setMeshPositionsUpdate(true);
       await pageTransition.start();
       Canvas3.scrollToTop(0);
@@ -20,8 +20,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     setOutPromise(p);
   });
   nuxtApp.hook("page:finish", async () => {
-    await waitForPageTransitionDone();
+    // await waitForPageTransitionDone();
     await pageTransition.end();
     Canvas3.setMeshPositionsUpdate(false);
+    navigationStore.setCanvas3zIndex(-1);
   });
 });

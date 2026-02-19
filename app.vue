@@ -6,7 +6,7 @@
   <CommonNavigation />
   <NuxtLayout
     :name="layout"
-    :canvas3options="Canvas3Options"
+    :canvas3options="Canvas3OptionsComputed"
     :canvas3enabled="contentActive"
     @canvas3-ready="onCanvas3Ready"
   >
@@ -53,6 +53,15 @@ useHead({
       `,
     },
   ],
+});
+
+const navigationStore = useNavigationStore();
+
+const Canvas3OptionsComputed = computed(() => {
+  return {
+    ...Canvas3Options,
+    canvasElement: { zIndex: navigationStore.canvas3zIndex },
+  };
 });
 
 const layout = "canvas3";

@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 
 export const useNavigationStore = defineStore("navigationStore", {
   state: () => ({
+    canvas3zIndex: -1,
     canvasInitiated: false,
     activeNavItem: "home",
     navVisible: true,
@@ -25,6 +26,9 @@ export const useNavigationStore = defineStore("navigationStore", {
     },
     setPageTransitionInProgress(status: boolean) {
       this.pageTransitionInProgress = status;
+    },
+    setCanvas3zIndex(zIndex) {
+      this.canvas3zIndex = zIndex;
     },
   },
 });
