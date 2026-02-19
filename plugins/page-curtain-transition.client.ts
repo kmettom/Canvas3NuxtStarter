@@ -16,11 +16,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       Canvas3.setMeshPositionsUpdate(true);
       await pageTransition.start();
       Canvas3.scrollToTop(0);
+      navigationStore.setPageTransitionInProgress(false);
     })();
     setOutPromise(p);
   });
   nuxtApp.hook("page:finish", async () => {
-    // await waitForPageTransitionDone();
+    await waitForPageTransitionDone();
     await pageTransition.end();
     Canvas3.setMeshPositionsUpdate(false);
     navigationStore.setCanvas3zIndex(-1);

@@ -5,7 +5,7 @@
       class="page-section"
       data-nav-id="home"
     >
-      <SectionHero :section-activate="props.pageActive" />
+      <SectionHero />
     </div>
     <div
       v-action-on-scroll="setSectionActivationOptions('about', false)"
