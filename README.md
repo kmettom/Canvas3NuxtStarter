@@ -114,7 +114,7 @@ Example:
          @mouseover="imageHover=true"
          @mouseleave="imageHover=false"
     >
-      <Canvas3Image :uniforms="{ uHover: {value: imageHover ? 1:0, duration: 0.5 }}" :shader="'example1'" :srcLink="'img/example1.jpg'" />
+      <Canvas3Image :uniforms="{ uHover: {value: imageHover ? 1:0, duration: 0.5 }}" :shader="'example1'" :srcLink="'img/example1.JPG'" />
     </div>
 ```
 

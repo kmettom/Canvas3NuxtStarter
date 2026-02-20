@@ -8,7 +8,7 @@
       <!--          <p class="body-s">Exploring shaders and 3d geometry equations</p>-->
       <!--          <Canvas3Image-->
       <!--            :options="{-->
-      <!--              src: 'images/play/play1.jpg',-->
+      <!--              src: 'images/play/play1.JPG',-->
       <!--              alt: '',-->
       <!--              shaderName: 'play1',-->
       <!--            }"-->
@@ -21,7 +21,7 @@
       <!--          <p class="body-s">Infinite scroll playground</p>-->
       <!--          <Canvas3Image-->
       <!--            :options="{-->
-      <!--              src: 'images/play/play1.jpg',-->
+      <!--              src: 'images/play/play1.JPG',-->
       <!--              alt: '',-->
       <!--              shaderName: 'play1',-->
       <!--            }"-->
@@ -66,7 +66,7 @@
               },
               shaderName: 'playEthBlock',
             }"
-            :src="`/images/01.jpg`"
+            :src="`/images/01.JPG`"
             alt=""
             class="play-block-image"
           />

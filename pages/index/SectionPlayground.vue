@@ -49,7 +49,7 @@
           },
           shaderName: 'playEthBlock',
         }"
-        :src="`/images/01.jpg`"
+        :src="`/images/01.JPG`"
         alt=""
         class="play-block-image"
       />

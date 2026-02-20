@@ -83,7 +83,7 @@
             },
             shaderName: 'playEthBlock',
           }"
-          :src="`/images/${block.imageId}.jpg`"
+          :src="`/images/${block.imageId}.JPG`"
           alt=""
           class="eth-block-image"
         />

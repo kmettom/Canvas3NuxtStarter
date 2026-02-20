@@ -15,7 +15,7 @@
               v-canvas3-image="{
                 shaderName: 'example1',
               }"
-              :src="'/images/01.jpg'"
+              :src="'/images/01.JPG'"
               alt="building"
             />
             <CodeSnippet>
@@ -48,7 +48,7 @@
                 },
                 shaderName: 'example2',
               }"
-              :src="'/images/02.jpg'"
+              :src="'/images/02.JPG'"
               alt="building"
             />
             <CodeSnippet>
@@ -102,7 +102,7 @@
                     },
                     shaderName: 'example3',
                   }"
-                  :src="'/images/03.jpg'"
+                  :src="'/images/03.JPG'"
                   alt="sky"
                 />
                 <CodeSnippet>
@@ -143,7 +143,7 @@
                     uAniInExample4: { duration: 1 },
                   },
                 }"
-                :src="'/images/04.jpg'"
+                :src="'/images/04.JPG'"
                 alt="sky"
               />
               <CodeSnippet>
@@ -173,7 +173,7 @@
                     loadStrategy: 'eager',
                     uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
                   }"
-                  :src="'/images/01.jpg'"
+                  :src="'/images/01.JPG'"
                   alt="building"
                 />
                 <CodeSnippet>
