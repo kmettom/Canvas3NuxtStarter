@@ -12,7 +12,7 @@
           uniforms: imageUniforms,
           shaderName: 'hero',
         }"
-        :src="heroImage"
+        :src="'/images/08.JPG'"
         alt="background wave on beach"
       />
     </div>
@@ -26,8 +26,6 @@ import { SplitText } from "gsap/SplitText";
 import { pageTransition } from "~/utils/animations/pageTransition";
 
 gsap.registerPlugin(SplitText);
-
-const heroImage = "/images/08.jpg";
 
 const imageIn = ref(false);
 
