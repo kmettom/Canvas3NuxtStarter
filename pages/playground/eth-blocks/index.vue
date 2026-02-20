@@ -247,21 +247,16 @@ const getLastBlocks = async () => {
   const latestBlockNumber = await client.getBlockNumber();
 
   const blockNumbers = Array.from(
-      { length: NUM_LAST_BLOCKS },
-      (_, i) => latestBlockNumber - BigInt(i),
+    { length: NUM_LAST_BLOCKS },
+    (_, i) => latestBlockNumber - BigInt(i),
   );
 
   const blocksResult = await Promise.all(
-      blockNumbers.map((blockNumber) =>
-          client.getBlock({ blockNumber }),
-      ),
+    blockNumbers.map((blockNumber) => client.getBlock({ blockNumber })),
   );
 
   blocksResult.forEach((block) => {
-    blocks.value.set(
-        block.timestamp.toString(),
-        generateBlockData(block),
-    );
+    blocks.value.set(block.timestamp.toString(), generateBlockData(block));
   });
 
   await nextTick();
