@@ -181,7 +181,13 @@ const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
   }
 };
 
-const tlNewBlockAniIn = gsap.timeline({});
+const tlNewBlockAniIn = gsap.timeline({
+  onComplete: () => {
+    // console.log("tlNewBlockAniIn onComplete")
+    // animateNewBlockInProgress();
+  },
+});
+
 const animateNewBlockAdded = (
   target: Element | ComponentPublicInstance | null,
   blockTimestamp: string,
@@ -217,9 +223,7 @@ const animateNewBlockAdded = (
   );
   aniContentValues(valuesElementsIndex1);
 
-  tlNewBlockAniIn.call(() => {
-    animateNewBlockInProgress();
-  });
+  animateNewBlockInProgress();
 
   tlNewBlockAniIn.play();
   el.classList.add("block-added");
@@ -236,7 +240,6 @@ const addBlockListener = () => {
         unwatchBlocks();
         return;
       }
-      // animateNewBlockInProgress();
     },
   });
 };
@@ -279,12 +282,10 @@ onUnmounted(() => {
 }
 
 .block-in-progress-loader {
-  border: 4px solid grey;
-  height: 0;
+  height: 6px;
   width: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
+  background: var(--light-color);
+  position: relative;
 }
 
 .eth-block {
