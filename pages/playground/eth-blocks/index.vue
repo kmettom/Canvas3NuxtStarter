@@ -241,18 +241,29 @@ const addBlockListener = () => {
   });
 };
 
-const getLastBlock = async () => {
+const NUM_LAST_BLOCKS = 3;
+
+const getLastBlocks = async () => {
   const latestBlockNumber = await client.getBlockNumber();
-  const latestBlock = await client.getBlock({ blockNumber: latestBlockNumber });
-  blocks.value.set(
-    latestBlock.timestamp.toString(),
-    generateBlockData(latestBlock),
+
+  const blockNumbers = Array.from(
+    { length: NUM_LAST_BLOCKS },
+    (_, i) => latestBlockNumber - BigInt(i),
   );
+
+  const blocksResult = await Promise.all(
+    blockNumbers.map((blockNumber) => client.getBlock({ blockNumber })),
+  );
+
+  blocksResult.forEach((block) => {
+    blocks.value.set(block.timestamp.toString(), generateBlockData(block));
+  });
+
   await nextTick();
 };
 
 onMounted(async () => {
-  await getLastBlock();
+  await getLastBlocks();
   addBlockListener();
 });
 
