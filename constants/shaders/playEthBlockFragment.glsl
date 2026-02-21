@@ -15,7 +15,7 @@ uniform vec2 uTextureSize;
 // --- your color funcs ---
 vec3 blockRampColor(float t) {
     vec3 redColor  = vec3(82.0/255.0, 26.0/255.0, 12.0/255.0); // #521A0C
-    vec3 blueColor = vec3(0.0314, 0.0353, 0.1333);
+    vec3 blueColor = vec3(0.0745, 0.1216, 0.1569);
     vec3 neutral   = vec3(0.5);
 
     t = clamp(t, 0.0, 1.0);
