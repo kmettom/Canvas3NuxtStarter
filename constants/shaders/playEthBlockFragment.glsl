@@ -12,18 +12,23 @@ uniform float uBlockColor;
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 
-// --- your color funcs ---
 vec3 blockRampColor(float t) {
-    vec3 redColor  = vec3(82.0/255.0, 26.0/255.0, 12.0/255.0); // #521A0C
-    vec3 blueColor = vec3(0.0745, 0.1216, 0.1569);
-    vec3 neutral   = vec3(0.5);
+    vec3 red      = vec3(82.0 / 255.0, 26.0 / 255.0, 12.0 / 255.0); // #521A0C
+    vec3 blue     = vec3(0.0745, 0.1216, 0.1569);
+    vec3 neutral  = vec3(0.5);
+
+    vec3 lightRed  = mix(red, neutral, 0.5);
+    vec3 lightBlue = mix(blue, neutral, 0.5);
 
     t = clamp(t, 0.0, 1.0);
 
-    return (t < 0.5)
-    ? mix(redColor, neutral, t / 0.5)
-    : mix(neutral, blueColor, (t - 0.5) / 0.5);
+    if (t < 0.35) return red;
+    if (t < 0.45) return lightRed;
+    if (t < 0.55) return neutral;
+    if (t < 0.65) return lightBlue;
+    return blue;
 }
+
 
 vec3 applyColor(vec3 color) {
     vec3 tint = blockRampColor(uBlockColor);
