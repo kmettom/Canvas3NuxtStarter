@@ -58,7 +58,6 @@
         <!--        src: '/images/play/playeth-example-block.png',-->
         <img
           v-canvas3-image="{
-            loadStrategy: 'preload',
             uniforms: {
               uAniInImage: {
                 value: block.blockAniIn ? 1 : 0,
@@ -66,7 +65,7 @@
                 ease: 'linear',
               },
               uBlockColor: {
-                value: block.blockGasTargetCoef,
+                value: block.blockGasTargetCoef ?? 0,
                 duration: 0.5,
                 ease: 'linear',
               },
