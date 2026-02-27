@@ -44,7 +44,11 @@
             <img
               v-canvas3-image="{
                 uniforms: {
-                  uHover: { value: example1Hover ? 1 : 0, duration: 0 },
+                  uHover: {
+                    value: example1Hover ? 1 : 0,
+                    duration: 0,
+                    ease: 'linear',
+                  },
                 },
                 shaderName: 'example2',
               }"
@@ -98,7 +102,11 @@
                 <img
                   v-canvas3-image="{
                     uniforms: {
-                      uScrollSpeed: { value: example3Speed, duration: 0 },
+                      uScrollSpeed: {
+                        value: example3Speed,
+                        duration: 0,
+                        ease: 'linear',
+                      },
                     },
                     shaderName: 'example3',
                   }"
@@ -120,7 +128,7 @@
               v-action-on-scroll="{
                 activeRange: 0.7,
                 activateOnce: false,
-                scrollSpeedSetTo: { value: 0.3 },
+                scrollSpeedSetTo: { value: 0.3, duration: 0 },
                 bidirectionalActivation: true,
                 activateCallback: (item: ScrollActionBinding) => {
                   const el = item.elNode.querySelector('.example-activate-txt');
@@ -137,10 +145,9 @@
               </p>
               <img
                 v-canvas3-image="{
-                  loadStrategy: 'eager',
                   shaderName: 'example4',
                   activateMeshUniforms: {
-                    uAniInExample4: { duration: 1 },
+                    uAniInExample4: { duration: 0, value: 1, ease: 'linear' },
                   },
                 }"
                 :src="'/images/04.JPG'"
@@ -162,7 +169,11 @@
               id="fixedParent"
               v-action-on-scroll="{
                 activeRange: 0.9,
-                fixToParentId: 'fixedParent',
+                fixToParent: {
+                  containerId: 'fixedParent',
+                  fixPosition: 0,
+                  margin: 0,
+                },
               }"
               class="fixed-scroll-example example-wrapper"
             >
@@ -170,8 +181,13 @@
                 <p class="example-txt">Fix element to Parent</p>
                 <img
                   v-canvas3-image="{
-                    loadStrategy: 'eager',
-                    uHover: { value: example2Hover ? 1 : 0, duration: 0.55 },
+                    uniforms: {
+                      uHover: {
+                        value: example2Hover ? 1 : 0,
+                        duration: 0.55,
+                        ease: 'linear',
+                      },
+                    },
                   }"
                   :src="'/images/01.JPG'"
                   alt="building"
