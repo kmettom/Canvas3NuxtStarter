@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import { onMounted, nextTick } from "vue";
 import { createPublicClient, http } from "viem";
-import {mainnet} from "viem/chains";
+import {sepolia} from "viem/chains";
 import {
   formatEth2,
   generateBlockData,
@@ -132,7 +132,7 @@ const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
 };
 
 const client = createPublicClient({
-  chain: mainnet,
+  chain: sepolia,
   transport: http(),
 });
 
