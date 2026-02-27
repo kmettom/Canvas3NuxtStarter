@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import { onMounted, nextTick } from "vue";
 import { createPublicClient, http } from "viem";
-import {sepolia} from "viem/chains";
+import { sepolia } from "viem/chains";
 import {
   formatEth2,
   generateBlockData,
