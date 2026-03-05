@@ -2,6 +2,12 @@ import { defineNuxtConfig } from "nuxt/config";
 import glsl from "vite-plugin-glsl";
 
 export default defineNuxtConfig({
+  runtimeConfig: {
+    alchemyToken: "nNWb6lDNz47nmopBgKXeO", // overridden by NUXT_ALCHEMY_TOKEN env var
+    public: {
+      // nothing here — keep the token private
+    },
+  },
   devtools: { enabled: true },
   routeRules: {},
   modules: [

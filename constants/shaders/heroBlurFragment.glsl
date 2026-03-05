@@ -5,6 +5,8 @@ uniform sampler2D uImage;
 
 uniform float uHover;
 uniform vec2 uMouse;
+uniform vec2 uMouseMovement;
+
 uniform float uAniInImage;
 
 uniform vec2 uMeshSize; // The size of the mesh (width, height)

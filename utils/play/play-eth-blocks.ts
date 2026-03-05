@@ -105,3 +105,21 @@ export const formatEth2 = (wei: bigint) => {
   }
   return Number(numString).toFixed(nonZeroIndex);
 };
+
+export const deserializeBlock = (block: any): Block => ({
+  ...block,
+  number: block.number != null ? BigInt(block.number) : null,
+  timestamp: BigInt(block.timestamp),
+  gasLimit: BigInt(block.gasLimit),
+  gasUsed: BigInt(block.gasUsed),
+  baseFeePerGas:
+    block.baseFeePerGas != null ? BigInt(block.baseFeePerGas) : null,
+  difficulty: BigInt(block.difficulty),
+  totalDifficulty:
+    block.totalDifficulty != null ? BigInt(block.totalDifficulty) : null,
+  size: BigInt(block.size),
+  withdrawals: block.withdrawals?.map((w: any) => ({
+    ...w,
+    amount: BigInt(w.amount),
+  })),
+});

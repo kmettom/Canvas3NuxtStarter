@@ -92,12 +92,11 @@
 </template>
 <script setup lang="ts">
 import { onMounted, nextTick } from "vue";
-import { createPublicClient, http } from "viem";
-import { sepolia } from "viem/chains";
 import {
   formatEth2,
   generateBlockData,
   type BlockExtended,
+  deserializeBlock,
 } from "~/utils/play/play-eth-blocks";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
@@ -131,16 +130,9 @@ const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
   );
 };
 
-const client = createPublicClient({
-  chain: sepolia,
-  transport: http(),
-});
-
 const blocks = ref<Map<string, BlockExtended>>(new Map());
 const defaultBlockTimeAverage = 15;
 const averageBlockTime = ref(defaultBlockTimeAverage);
-
-let unwatchBlocks: () => void;
 
 const tlInProgress = gsap.timeline({
   onStart: () => {
@@ -182,7 +174,6 @@ const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
 
 const tlNewBlockAniIn = gsap.timeline({
   onComplete: () => {
-    // console.log("tlNewBlockAniIn onComplete")
     // animateNewBlockInProgress();
   },
 });
@@ -228,51 +219,33 @@ const animateNewBlockAdded = (
   el.classList.add("block-added");
 };
 
-const addBlockListener = () => {
-  unwatchBlocks = client.watchBlocks({
-    onBlock: async (block) => {
-      if (blocks.value.has(block.timestamp.toString())) return;
-      blocks.value.set(block.timestamp.toString(), generateBlockData(block));
-      await nextTick();
-      //TODO: remove? or set to 100?
-      if (blocks.value.size > maxBlocks) {
-        unwatchBlocks();
-        return;
-      }
-    },
-  });
-};
-
-const NUM_LAST_BLOCKS = 3;
-
-const getLastBlocks = async () => {
-  const latestBlockNumber = await client.getBlockNumber();
-
-  const blockNumbers = Array.from(
-    { length: NUM_LAST_BLOCKS },
-    (_, i) => latestBlockNumber - BigInt(i),
-  );
-
-  const blocksResult = await Promise.all(
-    blockNumbers.map((blockNumber) => client.getBlock({ blockNumber })),
-  );
-
-  blocksResult.forEach((block) => {
-    blocks.value.set(block.timestamp.toString(), generateBlockData(block));
-  });
-
-  await nextTick();
-};
-
-onMounted(async () => {
-  await getLastBlocks();
-  addBlockListener();
+const { data: initialBlocks } = await useFetch(
+  "/api/playground/eth-blocks/latest",
+);
+initialBlocks.value?.forEach((raw: BlockExtended) => {
+  const block = deserializeBlock(raw);
+  blocks.value.set(block.timestamp.toString(), generateBlockData(block));
 });
 
-onUnmounted(() => {
-  if (unwatchBlocks) {
-    unwatchBlocks();
-  }
+let eventSource: EventSource;
+
+const addBlockListener = () => {
+  eventSource = new EventSource("/api/playground/eth-blocks/watch");
+  eventSource.onmessage = async ({ data }) => {
+    const block = deserializeBlock(JSON.parse(data));
+    if (blocks.value.has(block.timestamp.toString())) return;
+    blocks.value.set(block.timestamp.toString(), generateBlockData(block));
+    await nextTick();
+    if (blocks.value.size > maxBlocks) {
+      eventSource.close();
+    }
+  };
+};
+
+onUnmounted(() => eventSource?.close());
+
+onMounted(async () => {
+  addBlockListener();
 });
 </script>
 <style lang="scss" scoped>
