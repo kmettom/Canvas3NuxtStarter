@@ -61,12 +61,12 @@
             uniforms: {
               uAniInImage: {
                 value: block.blockAniIn ? 1 : 0,
-                duration: 0.75,
+                duration: 1.75,
                 ease: 'linear',
               },
               uBlockColor: {
                 value: block.blockGasTargetCoef ?? 0,
-                duration: 0.5,
+                duration: 0.75,
                 ease: 'linear',
               },
               uBlocks: {
