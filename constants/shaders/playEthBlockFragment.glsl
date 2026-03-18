@@ -13,8 +13,8 @@ uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 
 vec3 blockRampColor(float t) {
-    vec3 red      = vec3(82.0 / 255.0, 26.0 / 255.0, 12.0 / 255.0); // #521A0C
-    vec3 blue     = vec3(0.0745, 0.1216, 0.1569);
+    vec3 red      = vec3(0.5); // #521A0C
+    vec3 blue     = vec3(0.5);
     vec3 neutral  = vec3(0.5);
 
     vec3 lightRed  = mix(red, neutral, 0.5);

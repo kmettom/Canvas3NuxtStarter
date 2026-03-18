@@ -247,6 +247,11 @@ onUnmounted(() => eventSource?.close());
 onMounted(async () => {
   addBlockListener();
 });
+
+//https://www.shadertoy.com/view/wccSDf
+// https://www.shadertoy.com/view/wccSDf
+//     https://www.shadertoy.com/view/3cdXDX
+//         https://www.shadertoy.com/view/tfyXRz
 </script>
 <style lang="scss" scoped>
 .eth-blocks-page {
