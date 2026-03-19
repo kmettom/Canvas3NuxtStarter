@@ -13,49 +13,54 @@
         <div class="content-wrapper">
           <div class="content-row">
             <div class="content-block">
-              <span class="content-title">Transactions:</span>
-              <span class="content-value ani-index-0">{{
-                block.transactions.length
-              }}</span>
-            </div>
-            <div class="content-block">
-              <span class="content-title">Gas used:</span>
-              <span class="content-value ani-index-0">{{
-                block.blockGasUsedPercent
-              }}</span>
-            </div>
-            <div class="content-block">
-              <span class="content-title">Gas target:</span>
-              <span class="content-value ani-index-0">{{
-                block.blockGasTargetPercent
-              }}</span>
+              <div>
+                <div class="content-title">Transactions:</div>
+                <div class="content-value ani-index-0 eth-large-text">
+                  {{ block.transactions.length }}
+                </div>
+              </div>
+              <div>
+                <div>Gas:</div>
+                <div class="content-block">
+                  <div class="gas-chart">Chart</div>
+                  <div class="gas-stats">
+                    <div class="content-title">
+                      Gas used: {{ block.blockGasUsedPercent }}
+                    </div>
+                    <div class="content-title">
+                      Gas target: {{ block.blockGasTargetPercent }}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="content-row">
-            <div v-if="block.blockETHBurned" class="content-block">
-              <span class="content-title">Burned</span>
-              <span class="content-value ani-index-0">
-                {{ formatEth2(block.blockETHBurned) }}</span
-              >
-              <span class="content-value ani-index-1">ETH</span>
-            </div>
-            <div v-if="block.blockWithdrawalsSum" class="content-block">
-              <span class="content-title">Withdrawed:</span>
-              <span class="content-value ani-index-0">
-                {{ formatEth2(block.blockWithdrawalsSum) }}</span
-              >
-              <span class="content-value ani-index-1">ETH</span>
-            </div>
-            <div v-if="block.blockNetIssuanceETH" class="content-block">
-              <span class="content-title">Supply Delta Δ:</span>
-              <span class="content-value ani-index-0">
-                {{ formatEth2(block.blockNetIssuanceETH) }}</span
-              >
-              <span class="content-value ani-index-1">ETH</span>
+            <div class="content-block">
+              <div v-if="block.blockETHBurned">
+                <span class="content-title">Burned</span>
+                <span class="content-value ani-index-0">
+                  {{ formatEth2(block.blockETHBurned) }}</span
+                >
+                <span class="content-value ani-index-1">ETH</span>
+              </div>
+              <div v-if="block.blockWithdrawalsSum">
+                <span class="content-title">Withdrawed:</span>
+                <span class="content-value ani-index-0">
+                  {{ formatEth2(block.blockWithdrawalsSum) }}</span
+                >
+                <span class="content-value ani-index-1">ETH</span>
+              </div>
+              <div v-if="block.blockNetIssuanceETH">
+                <span class="content-title">Supply Delta Δ:</span>
+                <span class="content-value ani-index-0">
+                  {{ formatEth2(block.blockNetIssuanceETH) }}</span
+                >
+                <span class="content-value ani-index-1">ETH</span>
+              </div>
             </div>
           </div>
         </div>
-        <!--        src: '/images/play/playeth-example-block.png',-->
         <img
           v-canvas3-image="{
             uniforms: {
@@ -112,11 +117,11 @@ const blocksToRender = computed<BlockExtended[]>(() => {
 });
 
 const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
-  const target = event.target as Element;
-  const titles = target.querySelectorAll(".content-title");
-  if (titles.length < 1) return;
+  // const target = event.target as Element;
+  // const titles = target.querySelectorAll(".content-title");
+  // if (titles.length < 1) return;
   const tl = gsap.timeline({});
-  tl.to(titles, { opacity: status ? 1 : 0 });
+  // tl.to(titles, { opacity: status ? 1 : 0 });
 
   tl.call(
     () => {
@@ -254,8 +259,15 @@ onMounted(async () => {
 //         https://www.shadertoy.com/view/tfyXRz
 </script>
 <style lang="scss" scoped>
+.eth-base-text {
+}
+
+.eth-large-text {
+  font-size: 35px;
+}
+
 .eth-blocks-page {
-  padding-top: 100px;
+  padding-top: 25%;
 }
 
 .block-in-progress-loader {
@@ -269,8 +281,12 @@ onMounted(async () => {
   overflow: hidden;
   height: 0;
   width: 100%;
-  display: inline-block;
+  display: block;
   position: relative;
+  max-width: 423px;
+  margin: 20px auto;
+  border: 1px solid var(--light-color);
+  border-radius: 10px;
 
   .content-wrapper {
     z-index: 10;
@@ -299,7 +315,6 @@ onMounted(async () => {
   }
 
   .content-title {
-    opacity: 0;
     padding-right: 10px;
   }
 

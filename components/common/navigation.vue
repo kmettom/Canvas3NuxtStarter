@@ -15,24 +15,24 @@
         </span>
       </div>
     </nav>
-    <nav v-else class="navigation-items">
-      <NuxtLink
-        :ref="navItemRefs.set"
-        href="/"
-        class="navigation-item nav-play nav-link-home"
-        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-home')"
-      >
-        <span> Home </span>
-      </NuxtLink>
-      <NuxtLink
-        :ref="navItemRefs.set"
-        href="/playground"
-        class="navigation-item nav-play nav-link-play"
-        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-play')"
-      >
-        <span> Playground </span>
-      </NuxtLink>
-    </nav>
+    <!--    <nav v-else class="navigation-items">-->
+    <!--      <NuxtLink-->
+    <!--        :ref="navItemRefs.set"-->
+    <!--        href="/"-->
+    <!--        class="navigation-item nav-play nav-link-home"-->
+    <!--        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-home')"-->
+    <!--      >-->
+    <!--        <span> Home </span>-->
+    <!--      </NuxtLink>-->
+    <!--      <NuxtLink-->
+    <!--        :ref="navItemRefs.set"-->
+    <!--        href="/playground"-->
+    <!--        class="navigation-item nav-play nav-link-play"-->
+    <!--        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-play')"-->
+    <!--      >-->
+    <!--        <span> Playground </span>-->
+    <!--      </NuxtLink>-->
+    <!--    </nav>-->
   </div>
 </template>
 <script setup lang="ts">
