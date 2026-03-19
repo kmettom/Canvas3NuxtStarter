@@ -1,5 +1,51 @@
 <template>
   <div class="eth-blocks-page page-container">
+    <div
+      id="ethBGWrapper"
+      v-action-on-scroll="{
+        activeRange: 0.9,
+        fixToParent: {
+          containerId: 'ethBGWrapper',
+          fixPosition: 0,
+          margin: 0,
+        },
+      }"
+      class="eth-bg-wrapper"
+    >
+      <div class="eth-bg-image-holder">
+        <img
+          v-canvas3-image="{
+            uniforms: {
+              uAniInImage: {
+                value: 1,
+                duration: 1.75,
+                ease: 'linear',
+              },
+              uBlockColor: {
+                value: 0.5,
+                duration: 0.75,
+                ease: 'linear',
+              },
+              uBlocks: {
+                value: 100,
+                duration: 0,
+                ease: 'linear',
+              },
+              uHover: {
+                value: 0,
+                duration: 0,
+                ease: 'linear',
+              },
+            },
+            shaderName: 'playEthBlock',
+          }"
+          :src="`/images/${'00'}.png`"
+          alt=""
+          class="eth-bg-image"
+        />
+      </div>
+    </div>
+
     <div class="block-in-progress-loader" />
     <div class="eth-blocks">
       <div
@@ -61,36 +107,36 @@
             </div>
           </div>
         </div>
-        <img
-          v-canvas3-image="{
-            uniforms: {
-              uAniInImage: {
-                value: block.blockAniIn ? 1 : 0,
-                duration: 1.75,
-                ease: 'linear',
-              },
-              uBlockColor: {
-                value: block.blockGasTargetCoef ?? 0,
-                duration: 0.75,
-                ease: 'linear',
-              },
-              uBlocks: {
-                value: block.transactions.length,
-                duration: 0,
-                ease: 'linear',
-              },
-              uHover: {
-                value: block.blockHovered ? 1 : 0,
-                duration: 0.5,
-                ease: 'linear',
-              },
-            },
-            shaderName: 'playEthBlock',
-          }"
-          :src="`/images/${block.imageId}.JPG`"
-          alt=""
-          class="eth-block-image"
-        />
+        <!--        <img-->
+        <!--          v-canvas3-image="{-->
+        <!--            uniforms: {-->
+        <!--              uAniInImage: {-->
+        <!--                value: block.blockAniIn ? 1 : 0,-->
+        <!--                duration: 1.75,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--              uBlockColor: {-->
+        <!--                value: block.blockGasTargetCoef ?? 0,-->
+        <!--                duration: 0.75,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--              uBlocks: {-->
+        <!--                value: block.transactions.length,-->
+        <!--                duration: 0,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--              uHover: {-->
+        <!--                value: block.blockHovered ? 1 : 0,-->
+        <!--                duration: 0.5,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--            },-->
+        <!--            shaderName: 'playEthBlock',-->
+        <!--          }"-->
+        <!--          :src="`/images/${block.imageId}.JPG`"-->
+        <!--          alt=""-->
+        <!--          class="eth-block-image"-->
+        <!--        />-->
       </div>
     </div>
   </div>
@@ -260,6 +306,7 @@ onMounted(async () => {
 </script>
 <style lang="scss" scoped>
 .eth-base-text {
+  font-size: 12px;
 }
 
 .eth-large-text {
@@ -267,7 +314,30 @@ onMounted(async () => {
 }
 
 .eth-blocks-page {
+  position: relative;
   padding-top: 25%;
+  min-height: 100vh;
+}
+
+.eth-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid blue;
+
+  .eth-bg-image-holder {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    border: 1px solid red;
+  }
+  .eth-bg-image {
+    position: relative;
+    width: 100%;
+    //height: 100%;
+  }
 }
 
 .block-in-progress-loader {
