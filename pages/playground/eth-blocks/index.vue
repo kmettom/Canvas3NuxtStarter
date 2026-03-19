@@ -1,5 +1,5 @@
 <template>
-  <div class="eth-blocks-page page-container">
+  <div class="eth-blocks-page page-container eth-base-text">
     <div
       id="ethBGWrapper"
       v-action-on-scroll="{
@@ -74,49 +74,48 @@
               </div>
             </div>
             <div class="content-block">
-              <div>Gas:</div>
+              <div class="content-title gas">Gas:</div>
               <div class="gas-block">
                 <div class="gas-chart">
                   <svg
-                      width="46"
-                      height="46"
-                      viewBox="0 0 46 46"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                    width="46"
+                    height="46"
+                    viewBox="0 0 46 46"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
                     <!-- Static background ring (the 0.2 opacity path) -->
                     <circle
-                        cx="23"
-                        cy="23"
-                        r="16.327"
-                        stroke="white"
-                        stroke-opacity="0.2"
-                        stroke-width="5"
-                        fill="none"
+                      cx="23"
+                      cy="23"
+                      r="19.327"
+                      stroke="white"
+                      stroke-opacity="0.2"
+                      stroke-width="6"
+                      fill="none"
                     />
 
                     <!-- Progress ring — animate stroke-dashoffset with GSAP -->
                     <circle
-                        id="progress-ring"
-                        cx="23"
-                        cy="23"
-                        r="16.327"
-                        stroke="white"
-                        stroke-width="5"
-                        fill="none"
-                        stroke-linecap="butt"
-                        stroke-dasharray="102.6"
-                        stroke-dashoffset="50"
-                        transform="rotate(-90 23 23)"
+                      id="progress-ring"
+                      cx="23"
+                      cy="23"
+                      r="19.327"
+                      stroke="white"
+                      stroke-width="6"
+                      fill="none"
+                      stroke-linecap="butt"
+                      stroke-dasharray="102.6"
+                      stroke-dashoffset="50"
+                      transform="rotate(-90 23 23)"
                     />
                   </svg>
-
                 </div>
                 <div class="gas-stats">
-                  <div class="content-title">
+                  <div class="gas-stat-line">
                     Gas used: {{ block.blockGasUsedPercent }}
                   </div>
-                  <div class="content-title">
+                  <div class="">
                     Gas target: {{ block.blockGasTargetPercent }}
                   </div>
                 </div>
@@ -124,9 +123,9 @@
             </div>
             <!--            </div>-->
           </div>
-          <div class="content-row">
+          <div class="content-row row-wrap">
             <!--            <div>-->
-            <div class="content-block" v-if="block.blockETHBurned">
+            <div class="content-block supply" v-if="block.blockETHBurned">
               <svg
                 width="14"
                 height="16"
@@ -141,13 +140,13 @@
                   fill="white"
                 />
               </svg>
-              <span class="content-title"> Burned </span>
+              <span class="">Burned:</span>
               <span class="content-value ani-index-0">
                 {{ formatEth2(block.blockETHBurned) }}
               </span>
               <span class="content-value ani-index-1">ETH</span>
             </div>
-            <div class="content-block" v-if="block.blockWithdrawalsSum">
+            <div class="content-block supply" v-if="block.blockWithdrawalsSum">
               <svg
                 width="16"
                 height="16"
@@ -206,7 +205,7 @@
               </span>
               <span class="content-value ani-index-1">ETH</span>
             </div>
-            <div v-if="block.blockNetIssuanceETH">
+            <div class="content-block supply" v-if="block.blockNetIssuanceETH">
               <svg
                 width="16"
                 height="16"
@@ -228,7 +227,6 @@
                   </clipPath>
                 </defs>
               </svg>
-
               <span class="content-title">Supply Delta:</span>
               <span class="content-value ani-index-0">
                 {{ formatEth2(block.blockNetIssuanceETH) }}
@@ -411,7 +409,7 @@ onMounted(async () => {
 }
 
 .eth-large-text {
-  font-size: 45px;
+  font-size: 50px;
   font-weight: 900;
 }
 
@@ -428,18 +426,15 @@ onMounted(async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  border: 1px solid blue;
 
   .eth-bg-image-holder {
     position: relative;
     width: 100%;
     height: 100vh;
-    border: 1px solid red;
   }
   .eth-bg-image {
     position: relative;
     width: 100%;
-    //height: 100%;
   }
 }
 
@@ -457,8 +452,6 @@ onMounted(async () => {
   border-radius: 5px;
 }
 
-
-
 .eth-block {
   overflow: hidden;
   height: 0;
@@ -468,21 +461,46 @@ onMounted(async () => {
   margin: 20px auto;
   border: 1px solid white;
   border-radius: 25px;
-  padding: 30px;
 
   .content-wrapper {
     height: 100%;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    //justify-content: space-between;
+    margin: 15px 0;
   }
 
   .content-row {
-    justify-items: center;
-    align-items: center;
+    padding: 15px 30px;
+    justify-items: start;
     justify-content: space-between;
     display: flex;
+    &.row-wrap {
+      flex-wrap: wrap;
+    }
+  }
+
+  .content-block {
+    &.supply {
+      width: 50%;
+      &:last-child {
+        margin-top: 20px;
+      }
+      svg {
+        position: relative;
+        top: 3px;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .content-title {
+    padding-right: 10px;
+    //padding-bottom: 3px;
+    &.gas {
+      padding-bottom: 8px;
+    }
   }
 
   .gas-block {
@@ -491,16 +509,19 @@ onMounted(async () => {
     align-items: center;
   }
 
-  .content-block {
+  .gas-chart {
+    padding-right: 15px;
   }
 
-  .content-title {
-    padding-right: 10px;
+  .gas-stat-line {
+    margin-bottom: 13px;
+  }
+
+  .content-value {
   }
 
   .content-char {
     opacity: 0;
   }
 }
-
 </style>
