@@ -53,12 +53,12 @@ const homePage = computed(() => {
   return route.name === "index";
 });
 
-const navigationHoverAnimatePlay = (el, elClassName) => {
-  const text = el?.querySelector(`.${elClassName} span`);
-  animateTextSpan(text);
-};
+// const navigationHoverAnimatePlay = (el, elClassName) => {
+//   const text = el?.querySelector(`.${elClassName} span`);
+//   animateTextSpan(text);
+// };
 
-const animateTextSpan = (text) => {
+const animateTextSpan = (text: HTMLElement) => {
   if (!text) return;
   const tl = gsap.timeline();
   tl.to(text, {
@@ -75,7 +75,7 @@ const animateTextSpan = (text) => {
 };
 
 const navigationHoverAnimate = (index: number) => {
-  const text = navItemRefs.value[index]?.querySelector("span");
+  const text = navItemRefs.value[index]?.querySelector("span") as HTMLElement;
   animateTextSpan(text);
 };
 

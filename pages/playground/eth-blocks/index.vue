@@ -54,15 +54,22 @@
         v-for="block in blocksToRender"
         :key="block.timestamp.toString()"
         :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
+        v-action-on-scroll="{
+          activeRange: 0.9,
+          onScrollCallback: (el, scrollSpeed, scrollPosition) => {
+            // const scaleCoef = Number(1 - scrollPosition * 0.001).toFixed(2);
+            // console.log('scaleCoef - ', scaleCoef);
+            // gsap.to(el.elNode, {
+            //   duration: 0,
+            //   ease: 'linear',
+            //   scale: scaleCoef,
+            //   opacity: 0.5,
+            // });
+          },
+        }"
         class="eth-block"
         @mouseenter="hoverBlock($event, true, block.timestamp.toString())"
         @mouseleave="hoverBlock($event, false, block.timestamp.toString())"
-        v-action-on-scroll="{
-          activeRange: 0.9,
-          onScrollCallback: (el, scrollPosition) => {
-            console.log('scrollPosition - ', scrollPosition);
-          },
-        }"
       >
         <div class="content-wrapper">
           <div class="content-row">
@@ -125,7 +132,7 @@
           </div>
           <div class="content-row row-wrap">
             <!--            <div>-->
-            <div class="content-block supply" v-if="block.blockETHBurned">
+            <div v-if="block.blockETHBurned" class="content-block supply">
               <svg
                 width="14"
                 height="16"
@@ -146,7 +153,7 @@
               </span>
               <span class="content-value ani-index-1">ETH</span>
             </div>
-            <div class="content-block supply" v-if="block.blockWithdrawalsSum">
+            <div v-if="block.blockWithdrawalsSum" class="content-block supply">
               <svg
                 width="16"
                 height="16"
@@ -205,7 +212,7 @@
               </span>
               <span class="content-value ani-index-1">ETH</span>
             </div>
-            <div class="content-block supply" v-if="block.blockNetIssuanceETH">
+            <div v-if="block.blockNetIssuanceETH" class="content-block supply">
               <svg
                 width="16"
                 height="16"
@@ -339,7 +346,7 @@ const animateNewBlockAdded = (
   tlNewBlockAniIn.fromTo(
     el,
     { height: 0 },
-    { height: "236px", duration: 0.35 },
+    { height: "236px", duration: 1.55 },
   );
 
   tlNewBlockAniIn.call(
@@ -440,7 +447,7 @@ onMounted(async () => {
 
 .block-in-progress-wrapper {
   max-width: 423px;
-  margin: 20px auto;
+  margin: 0px auto;
   border: 1px solid white;
   border-radius: 5px;
 }

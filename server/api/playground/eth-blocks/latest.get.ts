@@ -1,7 +1,7 @@
 import { createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
 
-const NUM_LAST_BLOCKS = 5;
+const NUM_LAST_BLOCKS = 1;
 
 export default defineEventHandler(async (event) => {
   const { alchemyToken } = useRuntimeConfig(event);
