@@ -39,15 +39,15 @@
             },
             shaderName: 'playEthBlock',
           }"
-          :src="`/images/${'00'}.png`"
+          :src="`/images/${activeBlock?.imageId ?? '00'}.png`"
           alt=""
           class="eth-bg-image"
         />
       </div>
     </div>
-    <div class="block-in-progress-wrapper">
-      <div class="block-in-progress-loader" />
-    </div>
+    <!--    <div class="block-in-progress-wrapper">-->
+    <!--      <div class="block-in-progress-loader" />-->
+    <!--    </div>-->
 
     <div class="eth-blocks">
       <div
@@ -57,14 +57,23 @@
         v-action-on-scroll="{
           activeRange: 0.9,
           onScrollCallback: (el, scrollSpeed, scrollPosition) => {
-            // const scaleCoef = Number(1 - scrollPosition * 0.001).toFixed(2);
-            // console.log('scaleCoef - ', scaleCoef);
-            // gsap.to(el.elNode, {
-            //   duration: 0,
-            //   ease: 'linear',
-            //   scale: scaleCoef,
-            //   opacity: 0.5,
-            // });
+            const windowHeight = 1200;
+            const basePosition = 250;
+            const blockPositionTop = el.elNode.getBoundingClientRect().top;
+            const aniCoef = Math.abs(
+              (blockPositionTop - basePosition) / windowHeight,
+            );
+            // console.log('aniCoef', aniCoef);
+
+            gsap.to(el.elNode, {
+              duration: 0,
+              ease: 'linear',
+              scale: 1 - aniCoef,
+              opacity: 1 - aniCoef * 3,
+            });
+            if (aniCoef > 0.06) {
+              activeBlock = block;
+            }
           },
         }"
         class="eth-block"
@@ -152,6 +161,7 @@
                 {{ formatEth2(block.blockETHBurned) }}
               </span>
               <span class="content-value ani-index-1">ETH</span>
+              <progressBar :progressPercent="20" />
             </div>
             <div v-if="block.blockWithdrawalsSum" class="content-block supply">
               <svg
@@ -211,6 +221,7 @@
                 {{ formatEth2(block.blockWithdrawalsSum) }}
               </span>
               <span class="content-value ani-index-1">ETH</span>
+              <progressBar :progressPercent="20" />
             </div>
             <div v-if="block.blockNetIssuanceETH" class="content-block supply">
               <svg
@@ -235,10 +246,11 @@
                 </defs>
               </svg>
               <span class="content-title">Supply Delta:</span>
-              <span class="content-value ani-index-0">
+              <span class="content-value ani-index-0 text-bold">
                 {{ formatEth2(block.blockNetIssuanceETH) }}
               </span>
-              <span class="content-value ani-index-1">ETH</span>
+              <span class="content-value ani-index-1 text-bold">ETH</span>
+              <!--              <progressBar :progressPercent="20" />-->
             </div>
           </div>
         </div>
@@ -257,10 +269,12 @@ import {
 } from "~/utils/play/play-eth-blocks";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
+import ProgressBar from "~/components/playground/eth-blocks/progressBar.vue";
 
 gsap.registerPlugin(SplitText);
 
 const maxBlocks = 10;
+const activeBlock = ref<BlockExtended | null>(null);
 
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
@@ -300,14 +314,14 @@ const tlInProgress = gsap.timeline({
   },
 });
 
-const animateNewBlockInProgress = () => {
-  tlInProgress.clear();
-  tlInProgress.fromTo(
-    ".block-in-progress-loader",
-    { width: 0 },
-    { width: "100%", duration: averageBlockTime.value },
-  );
-};
+// const animateNewBlockInProgress = () => {
+//   tlInProgress.clear();
+//   tlInProgress.fromTo(
+//     ".block-in-progress-loader",
+//     { width: 0 },
+//     { width: "100%", duration: averageBlockTime.value },
+//   );
+// };
 
 const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
   if (elementsToAni.length) {
@@ -357,7 +371,7 @@ const animateNewBlockAdded = (
       }
     },
     undefined,
-    "<=+0.1",
+    "",
   );
 
   const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
@@ -370,7 +384,7 @@ const animateNewBlockAdded = (
   );
   aniContentValues(valuesElementsIndex1);
 
-  animateNewBlockInProgress();
+  // animateNewBlockInProgress();
 
   tlNewBlockAniIn.play();
   el.classList.add("block-added");
@@ -445,19 +459,19 @@ onMounted(async () => {
   }
 }
 
-.block-in-progress-wrapper {
-  max-width: 423px;
-  margin: 0px auto;
-  border: 1px solid white;
-  border-radius: 5px;
-}
-.block-in-progress-loader {
-  height: 6px;
-  width: 0;
-  background: white;
-  position: relative;
-  border-radius: 5px;
-}
+//.block-in-progress-wrapper {
+//  max-width: 423px;
+//  margin: 0px auto;
+//  border: 1px solid white;
+//  border-radius: 5px;
+//}
+//.block-in-progress-loader {
+//  height: 6px;
+//  width: 0;
+//  background: white;
+//  position: relative;
+//  border-radius: 5px;
+//}
 
 .eth-block {
   overflow: hidden;
@@ -529,6 +543,9 @@ onMounted(async () => {
 
   .content-char {
     opacity: 0;
+  }
+  .text-bold {
+    font-weight: bold;
   }
 }
 </style>
