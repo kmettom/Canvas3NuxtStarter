@@ -3,95 +3,93 @@ precision highp float;
 varying vec2 vUv;
 uniform sampler2D uImage;
 
-uniform float uAniInImage;   // 0..1 reveal progress
-uniform float uBlocks;       // 50..200 (more => smaller/more tiles)
-
+uniform float uAniInImage;
+uniform float uBlocks;
 uniform float uHover;
 uniform float uBlockColor;
-
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
+uniform float time;
+varying float vNoise;
 
-vec3 blockRampColor(float t) {
-    vec3 red      = vec3(0.5); // #521A0C
-    vec3 blue     = vec3(0.5);
-    vec3 neutral  = vec3(0.5);
+// xy = center offset from mesh center (px), zw = half-size (px)
+#define MAX_GLASS 10
+const int        GLASS_COUNT = 3;
+const vec4 GLASS[MAX_GLASS] = vec4[MAX_GLASS](
+vec4(  0.0,   0.0, 100.0, 200.0),   // 0 — center,  200×400
+vec4(-300.0,  100.0,  60.0,  60.0), // 1 — left,    120×120
+vec4( 300.0, -80.0,  80.0, 120.0),  // 2 — right,   160×240
+vec4(0.0, 0.0, 0.0, 0.0),           // 3 — unused
+vec4(0.0, 0.0, 0.0, 0.0),           // 4
+vec4(0.0, 0.0, 0.0, 0.0),           // 5
+vec4(0.0, 0.0, 0.0, 0.0),           // 6
+vec4(0.0, 0.0, 0.0, 0.0),           // 7
+vec4(0.0, 0.0, 0.0, 0.0),           // 8
+vec4(0.0, 0.0, 0.0, 0.0)            // 9
+);
 
-    vec3 lightRed  = mix(red, neutral, 0.5);
-    vec3 lightBlue = mix(blue, neutral, 0.5);
-
-    t = clamp(t, 0.0, 1.0);
-
-    if (t < 0.35) return red;
-    if (t < 0.45) return lightRed;
-    if (t < 0.55) return neutral;
-    if (t < 0.65) return lightBlue;
-    return blue;
+vec2 coverUv(vec2 raw) {
+    float meshAspect    = uMeshSize.x / uMeshSize.y;
+    float textureAspect = uTextureSize.x / uTextureSize.y;
+    vec2 uv = raw;
+    if (meshAspect > textureAspect) {
+        float s = textureAspect / meshAspect;
+        uv.y = uv.y * s + (1.0 - s) * 0.5;
+    } else {
+        float s = meshAspect / textureAspect;
+        uv.x = uv.x * s + (1.0 - s) * 0.5;
+    }
+    return uv;
 }
 
+vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
+    vec2 glassCenter = vec2(0.5) + rect.xy / uMeshSize;
+    vec2 glassHalfUv = rect.zw / uMeshSize;
 
-vec3 applyColor(vec3 color) {
-    vec3 tint = blockRampColor(uBlockColor);
-    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-    vec3 tinted = tint * luma;
-    return mix(color, tinted, 1.0);
-}
+    vec2  m2         = (vUv - glassCenter) / glassHalfUv;
+    float roundedBox = pow(abs(m2.x), 8.0) + pow(abs(m2.y), 8.0);
 
-// --- tiny hash for per-tile randomness ---
-float hash21(vec2 p) {
-    // stable pseudo-random [0..1]
-    p = fract(p * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
+    float rb1 = clamp((1.00 - roundedBox) * 8.0,  0.0, 1.0);
+    float rb2 = clamp((0.95 - roundedBox) * 16.0, 0.0, 1.0)
+    - clamp((0.90 - roundedBox) * 16.0, 0.0, 1.0);
+    float rb3 = clamp((1.50 - roundedBox) * 2.0,  0.0, 1.0)
+    - clamp((1.00 - roundedBox) * 2.0,  0.0, 1.0);
+
+    float transition = smoothstep(0.0, 1.0, rb1 + rb2);
+
+    if (transition <= 0.0) return baseColor;
+
+    vec2 lensVUv = glassCenter + (vUv - glassCenter) * (1.0 - roundedBox * 0.5);
+    vec2 lensUv  = coverUv(lensVUv);
+
+    vec4  blurred = vec4(0.0);
+    float total   = 0.0;
+    for (float x = -4.0; x <= 4.0; x++) {
+        for (float y = -4.0; y <= 4.0; y++) {
+            vec2 off = vec2(x, y) * 0.5 / uMeshSize;
+            blurred += texture2D(uImage, lensUv + off);
+            total   += 1.0;
+        }
+    }
+    blurred /= total;
+
+    vec2  m2uv    = vUv - glassCenter;
+    float gradient = clamp((clamp( m2uv.y,      0.0, 0.2) + 0.1) * 0.5, 0.0, 1.0)
+    + clamp((clamp(-m2uv.y, -1000.0, 0.2) * rb3 + 0.1) * 0.5, 0.0, 1.0);
+
+    vec4 lighting = clamp(blurred + vec4(rb1) * gradient + vec4(rb2) * 0.3, 0.0, 1.0);
+
+    return mix(baseColor, lighting, transition);
 }
 
 void main() {
-    // --- cover UV (your existing logic) ---
-    float meshAspect = uMeshSize.x / uMeshSize.y;
-    float textureAspect = uTextureSize.x / uTextureSize.y;
+    vec2 uv        = coverUv(vUv);
+    vec4 color     = texture2D(uImage, uv);
 
-    vec2 uv = vUv;
-    if (meshAspect > textureAspect) {
-        float scale = textureAspect / meshAspect;
-        uv.y = uv.y * scale + (1.0 - scale) / 2.0;
-    } else {
-        float scale = meshAspect / textureAspect;
-        uv.x = uv.x * scale + (1.0 - scale) / 2.0;
+    for (int i = 0; i < MAX_GLASS; i++) {
+        if (i >= GLASS_COUNT) break;
+        color = glassPass(vUv, uv, color, GLASS[i]);
     }
 
-    vec4 tex = texture2D(uImage, uv);
-
-    // --- TILE REVEAL MASK ---
-    // clamp blocks to avoid div-by-0 / nonsense
-    float cols = clamp(uBlocks, 50.0, 200.0);
-
-    // keep tiles ~square in mesh space:
-    // if mesh is wide, we need fewer rows; if tall, more rows
-    float meshAR = uMeshSize.x / max(uMeshSize.y, 1.0);
-    float rows = max(1.0, floor(cols / meshAR));
-
-    vec2 grid = vec2(cols, rows);
-
-    // which tile are we in?
-    vec2 tileId = floor(uv * grid);
-
-    // normalize x position 0..1 across columns
-    float x01 = (tileId.x + 0.5) / grid.x;
-
-    // add a little jitter per tile (so blocks don't pop in perfectly synced)
-    float rnd = hash21(tileId);
-
-    // reveal timing:
-    float jitter = (rnd - 0.5) * 0.15;
-    float w = 0.10;
-    float t0 = clamp(x01 + jitter, 0.0, 1.0 - w);
-
-    // progress drives the reveal
-    float tileMask = smoothstep(t0, t0 + w, clamp(uAniInImage, 0.0, 1.0));
-
-    // --- your color grading ---
-    vec3 color = applyColor(tex.rgb);
-
-    // final alpha = tileMask (this is the actual reveal)
-    gl_FragColor = vec4(color, tex.a * tileMask);
+    gl_FragColor = color;
 }
