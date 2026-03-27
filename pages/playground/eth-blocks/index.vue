@@ -67,7 +67,7 @@
             gsap.to(el.elNode, {
               duration: 0,
               ease: 'linear',
-              scale: 1 - aniCoef/2,
+              scale: 1 - aniCoef / 2,
               opacity: 1 - aniCoef * 3,
             });
             if (aniCoef > 0.06) {
@@ -160,7 +160,7 @@
                 {{ formatEth2(block.blockETHBurned) }}
               </span>
               <span class="content-value ani-index-1">ETH</span>
-              <progressBar :progressPercent="20" />
+              <progressBar :progress-percent="20" />
             </div>
             <div v-if="block.blockWithdrawalsSum" class="content-block supply">
               <svg
@@ -220,7 +220,7 @@
                 {{ formatEth2(block.blockWithdrawalsSum) }}
               </span>
               <span class="content-value ani-index-1">ETH</span>
-              <progressBar :progressPercent="20" />
+              <progressBar :progress-percent="20" />
             </div>
             <div v-if="block.blockNetIssuanceETH" class="content-block supply">
               <svg
@@ -301,17 +301,17 @@ const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
 };
 
 const blocks = ref<Map<string, BlockExtended>>(new Map());
-const defaultBlockTimeAverage = 15;
-const averageBlockTime = ref(defaultBlockTimeAverage);
+// const defaultBlockTimeAverage = 15;
+// const averageBlockTime = ref(defaultBlockTimeAverage);
 
-const tlInProgress = gsap.timeline({
-  onStart: () => {
-    Canvas3.setMeshPositionsUpdate(true);
-  },
-  onComplete: () => {
-    Canvas3.setMeshPositionsUpdate(false);
-  },
-});
+// const tlInProgress = gsap.timeline({
+//   onStart: () => {
+//     Canvas3.setMeshPositionsUpdate(true);
+//   },
+//   onComplete: () => {
+//     Canvas3.setMeshPositionsUpdate(false);
+//   },
+// });
 
 // const animateNewBlockInProgress = () => {
 //   tlInProgress.clear();
