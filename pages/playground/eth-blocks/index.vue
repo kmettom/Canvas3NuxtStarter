@@ -63,12 +63,11 @@
             const aniCoef = Math.abs(
               (blockPositionTop - basePosition) / windowHeight,
             );
-            // console.log('aniCoef', aniCoef);
 
             gsap.to(el.elNode, {
               duration: 0,
               ease: 'linear',
-              scale: 1 - aniCoef,
+              scale: 1 - aniCoef/2,
               opacity: 1 - aniCoef * 3,
             });
             if (aniCoef > 0.06) {
