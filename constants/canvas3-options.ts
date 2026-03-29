@@ -16,8 +16,10 @@ import example4Fragment from "./shaders/example4Fragment.glsl";
 import example4Vertex from "./shaders/example4Vertex.glsl";
 import example6Fragment from "./shaders/example6Fragment.glsl";
 import example6Vertex from "./shaders/example6Vertex.glsl";
-import playEthBlockFragment from "./shaders/playEthBlockFragment.glsl";
-import playEthBlockVertex from "./shaders/playEthBlockVertex.glsl";
+import playEthBlockNoDesignFragment from "./shaders/playEthBlockNoDesignFragment.glsl";
+import playEthBlockNoDesignVertex from "./shaders/playEthBlockNoDesignVertex.glsl";
+import playEthBlockGlassFragment from "./shaders/playEthBlockGlassFragment.glsl";
+import playEthBlockGlassVertex from "./shaders/playEthBlockGlassVertex.glsl";
 
 export const Canvas3Options = {
   font: {
@@ -43,9 +45,13 @@ export const Canvas3Options = {
       fragmentShader: example1Fragment,
       vertexShader: example1Vertex,
     },
-    playEthBlock: {
-      fragmentShader: playEthBlockFragment,
-      vertexShader: playEthBlockVertex,
+    playEthBlockNoDesignFragment: {
+      fragmentShader: playEthBlockNoDesignFragment,
+      vertexShader: playEthBlockNoDesignVertex,
+    },
+    playEthBlockGlass: {
+      fragmentShader: playEthBlockGlassFragment,
+      vertexShader: playEthBlockGlassVertex,
     },
     example2: {
       fragmentShader: example2Fragment,
