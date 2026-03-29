@@ -458,7 +458,7 @@ onMounted(async () => {
   }
 }
 
-.eth-blocks{
+.eth-blocks {
   padding-top: 25%;
   //border: 1px solid red;
 }
