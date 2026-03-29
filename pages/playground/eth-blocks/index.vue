@@ -265,7 +265,7 @@ import {
   generateBlockData,
   type BlockExtended,
   deserializeBlock,
-} from "~/utils/play/play-eth-blocks";
+} from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
 import ProgressBar from "~/components/playground/eth-blocks/progressBar.vue";
