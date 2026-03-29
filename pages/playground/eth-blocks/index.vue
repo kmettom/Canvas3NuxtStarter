@@ -435,7 +435,7 @@ onMounted(async () => {
 
 .eth-blocks-page {
   position: relative;
-  padding-top: 25%;
+  //padding-top: 25%;
   min-height: 100vh;
   color: white;
 }
@@ -456,6 +456,11 @@ onMounted(async () => {
     position: relative;
     width: 100%;
   }
+}
+
+.eth-blocks{
+  padding-top: 25%;
+  //border: 1px solid red;
 }
 
 //.block-in-progress-wrapper {
