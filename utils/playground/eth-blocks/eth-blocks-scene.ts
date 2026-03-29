@@ -8,11 +8,19 @@ declare const Canvas3: {
   setMeshPositionsUpdate: (flag: boolean) => void;
 };
 
+export type Vec4Position = {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+
 type EthBlocksAnimationSetup = {
   meshId: string;
   mesh: THREE.Mesh | null;
   material: THREE.Material | null;
   uniforms: any;
+  blocksVec4Positions: Map<string, Vec4Position>;
 };
 
 type EthBlocksAnimation = {
@@ -22,7 +30,7 @@ type EthBlocksAnimation = {
   curtainShow: (positionX?: number, scaleX?: number) => void;
   render: () => void;
   imageChange: () => void;
-  glassBlockPositionsUpdate: (blocks: any[]) => Promise<void>;
+  glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
 };
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
@@ -32,6 +40,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     uniforms: {
       uBlocks: { value: [] },
     },
+    blocksVec4Positions: new Map(),
   },
   init: async (): Promise<void> => {
     // await Canvas3.addImageasMesh(name:'ethBlockBg');
@@ -48,17 +57,24 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     // get mech and update the material or geometry etc... images should be already preloaded with some system
   },
 
-  glassBlockPositionsUpdate: (blocks: any[]) => {
-    ethBlocksAnimation.setup.uniforms.uBlocks = blocks;
+  glassBlockPositionsUpdate: (id, clientRect) => {
+    const vec4Position: Vec4Position = {
+      x: clientRect.left,
+      y: 10,
+      w: 100,
+      h: 200,
+    };
+    ethBlocksAnimation.setup.blocksVec4Positions.set(id, vec4Position);
   },
 
   render: (): void => {
-    const { mesh, material, uniforms } = ethBlocksAnimation.setup;
+    const { mesh, material, uniforms, blocksVec4Positions } =
+      ethBlocksAnimation.setup;
     if (!mesh || !material) return;
-    material.uniforms.uBlocks = uniforms.uBlocks;
-
-    // mesh.position.x = positionX.value;
-    // mesh.scale.x = scaleX.value;
+    // for (let i = 0; i < blockEls.size; i++) {
+    //
+    // }
+    uniforms.uBlocks = blocksVec4Positions;
   },
 
   // reset: (): void => {

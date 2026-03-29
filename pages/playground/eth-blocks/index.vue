@@ -59,7 +59,8 @@
           onScrollCallback: (el, scrollSpeed, scrollPosition) => {
             const windowHeight = 1200;
             const basePosition = 250;
-            const blockPositionTop = el.elNode.getBoundingClientRect().top;
+            const blockClientRect = el.elNode.getBoundingClientRect();
+            const blockPositionTop = blockClientRect.top;
             const aniCoef = Math.abs(
               (blockPositionTop - basePosition) / windowHeight,
             );
@@ -73,6 +74,10 @@
             if (aniCoef > 0.06) {
               activeBlock = block;
             }
+            ethBlocksAnimation.glassBlockPositionsUpdate(
+              block.timestamp.toString(),
+              blockClientRect,
+            );
           },
         }"
         class="eth-block"
@@ -269,6 +274,10 @@ import {
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
 import ProgressBar from "~/components/playground/eth-blocks/progressBar.vue";
+import {
+  ethBlocksAnimation,
+  type Vec4Position,
+} from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
 gsap.registerPlugin(SplitText);
 
