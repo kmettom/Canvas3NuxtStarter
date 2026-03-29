@@ -41,7 +41,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       "curtain",
       "rgb(20, 20, 20)",
     );
-    Canvas3.addAnimationToRender("ethBlocksAnimation", ethBlocksAnimation.render);
+    Canvas3.addAnimationToRender(
+      "ethBlocksAnimation",
+      ethBlocksAnimation.render,
+    );
     ethBlocksAnimation.reset();
   },
   addMeshRectangle: (meshName: string, color: string): THREE.Mesh | null => {
