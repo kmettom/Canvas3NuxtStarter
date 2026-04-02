@@ -41,7 +41,6 @@
           </p>
           <img
             v-canvas3-image="{
-              loadStrategy: 'preload',
               uniforms: {
                 uAniInImage: {
                   value: ethBlockImageAniIn ? (ethBlockHover ? 0.85 : 1) : 0,
@@ -64,7 +63,7 @@
                   ease: 'linear',
                 },
               },
-              shaderName: 'playEthBlock',
+              shaderName: 'playEthBlockNoDesign',
             }"
             :src="`/images/01.JPG`"
             alt=""

@@ -37,7 +37,7 @@
                 ease: 'linear',
               },
             },
-            shaderName: 'playEthBlock',
+            shaderName: 'playEthBlockGlass',
           }"
           :src="`/images/${activeBlock?.imageId ?? '00'}.png`"
           alt=""

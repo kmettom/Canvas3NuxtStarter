@@ -45,7 +45,7 @@ export const Canvas3Options = {
       fragmentShader: example1Fragment,
       vertexShader: example1Vertex,
     },
-    playEthBlockNoDesignFragment: {
+    playEthBlockNoDesign: {
       fragmentShader: playEthBlockNoDesignFragment,
       vertexShader: playEthBlockNoDesignVertex,
     },
