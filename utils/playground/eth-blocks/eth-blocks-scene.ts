@@ -1,9 +1,9 @@
-import type * as THREE from "three";
+import * as THREE from "three";
 
 // Replace with your real Canvas3 import/type
 declare const Canvas3: {
   addMeshToScene: (mesh: THREE.Mesh) => void;
-  getMeshFromSceneByName: (name: string) => THREE.Mesh | null;
+  getMeshFromSceneByName: (name: string) => THREE.Mesh;
   addAnimationToRender: (name: string, cb: () => void) => void;
   setMeshPositionsUpdate: (flag: boolean) => void;
 };
@@ -17,8 +17,8 @@ export type Vec4Position = {
 
 type EthBlocksAnimationSetup = {
   meshId: string;
-  mesh: THREE.Mesh | null;
-  material: THREE.Material | null;
+  mesh: THREE.Mesh;
+  material: THREE.Material;
   uniforms: any;
   blocksVec4Positions: Map<string, Vec4Position>;
 };
@@ -36,13 +36,13 @@ type EthBlocksAnimation = {
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: {
     meshId: "ethBlockBg",
-    mesh: null,
-    uniforms: {
-      uBlocks: { value: [] },
-    },
+    mesh: new THREE.Mesh(),
+    material: new THREE.MeshBasicMaterial(),
     blocksVec4Positions: new Map(),
+    uniforms: {},
   },
   init: async (): Promise<void> => {
+    if (!ethBlocksAnimation) return;
     // await Canvas3.addImageasMesh(name:'ethBlockBg');
     ethBlocksAnimation.setup.mesh =
       Canvas3.getMeshFromSceneByName("ethBlockBg");

@@ -276,7 +276,7 @@ import SplitText from "gsap/SplitText";
 import ProgressBar from "~/components/playground/eth-blocks/progressBar.vue";
 import {
   ethBlocksAnimation,
-  type Vec4Position,
+  // type Vec4Position,
 } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
 gsap.registerPlugin(SplitText);

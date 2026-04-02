@@ -2,12 +2,12 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 
 // Replace with your real Canvas3 import/type
-declare const Canvas3: {
-  addMeshToScene: (mesh: THREE.Mesh) => void;
-  getMeshFromSceneByName: (name: string) => THREE.Mesh | null;
-  addAnimationToRender: (name: string, cb: () => void) => void;
-  setMeshPositionsUpdate: (flag: boolean) => void;
-};
+// declare const Canvas3: {
+//   addMeshToScene: (mesh: THREE.Mesh) => void;
+//   getMeshFromSceneByName: (name: string) => THREE.Mesh | null;
+//   addAnimationToRender: (name: string, cb: () => void) => void;
+//   setMeshPositionsUpdate: (flag: boolean) => void;
+// };
 
 type TransitionSetup = {
   positionX: { value: number };
@@ -44,7 +44,7 @@ export const pageTransition: PageTransition = {
     Canvas3.addAnimationToRender("pageTransition", pageTransition.render);
     pageTransition.reset();
   },
-  addMeshRectangle: (meshName: string, color: string): THREE.Mesh | null => {
+  addMeshRectangle: (meshName: string, color: string): THREE.Mesh => {
     const geometry = new THREE.PlaneGeometry(1, 1);
     const material = new THREE.MeshBasicMaterial({ color });
     const rectangle = new THREE.Mesh(geometry, material);
@@ -54,7 +54,8 @@ export const pageTransition: PageTransition = {
     rectangle.scale.set(0, window.innerHeight, 0);
 
     Canvas3.addMeshToScene(rectangle);
-    return Canvas3.getMeshFromSceneByName(meshName);
+    const mesh = Canvas3.getMeshFromSceneByName(meshName);
+    return mesh ?? new THREE.Mesh();
   },
 
   curtainShow: (
