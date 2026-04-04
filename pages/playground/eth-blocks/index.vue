@@ -13,36 +13,36 @@
       class="eth-bg-wrapper"
     >
       <div class="eth-bg-image-holder">
-        <img
-          v-canvas3-image="{
-            uniforms: {
-              uAniInImage: {
-                value: 1,
-                duration: 1.75,
-                ease: 'linear',
-              },
-              uBlockColor: {
-                value: 0.5,
-                duration: 0.75,
-                ease: 'linear',
-              },
-              uBlocks: {
-                value: 100,
-                duration: 0,
-                ease: 'linear',
-              },
-              uHover: {
-                value: 0,
-                duration: 0,
-                ease: 'linear',
-              },
-            },
-            shaderName: 'playEthBlockGlass',
-          }"
-          :src="`/images/${activeBlock?.imageId ?? '00'}.png`"
-          alt=""
-          class="eth-bg-image"
-        />
+        <!--        <img-->
+        <!--          v-canvas3-image="{-->
+        <!--            uniforms: {-->
+        <!--              uAniInImage: {-->
+        <!--                value: 1,-->
+        <!--                duration: 1.75,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--              uBlockColor: {-->
+        <!--                value: 0.5,-->
+        <!--                duration: 0.75,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--              uBlocks: {-->
+        <!--                value: 100,-->
+        <!--                duration: 0,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--              uHover: {-->
+        <!--                value: 0,-->
+        <!--                duration: 0,-->
+        <!--                ease: 'linear',-->
+        <!--              },-->
+        <!--            },-->
+        <!--            shaderName: 'playEthBlockGlass',-->
+        <!--          }"-->
+        <!--          :src="`/images/${activeBlock?.imageId ?? '00'}.png`"-->
+        <!--          alt=""-->
+        <!--          class="eth-bg-image"-->
+        <!--        />-->
       </div>
     </div>
     <!--    <div class="block-in-progress-wrapper">-->

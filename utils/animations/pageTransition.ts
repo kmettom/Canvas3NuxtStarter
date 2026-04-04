@@ -1,14 +1,6 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
 
-// Replace with your real Canvas3 import/type
-// declare const Canvas3: {
-//   addMeshToScene: (mesh: THREE.Mesh) => void;
-//   getMeshFromSceneByName: (name: string) => THREE.Mesh | null;
-//   addAnimationToRender: (name: string, cb: () => void) => void;
-//   setMeshPositionsUpdate: (flag: boolean) => void;
-// };
-
 type TransitionSetup = {
   positionX: { value: number };
   scaleX: { value: number };

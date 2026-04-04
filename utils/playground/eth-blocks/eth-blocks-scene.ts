@@ -1,13 +1,5 @@
 import * as THREE from "three";
 
-// Replace with your real Canvas3 import/type
-declare const Canvas3: {
-  addMeshToScene: (mesh: THREE.Mesh) => void;
-  getMeshFromSceneByName: (name: string) => THREE.Mesh;
-  addAnimationToRender: (name: string, cb: () => void) => void;
-  setMeshPositionsUpdate: (flag: boolean) => void;
-};
-
 export type Vec4Position = {
   x: number;
   y: number;
@@ -40,10 +32,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     material: new THREE.MeshBasicMaterial(),
     blocksVec4Positions: new Map(),
     uniforms: {},
+    imgHtmlEl: new HTMLImageElement(),
   },
   init: async (): Promise<void> => {
     if (!ethBlocksAnimation) return;
-    // await Canvas3.addImageasMesh(name:'ethBlockBg');
+    await Canvas3.addImageAsMesh(
+      new HTMLImageElement(), //imgHtmlEl
+      "ethBlockBg", //meshId
+      "ethBlockBgShader", //shaderName
+      {}, //meshUniforms
+      {}, //activateMeshUniforms
+    );
     ethBlocksAnimation.setup.mesh =
       Canvas3.getMeshFromSceneByName("ethBlockBg");
     Canvas3.addAnimationToRender(
