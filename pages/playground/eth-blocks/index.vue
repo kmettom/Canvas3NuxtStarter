@@ -13,36 +13,37 @@
       class="eth-bg-wrapper"
     >
       <div class="eth-bg-image-holder">
-        <!--        <img-->
-        <!--          v-canvas3-image="{-->
-        <!--            uniforms: {-->
-        <!--              uAniInImage: {-->
-        <!--                value: 1,-->
-        <!--                duration: 1.75,-->
-        <!--                ease: 'linear',-->
-        <!--              },-->
-        <!--              uBlockColor: {-->
-        <!--                value: 0.5,-->
-        <!--                duration: 0.75,-->
-        <!--                ease: 'linear',-->
-        <!--              },-->
-        <!--              uBlocks: {-->
-        <!--                value: 100,-->
-        <!--                duration: 0,-->
-        <!--                ease: 'linear',-->
-        <!--              },-->
-        <!--              uHover: {-->
-        <!--                value: 0,-->
-        <!--                duration: 0,-->
-        <!--                ease: 'linear',-->
-        <!--              },-->
-        <!--            },-->
-        <!--            shaderName: 'playEthBlockGlass',-->
-        <!--          }"-->
-        <!--          :src="`/images/${activeBlock?.imageId ?? '00'}.png`"-->
-        <!--          alt=""-->
-        <!--          class="eth-bg-image"-->
-        <!--        />-->
+        <!--        v-canvas3-image="{-->
+        <!--        uniforms: {-->
+        <!--        uAniInImage: {-->
+        <!--        value: 1,-->
+        <!--        duration: 1.75,-->
+        <!--        ease: 'linear',-->
+        <!--        },-->
+        <!--        uBlockColor: {-->
+        <!--        value: 0.5,-->
+        <!--        duration: 0.75,-->
+        <!--        ease: 'linear',-->
+        <!--        },-->
+        <!--        uBlocks: {-->
+        <!--        value: 100,-->
+        <!--        duration: 0,-->
+        <!--        ease: 'linear',-->
+        <!--        },-->
+        <!--        uHover: {-->
+        <!--        value: 0,-->
+        <!--        duration: 0,-->
+        <!--        ease: 'linear',-->
+        <!--        },-->
+        <!--        },-->
+        <!--        shaderName: 'playEthBlockGlass',-->
+        <!--        }"-->
+        <img
+            ref="imgHtmlEl"
+          :src="`/images/${activeBlock?.imageId ?? '00'}.png`"
+          alt=""
+          class="eth-bg-image"
+        />
       </div>
     </div>
     <!--    <div class="block-in-progress-wrapper">-->
@@ -421,10 +422,15 @@ const addBlockListener = () => {
   };
 };
 
+const imgHtmlEl = ref<HTMLImageElement | null>(null);
+
 onUnmounted(() => eventSource?.close());
 
 onMounted(async () => {
   addBlockListener();
+  if(imgHtmlEl.value){
+    ethBlocksAnimation.init(imgHtmlEl.value);
+  }
 });
 
 //https://www.shadertoy.com/view/wccSDf
@@ -461,6 +467,7 @@ onMounted(async () => {
     width: 100%;
     height: 100vh;
   }
+
   .eth-bg-image {
     position: relative;
     width: 100%;
@@ -510,6 +517,7 @@ onMounted(async () => {
     justify-items: start;
     justify-content: space-between;
     display: flex;
+
     &.row-wrap {
       flex-wrap: wrap;
     }
@@ -518,9 +526,11 @@ onMounted(async () => {
   .content-block {
     &.supply {
       width: 50%;
+
       &:last-child {
         margin-top: 20px;
       }
+
       svg {
         position: relative;
         top: 3px;
@@ -557,6 +567,7 @@ onMounted(async () => {
   .content-char {
     opacity: 0;
   }
+
   .text-bold {
     font-weight: bold;
   }

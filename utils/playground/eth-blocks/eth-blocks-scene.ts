@@ -23,29 +23,29 @@ type EthBlocksAnimationSetup = {
 
 type EthBlocksAnimation = {
   setup: EthBlocksAnimationSetup | null;
-  init: () => void;
+  init: (imgHtmlEl: HTMLImageElement) => void;
   render: () => void;
   imageChange: () => void;
   glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
 };
 
+const defaultUniforms = {
+  uAniInImage: { value: 1, duration: 0.5, ease: "linear" },
+  uBlockColor: { value: 1, duration: 0.5, ease: "linear" },
+  uBlocks: { value: 1, duration: 0.5, ease: "linear" },
+  uHover: { value: 1, duration: 0.5, ease: "linear" },
+};
+
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
-  //   {
-  //   meshId: "ethBlockBg",
-  //   mesh: new THREE.Mesh(),
-  //   material: new THREE.MeshBasicMaterial(),
-  //   blocksVec4Positions: new Map(),
-  //   uniforms: { uAniInit: { value: 0, duration: 0.5, ease: "linear" } },
-  //   imgHtmlEl: new HTMLImageElement(),
-  // },
-  init: async (): Promise<void> => {
+  init: async (imgHtmlEl: HTMLImageElement): Promise<void> => {
+    console.log("init imgHtmlEl", imgHtmlEl);
     if (!ethBlocksAnimation) return;
     await Canvas3.addImageAsMesh(
-      new HTMLImageElement(), //imgHtmlEl
+      imgHtmlEl, //imgHtmlEl
       "ethBlockBg", //meshId
-      "ethBlockBgShader", //shaderName
-      {}, //meshUniforms
+      "playEthBlockGlass", //shaderName
+      defaultUniforms, //meshUniforms
       {}, //activateMeshUniforms
     );
     ethBlocksAnimation.setup = {
@@ -53,7 +53,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       mesh: Canvas3.getMeshFromSceneByName("ethBlockBg") ?? null,
       material: new THREE.MeshBasicMaterial(),
       blocksVec4Positions: new Map(),
-      uniforms: { uAniInit: { value: 0, duration: 0.5, ease: "linear" } },
+      uniforms: defaultUniforms,
       imgHtmlEl: new HTMLImageElement(),
     };
     Canvas3.addAnimationToRender(
@@ -78,13 +78,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   render: (): void => {
-    if(ethBlocksAnimation.setup){
-      const { mesh, material, uniforms, blocksVec4Positions } = ethBlocksAnimation.setup;
+    if (ethBlocksAnimation.setup) {
+      const { mesh, material, uniforms, blocksVec4Positions } =
+        ethBlocksAnimation.setup;
       if (!mesh || !material) return;
       // for (let i = 0; i < blockEls.size; i++) {
       //
       // }
-      uniforms.uBlocks = blocksVec4Positions;
+      // uniforms.uBlocks = blocksVec4Positions;
     }
   },
 
