@@ -4,7 +4,6 @@ varying vec2 vUv;
 uniform sampler2D uImage;
 
 uniform float uAniInImage;   // 0..1 reveal progress
-uniform float uBlocks;       // 50..200 (more => smaller/more tiles)
 
 uniform float uHover;
 uniform float uBlockColor;
@@ -63,7 +62,7 @@ void main() {
 
     // --- TILE REVEAL MASK ---
     // clamp blocks to avoid div-by-0 / nonsense
-    float cols = clamp(uBlocks, 50.0, 200.0);
+    float cols = clamp(5.0, 50.0, 200.0);
 
     // keep tiles ~square in mesh space:
     // if mesh is wide, we need fewer rows; if tall, more rows

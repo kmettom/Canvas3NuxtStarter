@@ -30,7 +30,6 @@ type EthBlocksAnimation = {
 
 const defaultUniforms = {
   uAniInImage: { value: 1, duration: 0.5, ease: "linear" },
-  uBlocks: { value: 1, duration: 0.5, ease: "linear" },
   uHover: { value: 1, duration: 0.5, ease: "linear" },
 };
 
@@ -56,45 +55,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       ethBlocksAnimation.render,
     );
   },
-
-  // async imageChange(imgHtmlEl: HTMLImageElement | null): Promise<void> {
-  //   if (!imgHtmlEl) return;
-  //   const mesh = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined;
-  //   if (!mesh) return;
-  //
-  //   const material = mesh.material as THREE.ShaderMaterial;
-  //   if (!material?.uniforms?.uImage) return;
-  //
-  //   console.log("imageChange", ethBlocksAnimation.setup?.mesh);
-  //
-  //   const bounds = imgHtmlEl.getBoundingClientRect();
-  //
-  //   const bitmap = await createImageBitmap(imgHtmlEl, {
-  //     imageOrientation: "flipY",
-  //   });
-  //   const newTexture = new THREE.Texture(bitmap);
-  //   newTexture.needsUpdate = true;
-  //
-  //   const oldTexture = material.uniforms.uImage.value as
-  //     | THREE.Texture
-  //     | undefined;
-  //   const oldBitmap = oldTexture?.image as ImageBitmap | undefined;
-  //
-  //   material.uniforms.uImage.value = newTexture;
-  //
-  //   if (material.uniforms.uTextureSize) {
-  //     material.uniforms.uTextureSize.value.set(bitmap.width, bitmap.height);
-  //   }
-  //
-  //   if (material.uniforms.uMeshSize) {
-  //     material.uniforms.uMeshSize.value.set(bounds.width, bounds.height);
-  //   }
-  //
-  //   mesh.scale.set(bounds.width, bounds.height, mesh.scale.z);
-  //
-  //   oldTexture?.dispose();
-  //   oldBitmap?.close?.();
-  // },
 
   async imageChange(
     imgHtmlEl: HTMLImageElement | null,
@@ -122,6 +82,21 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     });
 
     const newTexture = new THREE.Texture(bitmap);
+
+    const blocks = Array.from(ethBlocksAnimation.setup?.blocksVec4Positions.values())
+      .slice(0, 10)
+      .map((b) => new THREE.Vector4(b.x, b.y, b.w, b.h))
+      .filter(Boolean);
+
+    while (blocks.length < 10) {
+      blocks.push(new THREE.Vector4(0, 0, 0, 0));
+    }
+
+    material.uniforms.uBlocks = { value: blocks };
+    material.uniforms.uBlockCount = {
+      value: Math.min(ethBlocksAnimation.setup?.blocksVec4Positions.size, 10),
+    };
+
     newTexture.needsUpdate = true;
 
     const oldTexture = material.uniforms.uImage.value as
@@ -140,7 +115,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     if (material.uniforms.uViewport?.value?.set) {
-      material.uniforms.uViewport.value.set(this.width, this.height);
+      material.uniforms.uViewport.value.set(
+        window.innerWidth,
+        window.innerHeight,
+      );
     }
 
     if (activateMeshUniforms) {
@@ -190,6 +168,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       | undefined;
     if (!meshToUpdate) return;
     const material = meshToUpdate.material as THREE.ShaderMaterial;
-    material.uniforms.uBlock = { value: blocksVec4Positions };
+
+    const blocks = Array.from(blocksVec4Positions.values()).map(
+      (b) => new THREE.Vector4(b.x, b.y, b.w, b.h),
+    );
+
+    material.uniforms.uBlocks = { value: blocks };
+    material.uniforms.uBlockCount = { value: blocks.length };
   },
 };

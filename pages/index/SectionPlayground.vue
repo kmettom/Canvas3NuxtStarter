@@ -35,11 +35,6 @@
               duration: 0.5,
               ease: 'linear',
             },
-            uBlocks: {
-              value: 5,
-              duration: 0,
-              ease: 'linear',
-            },
             uHover: {
               value: 1,
               duration: 0.5,
