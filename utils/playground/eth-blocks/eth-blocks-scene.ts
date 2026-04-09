@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Canvas3Options } from "~/constants/canvas3-options";
 
 export type Vec4Position = {
   x: number;
@@ -39,8 +40,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!ethBlocksAnimation) return;
     await Canvas3.addImageAsMesh(
       imgHtmlEl, //imgHtmlEl
-      "playEthBlockGlass", //meshId
-      "ethBlockBg", //shaderName
+      "playEthBlockGlass", //shaderName
+      "ethBlockBg", //meshId
       defaultUniforms, //meshUniforms
       {}, //activateMeshUniforms
     );
@@ -56,21 +57,70 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     );
   },
 
-  async imageChange(imgHtmlEl: HTMLImageElement | null): Promise<void> {
+  // async imageChange(imgHtmlEl: HTMLImageElement | null): Promise<void> {
+  //   if (!imgHtmlEl) return;
+  //   const mesh = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined;
+  //   if (!mesh) return;
+  //
+  //   const material = mesh.material as THREE.ShaderMaterial;
+  //   if (!material?.uniforms?.uImage) return;
+  //
+  //   console.log("imageChange", ethBlocksAnimation.setup?.mesh);
+  //
+  //   const bounds = imgHtmlEl.getBoundingClientRect();
+  //
+  //   const bitmap = await createImageBitmap(imgHtmlEl, {
+  //     imageOrientation: "flipY",
+  //   });
+  //   const newTexture = new THREE.Texture(bitmap);
+  //   newTexture.needsUpdate = true;
+  //
+  //   const oldTexture = material.uniforms.uImage.value as
+  //     | THREE.Texture
+  //     | undefined;
+  //   const oldBitmap = oldTexture?.image as ImageBitmap | undefined;
+  //
+  //   material.uniforms.uImage.value = newTexture;
+  //
+  //   if (material.uniforms.uTextureSize) {
+  //     material.uniforms.uTextureSize.value.set(bitmap.width, bitmap.height);
+  //   }
+  //
+  //   if (material.uniforms.uMeshSize) {
+  //     material.uniforms.uMeshSize.value.set(bounds.width, bounds.height);
+  //   }
+  //
+  //   mesh.scale.set(bounds.width, bounds.height, mesh.scale.z);
+  //
+  //   oldTexture?.dispose();
+  //   oldBitmap?.close?.();
+  // },
+
+  async imageChange(
+    imgHtmlEl: HTMLImageElement | null,
+    shaderName?: string | null,
+    meshUniforms?: Record<string, THREE.IUniform>,
+    activateMeshUniforms?: Record<string, THREE.IUniform>,
+  ): Promise<void> {
     if (!imgHtmlEl) return;
+
     const mesh = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
 
     const material = mesh.material as THREE.ShaderMaterial;
     if (!material?.uniforms?.uImage) return;
 
-    console.log("imageChange", ethBlocksAnimation.setup?.mesh);
+    const nextVertexShader =
+      Canvas3Options.shaders.playEthBlockGlass.vertexShader;
+    const nextFragmentShader =
+      Canvas3Options.shaders.playEthBlockGlass.fragmentShader;
 
     const bounds = imgHtmlEl.getBoundingClientRect();
 
     const bitmap = await createImageBitmap(imgHtmlEl, {
       imageOrientation: "flipY",
     });
+
     const newTexture = new THREE.Texture(bitmap);
     newTexture.needsUpdate = true;
 
@@ -81,12 +131,38 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     material.uniforms.uImage.value = newTexture;
 
-    if (material.uniforms.uTextureSize) {
+    if (material.uniforms.uTextureSize?.value?.set) {
       material.uniforms.uTextureSize.value.set(bitmap.width, bitmap.height);
     }
 
-    if (material.uniforms.uMeshSize) {
+    if (material.uniforms.uMeshSize?.value?.set) {
       material.uniforms.uMeshSize.value.set(bounds.width, bounds.height);
+    }
+
+    if (material.uniforms.uViewport?.value?.set) {
+      material.uniforms.uViewport.value.set(this.width, this.height);
+    }
+
+    if (activateMeshUniforms) {
+      for (const [key, uniform] of Object.entries(activateMeshUniforms)) {
+        material.uniforms[key] = uniform;
+      }
+    }
+
+    if (meshUniforms) {
+      for (const [key, uniform] of Object.entries(meshUniforms)) {
+        material.uniforms[key] = uniform;
+      }
+    }
+
+    const shaderChanged =
+      material.vertexShader !== nextVertexShader ||
+      material.fragmentShader !== nextFragmentShader;
+
+    if (shaderChanged) {
+      material.vertexShader = nextVertexShader;
+      material.fragmentShader = nextFragmentShader;
+      material.needsUpdate = true;
     }
 
     mesh.scale.set(bounds.width, bounds.height, mesh.scale.z);
@@ -108,7 +184,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   render: (): void => {
     if (!ethBlocksAnimation.setup) return;
     const { mesh, blocksVec4Positions } = ethBlocksAnimation.setup;
-    console.log("blocksVec4Positions", blocksVec4Positions);
     if (!mesh) return;
     const meshToUpdate = ethBlocksAnimation.setup?.mesh as
       | THREE.Mesh
