@@ -18,14 +18,14 @@ type EthBlocksAnimationSetup = {
   material: THREE.Material;
   uniforms: MeshMaterialUniform;
   blocksVec4Positions: Map<string, Vec4Position>;
-  imgHtmlEl: HTMLImageElement;
+  // imgHtmlEl: HTMLImageElement;
 };
 
 type EthBlocksAnimation = {
   setup: EthBlocksAnimationSetup | null;
   init: (imgHtmlEl: HTMLImageElement) => void;
   render: () => void;
-  imageChange: () => void;
+  imageChange: (imgHtmlEl) => void;
   glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
 };
 
@@ -39,12 +39,11 @@ const defaultUniforms = {
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   init: async (imgHtmlEl: HTMLImageElement): Promise<void> => {
-    console.log("init imgHtmlEl", imgHtmlEl);
     if (!ethBlocksAnimation) return;
     await Canvas3.addImageAsMesh(
       imgHtmlEl, //imgHtmlEl
-      "ethBlockBg", //meshId
-      "playEthBlockGlass", //shaderName
+      "playEthBlockGlass", //meshId
+      "ethBlockBg", //shaderName
       defaultUniforms, //meshUniforms
       {}, //activateMeshUniforms
     );
@@ -54,7 +53,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       material: new THREE.MeshBasicMaterial(),
       blocksVec4Positions: new Map(),
       uniforms: defaultUniforms,
-      imgHtmlEl: new HTMLImageElement(),
+      // imgHtmlEl: imgHtmlEl,
     };
     Canvas3.addAnimationToRender(
       "ethBlocksAnimation",
@@ -63,8 +62,36 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     // ethBlocksAnimation.reset();
   },
 
-  imageChange: (): void => {
-    // get mech and update the material or geometry etc... images should be already preloaded with some system
+  async imageChange(imgHtmlEl: HTMLImageElement): Promise<void> {
+    const mesh = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined
+    if (!mesh) return
+
+    const material = mesh.material as THREE.ShaderMaterial
+    if (!material?.uniforms?.uImage) return
+
+    const bounds = imgHtmlEl.getBoundingClientRect()
+
+    const bitmap = await createImageBitmap(imgHtmlEl, { imageOrientation: 'flipY' })
+    const newTexture = new THREE.Texture(bitmap)
+    newTexture.needsUpdate = true
+
+    const oldTexture = material.uniforms.uImage.value as THREE.Texture | undefined
+    const oldBitmap = oldTexture?.image as ImageBitmap | undefined
+
+    material.uniforms.uImage.value = newTexture
+
+    if (material.uniforms.uTextureSize) {
+      material.uniforms.uTextureSize.value.set(bitmap.width, bitmap.height)
+    }
+
+    if (material.uniforms.uMeshSize) {
+      material.uniforms.uMeshSize.value.set(bounds.width, bounds.height)
+    }
+
+    mesh.scale.set(bounds.width, bounds.height, mesh.scale.z)
+
+    oldTexture?.dispose()
+    oldBitmap?.close?.()
   },
 
   glassBlockPositionsUpdate: (id, clientRect) => {
