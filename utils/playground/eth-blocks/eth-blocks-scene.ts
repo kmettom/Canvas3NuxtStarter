@@ -7,33 +7,38 @@ export type Vec4Position = {
   h: number;
 };
 
+type MeshMaterialUniform = Record<
+  string,
+  { duration: number; ease: string | null | undefined; value: number }
+>;
+
 type EthBlocksAnimationSetup = {
   meshId: string;
-  mesh: THREE.Mesh;
+  mesh: THREE.Object3D | null;
   material: THREE.Material;
-  uniforms: any;
+  uniforms: MeshMaterialUniform;
   blocksVec4Positions: Map<string, Vec4Position>;
+  imgHtmlEl: HTMLImageElement;
 };
 
 type EthBlocksAnimation = {
-  setup: EthBlocksAnimationSetup;
-  addMeshRectangle: (meshName: string, color: string) => THREE.Mesh | null;
+  setup: EthBlocksAnimationSetup | null;
   init: () => void;
-  curtainShow: (positionX?: number, scaleX?: number) => void;
   render: () => void;
   imageChange: () => void;
   glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
 };
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
-  setup: {
-    meshId: "ethBlockBg",
-    mesh: new THREE.Mesh(),
-    material: new THREE.MeshBasicMaterial(),
-    blocksVec4Positions: new Map(),
-    uniforms: {},
-    imgHtmlEl: new HTMLImageElement(),
-  },
+  setup: null,
+  //   {
+  //   meshId: "ethBlockBg",
+  //   mesh: new THREE.Mesh(),
+  //   material: new THREE.MeshBasicMaterial(),
+  //   blocksVec4Positions: new Map(),
+  //   uniforms: { uAniInit: { value: 0, duration: 0.5, ease: "linear" } },
+  //   imgHtmlEl: new HTMLImageElement(),
+  // },
   init: async (): Promise<void> => {
     if (!ethBlocksAnimation) return;
     await Canvas3.addImageAsMesh(
@@ -43,8 +48,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       {}, //meshUniforms
       {}, //activateMeshUniforms
     );
-    ethBlocksAnimation.setup.mesh =
-      Canvas3.getMeshFromSceneByName("ethBlockBg");
+    ethBlocksAnimation.setup = {
+      meshId: "ethBlockBg",
+      mesh: Canvas3.getMeshFromSceneByName("ethBlockBg") ?? null,
+      material: new THREE.MeshBasicMaterial(),
+      blocksVec4Positions: new Map(),
+      uniforms: { uAniInit: { value: 0, duration: 0.5, ease: "linear" } },
+      imgHtmlEl: new HTMLImageElement(),
+    };
     Canvas3.addAnimationToRender(
       "ethBlocksAnimation",
       ethBlocksAnimation.render,
@@ -63,17 +74,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       w: 100,
       h: 200,
     };
-    ethBlocksAnimation.setup.blocksVec4Positions.set(id, vec4Position);
+    ethBlocksAnimation.setup?.blocksVec4Positions.set(id, vec4Position);
   },
 
   render: (): void => {
-    const { mesh, material, uniforms, blocksVec4Positions } =
-      ethBlocksAnimation.setup;
-    if (!mesh || !material) return;
-    // for (let i = 0; i < blockEls.size; i++) {
-    //
-    // }
-    uniforms.uBlocks = blocksVec4Positions;
+    if(ethBlocksAnimation.setup){
+      const { mesh, material, uniforms, blocksVec4Positions } = ethBlocksAnimation.setup;
+      if (!mesh || !material) return;
+      // for (let i = 0; i < blockEls.size; i++) {
+      //
+      // }
+      uniforms.uBlocks = blocksVec4Positions;
+    }
   },
 
   // reset: (): void => {
