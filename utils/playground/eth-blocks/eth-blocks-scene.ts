@@ -138,13 +138,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   glassBlockPositionsUpdate: (id, clientRect) => {
     const centerX = clientRect.left + clientRect.width * 0.5;
     const centerY = clientRect.top + clientRect.height * 0.5;
+    const blockPadding = 35;
 
     const x = centerX - window.innerWidth * 0.5;
-    const y = window.innerHeight * 0.5 - centerY;
+    const y = window.innerHeight * 0.5 - centerY - blockPadding;
 
     const halfW = Number((clientRect.width * 0.5).toFixed(1));
     const halfH = Number((clientRect.height * 0.5).toFixed(1));
-
     const vec4Position: Vec4Position = new THREE.Vector4(x, y, halfW, halfH);
 
     ethBlocksAnimation.setup?.blocksVec4Positions.set(id, vec4Position);
