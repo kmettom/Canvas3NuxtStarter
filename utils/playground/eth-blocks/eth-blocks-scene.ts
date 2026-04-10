@@ -136,12 +136,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   glassBlockPositionsUpdate: (id, clientRect) => {
-    const vec4Position: Vec4Position = {
-      x: clientRect.left,
-      y: clientRect.top,
-      w: clientRect.width,
-      h: clientRect.height,
-    };
+    const centerX = clientRect.left + clientRect.width * 0.5;
+    const centerY = clientRect.top + clientRect.height * 0.5;
+
+    const x = centerX - window.innerWidth * 0.5;
+    const y = window.innerHeight * 0.5 - centerY;
+
+    const halfW = Number((clientRect.width * 0.5).toFixed(1));
+    const halfH = Number((clientRect.height * 0.5).toFixed(1));
+
+    const vec4Position: Vec4Position = new THREE.Vector4(x, y, halfW, halfH);
+
     ethBlocksAnimation.setup?.blocksVec4Positions.set(id, vec4Position);
   },
 
@@ -157,7 +162,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const blocks = Array.from(blocksVec4Positions.values() ?? [])
       .slice(0, 10)
-      .map((b) => new THREE.Vector4(b.x, b.y, b.w, b.h))
+      .map((b) => new THREE.Vector4(b.x, b.y, b.z, b.w))
       .filter(Boolean);
 
     while (blocks.length < 10) {
