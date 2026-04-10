@@ -48,8 +48,16 @@
               opacity: 1 - aniCoef * 3,
             });
             if (aniCoef > 0.06) {
-              activeBlock = block;
-              ethBlocksAnimation.imageChange(imgHtmlEl);
+              block.aniCoef = aniCoef;
+              if (
+                !activeBlock ||
+                (block.aniCoef > activeBlock.aniCoef &&
+                  activeBlock.timestamp.toString() !==
+                    block.timestamp.toString())
+              ) {
+                activeBlock = block;
+                ethBlocksAnimation.imageChange(imgHtmlEl);
+              }
             }
             ethBlocksAnimation.glassBlockPositionsUpdate(
               block.timestamp.toString(),
@@ -69,6 +77,7 @@
               <div class="content-value ani-index-0 eth-large-text">
                 {{ block.transactions.length }}
               </div>
+              imageId:{{ block.imageId }}
             </div>
             <div class="content-block">
               <div class="content-title gas">Gas:</div>

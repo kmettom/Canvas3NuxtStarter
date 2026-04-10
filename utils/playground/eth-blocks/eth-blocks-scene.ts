@@ -58,10 +58,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
   async imageChange(
     imgHtmlEl: HTMLImageElement | null,
-    shaderName?: string | null,
-    meshUniforms?: Record<string, THREE.IUniform>,
-    activateMeshUniforms?: Record<string, THREE.IUniform>,
+    // shaderName?: string | null,
+    // meshUniforms?: Record<string, THREE.IUniform>,
+    // activateMeshUniforms?: Record<string, THREE.IUniform>,
   ): Promise<void> {
+    console.log(imgHtmlEl);
     if (!imgHtmlEl) return;
 
     const mesh = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined;
@@ -105,18 +106,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         window.innerWidth,
         window.innerHeight,
       );
-    }
-
-    if (activateMeshUniforms) {
-      for (const [key, uniform] of Object.entries(activateMeshUniforms)) {
-        material.uniforms[key] = uniform;
-      }
-    }
-
-    if (meshUniforms) {
-      for (const [key, uniform] of Object.entries(meshUniforms)) {
-        material.uniforms[key] = uniform;
-      }
     }
 
     const shaderChanged =

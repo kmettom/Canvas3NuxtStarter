@@ -11,6 +11,7 @@ export type BlockExtended = Block & {
   blockAniIn: boolean;
   blockHovered: boolean;
   imageId: string;
+  aniCoef?: number;
 };
 
 const GWEI_TO_WEI = 1_000_000_000n;
