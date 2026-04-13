@@ -124,7 +124,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     oldBitmap?.close?.();
   },
 
-  glassBlockPositionsUpdate: (id, clientRect) => {
+  blocksPositionsUpdate: () => {
     const centerX = clientRect.left + clientRect.width * 0.5;
     const centerY = clientRect.top + clientRect.height * 0.5;
     const blockPadding = 35;

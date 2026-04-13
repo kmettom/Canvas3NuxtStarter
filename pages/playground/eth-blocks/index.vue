@@ -1,31 +1,10 @@
 <template>
   <div class="eth-blocks-page page-container eth-base-text">
     <div
-      id="ethBGWrapper"
-      v-action-on-scroll="{
-        activeRange: 0.9,
-        fixToParent: {
-          containerId: 'ethBGWrapper',
-          fixPosition: 0,
-          margin: 0,
-        },
-      }"
-      class="eth-bg-wrapper"
+      id="ethBlocks"
+      class="eth-blocks"
+      :style="{ paddingTop: blocksBasePosition + 'px' }"
     >
-      <div class="eth-bg-image-holder">
-        <img
-          ref="imgHtmlEl"
-          :src="`/images/${activeBlock?.imageId ?? '01'}.jpg`"
-          alt=""
-          class="eth-bg-image"
-        />
-      </div>
-    </div>
-    <!--    <div class="block-in-progress-wrapper">-->
-    <!--      <div class="block-in-progress-loader" />-->
-    <!--    </div>-->
-
-    <div class="eth-blocks">
       <div
         v-for="block in blocksToRender"
         :key="block.timestamp.toString()"
@@ -33,12 +12,10 @@
         v-action-on-scroll="{
           activeRange: 0.9,
           onScrollCallback: (el, scrollSpeed, scrollPosition) => {
-            const windowHeight = 1200;
-            const basePosition = 250;
             const blockClientRect = el.elNode.getBoundingClientRect();
             const blockPositionTop = blockClientRect.top;
             const aniCoef = Math.abs(
-              (blockPositionTop - basePosition) / windowHeight,
+              (blockPositionTop - blocksBasePosition) / windowInnerHeight,
             );
 
             gsap.to(el.elNode, {
@@ -47,22 +24,6 @@
               scale: 1 - aniCoef / 2,
               opacity: 1 - aniCoef * 3,
             });
-            if (aniCoef > 0.06) {
-              block.aniCoef = aniCoef;
-              if (
-                !activeBlock ||
-                (block.aniCoef > activeBlock.aniCoef &&
-                  activeBlock.timestamp.toString() !==
-                    block.timestamp.toString())
-              ) {
-                activeBlock = block;
-                ethBlocksAnimation.imageChange(imgHtmlEl);
-              }
-            }
-            ethBlocksAnimation.glassBlockPositionsUpdate(
-              block.timestamp.toString(),
-              blockClientRect,
-            );
           },
         }"
         class="eth-block"
@@ -127,10 +88,8 @@
                 </div>
               </div>
             </div>
-            <!--            </div>-->
           </div>
           <div class="content-row row-wrap">
-            <!--            <div>-->
             <div v-if="block.blockETHBurned" class="content-block supply">
               <svg
                 width="14"
@@ -245,7 +204,6 @@
           </div>
         </div>
       </div>
-      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -268,7 +226,6 @@ import {
 gsap.registerPlugin(SplitText);
 
 const maxBlocks = 10;
-const activeBlock = ref<BlockExtended | null>(null);
 
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
@@ -277,12 +234,7 @@ const blocksToRender = computed<BlockExtended[]>(() => {
 });
 
 const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
-  // const target = event.target as Element;
-  // const titles = target.querySelectorAll(".content-title");
-  // if (titles.length < 1) return;
   const tl = gsap.timeline({});
-  // tl.to(titles, { opacity: status ? 1 : 0 });
-
   tl.call(
     () => {
       const blockToAnimate = blocks.value.get(blockTimestamp);
@@ -296,26 +248,6 @@ const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
 };
 
 const blocks = ref<Map<string, BlockExtended>>(new Map());
-// const defaultBlockTimeAverage = 15;
-// const averageBlockTime = ref(defaultBlockTimeAverage);
-
-// const tlInProgress = gsap.timeline({
-//   onStart: () => {
-//     Canvas3.setMeshPositionsUpdate(true);
-//   },
-//   onComplete: () => {
-//     Canvas3.setMeshPositionsUpdate(false);
-//   },
-// });
-
-// const animateNewBlockInProgress = () => {
-//   tlInProgress.clear();
-//   tlInProgress.fromTo(
-//     ".block-in-progress-loader",
-//     { width: 0 },
-//     { width: "100%", duration: averageBlockTime.value },
-//   );
-// };
 
 const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
   if (elementsToAni.length) {
@@ -407,6 +339,12 @@ const addBlockListener = () => {
   };
 };
 
+const windowInnerHeight = ref(window?.innerHeight ?? 1200);
+const blocksTopPadding = ref(0.25); // percent
+const blocksBasePosition = ref(
+  windowInnerHeight.value * blocksTopPadding.value,
+); // percent
+
 const imgHtmlEl = ref<HTMLImageElement | null>(null);
 
 onUnmounted(() => eventSource?.close());
@@ -461,23 +399,7 @@ onMounted(async () => {
 }
 
 .eth-blocks {
-  padding-top: 25%;
-  //border: 1px solid red;
 }
-
-//.block-in-progress-wrapper {
-//  max-width: 423px;
-//  margin: 0px auto;
-//  border: 1px solid white;
-//  border-radius: 5px;
-//}
-//.block-in-progress-loader {
-//  height: 6px;
-//  width: 0;
-//  background: white;
-//  position: relative;
-//  border-radius: 5px;
-//}
 
 .eth-block {
   overflow: hidden;
