@@ -23,6 +23,7 @@ type EthBlocksAnimationSetup = {
 type EthBlocksAnimation = {
   setup: EthBlocksAnimationSetup | null;
   init: (imgHtmlEl: HTMLImageElement) => void;
+  createMesh: () => void;
   render: () => void;
   imageChange: (imgHtmlEl: HTMLImageElement | null) => void;
   glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
@@ -35,25 +36,30 @@ const defaultUniforms = {
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
-  init: async (imgHtmlEl: HTMLImageElement): Promise<void> => {
+  init: async (ethBlocks: HTMLElement): Promise<void> => {
     if (!ethBlocksAnimation) return;
-    await Canvas3.addImageAsMesh(
-      imgHtmlEl, //imgHtmlEl
-      "playEthBlockGlass", //shaderName
-      "ethBlockBg", //meshId
-      defaultUniforms, //meshUniforms
-      {}, //activateMeshUniforms
-    );
-    ethBlocksAnimation.setup = {
-      meshId: "ethBlockBg",
-      mesh: Canvas3.getMeshFromSceneByName("ethBlockBg") ?? null,
-      blocksVec4Positions: new Map(),
-      uniforms: defaultUniforms,
-    };
+    // await Canvas3.addImageAsMesh(
+    //   imgHtmlEl, //imgHtmlEl
+    //   "playEthBlockGlass", //shaderName
+    //   "ethBlockBg", //meshId
+    //   defaultUniforms, //meshUniforms
+    //   {}, //activateMeshUniforms
+    // );
+    await ethBlocksAnimation.createMesh();
+
     Canvas3.addAnimationToRender(
       "ethBlocksAnimation",
       ethBlocksAnimation.render,
     );
+  },
+
+  async createMesh() {
+    // ethBlocksAnimation.setup = {
+    //   meshId: "ethBlockBg",
+    //   mesh: Canvas3.getMeshFromSceneByName("ethBlockBg") ?? null,
+    //   blocksVec4Positions: new Map(),
+    //   uniforms: defaultUniforms,
+    // };
   },
 
   async imageChange(

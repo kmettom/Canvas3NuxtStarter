@@ -3,6 +3,7 @@
     <div
       id="ethBlocks"
       class="eth-blocks"
+      ref="ethBlocks"
       :style="{ paddingTop: blocksBasePosition + 'px' }"
     >
       <div
@@ -226,6 +227,7 @@ import {
 gsap.registerPlugin(SplitText);
 
 const maxBlocks = 10;
+const ethBlocks = ref<HTMLElement | null>(null);
 
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
@@ -351,8 +353,8 @@ onUnmounted(() => eventSource?.close());
 
 onMounted(async () => {
   addBlockListener();
-  if (imgHtmlEl.value) {
-    ethBlocksAnimation.init(imgHtmlEl.value);
+  if (ethBlocks.value) {
+    ethBlocksAnimation.init(ethBlocks);
   }
 });
 
