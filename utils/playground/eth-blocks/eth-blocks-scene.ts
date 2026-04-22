@@ -14,15 +14,15 @@ type MeshMaterialUniform = Record<
 >;
 
 type EthBlocksAnimationSetup = {
-  meshId: string;
   mesh: THREE.Object3D | null;
   uniforms: MeshMaterialUniform;
   blocksVec4Positions: Map<string, Vec4Position>;
+  ethBlockEls : HTMLElement[];
 };
 
 type EthBlocksAnimation = {
   setup: EthBlocksAnimationSetup | null;
-  init: (imgHtmlEl: HTMLImageElement) => void;
+  init: (ethBlocks: HTMLElement[]) => void;
   createMesh: () => void;
   render: () => void;
   imageChange: (imgHtmlEl: HTMLImageElement | null) => void;
@@ -36,16 +36,21 @@ const defaultUniforms = {
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
-  init: async (ethBlocks: HTMLElement): Promise<void> => {
-    if (!ethBlocksAnimation) return;
-    // await Canvas3.addImageAsMesh(
-    //   imgHtmlEl, //imgHtmlEl
-    //   "playEthBlockGlass", //shaderName
-    //   "ethBlockBg", //meshId
-    //   defaultUniforms, //meshUniforms
-    //   {}, //activateMeshUniforms
-    // );
-    await ethBlocksAnimation.createMesh();
+  meshId: 'ethBlockBg',
+  init: async (ethBlocks: HTMLElement[]): Promise<void> => {
+    // if (/) return;
+
+    console.log("ethBlocks", ethBlocks)
+    const mesh = await ethBlocksAnimation.createMesh();
+
+    ethBlocksAnimation.setup = {
+      mesh: ;
+      uniforms: mesh;
+      blocksVec4Positions: Map<string, Vec4Position>;
+      ethBlockEls : HTMLElement[];
+      ethBlockEls:ethBlocks;
+    }
+
 
     Canvas3.addAnimationToRender(
       "ethBlocksAnimation",
@@ -54,12 +59,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async createMesh() {
-    // ethBlocksAnimation.setup = {
-    //   meshId: "ethBlockBg",
-    //   mesh: Canvas3.getMeshFromSceneByName("ethBlockBg") ?? null,
-    //   blocksVec4Positions: new Map(),
-    //   uniforms: defaultUniforms,
-    // };
+
+    const geometry = new THREE.PlaneGeometry(1, 1);
+    const material = new THREE.MeshBasicMaterial({ "rgb(20, 20, 20)" });
+    const rectangle = new THREE.Mesh(geometry, material);
+
+    rectangle.name = "ethBlockBg";
+    rectangle.position.set(0, 0, 0);
+    rectangle.scale.set(0, window.innerHeight, 0);
+
+    const mesh = await Canvas3.addMeshToScene(rectangle);
+    // const mesh = Canvas3.getMeshFromSceneByName("ethBlockBg");
+    return mesh;
   },
 
   async imageChange(

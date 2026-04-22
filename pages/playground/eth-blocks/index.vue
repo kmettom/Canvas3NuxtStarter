@@ -347,14 +347,14 @@ const blocksBasePosition = ref(
   windowInnerHeight.value * blocksTopPadding.value,
 ); // percent
 
-const imgHtmlEl = ref<HTMLImageElement | null>(null);
+// const imgHtmlEl = ref<HTMLImageElement | null>(null);
 
 onUnmounted(() => eventSource?.close());
 
 onMounted(async () => {
   addBlockListener();
   if (ethBlocks.value) {
-    ethBlocksAnimation.init(ethBlocks);
+    ethBlocksAnimation.init(ethBlocks.value);
   }
 });
 
