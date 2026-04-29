@@ -1,18 +1,6 @@
 import * as THREE from "three";
 import { Canvas3Options } from "~/constants/canvas3-options";
 
-export type Vec4Position = {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-};
-
-// type MeshMaterialUniform = Record<
-//   string,
-//   { duration: number; ease: string | null | undefined; value: number }
-// >;
-
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
@@ -27,20 +15,13 @@ type EthBlocksAnimation = {
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
   imageChange: (imgHtmlEl: HTMLImageElement | null) => Promise<void>;
-  // glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
 };
-
-// const defaultUniforms = {
-//   uAniInImage: { value: 1, duration: 0.5, ease: "linear" },
-//   uHover: { value: 1, duration: 0.5, ease: "linear" },
-// };
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   meshId: "ethBlockBg",
   init: async (ethBlocksWrapper: HTMLElement) => {
     const mesh = await ethBlocksAnimation.createMesh();
-
     ethBlocksAnimation.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
@@ -63,7 +44,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const imgHtmlEl = document.getElementsByClassName(
       "play-block-image",
     )[0] as HTMLImageElement;
-    // if (!imgHtmlEl) return;
+    if (!imgHtmlEl) return;
     const bitmap = await createImageBitmap(imgHtmlEl, {
       imageOrientation: "flipY",
     });
@@ -77,6 +58,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uImage: { value: texture },
+        uAniInImage: { value: 1 },
+        uHover: { value: 1 },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
         uMouse: { value: new THREE.Vector2(0, 0) },
         uMouseMovement: { value: new THREE.Vector2(0, 0) },
@@ -113,11 +96,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     Canvas3.addMeshToScene(mesh);
 
-    return mesh;
+    return mesh as THREE.Mesh;
   },
 
-  async imageChange(imgHtmlEl: HTMLImageElement | null) {
-    console.log(imgHtmlEl);
+  async imageChange(imgHtmlEl) {
     if (!imgHtmlEl) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
@@ -189,9 +171,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const halfW = Number((clientRect.width * 0.5).toFixed(1));
     const halfH = Number((clientRect.height * 0.5).toFixed(1));
-    const vec4Position = new THREE.Vector4(x, y, halfW, halfH);
-    return vec4Position;
-    // ethBlocksAnimation.setup?.blocksVec4Positions.set(id, vec4Position);
+    return new THREE.Vector4(x, y, halfW, halfH);
   },
 
   calculateUBlockPositions: () => {
@@ -206,7 +186,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       .filter(Boolean);
 
     while (blocksPositions.length < 10) {
-      blocksPositions.push(new THREE.Vector4(0, 0, 0, 0));
+      blocksPositions.push(new THREE.Vector4(100, 100, 100, 100));
     }
 
     return blocksPositions;
@@ -215,8 +195,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   //TODO: bind this
   render: () => {
     if (!ethBlocksAnimation.setup) return;
-    // TODO: remove blocksVec4Positions and use directly the blocks HTML bounts as positions
-
     const { mesh } = ethBlocksAnimation.setup;
     if (!mesh) return;
     const meshToUpdate = ethBlocksAnimation.setup?.mesh as
@@ -227,8 +205,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
     const uBlocksPositions = ethBlocksAnimation.calculateUBlockPositions();
-
-    console.log("uBlocksPositions", uBlocksPositions);
 
     material.uniforms.uBlocks = { value: uBlocksPositions };
     material.uniforms.uBlockCount = {

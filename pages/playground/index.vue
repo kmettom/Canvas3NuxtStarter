@@ -6,6 +6,13 @@
         <div>ethBlock 1</div>
         <div>ethBlock 2</div>
         <div>ethBlock 3</div>
+        <div>ethBlock 3</div>
+        <div>ethBlock 5</div>
+        <div>ethBlock 5</div>
+        <div>ethBlock 7</div>
+        <div>ethBlock 7</div>
+        <div>ethBlock 9</div>
+        <div>ethBlock 10</div>
       </div>
 
       <!--      <nuxt-link href="/playground/1">-->
