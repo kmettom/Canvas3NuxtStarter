@@ -15,15 +15,14 @@ export type Vec4Position = {
 
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
-  // uniforms: MeshMaterialUniform;
-  blocksVec4Positions: Map<string, Vec4Position>;
-  ethBlockEls: HTMLElement[];
+  ethBlocks: HTMLCollection;
 };
 
 type EthBlocksAnimation = {
+  meshId: string;
   setup: EthBlocksAnimationSetup | null;
   init: (ethBlocksWrapper: HTMLElement) => void;
-  createMesh: (ethBlocksWrapper: HTMLElement) => void;
+  createMesh: (ethBlocksWrapper: HTMLElement) => THREE.Mesh;
   render: () => void;
   imageChange: (imgHtmlEl: HTMLImageElement | null) => void;
   // glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
@@ -36,18 +35,16 @@ type EthBlocksAnimation = {
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
-  // meshId: 'ethBlockBg',
+  meshId: "ethBlockBg",
   init: async (ethBlocksWrapper: HTMLElement): Promise<void> => {
     console.log("ethBlocksWrapper", ethBlocksWrapper);
     const mesh = await ethBlocksAnimation.createMesh(ethBlocksWrapper);
     console.log("mesh", mesh);
-    // ethBlocksAnimation.setup = {
-    //   mesh: mesh,
-    //   // uniforms: ;
-    //   blocksVec4Positions: Map<string, Vec4Position>,
-    //   ethBlockEls : HTMLElement[],
-    //   ethBlockEls:ethBlocks,
-    // }
+
+    ethBlocksAnimation.setup = {
+      mesh: mesh,
+      ethBlocks: ethBlocksWrapper.children,
+    };
 
     Canvas3.addAnimationToRender(
       "ethBlocksAnimation",
@@ -55,8 +52,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     );
   },
 
-  async createMesh(ethBlocksWrapper) {
-    const meshId = "ethBlockBg";
+  async createMesh(ethBlocksWrapper): Promise<THREE.Mesh> {
     const vertexShader = Canvas3Options.shaders.playEthBlockGlass.vertexShader;
     const fragmentShader =
       Canvas3Options.shaders.playEthBlockGlass.fragmentShader;
@@ -109,16 +105,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
       transparent: true,
-      name: meshId,
+      name: this.meshId,
       // wireframe: true,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.name = meshId;
+    mesh.name = this.meshId;
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
 
     Canvas3.addMeshToScene(mesh);
+
+    return mesh;
 
     // console.log("createMesh")
     // const geometry = new THREE.PlaneGeometry(1, 1);
@@ -142,7 +140,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     console.log(imgHtmlEl);
     if (!imgHtmlEl) return;
 
-    const mesh = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined;
+    const mesh = this.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
 
     const material = mesh.material as THREE.ShaderMaterial;
@@ -219,6 +217,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   render: (): void => {
     if (!ethBlocksAnimation.setup) return;
     // TODO: remove blocksVec4Positions and use directly the blocks HTML bounts as positions
+
     // const { mesh, blocksVec4Positions } = ethBlocksAnimation.setup;
     // if (!mesh) return;
     // const meshToUpdate = ethBlocksAnimation.setup?.mesh as

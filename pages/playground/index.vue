@@ -2,6 +2,12 @@
   <div class="page-container">
     <h1 class="heading-1 play-headline">Playground</h1>
     <div class="playground-projects">
+      <div id="ethBlocks" ref="ethBlocks">
+        <div>ethBlock 1</div>
+        <div>ethBlock 2</div>
+        <div>ethBlock 3</div>
+      </div>
+
       <!--      <nuxt-link href="/playground/1">-->
       <!--        <div class="play-1">-->
       <!--          <h3 class="body-l">Shaders playground</h3>-->
@@ -66,11 +72,6 @@
           />
         </div>
       </nuxt-link>
-      <div id="ethBlocks" ref="ethBlocks" style="border: 1px solid purple">
-        <div>ethBlock 1</div>
-        <div>ethBlock 2</div>
-        <div>ethBlock 3</div>
-      </div>
     </div>
   </div>
 </template>
@@ -107,6 +108,12 @@ onMounted(() => {
 });
 </script>
 <style lang="scss" scoped>
+#ethBlocks {
+  div {
+    height: 200px;
+    border: 1px solid purple;
+  }
+}
 .play-link {
   color: inherit;
   text-decoration: none;
