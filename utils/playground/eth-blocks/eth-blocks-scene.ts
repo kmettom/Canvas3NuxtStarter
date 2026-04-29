@@ -20,17 +20,15 @@ type EthBlocksAnimation = {
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   meshId: "ethBlockBg",
-  init: async (ethBlocksWrapper: HTMLElement) => {
-    const mesh = await ethBlocksAnimation.createMesh();
-    ethBlocksAnimation.setup = {
+  async init(ethBlocksWrapper: HTMLElement) {
+    const mesh = await this.createMesh();
+    console.log("mesh", mesh);
+    this.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
     };
 
-    Canvas3.addAnimationToRender(
-      "ethBlocksAnimation",
-      ethBlocksAnimation.render,
-    );
+    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render);
   },
 
   async createMesh() {
@@ -44,14 +42,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const imgHtmlEl = document.getElementsByClassName(
       "play-block-image",
     )[0] as HTMLImageElement;
-    if (!imgHtmlEl) return;
+
     const bitmap = await createImageBitmap(imgHtmlEl, {
       imageOrientation: "flipY",
     });
     const texture = new THREE.Texture(bitmap);
     texture.needsUpdate = true;
 
-    const uBlocksPositions = ethBlocksAnimation.calculateUBlockPositions();
+    const uBlocksPositions = this.calculateUBlockPositions();
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
@@ -174,41 +172,39 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return new THREE.Vector4(x, y, halfW, halfH);
   },
 
-  calculateUBlockPositions: () => {
-    if (!ethBlocksAnimation.setup) return [];
-    const ethBlocks = ethBlocksAnimation.setup.ethBlocks;
-    const blocksPositions = Array.from(ethBlocks ?? [])
-      .slice(0, 10)
-      .map((blockEl) => {
-        const bounds = blockEl.getBoundingClientRect();
-        return ethBlocksAnimation.vec4PositionFromClientRect(bounds);
-      })
-      .filter(Boolean);
-
-    while (blocksPositions.length < 10) {
-      blocksPositions.push(new THREE.Vector4(100, 100, 100, 100));
+  calculateUBlockPositions() {
+    if (!this.setup?.ethBlocks) {
+      return Array.from(
+        { length: 10 },
+        () => new THREE.Vector4(100, 100, 100, 100),
+      );
     }
 
-    return blocksPositions;
+    const blocks = Array.from(this.setup.ethBlocks).slice(0, 10);
+    const positions: THREE.Vector4[] = blocks.map((el) => {
+      const bounds = (el as HTMLElement).getBoundingClientRect();
+      return this.vec4PositionFromClientRect(bounds);
+    });
+
+    while (positions.length < 10) {
+      positions.push(new THREE.Vector4(100, 100, 100, 100));
+    }
+
+    return positions;
   },
 
-  //TODO: bind this
-  render: () => {
-    if (!ethBlocksAnimation.setup) return;
-    const { mesh } = ethBlocksAnimation.setup;
+  render() {
+    if (!this?.setup) return;
+    const { mesh } = this.setup;
     if (!mesh) return;
-    const meshToUpdate = ethBlocksAnimation.setup?.mesh as
-      | THREE.Mesh
-      | undefined;
+    const meshToUpdate = this.setup?.mesh as THREE.Mesh | undefined;
     if (!meshToUpdate) return;
 
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
-    const uBlocksPositions = ethBlocksAnimation.calculateUBlockPositions();
+    const uBlocksPositions = this.calculateUBlockPositions();
 
-    material.uniforms.uBlocks = { value: uBlocksPositions };
-    material.uniforms.uBlockCount = {
-      value: Math.min(uBlocksPositions.length, 10),
-    };
+    material.uniforms.uBlocks.value = uBlocksPositions;
+    material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);
   },
 };
