@@ -66,11 +66,18 @@
           />
         </div>
       </nuxt-link>
+      <div id="ethBlocks" ref="ethBlocks" style="border: 1px solid purple">
+        <div>ethBlock 1</div>
+        <div>ethBlock 2</div>
+        <div>ethBlock 3</div>
+      </div>
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { pageTransition } from "~/utils/animations/pageTransition";
+import { onMounted } from "vue";
+import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
 useSeoMeta({
   title: "Canvas3 - Playground",
@@ -84,6 +91,8 @@ const navigationStore = useNavigationStore();
 const ethBlockImageAniIn = ref(false);
 const ethBlockHover = ref(false);
 
+const ethBlocks = ref<HTMLElement | null>(null);
+
 onMounted(() => {
   const timeDelay = navigationStore.webFirstLoadDone
     ? pageTransition.setup.duration * 2500
@@ -92,6 +101,9 @@ onMounted(() => {
   setTimeout(() => {
     ethBlockImageAniIn.value = true;
   }, timeDelay);
+  if (ethBlocks.value) {
+    ethBlocksAnimation.init(ethBlocks.value);
+  }
 });
 </script>
 <style lang="scss" scoped>

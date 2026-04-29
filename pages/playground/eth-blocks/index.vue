@@ -2,8 +2,8 @@
   <div class="eth-blocks-page page-container eth-base-text">
     <div
       id="ethBlocks"
-      class="eth-blocks"
       ref="ethBlocks"
+      class="eth-blocks"
       :style="{ paddingTop: blocksBasePosition + 'px' }"
     >
       <div
@@ -321,6 +321,7 @@ const animateNewBlockAdded = (
 const { data: initialBlocks } = await useFetch(
   "/api/playground/eth-blocks/latest",
 );
+console.log("initialBlocks", initialBlocks);
 initialBlocks.value?.forEach((raw: BlockExtended) => {
   const block = deserializeBlock(raw);
   blocks.value.set(block.timestamp.toString(), generateBlockData(block));
