@@ -22,8 +22,9 @@ type EthBlocksAnimation = {
   meshId: string;
   setup: EthBlocksAnimationSetup | null;
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
-  createMesh: (ethBlocksWrapper: HTMLElement) => Promise<THREE.Mesh>;
+  createMesh: () => Promise<THREE.Mesh>;
   vec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
+  calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
   imageChange: (imgHtmlEl: HTMLImageElement | null) => Promise<void>;
   // glassBlockPositionsUpdate: (id: string, clientRect: DOMRect) => void;
@@ -38,7 +39,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   meshId: "ethBlockBg",
   init: async (ethBlocksWrapper: HTMLElement) => {
-    const mesh = await ethBlocksAnimation.createMesh(ethBlocksWrapper);
+    const mesh = await ethBlocksAnimation.createMesh();
 
     ethBlocksAnimation.setup = {
       mesh: mesh,
@@ -51,7 +52,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     );
   },
 
-  async createMesh(ethBlocksWrapper) {
+  async createMesh() {
     const vertexShader = Canvas3Options.shaders.playEthBlockGlass.vertexShader;
     const fragmentShader =
       Canvas3Options.shaders.playEthBlockGlass.fragmentShader;
@@ -68,6 +69,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     });
     const texture = new THREE.Texture(bitmap);
     texture.needsUpdate = true;
+
+    const uBlocksPositions = ethBlocksAnimation.calculateUBlockPositions();
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
@@ -87,14 +90,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uBlockCount: {
-          value: 10,
+          value: Math.min(uBlocksPositions.length, 10),
+        },
+        uBlocks: {
+          value: uBlocksPositions,
         },
         uBlockColor: {
           value: 0,
         },
-        // uBlocks: {
-        //   value: [],
-        // },
       },
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
@@ -191,12 +194,30 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     // ethBlocksAnimation.setup?.blocksVec4Positions.set(id, vec4Position);
   },
 
+  calculateUBlockPositions: () => {
+    if (!ethBlocksAnimation.setup) return [];
+    const ethBlocks = ethBlocksAnimation.setup.ethBlocks;
+    const blocksPositions = Array.from(ethBlocks ?? [])
+      .slice(0, 10)
+      .map((blockEl) => {
+        const bounds = blockEl.getBoundingClientRect();
+        return ethBlocksAnimation.vec4PositionFromClientRect(bounds);
+      })
+      .filter(Boolean);
+
+    while (blocksPositions.length < 10) {
+      blocksPositions.push(new THREE.Vector4(0, 0, 0, 0));
+    }
+
+    return blocksPositions;
+  },
+
   //TODO: bind this
   render: () => {
     if (!ethBlocksAnimation.setup) return;
     // TODO: remove blocksVec4Positions and use directly the blocks HTML bounts as positions
 
-    const { mesh, ethBlocks } = ethBlocksAnimation.setup;
+    const { mesh } = ethBlocksAnimation.setup;
     if (!mesh) return;
     const meshToUpdate = ethBlocksAnimation.setup?.mesh as
       | THREE.Mesh
@@ -205,32 +226,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
-    const blocksPositions = Array.from(ethBlocks ?? [])
-      .slice(0, 10)
-      .map((blockEl) => {
-        const bounds = blockEl.getBoundingClientRect();
-        return ethBlocksAnimation.vec4PositionFromClientRect(bounds);
-        // return new THREE.Vector4(bounds.x, bounds.y , bounds.width, bounds.width)
-      })
-      .filter(Boolean);
+    const uBlocksPositions = ethBlocksAnimation.calculateUBlockPositions();
 
-    console.log("blocksPositions", blocksPositions);
+    console.log("uBlocksPositions", uBlocksPositions);
 
-    // if (material.uniforms.uBlocks)
-    material.uniforms.uBlocks = { value: blocksPositions };
-
-    // const blocks = Array.from(blocksVec4Positions.values() ?? [])
-    //   .slice(0, 10)
-    //   .map((b) => new THREE.Vector4(b.x, b.y, b.z, b.w))
-    //   .filter(Boolean);
-    //
-    // while (blocks.length < 10) {
-    //   blocks.push(new THREE.Vector4(0, 0, 0, 0));
-    // }
-    //
-    // material.uniforms.uBlocks = { value: blocks };
-    // material.uniforms.uBlockCount = {
-    //   value: Math.min(ethBlocksAnimation.setup?.blocksVec4Positions.size, 10),
-    // };
+    material.uniforms.uBlocks = { value: uBlocksPositions };
+    material.uniforms.uBlockCount = {
+      value: Math.min(uBlocksPositions.length, 10),
+    };
   },
 };
