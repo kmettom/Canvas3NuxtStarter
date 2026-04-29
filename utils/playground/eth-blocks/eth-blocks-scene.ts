@@ -173,6 +173,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   calculateUBlockPositions() {
+    console.log("calculateUBlockPositions", this.setup?.ethBlocks);
     if (!this.setup?.ethBlocks) {
       return Array.from(
         { length: 10 },
@@ -194,15 +195,26 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   render() {
-    if (!this?.setup) return;
-    const { mesh } = this.setup;
+    //TODO: check why THIS is not binding -> because this is moved to VANVAS3 - so bind this to this object
+    console.log("render", ethBlocksAnimation)
+    if (!ethBlocksAnimation?.setup) return;
+    console.log("render 2")
+
+    const { mesh } = ethBlocksAnimation.setup;
+    console.log("render 3")
+
     if (!mesh) return;
-    const meshToUpdate = this.setup?.mesh as THREE.Mesh | undefined;
+    console.log("render 4")
+
+    const meshToUpdate = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined;
     if (!meshToUpdate) return;
+    console.log("render 5")
+
 
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
-    const uBlocksPositions = this.calculateUBlockPositions();
+    const uBlocksPositions = ethBlocksAnimation.calculateUBlockPositions();
+    console.log("uBlocksPositions", uBlocksPositions)
 
     material.uniforms.uBlocks.value = uBlocksPositions;
     material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);
