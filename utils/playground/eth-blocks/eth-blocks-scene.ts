@@ -61,7 +61,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     gsap.to(elNode, {
       duration: 0,
       ease: "linear",
-      scale:  Math.max(1 - aniCoef / 3, 0.75),
+      scale: Math.max(1 - aniCoef / 3, 0.75),
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
   },

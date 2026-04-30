@@ -38,7 +38,7 @@
 </template>
 <script setup>
 import { onMounted } from "vue";
-import { infiniteLoopScrollSection } from "~/utils/play/play2";
+// import { infiniteLoopScrollSection } from "~/utils/play/play2";
 
 useSeoMeta({
   title: "Canvas3 - Playground",
@@ -56,7 +56,7 @@ const infiniteParent = ref("infiniteParent");
 
 onMounted(() => {
   setTimeout(() => {
-    infiniteLoopScrollSection(play2el.value);
+    // infiniteLoopScrollSection(play2el.value);
   }, 1000);
 });
 </script>
