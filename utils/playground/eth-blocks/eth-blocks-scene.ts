@@ -26,8 +26,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
 
-    //TODO: load all images to textures
-
     const loader = new THREE.TextureLoader();
     // const imagesAmount = 10;
 
@@ -106,7 +104,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async textureChange(index) {
-    //TODO: load all images bit by bit to use in shader with transition
 
     if (!this.setup) return;
 
