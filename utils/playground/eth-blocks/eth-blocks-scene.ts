@@ -37,6 +37,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/01.jpg"),
       loader.loadAsync("images/02.jpg"),
       loader.loadAsync("images/03.jpg"),
+      loader.loadAsync("images/04.jpg"),
+      loader.loadAsync("images/05.jpg"),
     ]);
 
     const blocksTopPadding = 0.25;
@@ -188,3 +190,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);
   },
 };
+
+//TODO:
+// - 6 glass blocks - show only the active once in the screen
+// - dynamic change of images
+// - maxAmount of blocks 25, remove the oldest once
