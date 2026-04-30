@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import { Canvas3Options } from "~/constants/canvas3-options";
+import type { ScrollActionType } from "#canvas3-nuxt/types/types";
+import { gsap } from "gsap";
 
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
   textures: THREE.Texture[];
+  blocksBasePosition: number;
 };
 
 type EthBlocksAnimation = {
@@ -16,6 +19,7 @@ type EthBlocksAnimation = {
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
   textureChange: (index: number) => void;
+  animateBlockSizeOnScroll: (elNode: HTMLElement) => void;
 };
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
@@ -35,11 +39,29 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/03.jpg"),
     ]);
 
+    const blocksTopPadding = 0.25;
+
     this.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
       textures: textures,
+      blocksBasePosition: window.innerHeight * blocksTopPadding,
     };
+  },
+  animateBlockSizeOnScroll(elNode) {
+    if (!this.setup) return;
+    const blockClientRect = elNode.getBoundingClientRect();
+    const blockPositionTop = blockClientRect.top;
+    const aniCoef = Math.abs(
+      (blockPositionTop - this.setup.blocksBasePosition) / window.innerHeight,
+    );
+
+    gsap.to(elNode, {
+      duration: 0,
+      ease: "linear",
+      scale: 1 - aniCoef / 2,
+      opacity: Math.max(1 - aniCoef * 3, 0.35),
+    });
   },
 
   async createMesh() {

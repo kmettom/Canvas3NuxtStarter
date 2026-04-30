@@ -4,7 +4,9 @@
       id="ethBlocks"
       ref="ethBlocks"
       class="eth-blocks"
-      :style="{ paddingTop: blocksBasePosition + 'px' }"
+      :style="{
+        paddingTop: blocksBasePosition + 'px',
+      }"
     >
       <div
         v-for="block in blocksToRender"
@@ -12,19 +14,8 @@
         :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
         v-action-on-scroll="{
           activeRange: 1,
-          onScrollCallback: (el, scrollSpeed, scrollPosition) => {
-            const blockClientRect = el.elNode.getBoundingClientRect();
-            const blockPositionTop = blockClientRect.top;
-            const aniCoef = Math.abs(
-              (blockPositionTop - blocksBasePosition) / windowInnerHeight,
-            );
-
-            gsap.to(el.elNode, {
-              duration: 0,
-              ease: 'linear',
-              scale: 1 - aniCoef / 2,
-              opacity: Math.max(1 - aniCoef * 3, 0.35),
-            });
+          onScrollCallback: (scrollObj) => {
+            ethBlocksAnimation.animateBlockSizeOnScroll(scrollObj.elNode);
           },
         }"
         class="eth-block"
@@ -223,8 +214,11 @@ import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-sce
 
 gsap.registerPlugin(SplitText);
 
-const maxBlocks = 10;
 const ethBlocks = ref<HTMLElement | null>(null);
+
+const blocksBasePosition = computed(
+  () => ethBlocksAnimation.setup?.blocksBasePosition,
+);
 
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
@@ -270,6 +264,15 @@ const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
 
 const tlNewBlockAniIn = gsap.timeline({
   onComplete: () => {},
+  onUpdate: () => {
+    if (ethBlocks.value?.children) {
+      for (let i = 0; i < ethBlocks.value?.children.length; i++) {
+        ethBlocksAnimation.animateBlockSizeOnScroll(
+          ethBlocks.value?.children[i] as HTMLElement,
+        );
+      }
+    }
+  },
 });
 
 const animateNewBlockAdded = (
@@ -277,10 +280,14 @@ const animateNewBlockAdded = (
   blockTimestamp: string,
 ) => {
   if (!target) return;
-  const el = target as Element;
+  const el = target as HTMLElement;
   if (el.classList.contains("block-added")) return;
 
-  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "236px", duration: 0.1 });
+  tlNewBlockAniIn.fromTo(
+    el,
+    { height: 0 },
+    { height: "236px", duration: 0.95 },
+  );
 
   tlNewBlockAniIn.call(
     () => {
@@ -324,17 +331,11 @@ const addBlockListener = () => {
     if (blocks.value.has(block.timestamp.toString())) return;
     blocks.value.set(block.timestamp.toString(), generateBlockData(block));
     await nextTick();
-    if (blocks.value.size > maxBlocks) {
-      eventSource.close();
-    }
+    // if (blocks.value.size > maxBlocks) {
+    //   eventSource.close();
+    // }
   };
 };
-
-const windowInnerHeight = ref(window?.innerHeight ?? 1200);
-const blocksTopPadding = ref(0.25);
-const blocksBasePosition = ref(
-  windowInnerHeight.value * blocksTopPadding.value,
-);
 
 onUnmounted(() => eventSource?.close());
 
