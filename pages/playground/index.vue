@@ -2,18 +2,18 @@
   <div class="page-container">
     <h1 class="heading-1 play-headline">Playground</h1>
     <div class="playground-projects">
-      <div id="ethBlocks" ref="ethBlocks">
-        <div>ethBlock 1</div>
-        <div>ethBlock 2</div>
-        <div>ethBlock 3</div>
-        <div>ethBlock 3</div>
-        <div>ethBlock 5</div>
-        <div>ethBlock 5</div>
-        <div>ethBlock 7</div>
-        <div>ethBlock 7</div>
-        <div>ethBlock 9</div>
-        <div>ethBlock 10</div>
-      </div>
+      <!--      <div id="ethBlocks" ref="ethBlocks">-->
+      <!--        <div>ethBlock 1</div>-->
+      <!--        <div>ethBlock 2</div>-->
+      <!--        <div>ethBlock 3</div>-->
+      <!--        <div>ethBlock 3</div>-->
+      <!--        <div>ethBlock 5</div>-->
+      <!--        <div>ethBlock 5</div>-->
+      <!--        <div>ethBlock 7</div>-->
+      <!--        <div>ethBlock 7</div>-->
+      <!--        <div>ethBlock 9</div>-->
+      <!--        <div>ethBlock 10</div>-->
+      <!--      </div>-->
 
       <!--      <nuxt-link href="/playground/1">-->
       <!--        <div class="play-1">-->
@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { pageTransition } from "~/utils/animations/pageTransition";
 import { onMounted } from "vue";
-import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
+// import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
 useSeoMeta({
   title: "Canvas3 - Playground",
@@ -99,7 +99,7 @@ const navigationStore = useNavigationStore();
 const ethBlockImageAniIn = ref(false);
 const ethBlockHover = ref(false);
 
-const ethBlocks = ref<HTMLElement | null>(null);
+// const ethBlocks = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   const timeDelay = navigationStore.webFirstLoadDone
@@ -109,9 +109,10 @@ onMounted(() => {
   setTimeout(() => {
     ethBlockImageAniIn.value = true;
   }, timeDelay);
-  if (ethBlocks.value) {
-    ethBlocksAnimation.init(ethBlocks.value);
-  }
+
+  // if (ethBlocks.value) {
+  //   ethBlocksAnimation.init(ethBlocks.value);
+  // }
 });
 </script>
 <style lang="scss" scoped>

@@ -104,7 +104,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async textureChange(index) {
-
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
@@ -123,7 +122,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   vec4PositionFromClientRect: (clientRect) => {
     const centerX = clientRect.left + clientRect.width * 0.5;
     const centerY = clientRect.top + clientRect.height * 0.5;
-    const blockPadding = 35;
+    const blockPadding = 0;
 
     const x = centerX - window.innerWidth * 0.5;
     const y = window.innerHeight * 0.5 - centerY - blockPadding;
@@ -135,10 +134,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
   calculateUBlockPositions() {
     if (!this.setup?.ethBlocks) {
-      return Array.from(
-        { length: 10 },
-        () => new THREE.Vector4(100, 100, 100, 100),
-      );
+      return Array.from({ length: 10 }, () => new THREE.Vector4(0, 0, 0, 0));
     }
 
     const blocks = Array.from(this.setup.ethBlocks).slice(0, 10);
@@ -148,7 +144,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     });
 
     while (positions.length < 10) {
-      positions.push(new THREE.Vector4(100, 100, 100, 100));
+      positions.push(new THREE.Vector4(0, 0, 0, 0));
     }
 
     return positions;

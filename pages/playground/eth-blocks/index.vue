@@ -11,7 +11,7 @@
         :key="block.timestamp.toString()"
         :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
         v-action-on-scroll="{
-          activeRange: 0.9,
+          activeRange: 1,
           onScrollCallback: (el, scrollSpeed, scrollPosition) => {
             const blockClientRect = el.elNode.getBoundingClientRect();
             const blockPositionTop = blockClientRect.top;
@@ -23,7 +23,7 @@
               duration: 0,
               ease: 'linear',
               scale: 1 - aniCoef / 2,
-              opacity: 1 - aniCoef * 3,
+              opacity: Math.max(1 - aniCoef * 3, 0.35),
             });
           },
         }"
@@ -219,10 +219,7 @@ import {
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
 import ProgressBar from "~/components/playground/eth-blocks/progressBar.vue";
-import {
-  ethBlocksAnimation,
-  // type Vec4Position,
-} from "~/utils/playground/eth-blocks/eth-blocks-scene";
+import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
 gsap.registerPlugin(SplitText);
 
@@ -272,9 +269,7 @@ const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
 };
 
 const tlNewBlockAniIn = gsap.timeline({
-  onComplete: () => {
-    // animateNewBlockInProgress();
-  },
+  onComplete: () => {},
 });
 
 const animateNewBlockAdded = (
@@ -285,11 +280,7 @@ const animateNewBlockAdded = (
   const el = target as Element;
   if (el.classList.contains("block-added")) return;
 
-  tlNewBlockAniIn.fromTo(
-    el,
-    { height: 0 },
-    { height: "236px", duration: 1.55 },
-  );
+  tlNewBlockAniIn.fromTo(el, { height: 0 }, { height: "236px", duration: 0.1 });
 
   tlNewBlockAniIn.call(
     () => {
@@ -312,8 +303,6 @@ const animateNewBlockAdded = (
   );
   aniContentValues(valuesElementsIndex1);
 
-  // animateNewBlockInProgress();
-
   tlNewBlockAniIn.play();
   el.classList.add("block-added");
 };
@@ -321,7 +310,6 @@ const animateNewBlockAdded = (
 const { data: initialBlocks } = await useFetch(
   "/api/playground/eth-blocks/latest",
 );
-console.log("initialBlocks", initialBlocks);
 initialBlocks.value?.forEach((raw: BlockExtended) => {
   const block = deserializeBlock(raw);
   blocks.value.set(block.timestamp.toString(), generateBlockData(block));
@@ -343,12 +331,10 @@ const addBlockListener = () => {
 };
 
 const windowInnerHeight = ref(window?.innerHeight ?? 1200);
-const blocksTopPadding = ref(0.25); // percent
+const blocksTopPadding = ref(0.25);
 const blocksBasePosition = ref(
   windowInnerHeight.value * blocksTopPadding.value,
-); // percent
-
-// const imgHtmlEl = ref<HTMLImageElement | null>(null);
+);
 
 onUnmounted(() => eventSource?.close());
 
@@ -359,10 +345,10 @@ onMounted(async () => {
   }
 });
 
-//https://www.shadertoy.com/view/wccSDf
 // https://www.shadertoy.com/view/wccSDf
-//     https://www.shadertoy.com/view/3cdXDX
-//         https://www.shadertoy.com/view/tfyXRz
+// https://www.shadertoy.com/view/wccSDf
+// https://www.shadertoy.com/view/3cdXDX
+// https://www.shadertoy.com/view/tfyXRz
 </script>
 <style lang="scss" scoped>
 .eth-base-text {
@@ -411,7 +397,6 @@ onMounted(async () => {
   position: relative;
   width: 423px;
   margin: 20px auto;
-  border: 1px solid white;
   border-radius: 25px;
 
   .content-wrapper {
@@ -419,7 +404,6 @@ onMounted(async () => {
     position: relative;
     display: flex;
     flex-direction: column;
-    //justify-content: space-between;
     margin: 15px 0;
   }
 
@@ -452,7 +436,6 @@ onMounted(async () => {
 
   .content-title {
     padding-right: 10px;
-    //padding-bottom: 3px;
     &.gas {
       padding-bottom: 8px;
     }

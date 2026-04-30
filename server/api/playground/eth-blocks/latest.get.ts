@@ -1,7 +1,7 @@
 import { createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
 
-const NUM_LAST_BLOCKS = 3;
+export const AMOUNT_OF_BLOCKS = 10;
 
 export default defineEventHandler(async (event) => {
   const { alchemyToken } = useRuntimeConfig(event);
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const latestBlockNumber = await client.getBlockNumber();
   const blockNumbers = Array.from(
-    { length: NUM_LAST_BLOCKS },
+    { length: AMOUNT_OF_BLOCKS },
     (_, i) => latestBlockNumber - BigInt(i),
   );
 
