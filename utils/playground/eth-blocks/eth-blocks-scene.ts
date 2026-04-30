@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { Canvas3Options } from "~/constants/canvas3-options";
-import type { ScrollActionType } from "#canvas3-nuxt/types/types";
 import { gsap } from "gsap";
 
 type EthBlocksAnimationSetup = {
@@ -15,7 +14,7 @@ type EthBlocksAnimation = {
   setup: EthBlocksAnimationSetup | null;
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
   createMesh: () => Promise<THREE.Mesh>;
-  vec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
+  getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
   textureChange: (index: number) => void;
@@ -34,6 +33,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     // const imagesAmount = 10;
 
     const textures = await Promise.all([
+      loader.loadAsync("images/00.png"),
       loader.loadAsync("images/01.jpg"),
       loader.loadAsync("images/02.jpg"),
       loader.loadAsync("images/03.jpg"),
@@ -61,7 +61,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     gsap.to(elNode, {
       duration: 0,
       ease: "linear",
-      scale: 1 - aniCoef / 2,
+      scale:  Math.max(1 - aniCoef / 3, 0.75),
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
   },
@@ -75,7 +75,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const loader = new THREE.TextureLoader();
 
-    const texture = await loader.loadAsync("images/01.jpg");
+    const texture = await loader.loadAsync("images/00.png");
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.needsUpdate = true;
 
@@ -143,7 +143,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     material.uniforms.uImage.value = newTexture;
   },
 
-  vec4PositionFromClientRect: (clientRect) => {
+  getVec4PositionFromClientRect: (clientRect) => {
     const centerX = clientRect.left + clientRect.width * 0.5;
     const centerY = clientRect.top + clientRect.height * 0.5;
     const blockPadding = 0;
@@ -164,7 +164,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const blocks = Array.from(this.setup.ethBlocks).slice(0, 10);
     const positions: THREE.Vector4[] = blocks.map((el) => {
       const bounds = (el as HTMLElement).getBoundingClientRect();
-      return this.vec4PositionFromClientRect(bounds);
+      return this.getVec4PositionFromClientRect(bounds);
     });
 
     while (positions.length < 10) {
