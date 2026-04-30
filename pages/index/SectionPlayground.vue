@@ -24,7 +24,6 @@
       </NuxtLink>
       <img
         v-canvas3-image="{
-          loadStrategy: 'preload',
           uniforms: {
             uAniInImage: {
               value: ethBlockImageAniIn ? 1 : 0,
@@ -36,18 +35,13 @@
               duration: 0.5,
               ease: 'linear',
             },
-            uBlocks: {
-              value: 5,
-              duration: 0,
-              ease: 'linear',
-            },
             uHover: {
               value: 1,
               duration: 0.5,
               ease: 'linear',
             },
           },
-          shaderName: 'playEthBlock',
+          shaderName: 'playEthBlockNoDesign',
         }"
         :src="`/images/01.JPG`"
         alt=""

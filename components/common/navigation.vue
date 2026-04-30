@@ -15,24 +15,24 @@
         </span>
       </div>
     </nav>
-    <nav v-else class="navigation-items">
-      <NuxtLink
-        :ref="navItemRefs.set"
-        href="/"
-        class="navigation-item nav-play nav-link-home"
-        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-home')"
-      >
-        <span> Home </span>
-      </NuxtLink>
-      <NuxtLink
-        :ref="navItemRefs.set"
-        href="/playground"
-        class="navigation-item nav-play nav-link-play"
-        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-play')"
-      >
-        <span> Playground </span>
-      </NuxtLink>
-    </nav>
+    <!--    <nav v-else class="navigation-items">-->
+    <!--      <NuxtLink-->
+    <!--        :ref="navItemRefs.set"-->
+    <!--        href="/"-->
+    <!--        class="navigation-item nav-play nav-link-home"-->
+    <!--        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-home')"-->
+    <!--      >-->
+    <!--        <span> Home </span>-->
+    <!--      </NuxtLink>-->
+    <!--      <NuxtLink-->
+    <!--        :ref="navItemRefs.set"-->
+    <!--        href="/playground"-->
+    <!--        class="navigation-item nav-play nav-link-play"-->
+    <!--        @mouseenter="navigationHoverAnimatePlay($el, 'nav-link-play')"-->
+    <!--      >-->
+    <!--        <span> Playground </span>-->
+    <!--      </NuxtLink>-->
+    <!--    </nav>-->
   </div>
 </template>
 <script setup lang="ts">
@@ -53,12 +53,12 @@ const homePage = computed(() => {
   return route.name === "index";
 });
 
-const navigationHoverAnimatePlay = (el, elClassName) => {
-  const text = el?.querySelector(`.${elClassName} span`);
-  animateTextSpan(text);
-};
+// const navigationHoverAnimatePlay = (el, elClassName) => {
+//   const text = el?.querySelector(`.${elClassName} span`);
+//   animateTextSpan(text);
+// };
 
-const animateTextSpan = (text) => {
+const animateTextSpan = (text: HTMLElement) => {
   if (!text) return;
   const tl = gsap.timeline();
   tl.to(text, {
@@ -75,7 +75,7 @@ const animateTextSpan = (text) => {
 };
 
 const navigationHoverAnimate = (index: number) => {
-  const text = navItemRefs.value[index]?.querySelector("span");
+  const text = navItemRefs.value[index]?.querySelector("span") as HTMLElement;
   animateTextSpan(text);
 };
 
