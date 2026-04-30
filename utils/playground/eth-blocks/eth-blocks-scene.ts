@@ -4,6 +4,7 @@ import { Canvas3Options } from "~/constants/canvas3-options";
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
+  textures: THREE.Texture[];
 };
 
 type EthBlocksAnimation = {
@@ -14,7 +15,7 @@ type EthBlocksAnimation = {
   vec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
-  imageChange: (imgHtmlEl: HTMLImageElement | null) => Promise<void>;
+  textureChange: (index: number) => void;
 };
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
@@ -22,13 +23,25 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   meshId: "ethBlockBg",
   async init(ethBlocksWrapper: HTMLElement) {
     const mesh = await this.createMesh();
-    console.log("mesh", mesh);
+
+    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
+
+    //TODO: load all images to textures
+
+    const loader = new THREE.TextureLoader();
+    // const imagesAmount = 10;
+
+    const textures = await Promise.all([
+      loader.loadAsync("images/01.jpg"),
+      loader.loadAsync("images/02.jpg"),
+      loader.loadAsync("images/03.jpg"),
+    ]);
+
     this.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
+      textures: textures,
     };
-
-    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render);
   },
 
   async createMesh() {
@@ -38,15 +51,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    //TODO: load all images bit by bit to use in shader with transition
-    const imgHtmlEl = document.getElementsByClassName(
-      "play-block-image",
-    )[0] as HTMLImageElement;
+    const loader = new THREE.TextureLoader();
 
-    const bitmap = await createImageBitmap(imgHtmlEl, {
-      imageOrientation: "flipY",
-    });
-    const texture = new THREE.Texture(bitmap);
+    const texture = await loader.loadAsync("images/01.jpg");
+    texture.colorSpace = THREE.SRGBColorSpace;
     texture.needsUpdate = true;
 
     const uBlocksPositions = this.calculateUBlockPositions();
@@ -65,7 +73,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uTextureSize: {
-          value: new THREE.Vector2(bitmap.width, bitmap.height),
+          value: new THREE.Vector2(texture.width, texture.height),
         },
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -97,8 +105,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh as THREE.Mesh;
   },
 
-  async imageChange(imgHtmlEl) {
-    if (!imgHtmlEl) return;
+  async textureChange(index) {
+    //TODO: load all images bit by bit to use in shader with transition
+
+    if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
@@ -106,57 +116,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const material = mesh.material as THREE.ShaderMaterial;
     if (!material?.uniforms?.uImage) return;
 
-    const nextVertexShader =
-      Canvas3Options.shaders.playEthBlockGlass.vertexShader;
-    const nextFragmentShader =
-      Canvas3Options.shaders.playEthBlockGlass.fragmentShader;
-
-    const bounds = imgHtmlEl.getBoundingClientRect();
-
-    const bitmap = await createImageBitmap(imgHtmlEl, {
-      imageOrientation: "flipY",
-    });
-
-    const newTexture = new THREE.Texture(bitmap);
-
+    const newTexture = this.setup.textures[index];
+    if (!newTexture) return;
+    newTexture.colorSpace = THREE.SRGBColorSpace;
     newTexture.needsUpdate = true;
-
-    const oldTexture = material.uniforms.uImage.value as
-      | THREE.Texture
-      | undefined;
-    const oldBitmap = oldTexture?.image as ImageBitmap | undefined;
-
     material.uniforms.uImage.value = newTexture;
-
-    if (material.uniforms.uTextureSize?.value?.set) {
-      material.uniforms.uTextureSize.value.set(bitmap.width, bitmap.height);
-    }
-
-    if (material.uniforms.uMeshSize?.value?.set) {
-      material.uniforms.uMeshSize.value.set(bounds.width, bounds.height);
-    }
-
-    if (material.uniforms.uViewport?.value?.set) {
-      material.uniforms.uViewport.value.set(
-        window.innerWidth,
-        window.innerHeight,
-      );
-    }
-
-    const shaderChanged =
-      material.vertexShader !== nextVertexShader ||
-      material.fragmentShader !== nextFragmentShader;
-
-    if (shaderChanged) {
-      material.vertexShader = nextVertexShader;
-      material.fragmentShader = nextFragmentShader;
-      material.needsUpdate = true;
-    }
-
-    mesh.scale.set(bounds.width, bounds.height, mesh.scale.z);
-
-    oldTexture?.dispose();
-    oldBitmap?.close?.();
   },
 
   vec4PositionFromClientRect: (clientRect) => {
@@ -173,7 +137,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   calculateUBlockPositions() {
-    console.log("calculateUBlockPositions", this.setup?.ethBlocks);
     if (!this.setup?.ethBlocks) {
       return Array.from(
         { length: 10 },
@@ -195,26 +158,16 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   render() {
-    //TODO: check why THIS is not binding -> because this is moved to VANVAS3 - so bind this to this object
-    console.log("render", ethBlocksAnimation)
-    if (!ethBlocksAnimation?.setup) return;
-    console.log("render 2")
-
-    const { mesh } = ethBlocksAnimation.setup;
-    console.log("render 3")
-
+    if (!this.setup) return;
+    const { mesh } = this.setup;
     if (!mesh) return;
-    console.log("render 4")
 
-    const meshToUpdate = ethBlocksAnimation.setup?.mesh as THREE.Mesh | undefined;
+    const meshToUpdate = this.setup?.mesh as THREE.Mesh | undefined;
     if (!meshToUpdate) return;
-    console.log("render 5")
-
 
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
-    const uBlocksPositions = ethBlocksAnimation.calculateUBlockPositions();
-    console.log("uBlocksPositions", uBlocksPositions)
+    const uBlocksPositions = this.calculateUBlockPositions();
 
     material.uniforms.uBlocks.value = uBlocksPositions;
     material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);
