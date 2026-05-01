@@ -193,6 +193,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - 6 glass blocks - show only the active once in the screen
+// - 6 glass blocks - show only the active once in the screen -> Attach function to check blocks on scroll - pick the blocks which are in view?
+//     - mark the active(on screen blocks, then pick the most present one - Image change trigger)
 // - dynamic change of images
+// ----------
 // - maxAmount of blocks 25, remove the oldest once
+// - data animate in in the blocks
+// - update glass size to fit design
+// -

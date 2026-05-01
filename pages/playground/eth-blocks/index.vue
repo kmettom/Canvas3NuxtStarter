@@ -14,9 +14,14 @@
         :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
         v-action-on-scroll="{
           activeRange: 1,
+          // bidirectionalActivation: true,
+          // activateOnce: false,
           onScrollCallback: (scrollObj) => {
             ethBlocksAnimation.animateBlockSizeOnScroll(scrollObj.elNode);
           },
+          // activateCallback: (scrollObj) => {
+          //   console.log('activate', scrollObj);
+          // }
         }"
         class="eth-block"
         @mouseenter="hoverBlock($event, true, block.timestamp.toString())"
@@ -27,11 +32,9 @@
             <!--            <div >-->
             <div class="content-block">
               <div class="content-title">Transactions:</div>
-              {{ block.timestamp }}
               <div class="content-value ani-index-0 eth-large-text">
                 {{ block.transactions.length }}
               </div>
-              imageId:{{ block.imageId }}
             </div>
             <div class="content-block">
               <div class="content-title gas">Gas:</div>
@@ -323,7 +326,7 @@ initialBlocks.value?.forEach((raw: BlockExtended) => {
 
 let eventSource: EventSource;
 
-const maxBlocks = 10;
+const maxBlocks = 50;
 const addBlockListener = () => {
   eventSource = new EventSource("/api/playground/eth-blocks/watch");
   eventSource.onmessage = async ({ data }) => {
@@ -333,7 +336,6 @@ const addBlockListener = () => {
     await nextTick();
     if (blocks.value.size > maxBlocks) {
       const oldestKey = blocks.value.keys().next().value;
-      console.log("oldestKey", oldestKey, blocks.value);
       if (oldestKey) blocks.value.delete(oldestKey);
     }
   };
