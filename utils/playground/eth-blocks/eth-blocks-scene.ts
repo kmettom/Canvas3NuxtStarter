@@ -6,12 +6,13 @@ type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
   textures: THREE.Texture[];
-  blocksBasePosition: number;
 };
 
 type EthBlocksAnimation = {
   meshId: string;
   setup: EthBlocksAnimationSetup | null;
+  blocksBasePosition: number;
+  blocksTopPadding: number;
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
   createMesh: () => Promise<THREE.Mesh>;
   getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
@@ -24,7 +25,10 @@ type EthBlocksAnimation = {
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   meshId: "ethBlockBg",
+  blocksTopPadding: 0.25,
+  blocksBasePosition: 0,
   async init(ethBlocksWrapper: HTMLElement) {
+    this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
     const mesh = await this.createMesh();
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
@@ -41,13 +45,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/05.jpg"),
     ]);
 
-    const blocksTopPadding = 0.25;
-
     this.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
       textures: textures,
-      blocksBasePosition: window.innerHeight * blocksTopPadding,
     };
   },
   animateBlockSizeOnScroll(elNode) {
@@ -55,7 +56,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
     const aniCoef = Math.abs(
-      (blockPositionTop - this.setup.blocksBasePosition) / window.innerHeight,
+      (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
     );
 
     gsap.to(elNode, {

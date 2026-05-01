@@ -217,9 +217,7 @@ gsap.registerPlugin(SplitText);
 
 const ethBlocks = ref<HTMLElement | null>(null);
 
-const blocksBasePosition = computed(
-  () => ethBlocksAnimation.setup?.blocksBasePosition,
-);
+const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
 
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
@@ -347,6 +345,7 @@ onMounted(async () => {
   addBlockListener();
   if (ethBlocks.value) {
     ethBlocksAnimation.init(ethBlocks.value);
+    blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
 });
 
