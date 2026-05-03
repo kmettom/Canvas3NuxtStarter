@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
+  activeBlockIndex: number;
   textures: THREE.Texture[];
 };
 
@@ -18,8 +19,8 @@ type EthBlocksAnimation = {
   getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
-  textureChange: (index: number) => void;
-  animateBlockSizeOnScroll: (elNode: HTMLElement) => void;
+  imageTextureChange: (index: number) => void;
+  animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
 };
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
@@ -49,15 +50,21 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
       textures: textures,
+      activeBlockIndex: 0,
     };
   },
-  animateBlockSizeOnScroll(elNode) {
+  animateBlockSizeOnScroll(elNode, index) {
     if (!this.setup) return;
     const blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
     const aniCoef = Math.abs(
       (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
     );
+
+    if (aniCoef < 0.05 && this.setup.activeBlockIndex !== index) {
+      this.setup.activeBlockIndex = index;
+      this.imageTextureChange(index);
+    }
 
     gsap.to(elNode, {
       duration: 0,
@@ -128,7 +135,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh as THREE.Mesh;
   },
 
-  async textureChange(index) {
+  async imageTextureChange(index) {
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
@@ -186,6 +193,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
     const uBlocksPositions = this.calculateUBlockPositions();
+
+    for (let i = 0; i < this.setup.ethBlocks.length; i++) {
+      if (this.setup.ethBlocks[i]?.classList.contains("active")) {
+        this.animateBlockSizeOnScroll(
+          this.setup.ethBlocks[i] as HTMLElement,
+          i,
+        );
+      }
+    }
 
     material.uniforms.uBlocks.value = uBlocksPositions;
     material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);

@@ -14,13 +14,16 @@
         :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
         v-action-on-scroll="{
           activeRange: 1,
-          // bidirectionalActivation: true,
-          // activateOnce: false,
-          onScrollCallback: (scrollObj) => {
-            ethBlocksAnimation.animateBlockSizeOnScroll(scrollObj.elNode);
-          },
+          bidirectionalActivation: true,
+          activateOnce: false,
+          // onScrollCallback: (scrollObj) => {
+          //   ethBlocksAnimation.animateBlockSizeOnScroll(scrollObj.elNode);
+          // },
           // activateCallback: (scrollObj) => {
           //   console.log('activate', scrollObj);
+          // },
+          // deactivateCallback: (scrollObj) => {
+          //   console.log('deactivateCallback', scrollObj);
           // }
         }"
         class="eth-block"
