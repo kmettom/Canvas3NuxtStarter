@@ -16,15 +16,6 @@
           activeRange: 1,
           bidirectionalActivation: true,
           activateOnce: false,
-          // onScrollCallback: (scrollObj) => {
-          //   ethBlocksAnimation.animateBlockSizeOnScroll(scrollObj.elNode);
-          // },
-          // activateCallback: (scrollObj) => {
-          //   console.log('activate', scrollObj);
-          // },
-          // deactivateCallback: (scrollObj) => {
-          //   console.log('deactivateCallback', scrollObj);
-          // }
         }"
         class="eth-block"
         @mouseenter="hoverBlock($event, true, block.timestamp.toString())"
@@ -274,6 +265,7 @@ const tlNewBlockAniIn = gsap.timeline({
       for (let i = 0; i < ethBlocks.value?.children.length; i++) {
         ethBlocksAnimation.animateBlockSizeOnScroll(
           ethBlocks.value?.children[i] as HTMLElement,
+          i,
         );
       }
     }

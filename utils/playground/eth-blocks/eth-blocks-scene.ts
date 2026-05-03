@@ -61,17 +61,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
     );
 
-    if (aniCoef < 0.05 && this.setup.activeBlockIndex !== index) {
-      this.setup.activeBlockIndex = index;
-      this.imageTextureChange(index);
-    }
-
     gsap.to(elNode, {
       duration: 0,
       ease: "linear",
       scale: Math.max(1 - aniCoef / 3, 0.75),
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
+
+    if (aniCoef < 0.05 && this.setup.activeBlockIndex !== index) {
+      this.setup.activeBlockIndex = index;
+      this.imageTextureChange(index);
+    }
   },
 
   async createMesh() {
@@ -87,13 +87,19 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.needsUpdate = true;
 
+    const texture2 = await loader.loadAsync("images/01.jpg");
+    texture2.colorSpace = THREE.SRGBColorSpace;
+    texture2.needsUpdate = true;
+
     const uBlocksPositions = this.calculateUBlockPositions();
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
-        uImage: { value: texture },
+        uTextureCurrent: { value: texture },
+        uTextureNext: { value: texture2 },
+        uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
@@ -136,19 +142,34 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(index) {
+    console.log("imageTextureChange", index);
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
 
     const material = mesh.material as THREE.ShaderMaterial;
-    if (!material?.uniforms?.uImage) return;
+    if (!material?.uniforms?.uTextureCurrent) return;
+    if (!material?.uniforms?.uTextureNext) return;
 
     const newTexture = this.setup.textures[index];
     if (!newTexture) return;
+    material.uniforms.uTextureCurrent.value =
+      material.uniforms.uTextureNext.value;
+
     newTexture.colorSpace = THREE.SRGBColorSpace;
     newTexture.needsUpdate = true;
-    material.uniforms.uImage.value = newTexture;
+
+    material.uniforms.uTextureNext.value = newTexture;
+
+    if (material.uniforms.uAniInImage) {
+      material.uniforms.uAniInImage.value = 0;
+      gsap.to(material.uniforms.uAniInImage, {
+        value: 1,
+        duration: 1,
+        ease: "linear",
+      });
+    }
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
