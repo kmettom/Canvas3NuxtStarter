@@ -7,6 +7,7 @@ type EthBlocksAnimationSetup = {
   ethBlocks: HTMLCollection;
   activeBlockIndex: number;
   textures: THREE.Texture[];
+  imageAniTimeline: gsap.core.Timeline | null;
 };
 
 type EthBlocksAnimation = {
@@ -51,6 +52,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       ethBlocks: ethBlocksWrapper.children,
       textures: textures,
       activeBlockIndex: 0,
+      imageAniTimeline: gsap.timeline(),
     };
   },
   animateBlockSizeOnScroll(elNode, index) {
@@ -162,11 +164,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     material.uniforms.uTextureNext.value = newTexture;
 
-    if (material.uniforms.uAniInImage) {
-      material.uniforms.uAniInImage.value = 0;
-      gsap.to(material.uniforms.uAniInImage, {
+    if (material.uniforms.uTransitionProgress) {
+      if (this.setup.imageAniTimeline) {
+        this.setup.imageAniTimeline.clear();
+      }
+
+      material.uniforms.uTransitionProgress.value = 0;
+
+      this.setup.imageAniTimeline?.to(material.uniforms.uTransitionProgress, {
         value: 1,
-        duration: 1,
+        duration: 0.2,
+        //TODO -> add scroll speed, so fast scroll vill cause faster transition
         ease: "linear",
       });
     }

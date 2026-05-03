@@ -16,6 +16,7 @@
           activeRange: 1,
           bidirectionalActivation: true,
           activateOnce: false,
+          // trackOnly: true,
         }"
         class="eth-block"
         @mouseenter="hoverBlock($event, true, block.timestamp.toString())"
