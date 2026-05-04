@@ -75,9 +75,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
-    if (aniCoef < 0.02 && this.setup.activeBlockIndex !== index) {
+    if (aniCoef < 0.03 && this.setup.activeBlockIndex !== index) {
       this.setup.activeBlockIndex = index;
       const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
+      console.log("imageTextureChange", imageId);
       this.imageTextureChange(imageId);
     }
   },
@@ -149,7 +150,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh as THREE.Mesh;
   },
 
-  async imageTextureChange(index) {
+  async imageTextureChange(imageId) {
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
@@ -157,13 +158,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const material = mesh.material as THREE.ShaderMaterial;
 
-    if (!material.uniforms.uTransitionProgress) return;
     // this.setup.imageAniTimeline.clear();
-    material.uniforms.uTransitionProgress.value = 0;
+    if (!material.uniforms.uTransitionProgress) return;
 
     this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
       value: 1,
-      duration: 0.5,
+      duration: 0.2,
       //TODO -> add scroll speed, so fast scroll vill cause faster transition
       ease: "linear",
       onComplete: () => {
@@ -171,14 +171,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         if (!material?.uniforms?.uTextureNext) return;
         if (!material?.uniforms?.uTextureCurrent) return;
 
-        const newTexture = this.setup.textures[index];
+        const newTexture = this.setup.textures[imageId];
         // const  = this.setup.textures[index];
         if (!newTexture) return;
 
         newTexture.colorSpace = THREE.SRGBColorSpace;
         newTexture.needsUpdate = true;
-        material.uniforms.uTextureCurrent.value = material.uniforms.uTextureNext.value;
+        material.uniforms.uTextureCurrent.value =
+          material.uniforms.uTextureNext.value;
         material.uniforms.uTextureNext.value = newTexture;
+        if (!material.uniforms.uTransitionProgress) return;
+        material.uniforms.uTransitionProgress.value = 0;
       },
     });
   },

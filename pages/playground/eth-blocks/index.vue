@@ -12,13 +12,13 @@
         v-for="block in blocksToRender"
         :key="block.timestamp.toString()"
         :ref="(el) => animateNewBlockAdded(el, block.timestamp.toString())"
-        :data-bg-image-id="block.imageId"
         v-action-on-scroll="{
           activeRange: 1,
           bidirectionalActivation: true,
           activateOnce: false,
           // trackOnly: true,
         }"
+        :data-bg-image-id="block.imageId"
         class="eth-block"
         @mouseenter="hoverBlock($event, true, block.timestamp.toString())"
         @mouseleave="hoverBlock($event, false, block.timestamp.toString())"
