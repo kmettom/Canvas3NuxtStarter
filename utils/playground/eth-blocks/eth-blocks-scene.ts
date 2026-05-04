@@ -150,7 +150,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(index) {
-    console.log("imageTextureChange", index);
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
@@ -159,23 +158,26 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const material = mesh.material as THREE.ShaderMaterial;
 
     if (!material.uniforms.uTransitionProgress) return;
-    this.setup.imageAniTimeline.clear();
+    // this.setup.imageAniTimeline.clear();
     material.uniforms.uTransitionProgress.value = 0;
 
     this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
       value: 1,
-      duration: 0.7,
+      duration: 0.5,
       //TODO -> add scroll speed, so fast scroll vill cause faster transition
       ease: "linear",
       onComplete: () => {
         if (!this.setup) return;
         if (!material?.uniforms?.uTextureNext) return;
+        if (!material?.uniforms?.uTextureCurrent) return;
 
         const newTexture = this.setup.textures[index];
+        // const  = this.setup.textures[index];
         if (!newTexture) return;
 
         newTexture.colorSpace = THREE.SRGBColorSpace;
         newTexture.needsUpdate = true;
+        material.uniforms.uTextureCurrent.value = material.uniforms.uTextureNext.value;
         material.uniforms.uTextureNext.value = newTexture;
       },
     });
