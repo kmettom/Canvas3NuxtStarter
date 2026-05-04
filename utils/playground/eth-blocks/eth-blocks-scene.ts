@@ -7,7 +7,7 @@ type EthBlocksAnimationSetup = {
   ethBlocks: HTMLCollection;
   activeBlockIndex: number;
   textures: THREE.Texture[];
-  imageAniTimeline: gsap.core.Timeline | null;
+  imageAniTimeline: gsap.core.Timeline;
 };
 
 type EthBlocksAnimation = {
@@ -41,7 +41,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     // const imagesAmount = 10;
 
     const textures = await Promise.all([
-      loader.loadAsync("images/00.png"),
+      // loader.loadAsync("images/00.png"),
       loader.loadAsync("images/01.jpg"),
       loader.loadAsync("images/02.jpg"),
       loader.loadAsync("images/03.jpg"),
@@ -75,9 +75,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
-    if (aniCoef < 0.05 && this.setup.activeBlockIndex !== index) {
+    if (aniCoef < 0.02 && this.setup.activeBlockIndex !== index) {
       this.setup.activeBlockIndex = index;
-      this.imageTextureChange(index);
+      const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
+      this.imageTextureChange(imageId);
     }
   },
 
@@ -90,13 +91,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const loader = new THREE.TextureLoader();
 
-    const texture = await loader.loadAsync("images/00.png");
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.needsUpdate = true;
+    const textureCurrent = await loader.loadAsync("images/01.jpg");
+    textureCurrent.colorSpace = THREE.SRGBColorSpace;
+    textureCurrent.needsUpdate = true;
 
-    const texture2 = await loader.loadAsync("images/01.jpg");
-    texture2.colorSpace = THREE.SRGBColorSpace;
-    texture2.needsUpdate = true;
+    const textureNext = await loader.loadAsync("images/02.jpg");
+    textureNext.colorSpace = THREE.SRGBColorSpace;
+    textureNext.needsUpdate = true;
 
     const uBlocksPositions = this.calculateUBlockPositions();
 
@@ -104,8 +105,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
-        uTextureCurrent: { value: texture },
-        uTextureNext: { value: texture2 },
+        uTextureCurrent: { value: textureCurrent },
+        uTextureNext: { value: textureNext },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -116,7 +117,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uTextureSize: {
-          value: new THREE.Vector2(texture.width, texture.height),
+          value: new THREE.Vector2(textureCurrent.width, textureCurrent.height),
         },
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -156,33 +157,28 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!mesh) return;
 
     const material = mesh.material as THREE.ShaderMaterial;
-    if (!material?.uniforms?.uTextureCurrent) return;
-    if (!material?.uniforms?.uTextureNext) return;
 
-    const newTexture = this.setup.textures[index];
-    if (!newTexture) return;
-    material.uniforms.uTextureCurrent.value =
-      material.uniforms.uTextureNext.value;
+    if (!material.uniforms.uTransitionProgress) return;
+    this.setup.imageAniTimeline.clear();
+    material.uniforms.uTransitionProgress.value = 0;
 
-    newTexture.colorSpace = THREE.SRGBColorSpace;
-    newTexture.needsUpdate = true;
+    this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
+      value: 1,
+      duration: 0.7,
+      //TODO -> add scroll speed, so fast scroll vill cause faster transition
+      ease: "linear",
+      onComplete: () => {
+        if (!this.setup) return;
+        if (!material?.uniforms?.uTextureNext) return;
 
-    material.uniforms.uTextureNext.value = newTexture;
+        const newTexture = this.setup.textures[index];
+        if (!newTexture) return;
 
-    if (material.uniforms.uTransitionProgress) {
-      if (this.setup.imageAniTimeline) {
-        this.setup.imageAniTimeline.clear();
-      }
-
-      material.uniforms.uTransitionProgress.value = 0;
-
-      this.setup.imageAniTimeline?.to(material.uniforms.uTransitionProgress, {
-        value: 1,
-        duration: 0.2,
-        //TODO -> add scroll speed, so fast scroll vill cause faster transition
-        ease: "linear",
-      });
-    }
+        newTexture.colorSpace = THREE.SRGBColorSpace;
+        newTexture.needsUpdate = true;
+        material.uniforms.uTextureNext.value = newTexture;
+      },
+    });
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
@@ -213,7 +209,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         this.setup.ethBlocks[i] &&
         this.setup.ethBlocks[i]?.classList.contains("active")
       ) {
-        const bounds = this.setup.ethBlocks[i].getBoundingClientRect();
+        const bounds = this.setup.ethBlocks[i]?.getBoundingClientRect();
         if (bounds) positions.push(this.getVec4PositionFromClientRect(bounds));
         this.animateBlockSizeOnScroll(
           this.setup.ethBlocks[i] as HTMLElement,
@@ -247,8 +243,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - 6 glass blocks - show only the active once in the screen -> Attach function to check blocks on scroll - pick the blocks which are in view?
 // - dynamic change of images
+// - Shader -
+//           - Block background- current uTexture, not next or previous
+//           - uTransitionProgress - with better shader effect - from top to bottom first
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
 // - data animate in in the blocks

@@ -75,7 +75,7 @@ vec4 getTransitionColor(vec2 uv) {
     // reveal new image from top to bottom
     float edge = 1.0 - p;
     float feather = 0.06;
-    float mask = smoothstep(edge - feather, edge + feather, 1.0 - vUv.y);
+    float mask = smoothstep(edge - feather, edge + feather, vUv.y);
 
     return mix(fromColor, toColor, mask);
 }
