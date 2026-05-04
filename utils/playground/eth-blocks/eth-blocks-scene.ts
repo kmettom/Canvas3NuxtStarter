@@ -163,7 +163,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
       value: 1,
-      duration: 0.2,
+      duration: 0.3,
       //TODO -> add scroll speed, so fast scroll vill cause faster transition
       ease: "linear",
       onComplete: () => {
