@@ -255,9 +255,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - dynamic change of images
 // - Shader -
-//           - Block background- current uTexture, not next or previous
 //           - uTransitionProgress - with better shader effect - from top to bottom first
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
