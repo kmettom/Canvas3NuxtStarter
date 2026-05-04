@@ -24,6 +24,8 @@ type EthBlocksAnimation = {
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
 };
 
+export const BLOCKS_ON_SCREEN_AMOUNT = 6;
+
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   meshId: "ethBlockBg",
@@ -45,6 +47,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/03.jpg"),
       loader.loadAsync("images/04.jpg"),
       loader.loadAsync("images/05.jpg"),
+      loader.loadAsync("images/06.jpg"),
+      loader.loadAsync("images/07.jpg"),
+      loader.loadAsync("images/08.jpg"),
     ]);
 
     this.setup = {
@@ -195,16 +200,29 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
   calculateUBlockPositions() {
     if (!this.setup?.ethBlocks) {
-      return Array.from({ length: 10 }, () => new THREE.Vector4(0, 0, 0, 0));
+      return Array.from(
+        { length: BLOCKS_ON_SCREEN_AMOUNT },
+        () => new THREE.Vector4(0, 0, 0, 0),
+      );
     }
 
-    const blocks = Array.from(this.setup.ethBlocks).slice(0, 10);
-    const positions: THREE.Vector4[] = blocks.map((el) => {
-      const bounds = (el as HTMLElement).getBoundingClientRect();
-      return this.getVec4PositionFromClientRect(bounds);
-    });
+    const positions: THREE.Vector4[] = [];
 
-    while (positions.length < 10) {
+    for (let i = 0; i < this.setup.ethBlocks.length; i++) {
+      if (
+        this.setup.ethBlocks[i] &&
+        this.setup.ethBlocks[i]?.classList.contains("active")
+      ) {
+        const bounds = this.setup.ethBlocks[i].getBoundingClientRect();
+        if (bounds) positions.push(this.getVec4PositionFromClientRect(bounds));
+        this.animateBlockSizeOnScroll(
+          this.setup.ethBlocks[i] as HTMLElement,
+          i,
+        );
+      }
+    }
+
+    while (positions.length < BLOCKS_ON_SCREEN_AMOUNT) {
       positions.push(new THREE.Vector4(0, 0, 0, 0));
     }
 
@@ -223,15 +241,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const uBlocksPositions = this.calculateUBlockPositions();
 
-    for (let i = 0; i < this.setup.ethBlocks.length; i++) {
-      if (this.setup.ethBlocks[i]?.classList.contains("active")) {
-        this.animateBlockSizeOnScroll(
-          this.setup.ethBlocks[i] as HTMLElement,
-          i,
-        );
-      }
-    }
-
     material.uniforms.uBlocks.value = uBlocksPositions;
     material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);
   },
@@ -239,7 +248,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - 6 glass blocks - show only the active once in the screen -> Attach function to check blocks on scroll - pick the blocks which are in view?
-//     - mark the active(on screen blocks, then pick the most present one - Image change trigger)
 // - dynamic change of images
 // ----------
 // - maxAmount of blocks 25, remove the oldest once

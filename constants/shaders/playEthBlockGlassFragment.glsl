@@ -1,6 +1,6 @@
 precision highp float;
 
-#define MAX_GLASS 10
+#define MAX_GLASS 6
 
 varying vec2 vUv;
 uniform sampler2D uTextureCurrent;
