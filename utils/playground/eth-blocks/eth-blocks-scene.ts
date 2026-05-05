@@ -22,6 +22,7 @@ type EthBlocksAnimation = {
   render: () => void;
   imageTextureChange: (index: number) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
+  firstEnterAnimation: () => void;
 };
 
 export const BLOCKS_ON_SCREEN_AMOUNT = 6;
@@ -59,7 +60,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       activeBlockIndex: 0,
       imageAniTimeline: gsap.timeline(),
     };
+    this.firstEnterAnimation();
   },
+  firstEnterAnimation() {},
   animateBlockSizeOnScroll(elNode, index) {
     if (!this.setup) return;
     const blockClientRect = elNode.getBoundingClientRect();
@@ -255,10 +258,16 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - Shader -
-//           - uTransitionProgress - with better shader effect - from top to bottom first
-// ----------
-// - maxAmount of blocks 25, remove the oldest once
+// - appear animation with loader, or transition
+//       - first image load as priority
+//       - other textures lazy async
+//       - Load 20 images - async
 // - data animate in in the blocks
 // - update glass size to fit design
+// - Shader -
+//           - uTransitionProgress - with better shader effect - from top to bottom first
+// - Images export - 20 images - J
+// ----------
+// - maxAmount of blocks 25, remove the oldest once
+//
 // -

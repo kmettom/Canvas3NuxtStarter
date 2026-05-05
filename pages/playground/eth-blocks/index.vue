@@ -262,16 +262,7 @@ const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
 
 const tlNewBlockAniIn = gsap.timeline({
   onComplete: () => {},
-  onUpdate: () => {
-    if (ethBlocks.value?.children) {
-      for (let i = 0; i < ethBlocks.value?.children.length; i++) {
-        ethBlocksAnimation.animateBlockSizeOnScroll(
-          ethBlocks.value?.children[i] as HTMLElement,
-          i,
-        );
-      }
-    }
-  },
+  onUpdate: () => {},
 });
 
 const animateNewBlockAdded = (
@@ -285,7 +276,7 @@ const animateNewBlockAdded = (
   tlNewBlockAniIn.fromTo(
     el,
     { height: 0 },
-    { height: "236px", duration: 0.95 },
+    { height: "236px", duration: 0.95, marginTop: "20px" },
   );
 
   tlNewBlockAniIn.call(
@@ -391,6 +382,7 @@ onMounted(async () => {
 }
 
 .eth-blocks {
+  padding-bottom: 45%;
 }
 
 .eth-block {
@@ -399,7 +391,7 @@ onMounted(async () => {
   display: block;
   position: relative;
   width: 423px;
-  margin: 20px auto;
+  margin: 0px auto;
   border-radius: 25px;
 
   .content-wrapper {

@@ -1,7 +1,9 @@
 import { createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
+// import {BLOCKS_ON_SCREEN_AMOUNT} from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
-export const AMOUNT_OF_BLOCKS = 10;
+// export const AMOUNT_OF_BLOCKS = BLOCKS_ON_SCREEN_AMOUNT;
+export const AMOUNT_OF_BLOCKS = 3;
 
 export default defineEventHandler(async (event) => {
   const { alchemyToken } = useRuntimeConfig(event);
