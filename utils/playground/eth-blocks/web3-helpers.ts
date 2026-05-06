@@ -21,6 +21,7 @@ export type BlockExtended = BlockLoading &
     aniCoef?: number;
     loading: boolean;
     blockId: string;
+    elRef: Element | ComponentPublicInstance | null;
   };
 
 const GWEI_TO_WEI = 1_000_000_000n;
@@ -67,13 +68,22 @@ export const blockGasTargetPercent = (
 
 let imageIndex = 0;
 const imageAmount = 8;
-export const generateImage = () => {
+export function generateImage() {
   imageIndex++;
   if (imageIndex === imageAmount + 1) imageIndex = 1;
   return "0" + imageIndex;
-};
+}
 
-export const generateBlockData = (blockData: Block, blockId: string) => {
+export function generateLoadingBlockData(blockId: string) {
+  return {
+    blockHovered: false,
+    imageId: generateImage(),
+    loading: true,
+    blockId: blockId,
+  };
+}
+
+export function generateBlockData(blockData: Block, blockId: string) {
   const newBlock: BlockExtended = {
     ...blockData,
     blockHovered: false,
@@ -103,7 +113,7 @@ export const generateBlockData = (blockData: Block, blockId: string) => {
   newBlock.blockNetIssuanceETH = withdrawalsWei - burnedWei;
 
   return newBlock;
-};
+}
 
 export const formatEth2 = (wei: bigint) => {
   const numString = formatEther(wei).toString();

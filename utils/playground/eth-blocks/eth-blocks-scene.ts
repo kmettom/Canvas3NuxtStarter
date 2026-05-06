@@ -81,7 +81,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (aniCoef < 0.03 && this.setup.activeBlockIndex !== index) {
       this.setup.activeBlockIndex = index;
       const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
-      // console.log("imageTextureChange", imageId);
+      console.log("imageTextureChange", imageId);
       this.imageTextureChange(imageId);
     }
   },
@@ -161,10 +161,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const material = mesh.material as THREE.ShaderMaterial;
 
-    console.log(
-      "this.setup.imageAniTimeline.progress",
-      this.setup.imageAniTimeline.progress(),
-    );
+    console.log("imageTextureChange");
     if (this.setup.imageAniTimeline.progress() !== 1) {
       //TODO do somethink to make th transition nice
     }
