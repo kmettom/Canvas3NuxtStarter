@@ -316,6 +316,9 @@ const animateNewBlockAdded = (blockId: string) => {
 const { data: initialBlocks } = await useFetch(
   "/api/playground/eth-blocks/latest",
 );
+
+console.log("initialBlocks", initialBlocks);
+
 initialBlocks.value?.forEach((raw: BlockExtended) => {
   const block = deserializeBlock(raw);
   const blockId = new Date().getTime().toString() + "_latest";

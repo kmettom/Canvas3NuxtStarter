@@ -21,7 +21,7 @@ export type BlockExtended = BlockLoading &
     aniCoef?: number;
     loading: boolean;
     blockId: string;
-    elRef: Element | ComponentPublicInstance | null;
+    elRef?: Element | ComponentPublicInstance | null;
   };
 
 const GWEI_TO_WEI = 1_000_000_000n;
@@ -144,3 +144,39 @@ export const deserializeBlock = (block: any): Block => ({
     amount: BigInt(w.amount),
   })),
 });
+
+//********************
+// for local dev with no connection
+//********************
+
+export function generateMockBlockData() {
+  return {
+    baseFeePerGas: BigInt(1),
+    blobGasUsed: BigInt(1),
+    difficulty: BigInt(1),
+    excessBlobGas: BigInt(1),
+    extraData: "0xtest",
+    gasLimit: BigInt(1),
+    gasUsed: BigInt(1),
+    hash: "0xtest",
+    logsBloom: "0xtest",
+    miner: "xxxAddress",
+    mixHash: "0xtest",
+    nonce: "0xtest",
+    number: BigInt(1),
+    parentBeaconBlockRoot: "0xtest",
+    parentHash: "0xtest",
+    receiptsRoot: "0xtest",
+    sealFields: [],
+    sha3Uncles: "0xtest",
+    size: BigInt(1),
+    stateRoot: "0xtest",
+    timestamp: BigInt(1),
+    totalDifficulty: BigInt(1),
+    transactions: [1, 2, 3],
+    transactionsRoot: "0xtest",
+    uncles: [],
+    withdrawals: [],
+    withdrawalsRoot: "#fff",
+  };
+}
