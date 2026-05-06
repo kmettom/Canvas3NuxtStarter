@@ -3,7 +3,6 @@ varying vec2 vUv;
 uniform sampler2D uImage;
 
 uniform float uTime;
-uniform float uAniInImage;
 uniform float uAniInExample4;
 
 uniform float scale; // = 4.0

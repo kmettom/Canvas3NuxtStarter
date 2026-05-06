@@ -126,7 +126,7 @@
             </div>
             <div
               v-action-on-scroll="{
-                activeRange: 0.7,
+                activeRange: 0.2,
                 activateOnce: false,
                 scrollSpeedSetTo: { value: 0.3, duration: 0 },
                 bidirectionalActivation: true,
@@ -143,6 +143,8 @@
                 Set Scroll speed of elements
                 <span class="example-activate-txt">Activated 👋</span>
               </p>
+              <!--                  TODO:-->
+              <!--              activateMeshUniforms refactor in Module Canvas3-->
               <img
                 v-canvas3-image="{
                   shaderName: 'example4',
