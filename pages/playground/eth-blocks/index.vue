@@ -23,9 +23,9 @@
         @mouseenter="hoverBlock($event, true, block.blockId)"
         @mouseleave="hoverBlock($event, false, block.blockId)"
       >
-        <div class="block-loading-bar">
-          <div class="block-loading-progress" />
-        </div>
+        <!--        <div class="block-loading-bar">-->
+        <div class="block-loading-progress" />
+        <!--        </div>-->
         <div v-if="block.loading" />
         <div v-else class="content-wrapper">
           <div class="content-row">
@@ -268,7 +268,7 @@ const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
 
 const tlNewBlockAniIn = gsap.timeline({
   onComplete: () => {
-    newLoadingBlock();
+    // newLoadingBlock();
   },
   onUpdate: () => {},
 });
@@ -279,9 +279,9 @@ async function newLoadingBlock() {
   blocks.value.set(loadingBlockId, generateLoadingBlockData(loadingBlockId));
   await nextTick();
   tlNewBlockAniIn.to(".block-loading", {
-    // width: "100%",
     width: "423px",
     duration: 0.3,
+    minHeight: "10px",
   });
   tlNewBlockAniIn.to(".block-loading .block-loading-progress", {
     width: "100%",
@@ -306,7 +306,7 @@ const animateNewBlockAdded = (blockId: string) => {
   const el = block.elRef as HTMLElement;
   if (!el) return;
 
-  tlNewBlockAniIn.clear();
+  tlNewBlockAniIn.progress(1);
   tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
     width: "100%",
     duration: 0.2,
@@ -333,9 +333,14 @@ const animateNewBlockAdded = (blockId: string) => {
     width: 0,
     duration: 0,
     opacity: 1,
+    onComplete: () => {
+      newLoadingBlock();
+    },
   });
 
   tlNewBlockAniIn.play();
+  // tlNewBlockAniIn
+  // newLoadingBlock();
 };
 
 const { data: initialBlocks } = await useFetch(
@@ -344,7 +349,6 @@ const { data: initialBlocks } = await useFetch(
 initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
   const block = deserializeBlock(raw);
   const blockId = new Date().getTime().toString() + `_latest_${index}`;
-  console.log("initialBlocks", blockId);
   blocks.value.set(blockId, generateBlockData(block, blockId));
 });
 
@@ -370,12 +374,24 @@ const addBlockListener = () => {
 
 onUnmounted(() => eventSource?.close());
 
+function enterAni() {
+  console.log("enterAni");
+  tlNewBlockAniIn.clear();
+  tlNewBlockAniIn.to(".eth-block", {
+    width: "423px",
+    height: "200px",
+    marginTop: "20px",
+  });
+}
+
 onMounted(async () => {
   addBlockListener();
   if (ethBlocks.value) {
     ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
+  enterAni();
+  newLoadingBlock();
 });
 
 // https://www.shadertoy.com/view/wccSDf
@@ -401,21 +417,20 @@ onMounted(async () => {
 
 .eth-blocks {
   padding-bottom: 45%;
+  //margin: 0 auto;
+  //margin-left: 100px;
+  //display: inline-block;
 }
 
 .eth-block {
   overflow: hidden;
   display: block;
   position: relative;
+  margin: 0 auto;
   //width: 423px;
   width: 0;
-  margin: 0 auto;
   border-radius: 25px;
 
-  .block-loading-bar {
-    position: relative;
-    height: 25px;
-  }
   .block-loading-progress {
     height: 100%;
     position: absolute;

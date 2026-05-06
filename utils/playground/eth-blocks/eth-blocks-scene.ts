@@ -82,7 +82,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       return;
     if (aniCoef > 0.03 || this.setup.activeBlockIndex === index) return;
 
-    console.log("imageTextureChange", aniCoef, this.setup.activeBlockIndex);
+    // console.log("imageTextureChange", aniCoef, this.setup.activeBlockIndex);
     this.setup.activeBlockIndex = index;
     const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
     this.imageTextureChange(imageId);
@@ -163,6 +163,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const material = mesh.material as THREE.ShaderMaterial;
 
+    console.log("imageTextureChange", imageId);
     if (this.setup.imageAniTimeline.progress() !== 1) {
       //TODO do somethink to make th transition nice
     }
@@ -171,7 +172,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
       value: 1,
-      duration: 4.35,
+      duration: 0.35,
       //TODO -> add scroll speed, so fast scroll vill cause faster transition
       ease: "linear",
       onComplete: () => {
