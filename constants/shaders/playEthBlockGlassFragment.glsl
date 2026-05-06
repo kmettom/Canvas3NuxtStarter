@@ -46,7 +46,8 @@ vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
     vec2 glassHalfUv = rect.zw / uMeshSize;
 
     vec2 m2 = (vUv - glassCenter) / glassHalfUv;
-    float roundedBox = pow(abs(m2.x), 8.0) + pow(abs(m2.y), 8.0);
+    float boxRadius = 20.0;
+    float roundedBox = pow(abs(m2.x), boxRadius) + pow(abs(m2.y), boxRadius);
 
     float rb1 = clamp((1.00 - roundedBox) * 8.0, 0.0, 1.0);
     float rb2 = clamp((0.95 - roundedBox) * 16.0, 0.0, 1.0)
