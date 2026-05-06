@@ -20,8 +20,8 @@
         }"
         :data-bg-image-id="block.imageId"
         class="eth-block"
-        @mouseenter="hoverBlock($event, true, block.timestamp.toString())"
-        @mouseleave="hoverBlock($event, false, block.timestamp.toString())"
+        @mouseenter="hoverBlock($event, true, block.blockId)"
+        @mouseleave="hoverBlock($event, false, block.blockId)"
       >
         <div class="content-wrapper">
           <div class="content-row">
@@ -206,6 +206,7 @@ import {
   generateBlockData,
   type BlockExtended,
   deserializeBlock,
+  // type BlockLoading,
 } from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
@@ -218,9 +219,11 @@ const ethBlocks = ref<HTMLElement | null>(null);
 
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
 
+const blocks = ref<Map<string, BlockExtended>>(new Map());
+
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
-    a.timestamp > b.timestamp ? -1 : 1,
+    a.blockId > b.blockId ? -1 : 1,
   );
 });
 
@@ -237,8 +240,6 @@ const hoverBlock = (event: Event, status: boolean, blockTimestamp: string) => {
     "<",
   );
 };
-
-const blocks = ref<Map<string, BlockExtended>>(new Map());
 
 const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
   if (elementsToAni.length) {
@@ -267,8 +268,9 @@ const tlNewBlockAniIn = gsap.timeline({
 
 const animateNewBlockAdded = (
   target: Element | ComponentPublicInstance | null,
-  blockTimestamp: string,
+  blockId: string,
 ) => {
+  console.log("blockTimestamp", blockId);
   if (!target) return;
   const el = target as HTMLElement;
   if (el.classList.contains("block-added")) return;
@@ -279,16 +281,16 @@ const animateNewBlockAdded = (
     { height: "236px", duration: 0.95, marginTop: "20px" },
   );
 
-  tlNewBlockAniIn.call(
-    () => {
-      const blockToAnimate = blocks.value.get(blockTimestamp);
-      if (blockToAnimate) {
-        blockToAnimate.blockAniIn = true;
-      }
-    },
-    undefined,
-    "",
-  );
+  // tlNewBlockAniIn.call(
+  //   () => {
+  //     // const blockToAnimate = blocks.value.get(blockTimestamp);
+  //     // if (blockToAnimate) {
+  //     //   blockToAnimate.blockAniIn = true;
+  //     // }
+  //   },
+  //   undefined,
+  //   "",
+  // );
 
   const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value.ani-index-0",
@@ -309,23 +311,29 @@ const { data: initialBlocks } = await useFetch(
 );
 initialBlocks.value?.forEach((raw: BlockExtended) => {
   const block = deserializeBlock(raw);
-  blocks.value.set(block.timestamp.toString(), generateBlockData(block));
+  blocks.value.set(
+    block.timestamp.toString(),
+    generateBlockData(block, block.timestamp.toString()),
+  );
 });
 
 let eventSource: EventSource;
+
+let loadingBlockId = "";
 
 const maxBlocks = 50;
 const addBlockListener = () => {
   eventSource = new EventSource("/api/playground/eth-blocks/watch");
   eventSource.onmessage = async ({ data }) => {
     const block = deserializeBlock(JSON.parse(data));
-    if (blocks.value.has(block.timestamp.toString())) return;
-    blocks.value.set(block.timestamp.toString(), generateBlockData(block));
+    if (blocks.value.has(loadingBlockId)) return;
+    blocks.value.set(loadingBlockId, generateBlockData(block, loadingBlockId));
     await nextTick();
     if (blocks.value.size > maxBlocks) {
       const oldestKey = blocks.value.keys().next().value;
       if (oldestKey) blocks.value.delete(oldestKey);
     }
+    loadingBlockId = new Date().getTime().toString();
   };
 };
 
