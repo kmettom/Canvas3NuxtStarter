@@ -8,9 +8,17 @@ export type BlockExtended = Block & {
   blockETHBurned?: bigint;
   blockWithdrawalsSum?: bigint;
   blockNetIssuanceETH?: bigint;
-  blockAniIn: boolean;
-  blockHovered: boolean;
+  blockHovered?: boolean;
   imageId: string;
+  aniCoef?: number;
+  loading: boolean;
+  blockId: string;
+};
+
+export type BlockLoading = {
+  imageId: string;
+  loading: boolean;
+  blockId: string;
   aniCoef?: number;
 };
 
@@ -58,18 +66,19 @@ export const blockGasTargetPercent = (
 
 let imageIndex = 0;
 const imageAmount = 8;
-const generateImage = () => {
+export const generateImage = () => {
   imageIndex++;
   if (imageIndex === imageAmount + 1) imageIndex = 1;
   return "0" + imageIndex;
 };
 
-export const generateBlockData = (blockData: Block) => {
+export const generateBlockData = (blockData: Block, blockId: string) => {
   const newBlock: BlockExtended = {
     ...blockData,
-    blockAniIn: false,
     blockHovered: false,
     imageId: generateImage(),
+    loading: false,
+    blockId: blockId,
   };
 
   newBlock.blockGasUsedPercent = blockGasUsedPercent(
