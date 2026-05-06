@@ -23,7 +23,10 @@
         @mouseenter="hoverBlock($event, true, block.blockId)"
         @mouseleave="hoverBlock($event, false, block.blockId)"
       >
-        <div v-if="block.loading">x</div>
+        <div class="block-loading-bar">
+          <div class="block-loading-progress" />
+        </div>
+        <div v-if="block.loading" />
         <div v-else class="content-wrapper">
           <div class="content-row">
             <!--            <div >-->
@@ -270,28 +273,45 @@ const tlNewBlockAniIn = gsap.timeline({
   onUpdate: () => {},
 });
 
-function newLoadingBlock() {
-  console.log("tlNewBlockAniIn onComplete");
+async function newLoadingBlock() {
   loadingBlockId = new Date().getTime().toString();
   console.log("new loadingBlockId", loadingBlockId);
   blocks.value.set(loadingBlockId, generateLoadingBlockData(loadingBlockId));
+  await nextTick();
+  tlNewBlockAniIn.to(".block-loading", {
+    // width: "100%",
+    width: "423px",
+    duration: 0.3,
+  });
+  tlNewBlockAniIn.to(".block-loading .block-loading-progress", {
+    width: "100%",
+    duration: 12,
+  });
 }
 
 function addNewBlockEl(
   el: Element | ComponentPublicInstance | null,
   blockId: string,
 ) {
-  console.log("addNewBlockEl", blockId);
   const block = blocks.value.get(blockId);
-  if (block) block.elRef = el;
+  if (block && !block.elRef) {
+    block.elRef = el;
+  }
 }
 
 const animateNewBlockAdded = (blockId: string) => {
   console.log("animateNewBlockAdded", blockId);
   const block = blocks.value.get(blockId);
   if (!block) return;
-  const el = block.elRef;
+  const el = block.elRef as HTMLElement;
   if (!el) return;
+
+  tlNewBlockAniIn.clear();
+  tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+    width: "100%",
+    duration: 0.2,
+    opacity: 0,
+  });
 
   tlNewBlockAniIn.fromTo(
     el,
@@ -309,19 +329,22 @@ const animateNewBlockAdded = (blockId: string) => {
   );
   aniContentValues(valuesElementsIndex1);
 
+  tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+    width: 0,
+    duration: 0,
+    opacity: 1,
+  });
+
   tlNewBlockAniIn.play();
-  // el.classList.add("block-added");
 };
 
 const { data: initialBlocks } = await useFetch(
   "/api/playground/eth-blocks/latest",
 );
-
-console.log("initialBlocks", initialBlocks);
-
-initialBlocks.value?.forEach((raw: BlockExtended) => {
+initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
   const block = deserializeBlock(raw);
-  const blockId = new Date().getTime().toString() + "_latest";
+  const blockId = new Date().getTime().toString() + `_latest_${index}`;
+  console.log("initialBlocks", blockId);
   blocks.value.set(blockId, generateBlockData(block, blockId));
 });
 
@@ -382,12 +405,25 @@ onMounted(async () => {
 
 .eth-block {
   overflow: hidden;
-  //height: 0;
   display: block;
   position: relative;
-  width: 423px;
+  //width: 423px;
+  width: 0;
   margin: 0 auto;
   border-radius: 25px;
+
+  .block-loading-bar {
+    position: relative;
+    height: 25px;
+  }
+  .block-loading-progress {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
 
   .content-wrapper {
     height: 100%;

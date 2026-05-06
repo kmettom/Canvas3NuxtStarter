@@ -78,12 +78,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
-    if (aniCoef < 0.03 && this.setup.activeBlockIndex !== index) {
-      this.setup.activeBlockIndex = index;
-      const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
-      console.log("imageTextureChange", imageId);
-      this.imageTextureChange(imageId);
-    }
+    if (this.setup.ethBlocks[index]?.classList.contains("block-loading"))
+      return;
+    if (aniCoef > 0.03 || this.setup.activeBlockIndex === index) return;
+
+    console.log("imageTextureChange", aniCoef, this.setup.activeBlockIndex);
+    this.setup.activeBlockIndex = index;
+    const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
+    this.imageTextureChange(imageId);
   },
 
   async createMesh() {
@@ -161,7 +163,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const material = mesh.material as THREE.ShaderMaterial;
 
-    console.log("imageTextureChange");
     if (this.setup.imageAniTimeline.progress() !== 1) {
       //TODO do somethink to make th transition nice
     }
