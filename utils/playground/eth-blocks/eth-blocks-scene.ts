@@ -82,17 +82,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
-    const blockId: string = this.setup.ethBlocks[index]?.dataset.blockId;
+    const el = this.setup.ethBlocks[index] as HTMLElement;
+    if (!el) return;
+    const blockId = el.dataset.blockId;
+    if (!blockId) return;
     if (this.loadingBlockId === blockId) return;
-    // console.log("image change 1");
     if (this.activeBlockId === blockId) return;
-    // console.log("image change 2");
     if (aniCoef > 0.05) return;
     this.activeBlockId = blockId;
-    const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
-    console.log("image change 3", blockId, "imageId:", imageId);
-
-    // console.log("blockId:", blockId, "aniCoef:", aniCoef,  "activeBlockId:", this.activeBlockId);
+    const imageId = Number(el.dataset.bgImageId);
     this.imageTextureChange(imageId);
   },
 
