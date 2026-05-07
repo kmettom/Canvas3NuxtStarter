@@ -12,13 +12,12 @@ export default defineEventHandler(async (event) => {
   // TODO: LOCAL DEV NO CONNECTION START
   //**************************
 
-  console.log("event", event);
   const mockBlocks = [
     generateMockBlockData(),
-    // generateMockBlockData(),
-    // generateMockBlockData(),
-    // generateMockBlockData(),
-    // generateMockBlockData(),
+    generateMockBlockData(),
+    generateMockBlockData(),
+    generateMockBlockData(),
+    generateMockBlockData(),
   ];
   return JSON.parse(
     JSON.stringify(mockBlocks, (_, v) =>

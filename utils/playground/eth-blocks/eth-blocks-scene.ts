@@ -60,7 +60,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
       textures: textures,
-      activeBlockIndex: 0,
       imageAniTimeline: gsap.timeline(),
     };
     this.firstEnterAnimation();
@@ -83,8 +82,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const blockId: string = this.setup.ethBlocks[index]?.dataset.blockId;
     if (this.loadingBlockId === blockId) return;
-    if (aniCoef > 0.03 || this.activeBlockId === blockId) return;
-    console.log("image change- ", blockId);
+    if (aniCoef > 0.04 || this.activeBlockId === blockId) return;
     this.activeBlockId = blockId;
     const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
     this.imageTextureChange(imageId);

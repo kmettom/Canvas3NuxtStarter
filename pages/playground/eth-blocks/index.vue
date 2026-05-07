@@ -24,13 +24,10 @@
         @mouseenter="hoverBlock($event, true, block.blockId)"
         @mouseleave="hoverBlock($event, false, block.blockId)"
       >
-        <!--        <div class="block-loading-bar">-->
-        <div class="block-loading-progress" />
-        <!--        </div>-->
+        <div class="block-loading-progress"></div>
         <div v-if="block.loading" />
         <div v-else class="content-wrapper">
           <div class="content-row">
-            <!--            <div >-->
             <div class="content-block">
               <div class="content-title">Transactions:</div>
               <div class="content-value ani-index-0 eth-large-text">
@@ -276,7 +273,6 @@ const tlNewBlockAniIn = gsap.timeline({
 
 async function newLoadingBlock() {
   ethBlocksAnimation.loadingBlockId = new Date().getTime().toString();
-  console.log("new loadingBlockId", ethBlocksAnimation.loadingBlockId);
   blocks.value.set(
     ethBlocksAnimation.loadingBlockId,
     generateLoadingBlockData(ethBlocksAnimation.loadingBlockId),
@@ -304,7 +300,6 @@ function addNewBlockEl(
 }
 
 const animateNewBlockAdded = (blockId: string) => {
-  console.log("animateNewBlockAdded", blockId);
   const block = blocks.value.get(blockId);
   if (!block) return;
   const el = block.elRef as HTMLElement;
@@ -370,11 +365,11 @@ const addBlockListener = () => {
       generateBlockData(block, ethBlocksAnimation.loadingBlockId),
     );
     await nextTick();
+    animateNewBlockAdded(ethBlocksAnimation.loadingBlockId);
     if (blocks.value.size > maxBlocks) {
       const oldestKey = blocks.value.keys().next().value;
       if (oldestKey) blocks.value.delete(oldestKey);
     }
-    animateNewBlockAdded(ethBlocksAnimation.loadingBlockId);
   };
 };
 
@@ -421,7 +416,7 @@ onMounted(async () => {
 }
 
 .eth-blocks {
-  padding-bottom: 45%;
+  padding-bottom: 65%;
   //margin: 0 auto;
   //margin-left: 100px;
   //display: inline-block;
