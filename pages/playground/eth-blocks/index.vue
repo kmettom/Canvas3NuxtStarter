@@ -19,6 +19,7 @@
           // trackOnly: true,
         }"
         :data-bg-image-id="block.imageId"
+        :data-block-id="block.blockId"
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
         @mouseenter="hoverBlock($event, true, block.blockId)"
         @mouseleave="hoverBlock($event, false, block.blockId)"
@@ -274,9 +275,12 @@ const tlNewBlockAniIn = gsap.timeline({
 });
 
 async function newLoadingBlock() {
-  loadingBlockId = new Date().getTime().toString();
-  console.log("new loadingBlockId", loadingBlockId);
-  blocks.value.set(loadingBlockId, generateLoadingBlockData(loadingBlockId));
+  ethBlocksAnimation.loadingBlockId = new Date().getTime().toString();
+  console.log("new loadingBlockId", ethBlocksAnimation.loadingBlockId);
+  blocks.value.set(
+    ethBlocksAnimation.loadingBlockId,
+    generateLoadingBlockData(ethBlocksAnimation.loadingBlockId),
+  );
   await nextTick();
   tlNewBlockAniIn.to(".block-loading", {
     width: "423px",
@@ -354,28 +358,29 @@ initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
 
 let eventSource: EventSource;
 
-let loadingBlockId = new Date().getTime().toString() + "_first";
+ethBlocksAnimation.loadingBlockId = new Date().getTime().toString() + "_first";
 
 const maxBlocks = 50;
 const addBlockListener = () => {
   eventSource = new EventSource("/api/playground/eth-blocks/watch");
   eventSource.onmessage = async ({ data }) => {
     const block = deserializeBlock(JSON.parse(data));
-    // if (blocks.value.has(loadingBlockId)) return;
-    blocks.value.set(loadingBlockId, generateBlockData(block, loadingBlockId));
+    blocks.value.set(
+      ethBlocksAnimation.loadingBlockId,
+      generateBlockData(block, ethBlocksAnimation.loadingBlockId),
+    );
     await nextTick();
     if (blocks.value.size > maxBlocks) {
       const oldestKey = blocks.value.keys().next().value;
       if (oldestKey) blocks.value.delete(oldestKey);
     }
-    animateNewBlockAdded(loadingBlockId);
+    animateNewBlockAdded(ethBlocksAnimation.loadingBlockId);
   };
 };
 
 onUnmounted(() => eventSource?.close());
 
 function enterAni() {
-  console.log("enterAni");
   tlNewBlockAniIn.clear();
   tlNewBlockAniIn.to(".eth-block", {
     width: "423px",

@@ -15,12 +15,11 @@ export default defineEventHandler(async (event) => {
   console.log("event", event);
   const mockBlocks = [
     generateMockBlockData(),
-    generateMockBlockData(),
-    generateMockBlockData(),
-    generateMockBlockData(),
-    generateMockBlockData(),
+    // generateMockBlockData(),
+    // generateMockBlockData(),
+    // generateMockBlockData(),
+    // generateMockBlockData(),
   ];
-  console.log("mock blocks", mockBlocks);
   return JSON.parse(
     JSON.stringify(mockBlocks, (_, v) =>
       typeof v === "bigint" ? v.toString() : v,

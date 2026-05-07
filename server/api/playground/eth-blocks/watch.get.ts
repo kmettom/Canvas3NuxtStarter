@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
   //**************************
   // TODO: LOCAL DEV NO CONNECTION START
   //**************************
-  console.log("event", event);
   const eventStream = createEventStream(event);
 
   const mockBlock = generateMockBlockData();
@@ -18,7 +17,7 @@ export default defineEventHandler(async (event) => {
         (_, v) => (typeof v === "bigint" ? v.toString() : v), // BigInt is not JSON-serializable
       ),
     );
-  }, 5000);
+  }, 8000);
 
   eventStream.onClosed(() => {
     unwatch();

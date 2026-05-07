@@ -5,13 +5,14 @@ import { gsap } from "gsap";
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
-  activeBlockIndex: number;
   textures: THREE.Texture[];
   imageAniTimeline: gsap.core.Timeline;
 };
 
 type EthBlocksAnimation = {
   meshId: string;
+  loadingBlockId: string;
+  activeBlockId: string;
   setup: EthBlocksAnimationSetup | null;
   blocksBasePosition: number;
   blocksTopPadding: number;
@@ -30,6 +31,8 @@ export const BLOCKS_ON_SCREEN_AMOUNT = 6;
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   meshId: "ethBlockBg",
+  loadingBlockId: "loadingBlockInit",
+  activeBlockId: "activeBlockId",
   blocksTopPadding: 0.25,
   blocksBasePosition: 0,
   async init(ethBlocksWrapper: HTMLElement) {
@@ -78,12 +81,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
-    if (this.setup.ethBlocks[index]?.classList.contains("block-loading"))
-      return;
-    if (aniCoef > 0.03 || this.setup.activeBlockIndex === index) return;
-
-    // console.log("imageTextureChange", aniCoef, this.setup.activeBlockIndex);
-    this.setup.activeBlockIndex = index;
+    const blockId: string = this.setup.ethBlocks[index]?.dataset.blockId;
+    if (this.loadingBlockId === blockId) return;
+    if (aniCoef > 0.03 || this.activeBlockId === blockId) return;
+    console.log("image change- ", blockId);
+    this.activeBlockId = blockId;
     const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
     this.imageTextureChange(imageId);
   },
@@ -163,7 +165,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const material = mesh.material as THREE.ShaderMaterial;
 
-    console.log("imageTextureChange", imageId);
     if (this.setup.imageAniTimeline.progress() !== 1) {
       //TODO do somethink to make th transition nice
     }
