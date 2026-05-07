@@ -126,14 +126,15 @@ const blockDoneAnimate = (blockId: string) => {
 
   function addTimelineAnimations() {
     tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
-      width: "100%",
-      duration: 0.2,
-      opacity: 0,
+      width: "0%",
+      duration: 0.15,
+      right: 0,
+      left: "initial",
     });
 
     tlNewBlockAniIn.fromTo(
       el,
-      { height: 0 },
+      { height: "10px" },
       { height: "236px", duration: 0.95, marginTop: "20px" },
     );
 

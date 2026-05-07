@@ -12,7 +12,7 @@ const props = defineProps<{
 
 <template>
   <div class="block-loading-progress" />
-  {{ block.blockId }}
+  <!--  {{ block.blockId }}-->
   <div v-if="props.block.loading" />
   <div v-else class="content-wrapper">
     <div class="content-row">
