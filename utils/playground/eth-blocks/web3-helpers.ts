@@ -1,5 +1,9 @@
 import { type Block, formatEther, type Withdrawal } from "viem";
 import Big from "big.js";
+import type Timeline from "gsap";
+import SplitText from "gsap/SplitText";
+import { gsap } from "gsap";
+gsap.registerPlugin(SplitText);
 
 export type BlockLoading = {
   imageId: string;
@@ -179,4 +183,36 @@ export function generateMockBlockData() {
     withdrawals: [],
     withdrawalsRoot: "#fff",
   };
+}
+
+export function aniContentValues(
+  elementsToAni: NodeListOf<HTMLElement>,
+  tlNewBlockAniIn: Timeline,
+) {
+  if (elementsToAni.length) {
+    for (let i = 0; i < elementsToAni.length; i++) {
+      if (elementsToAni[i]) {
+        const splitValues = new SplitText(elementsToAni[i] as HTMLElement, {
+          type: "chars",
+          linesClass: "content-char",
+          reduceWhiteSpace: false,
+        });
+        tlNewBlockAniIn.fromTo(
+          splitValues.chars,
+          { opacity: 0, y: 5 },
+          { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
+          "<=+0.1",
+        );
+      }
+    }
+  }
+}
+
+export function enterAni(tlNewBlockAniIn: Timeline) {
+  tlNewBlockAniIn.clear();
+  tlNewBlockAniIn.to(".eth-block", {
+    width: "423px",
+    height: "200px",
+    marginTop: "20px",
+  });
 }

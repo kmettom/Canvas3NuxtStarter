@@ -21,9 +21,9 @@
         :data-bg-image-id="block.imageId"
         :data-block-id="block.blockId"
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
-        @mouseenter="hoverBlock($event, true, block.blockId)"
-        @mouseleave="hoverBlock($event, false, block.blockId)"
       >
+        <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->
+        <!--        @mouseleave="hoverBlock($event, false, block.blockId)"-->
         <blockContent :block="block" />
       </div>
     </div>
@@ -36,64 +36,48 @@ import {
   type BlockExtended,
   deserializeBlock,
   generateLoadingBlockData,
+  aniContentValues,
+  enterAni,
 } from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
 import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 import BlockContent from "~/components/playground/eth-blocks/blockContent.vue";
-
 gsap.registerPlugin(SplitText);
 
+//**************************
+// DECLARATIONS
+//**************************
+
+const maxBlocks = 50;
+
 const ethBlocks = ref<HTMLElement | null>(null);
-
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
-
 const blocks = ref<Map<string, BlockExtended>>(new Map());
-
 const blocksToRender = computed<BlockExtended[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
     a.blockId > b.blockId ? -1 : 1,
   );
 });
-
-const hoverBlock = (event: Event, status: boolean, blockId: string) => {
-  const tl = gsap.timeline({});
-  tl.call(
-    () => {
-      const blockToAnimate = blocks.value.get(blockId);
-      if (blockToAnimate) {
-        blockToAnimate.blockHovered = status;
-      }
-    },
-    undefined,
-    "<",
-  );
-};
-
-const aniContentValues = (elementsToAni: NodeListOf<HTMLElement>) => {
-  if (elementsToAni.length) {
-    for (let i = 0; i < elementsToAni.length; i++) {
-      if (elementsToAni[i]) {
-        const splitValues = new SplitText(elementsToAni[i] as HTMLElement, {
-          type: "chars",
-          linesClass: "content-char",
-          reduceWhiteSpace: false,
-        });
-        tlNewBlockAniIn.fromTo(
-          splitValues.chars,
-          { opacity: 0, y: 5 },
-          { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
-          "<=+0.1",
-        );
-      }
-    }
-  }
-};
+let eventSource: EventSource;
+const { data: initialBlocks } = await useFetch(
+  "/api/playground/eth-blocks/latest",
+);
+initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
+  const block = deserializeBlock(raw);
+  const blockId = new Date().getTime().toString() + `_latest_${index}`;
+  blocks.value.set(blockId, generateBlockData(block, blockId));
+});
+ethBlocksAnimation.loadingBlockId = new Date().getTime().toString() + "_first";
 
 const tlNewBlockAniIn = gsap.timeline({
   onComplete: () => {},
   onUpdate: () => {},
 });
+
+//**************************
+// FUNCTIONS
+//**************************
 
 async function newLoadingBlock() {
   ethBlocksAnimation.loadingBlockId = new Date().getTime().toString();
@@ -151,12 +135,12 @@ const animateNewBlockAdded = (blockId: string) => {
   const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value.ani-index-0",
   );
-  aniContentValues(valuesElementsIndex0);
+  aniContentValues(valuesElementsIndex0, tlNewBlockAniIn);
 
   const valuesElementsIndex1 = (el as Element).querySelectorAll<HTMLElement>(
     ".content-value.ani-index-1",
   );
-  aniContentValues(valuesElementsIndex1);
+  aniContentValues(valuesElementsIndex1, tlNewBlockAniIn);
 
   tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
     width: 0,
@@ -167,20 +151,6 @@ const animateNewBlockAdded = (blockId: string) => {
   tlNewBlockAniIn.play();
 };
 
-const { data: initialBlocks } = await useFetch(
-  "/api/playground/eth-blocks/latest",
-);
-initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
-  const block = deserializeBlock(raw);
-  const blockId = new Date().getTime().toString() + `_latest_${index}`;
-  blocks.value.set(blockId, generateBlockData(block, blockId));
-});
-
-let eventSource: EventSource;
-
-ethBlocksAnimation.loadingBlockId = new Date().getTime().toString() + "_first";
-
-const maxBlocks = 50;
 const addBlockListener = () => {
   eventSource = new EventSource("/api/playground/eth-blocks/watch");
   eventSource.onmessage = async ({ data }) => {
@@ -200,22 +170,13 @@ const addBlockListener = () => {
 
 onUnmounted(() => eventSource?.close());
 
-function enterAni() {
-  tlNewBlockAniIn.clear();
-  tlNewBlockAniIn.to(".eth-block", {
-    width: "423px",
-    height: "200px",
-    marginTop: "20px",
-  });
-}
-
 onMounted(async () => {
   addBlockListener();
   if (ethBlocks.value) {
     ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
-  enterAni();
+  enterAni(tlNewBlockAniIn);
   newLoadingBlock();
 });
 
@@ -247,6 +208,5 @@ onMounted(async () => {
   height: 0;
   width: 0;
   border-radius: 25px;
-
 }
 </style>

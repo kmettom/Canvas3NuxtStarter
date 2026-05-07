@@ -13,7 +13,7 @@ const props = defineProps<{
 <template>
   <div class="block-loading-progress" />
   {{ block.blockId }}
-  <div v-if="block.loading" />
+  <div v-if="props.block.loading" />
   <div v-else class="content-wrapper">
     <div class="content-row">
       <div class="content-block">
@@ -186,7 +186,6 @@ const props = defineProps<{
 </template>
 
 <style scoped lang="scss">
-
 .eth-base-text {
   font-size: 12px;
 }
