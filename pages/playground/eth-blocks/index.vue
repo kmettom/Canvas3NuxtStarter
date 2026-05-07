@@ -110,45 +110,54 @@ function addNewBlockEl(
   }
 }
 
-const animateNewBlockAdded = (blockId: string) => {
+const blockDoneAnimate = (blockId: string) => {
   const block = blocks.value.get(blockId);
   if (!block) return;
   const el = block.elRef as HTMLElement;
   if (!el) return;
 
-  tlNewBlockAniIn.progress(1);
-  tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
-    width: "100%",
-    duration: 0.2,
-    opacity: 0,
+  tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
+    duration: 0.3,
+    ease: "linear",
     onComplete: () => {
-      newLoadingBlock();
+      addTimelineAnimations();
     },
   });
 
-  tlNewBlockAniIn.fromTo(
-    el,
-    { height: 0 },
-    { height: "236px", duration: 0.95, marginTop: "20px" },
-  );
+  function addTimelineAnimations() {
+    tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+      width: "100%",
+      duration: 0.2,
+      opacity: 0,
+    });
 
-  const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
-    ".content-value.ani-index-0",
-  );
-  aniContentValues(valuesElementsIndex0, tlNewBlockAniIn);
+    tlNewBlockAniIn.fromTo(
+      el,
+      { height: 0 },
+      { height: "236px", duration: 0.95, marginTop: "20px" },
+    );
 
-  const valuesElementsIndex1 = (el as Element).querySelectorAll<HTMLElement>(
-    ".content-value.ani-index-1",
-  );
-  aniContentValues(valuesElementsIndex1, tlNewBlockAniIn);
+    const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
+      ".content-value.ani-index-0",
+    );
+    aniContentValues(valuesElementsIndex0, tlNewBlockAniIn);
 
-  tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
-    width: 0,
-    duration: 0,
-    opacity: 1,
-    onComplete: () => {},
-  });
-  tlNewBlockAniIn.play();
+    const valuesElementsIndex1 = (el as Element).querySelectorAll<HTMLElement>(
+      ".content-value.ani-index-1",
+    );
+    aniContentValues(valuesElementsIndex1, tlNewBlockAniIn);
+
+    tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+      width: 0,
+      duration: 0,
+      opacity: 1,
+      onComplete: () => {
+        newLoadingBlock();
+      },
+    });
+
+    tlNewBlockAniIn.play();
+  }
 };
 
 const addBlockListener = () => {
@@ -160,7 +169,7 @@ const addBlockListener = () => {
       generateBlockData(block, ethBlocksAnimation.loadingBlockId),
     );
     await nextTick();
-    animateNewBlockAdded(ethBlocksAnimation.loadingBlockId);
+    blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
     if (blocks.value.size > maxBlocks) {
       const oldestKey = blocks.value.keys().next().value;
       if (oldestKey) blocks.value.delete(oldestKey);
@@ -177,7 +186,7 @@ onMounted(async () => {
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
   enterAni(tlNewBlockAniIn);
-  newLoadingBlock();
+  await newLoadingBlock();
 });
 
 // https://www.shadertoy.com/view/wccSDf

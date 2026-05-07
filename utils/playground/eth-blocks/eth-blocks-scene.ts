@@ -84,9 +84,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const blockId: string = this.setup.ethBlocks[index]?.dataset.blockId;
     if (this.loadingBlockId === blockId) return;
-    console.log("image change 1");
+    // console.log("image change 1");
     if (this.activeBlockId === blockId) return;
-    console.log("image change 2");
+    // console.log("image change 2");
     if (aniCoef > 0.05) return;
     this.activeBlockId = blockId;
     const imageId = Number(this.setup.ethBlocks[index]?.dataset.bgImageId);
