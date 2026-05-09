@@ -5,12 +5,12 @@ import { gsap } from "gsap";
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
-  textures: THREE.Texture[];
   imageAniTimeline: gsap.core.Timeline;
 };
 
 type EthBlocksAnimation = {
   meshId: string;
+  textures: THREE.Texture[];
   loadingBlockId: string;
   activeBlockId: string;
   blockLoadingTime: number;
@@ -31,6 +31,7 @@ export const BLOCKS_ON_SCREEN_AMOUNT = 6;
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
+  textures: [],
   meshId: "ethBlockBg",
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
@@ -39,32 +40,39 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   blocksBasePosition: 0,
   async init(ethBlocksWrapper: HTMLElement) {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
-    const mesh = await this.createMesh();
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
 
     const loader = new THREE.TextureLoader();
-    // const imagesAmount = 10;
 
-    const textures = await Promise.all([
-      // loader.loadAsync("images/00.png"),
-      loader.loadAsync("images/01.jpg"),
-      loader.loadAsync("images/02.jpg"),
-      loader.loadAsync("images/03.jpg"),
-      loader.loadAsync("images/04.jpg"),
-      loader.loadAsync("images/05.jpg"),
-      loader.loadAsync("images/06.jpg"),
-      loader.loadAsync("images/07.jpg"),
-      loader.loadAsync("images/08.jpg"),
+    this.textures = await Promise.all([
+      loader.loadAsync("images/01.png"),
+      loader.loadAsync("images/02.png"),
     ]);
+
+    const mesh = await this.createMesh();
 
     this.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
-      textures: textures,
       imageAniTimeline: gsap.timeline(),
     };
     this.firstEnterAnimation();
+
+    const nextTextures = await Promise.all([
+      // loader.loadAsync("images/01.png"),
+      // loader.loadAsync("images/02.png"),
+      loader.loadAsync("images/03.png"),
+      loader.loadAsync("images/04.png"),
+      loader.loadAsync("images/05.png"),
+      loader.loadAsync("images/06.png"),
+      loader.loadAsync("images/07.png"),
+      loader.loadAsync("images/08.png"),
+    ]);
+
+    for (let i = 0; i < nextTextures.length; i++) {
+      if (nextTextures[i]) this.textures.push(nextTextures[i]);
+    }
   },
   firstEnterAnimation() {},
   animateBlockSizeOnScroll(elNode, index) {
@@ -101,13 +109,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    const loader = new THREE.TextureLoader();
-
-    const textureCurrent = await loader.loadAsync("images/01.jpg");
+    if (!this.textures[0]) return;
+    const textureCurrent = this.textures[0];
     textureCurrent.colorSpace = THREE.SRGBColorSpace;
     textureCurrent.needsUpdate = true;
 
-    const textureNext = await loader.loadAsync("images/02.jpg");
+    if (!this.textures[1]) return;
+    const textureNext = this.textures[1];
     textureNext.colorSpace = THREE.SRGBColorSpace;
     textureNext.needsUpdate = true;
 
@@ -185,8 +193,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         if (!material?.uniforms?.uTextureNext) return;
         if (!material?.uniforms?.uTextureCurrent) return;
 
-        const newTexture = this.setup.textures[imageId];
-        // const  = this.setup.textures[index];
+        const newTexture = this.textures[imageId];
         if (!newTexture) return;
 
         newTexture.colorSpace = THREE.SRGBColorSpace;
@@ -263,15 +270,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - appear animation with loader, or transition
-//       - first image load as priority
-//       - other textures lazy async
-//       - Load 20 images - async
 // - data animate in in the blocks
 // - update glass size to fit design
 // - Shader -
 //           - uTransitionProgress - with better shader effect - from top to bottom first
-// - Images export - 20 images - J
+// - Images export/import - 20 images - J
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
-//
 // -

@@ -160,8 +160,8 @@ export function generateMockBlockData() {
     difficulty: BigInt(1),
     excessBlobGas: BigInt(1),
     extraData: "0xtest",
-    gasLimit: BigInt(1),
-    gasUsed: BigInt(1),
+    gasLimit: BigInt(2500000000000000000),
+    gasUsed: BigInt(3500000000000000000),
     hash: "0xtest",
     logsBloom: "0xtest",
     miner: "xxxAddress",
@@ -180,7 +180,7 @@ export function generateMockBlockData() {
     transactions: [1, 2, 3],
     transactionsRoot: "0xtest",
     uncles: [],
-    withdrawals: [],
+    withdrawals: [{ amount: BigInt(1000000000), recipient: "0xtest" }],
     withdrawalsRoot: "#fff",
   };
 }
