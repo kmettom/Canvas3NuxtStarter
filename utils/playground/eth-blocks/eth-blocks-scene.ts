@@ -47,7 +47,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.textures = await Promise.all([
       loader.loadAsync("images/01.png"),
-      loader.loadAsync("images/02.png"),
+      loader.loadAsync("images/02.jpg"),
     ]);
 
     const mesh = await this.createMesh();
@@ -63,11 +63,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       // loader.loadAsync("images/01.png"),
       // loader.loadAsync("images/02.png"),
       loader.loadAsync("images/03.png"),
-      loader.loadAsync("images/04.png"),
+      loader.loadAsync("images/04.jpg"),
       loader.loadAsync("images/05.png"),
-      loader.loadAsync("images/06.png"),
+      loader.loadAsync("images/06.jpg"),
       loader.loadAsync("images/07.png"),
-      loader.loadAsync("images/08.png"),
+      loader.loadAsync("images/08.jpg"),
     ]);
 
     for (let i = 0; i < nextTextures.length; i++) {
@@ -182,11 +182,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
     // this.setup.imageAniTimeline.progress(1)
     if (!material.uniforms.uTransitionProgress) return;
-
     this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
       value: 1,
-      duration: 0.35,
-      //TODO -> add scroll speed, so fast scroll vill cause faster transition
+      duration: 0.35 * (Canvas3.getScrollSpeed() ?? 1),
       ease: "linear",
       onComplete: () => {
         if (!this.setup) return;
