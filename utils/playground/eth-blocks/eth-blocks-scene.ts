@@ -170,23 +170,43 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(imageId) {
+    console.log("1imageTextureChange", imageId);
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
+    console.log("2imageTextureChange");
 
     const material = mesh.material as THREE.ShaderMaterial;
 
+    // TODO do somethink to make the transition nice
     if (this.setup.imageAniTimeline.progress() !== 1) {
-      //TODO do somethink to make the transition nice
+      console.log("-- end old timeline");
+      this.setup.imageAniTimeline.tweenTo(
+        this.setup.imageAniTimeline.duration(),
+        {
+          duration: 0.3,
+          ease: "linear",
+        },
+      );
     }
+
+    // this.setup.imageAniTimeline.clear();
     // this.setup.imageAniTimeline.progress(1)
+
     if (!material.uniforms.uTransitionProgress) return;
+    const imageChangeDuration = Math.max(
+      0.5,
+      0.9 - (Canvas3.getScrollSpeed() ?? 1),
+    );
+    console.log("imageChangeDuration", imageChangeDuration);
     this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
       value: 1,
-      duration: 0.35 * (Canvas3.getScrollSpeed() ?? 1),
+      duration: imageChangeDuration,
       ease: "linear",
       onComplete: () => {
+        console.log("1uTransitionProgress compete");
+
         if (!this.setup) return;
         if (!material?.uniforms?.uTextureNext) return;
         if (!material?.uniforms?.uTextureCurrent) return;
@@ -201,6 +221,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         material.uniforms.uTextureNext.value = newTexture;
         if (!material.uniforms.uTransitionProgress) return;
         material.uniforms.uTransitionProgress.value = 0;
+
+        console.log("2uTransitionProgress compete");
       },
     });
   },

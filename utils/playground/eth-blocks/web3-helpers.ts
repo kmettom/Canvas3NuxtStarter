@@ -72,28 +72,32 @@ export const blockGasTargetPercent = (
 
 let imageIndex = 0;
 const imageAmount = 8;
-export function generateImage() {
-  imageIndex++;
-  if (imageIndex === imageAmount + 1) imageIndex = 1;
-  return "0" + imageIndex;
+
+export function generateImageId() {
+  const currentIndex = imageIndex;
+  imageIndex = (imageIndex + 1) % imageAmount;
+  return currentIndex;
 }
 
 export function generateLoadingBlockData(blockId: string) {
   return {
     blockHovered: false,
-    imageId: generateImage(),
+    imageId: generateImageId(),
     loading: true,
     blockId: blockId,
   };
 }
 
-export function generateBlockData(blockData: Block, blockId: string) {
+export function generateBlockData(
+  blockData: Block,
+  loadingBlockData: BlockLoading,
+) {
   const newBlock: BlockExtended = {
     ...blockData,
     blockHovered: false,
-    imageId: generateImage(),
+    imageId: loadingBlockData.imageId,
     loading: false,
-    blockId: blockId,
+    blockId: loadingBlockData.blockId,
   };
 
   newBlock.blockGasUsedPercent = blockGasUsedPercent(

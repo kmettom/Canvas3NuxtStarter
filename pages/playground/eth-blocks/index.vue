@@ -66,7 +66,8 @@ const { data: initialBlocks } = await useFetch(
 initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
   const block = deserializeBlock(raw);
   const blockId = new Date().getTime().toString() + `_latest_${index}`;
-  blocks.value.set(blockId, generateBlockData(block, blockId));
+  const loadingBlock = generateLoadingBlockData(blockId);
+  blocks.value.set(blockId, generateBlockData(block, loadingBlock));
 });
 ethBlocksAnimation.loadingBlockId = new Date().getTime().toString() + "_first";
 
@@ -165,9 +166,11 @@ const addBlockListener = () => {
   eventSource = new EventSource("/api/playground/eth-blocks/watch");
   eventSource.onmessage = async ({ data }) => {
     const block = deserializeBlock(JSON.parse(data));
+    const loadingBlock = blocks.value.get(ethBlocksAnimation.loadingBlockId);
+    if (!loadingBlock) return;
     blocks.value.set(
       ethBlocksAnimation.loadingBlockId,
-      generateBlockData(block, ethBlocksAnimation.loadingBlockId),
+      generateBlockData(block, loadingBlock),
     );
     await nextTick();
     blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
