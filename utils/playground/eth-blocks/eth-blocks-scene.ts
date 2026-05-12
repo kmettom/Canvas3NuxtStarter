@@ -6,6 +6,7 @@ type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
   imageAniTimeline: gsap.core.Timeline;
+  aniTimelineArray: gsap.core.TimelineChild[];
 };
 
 type EthBlocksAnimation = {
@@ -56,6 +57,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
       imageAniTimeline: gsap.timeline(),
+      aniTimelineArray: [],
     };
     this.firstEnterAnimation();
 
@@ -170,61 +172,62 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(imageId) {
-    console.log("1imageTextureChange", imageId);
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
-    console.log("2imageTextureChange");
 
     const material = mesh.material as THREE.ShaderMaterial;
 
-    // TODO do somethink to make the transition nice
+    // if()
+    // TODO do something to make the transition nice
     if (this.setup.imageAniTimeline.progress() !== 1) {
-      console.log("-- end old timeline");
-      this.setup.imageAniTimeline.tweenTo(
-        this.setup.imageAniTimeline.duration(),
-        {
-          duration: 0.3,
-          ease: "linear",
-        },
+      console.log(
+        "REMOVE ALL IN THE MIDDLE",
+        this.setup.aniTimelineArray.length,
       );
+      // if (this.setup.aniTimelineArray.length < 1) return;
+      for (let i = 0; i < this.setup.aniTimelineArray.length; i++) {
+        if (this.setup.aniTimelineArray[i])
+          this.setup.imageAniTimeline.remove(this.setup.aniTimelineArray[i]);
+      }
+      this.setup.aniTimelineArray.length = 0;
     }
-
-    // this.setup.imageAniTimeline.clear();
-    // this.setup.imageAniTimeline.progress(1)
 
     if (!material.uniforms.uTransitionProgress) return;
     const imageChangeDuration = Math.max(
       0.5,
       0.9 - (Canvas3.getScrollSpeed() ?? 1),
     );
-    console.log("imageChangeDuration", imageChangeDuration);
-    this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
-      value: 1,
-      duration: imageChangeDuration,
-      ease: "linear",
-      onComplete: () => {
-        console.log("1uTransitionProgress compete");
 
-        if (!this.setup) return;
-        if (!material?.uniforms?.uTextureNext) return;
-        if (!material?.uniforms?.uTextureCurrent) return;
+    console.log("imageChangeDuration", imageChangeDuration, imageId);
 
-        const newTexture = this.textures[imageId];
-        if (!newTexture) return;
+    const ani = this.setup.imageAniTimeline.to(
+      material.uniforms.uTransitionProgress,
+      {
+        value: 1,
+        duration: imageChangeDuration,
+        ease: "linear",
+        onComplete: () => {
+          if (!this.setup) return;
+          if (!material?.uniforms?.uTextureNext) return;
+          if (!material?.uniforms?.uTextureCurrent) return;
 
-        newTexture.colorSpace = THREE.SRGBColorSpace;
-        newTexture.needsUpdate = true;
-        material.uniforms.uTextureCurrent.value =
-          material.uniforms.uTextureNext.value;
-        material.uniforms.uTextureNext.value = newTexture;
-        if (!material.uniforms.uTransitionProgress) return;
-        material.uniforms.uTransitionProgress.value = 0;
+          const newTexture = this.textures[imageId];
+          if (!newTexture) return;
 
-        console.log("2uTransitionProgress compete");
+          newTexture.colorSpace = THREE.SRGBColorSpace;
+          newTexture.needsUpdate = true;
+          material.uniforms.uTextureCurrent.value =
+            material.uniforms.uTextureNext.value;
+          material.uniforms.uTextureNext.value = newTexture;
+          if (!material.uniforms.uTransitionProgress) return;
+          material.uniforms.uTransitionProgress.value = 0;
+          this.setup.aniTimelineArray.length = 0;
+        },
       },
-    });
+    );
+    this.setup.aniTimelineArray.push(ani);
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
