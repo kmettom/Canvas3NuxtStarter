@@ -36,12 +36,17 @@ import {
   type BlockExtended,
   deserializeBlock,
   generateLoadingBlockData,
-  aniContentValues,
+  // aniContentValues,
   enterAni,
+  // aniProgressBar,
+  blockContentAniIn,
 } from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
-import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
+import {
+  BLOCKS_HEIGHT,
+  ethBlocksAnimation,
+} from "~/utils/playground/eth-blocks/eth-blocks-scene";
 import BlockContent from "~/components/playground/eth-blocks/blockContent.vue";
 gsap.registerPlugin(SplitText);
 
@@ -136,18 +141,10 @@ const blockDoneAnimate = (blockId: string) => {
     tlNewBlockAniIn.fromTo(
       el,
       { height: "10px" },
-      { height: "236px", duration: 0.95, marginTop: "20px" },
+      { height: BLOCKS_HEIGHT + "px", duration: 0.5, marginTop: "20px" },
     );
 
-    const valuesElementsIndex0 = (el as Element).querySelectorAll<HTMLElement>(
-      ".content-value.ani-index-0",
-    );
-    aniContentValues(valuesElementsIndex0, tlNewBlockAniIn);
-
-    const valuesElementsIndex1 = (el as Element).querySelectorAll<HTMLElement>(
-      ".content-value.ani-index-1",
-    );
-    aniContentValues(valuesElementsIndex1, tlNewBlockAniIn);
+    blockContentAniIn(el, tlNewBlockAniIn);
 
     tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
       width: 0,
