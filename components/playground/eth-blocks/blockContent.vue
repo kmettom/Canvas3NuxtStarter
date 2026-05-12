@@ -17,16 +17,17 @@ const props = defineProps<{
   <div v-else class="content-wrapper">
     <div class="content-row">
       <div class="content-block">
-        <div class="content-title">Transactions:</div>
+        <div class="content-title ani-index-title">Transactions:</div>
         <div class="content-value ani-index-0 eth-large-text">
           {{ block.transactions.length }}
         </div>
       </div>
       <div class="content-block">
-        <div class="content-title gas">Gas:</div>
+        <div class="content-title gas ani-index-title">Gas:</div>
         <div class="gas-block">
           <div class="gas-chart">
             <svg
+              class="gas-chart-svg"
               width="46"
               height="46"
               viewBox="0 0 46 46"
@@ -62,9 +63,17 @@ const props = defineProps<{
           </div>
           <div class="gas-stats">
             <div class="gas-stat-line">
-              Gas used: {{ block.blockGasUsedPercent }}
+              <span class="ani-index-title"> Gas used: </span>
+              <span class="ani-index-0">
+                {{ block.blockGasUsedPercent }}
+              </span>
             </div>
-            <div class="">Gas target: {{ block.blockGasTargetPercent }}</div>
+            <div class="">
+              <span class="ani-index-title"> Gas target: </span>
+              <span class="ani-index-0">
+                {{ block.blockGasTargetPercent }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -72,6 +81,7 @@ const props = defineProps<{
     <div class="content-row row-wrap">
       <div v-if="block.blockETHBurned" class="content-block supply">
         <svg
+          class="ani-index-icon"
           width="14"
           height="16"
           viewBox="0 0 14 16"
@@ -85,7 +95,7 @@ const props = defineProps<{
             fill="white"
           />
         </svg>
-        <span class="">Burned:</span>
+        <span class="ani-index-title">Burned:</span>
         <span class="content-value ani-index-0">
           {{ formatEth2(block.blockETHBurned) }}
         </span>
@@ -94,6 +104,7 @@ const props = defineProps<{
       </div>
       <div v-if="block.blockWithdrawalsSum" class="content-block supply">
         <svg
+          class="ani-index-icon"
           width="16"
           height="16"
           viewBox="0 0 16 16"
@@ -145,7 +156,7 @@ const props = defineProps<{
           </defs>
         </svg>
 
-        <span class="content-title">Withdrawed:</span>
+        <span class="content-title ani-index-title">Withdrawed:</span>
         <span class="content-value ani-index-0">
           {{ formatEth2(block.blockWithdrawalsSum) }}
         </span>
@@ -154,6 +165,7 @@ const props = defineProps<{
       </div>
       <div v-if="block.blockNetIssuanceETH" class="content-block supply">
         <svg
+          class="ani-index-icon"
           width="16"
           height="16"
           viewBox="0 0 16 16"
@@ -174,7 +186,7 @@ const props = defineProps<{
             </clipPath>
           </defs>
         </svg>
-        <span class="content-title">Supply Delta:</span>
+        <span class="content-title ani-index-title">Supply Delta:</span>
         <span class="content-value ani-index-0 text-bold">
           {{ formatEth2(block.blockNetIssuanceETH) }}
         </span>

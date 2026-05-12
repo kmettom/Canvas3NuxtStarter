@@ -1,8 +1,8 @@
 import { type Block, formatEther, type Withdrawal } from "viem";
 import Big from "big.js";
-import type Timeline from "gsap";
 import SplitText from "gsap/SplitText";
 import { gsap } from "gsap";
+// import { BLOCKS_HEIGHT } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 gsap.registerPlugin(SplitText);
 
 export type BlockLoading = {
@@ -189,9 +189,29 @@ export function generateMockBlockData() {
   };
 }
 
+export function aniProgressBar(
+  elementsToAni: NodeListOf<HTMLElement>,
+  tlNewBlockAniIn: gsap.core.Timeline,
+  gsapTimelineDelay?: string,
+) {
+  if (elementsToAni.length) {
+    for (let i = 0; i < elementsToAni.length; i++) {
+      if (elementsToAni[i]) {
+        tlNewBlockAniIn.fromTo(
+          elementsToAni[i],
+          { width: 0 },
+          { width: "140px", duration: 0.3, ease: "linear" },
+          gsapTimelineDelay,
+        );
+      }
+    }
+  }
+}
+
 export function aniContentValues(
   elementsToAni: NodeListOf<HTMLElement>,
-  tlNewBlockAniIn: Timeline,
+  tlNewBlockAniIn: gsap.core.Timeline,
+  gsapTimelineDelay?: string,
 ) {
   if (elementsToAni.length) {
     for (let i = 0; i < elementsToAni.length; i++) {
@@ -203,20 +223,57 @@ export function aniContentValues(
         });
         tlNewBlockAniIn.fromTo(
           splitValues.chars,
-          { opacity: 0, y: 5 },
-          { opacity: 1, y: 0, stagger: 0.05, duration: 0.05 },
-          "<=+0.1",
+          { opacity: 0, x: 3 },
+          { opacity: 1, x: 0, stagger: 0.03, duration: 0.15 },
+          gsapTimelineDelay,
         );
       }
     }
   }
 }
 
-export function enterAni(tlNewBlockAniIn: Timeline) {
+export function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
   tlNewBlockAniIn.clear();
   tlNewBlockAniIn.to(".eth-block", {
     width: "423px",
-    height: "200px",
+    height: "236px",
     marginTop: "20px",
   });
+}
+
+// export function aniIcons(
+//   elementsToAni: NodeListOf<HTMLElement>,
+//   tlNewBlockAniIn: gsap.core.Timeline,
+//   gsapTimelineDelay?: string,
+// ) {
+//   // tlNewBlockAniIn.to(
+//   //   ".eth-block",
+//   //   {
+//   //     width: "423px",
+//   //     height: "200px",
+//   //     marginTop: "20px",
+//   //   },
+//   //   gsapTimelineDelay,
+//   // );
+// }
+
+export function blockContentAniIn(
+  el: Element,
+  tlNewBlockAniIn: gsap.core.Timeline,
+) {
+  // const iconEls = el.querySelectorAll<HTMLElement>(".ani-index-icon");
+  // aniIcons(iconEls, tlNewBlockAniIn, "<");
+
+  const valuesElementsIndex0 = el.querySelectorAll<HTMLElement>(".ani-index-0");
+  aniContentValues(valuesElementsIndex0, tlNewBlockAniIn);
+
+  const valuesElementsIndex1 = el.querySelectorAll<HTMLElement>(".ani-index-1");
+  aniContentValues(valuesElementsIndex1, tlNewBlockAniIn, "<");
+
+  const valuesElementsIndexTitle =
+    el.querySelectorAll<HTMLElement>(".ani-index-title");
+  aniContentValues(valuesElementsIndexTitle, tlNewBlockAniIn, "<");
+
+  const progressBarEls = el.querySelectorAll<HTMLElement>(".progress-bar");
+  aniProgressBar(progressBarEls, tlNewBlockAniIn, "<");
 }
