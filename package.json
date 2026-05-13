@@ -30,7 +30,7 @@
     "@vueuse/core": "^12.4.0",
     "big.js": "^7.0.1",
     "gsap": "3.14.2",
-    "nuxt": "^4.0.0",
+    "nuxt": "^4.4.5",
     "prettier": "^3.6.2",
     "sass-embedded": "^1.89.2",
     "three": "^0.178.0",
@@ -38,7 +38,7 @@
     "viem": "^2.45.1",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-glsl": "^1.5.1",
-    "vue": "^3.5.18",
+    "vue": "^3.5.34",
     "vue-router": "^4.5.1"
   },
   "dependencies": {
