@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// import gsap from "gsap";
+
 const props = defineProps({
   progressPercent: {
     type: Number,
@@ -6,10 +8,14 @@ const props = defineProps({
     default: 10,
   },
 });
+
+// onMounted(() => {
+//   gsap.to('.progress-bar', {})
+// })
 </script>
 
 <template>
-  <div class="progress-bar">
+  <div class="progress-bar" :data-progress-percent="props.progressPercent">
     <div class="progress-state" :style="`width: ${props.progressPercent}%`" />
   </div>
 </template>
