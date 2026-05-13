@@ -5,4 +5,5 @@
 .output
 .data
 package-lock.json
+/myhost
 
