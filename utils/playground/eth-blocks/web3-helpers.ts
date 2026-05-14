@@ -241,31 +241,34 @@ export function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
   });
 }
 
-// export function aniIcons(
-//   elementsToAni: NodeListOf<HTMLElement>,
-//   tlNewBlockAniIn: gsap.core.Timeline,
-//   gsapTimelineDelay?: string,
-// ) {
-//   // tlNewBlockAniIn.to(
-//   //   ".eth-block",
-//   //   {
-//   //     width: "423px",
-//   //     height: "200px",
-//   //     marginTop: "20px",
-//   //   },
-//   //   gsapTimelineDelay,
-//   // );
-// }
+export function aniIcons(
+  elementsToAni: NodeListOf<HTMLElement>,
+  tlNewBlockAniIn: gsap.core.Timeline,
+  gsapTimelineDelay?: string,
+) {
+
+  tlNewBlockAniIn.fromTo(
+    elementsToAni,
+    {
+      opacity: 0,
+    },
+    {
+      opacity: 1,
+      duration: 0.3,
+    },
+    gsapTimelineDelay,
+  );
+}
 
 export function blockContentAniIn(
   el: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
 ) {
-  // const iconEls = el.querySelectorAll<HTMLElement>(".ani-index-icon");
-  // aniIcons(iconEls, tlNewBlockAniIn, "<");
+  const iconEls = el.querySelectorAll<HTMLElement>(".ani-index-icon");
+  aniIcons(iconEls, tlNewBlockAniIn );
 
   const valuesElementsIndex0 = el.querySelectorAll<HTMLElement>(".ani-index-0");
-  aniContentValues(valuesElementsIndex0, tlNewBlockAniIn);
+  aniContentValues(valuesElementsIndex0, tlNewBlockAniIn, "<");
 
   const valuesElementsIndex1 = el.querySelectorAll<HTMLElement>(".ani-index-1");
   aniContentValues(valuesElementsIndex1, tlNewBlockAniIn, "<");
