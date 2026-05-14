@@ -29,6 +29,10 @@ const dashoffset = computed(() => {
       stroke-opacity="0.2"
       stroke-width="6"
       fill="none"
+      stroke-linecap="butt"
+      stroke-dasharray="125"
+      stroke-dashoffset="0"
+      transform="rotate(-90 23 23)"
     />
     <circle
       id="gas-chart-value"

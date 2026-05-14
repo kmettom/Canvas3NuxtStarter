@@ -165,7 +165,7 @@ export function generateMockBlockData() {
     excessBlobGas: BigInt(1),
     extraData: "0xtest",
     gasLimit: BigInt(2500000000000000000),
-    gasUsed: BigInt(2000000000000000000),
+    gasUsed: BigInt(800000000000000000),
     hash: "0xtest",
     logsBloom: "0xtest",
     miner: "xxxAddress",
@@ -190,7 +190,7 @@ export function generateMockBlockData() {
 }
 
 export function aniProgressBar(
-  elementsToAni: NodeListOf<HTMLElement>,
+  elementsToAni: NodeListOf<Element>,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
@@ -209,7 +209,7 @@ export function aniProgressBar(
 }
 
 export function aniContentValues(
-  elementsToAni: NodeListOf<HTMLElement>,
+  elementsToAni: NodeListOf<Element>,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
@@ -241,8 +241,31 @@ export function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
   });
 }
 
+export function aniGasChart(
+  gasChartBg: Element | null,
+  gasChartValue: Element | null,
+  tlNewBlockAniIn: gsap.core.Timeline,
+  gsapTimelineDelay?: string,
+) {
+  if (!gasChartBg || !gasChartValue) return;
+  const gasValue = gasChartValue.getAttribute("stroke-dashoffset") ?? 0;
+  console.log("gasValue", gasValue);
+  tlNewBlockAniIn.fromTo(
+    gasChartBg,
+    { strokeDashoffset: 125 },
+    { strokeDashoffset: 0, duration: 0.3 },
+    gsapTimelineDelay,
+  );
+  tlNewBlockAniIn.fromTo(
+    gasChartValue,
+    { strokeDashoffset: 125 },
+    { strokeDashoffset: gasValue, duration: 0.3 },
+    gsapTimelineDelay,
+  );
+}
+
 export function aniIcons(
-  elementsToAni: NodeListOf<HTMLElement>,
+  elementsToAni: NodeListOf<Element>,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
@@ -263,19 +286,22 @@ export function blockContentAniIn(
   el: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
 ) {
-  const iconEls = el.querySelectorAll<HTMLElement>(".ani-index-icon");
+  const gasChartBg = el.querySelector("#gas-chart-bg");
+  const gasChartValue = el.querySelector("#gas-chart-value");
+  aniGasChart(gasChartBg, gasChartValue, tlNewBlockAniIn, "<+0.5");
+
+  const iconEls = el.querySelectorAll(".ani-index-icon");
   aniIcons(iconEls, tlNewBlockAniIn);
 
-  const valuesElementsIndex0 = el.querySelectorAll<HTMLElement>(".ani-index-0");
+  const valuesElementsIndex0 = el.querySelectorAll(".ani-index-0");
   aniContentValues(valuesElementsIndex0, tlNewBlockAniIn, "<");
 
-  const valuesElementsIndex1 = el.querySelectorAll<HTMLElement>(".ani-index-1");
+  const valuesElementsIndex1 = el.querySelectorAll(".ani-index-1");
   aniContentValues(valuesElementsIndex1, tlNewBlockAniIn, "<");
 
-  const valuesElementsIndexTitle =
-    el.querySelectorAll<HTMLElement>(".ani-index-title");
+  const valuesElementsIndexTitle = el.querySelectorAll(".ani-index-title");
   aniContentValues(valuesElementsIndexTitle, tlNewBlockAniIn, "<");
 
-  const progressBarEls = el.querySelectorAll<HTMLElement>(".progress-bar");
+  const progressBarEls = el.querySelectorAll(".progress-bar");
   aniProgressBar(progressBarEls, tlNewBlockAniIn, "<");
 }
