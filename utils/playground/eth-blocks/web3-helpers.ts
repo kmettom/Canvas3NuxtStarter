@@ -190,20 +190,29 @@ export function generateMockBlockData() {
 }
 
 export function aniProgressBar(
-  elementsToAni: NodeListOf<Element>,
+  progressBarBgEls: NodeListOf<Element>,
+  progressBarStateEls: NodeListOf<Element>,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
-  if (elementsToAni.length) {
-    for (let i = 0; i < elementsToAni.length; i++) {
-      if (elementsToAni[i]) {
-        tlNewBlockAniIn.fromTo(
-          elementsToAni[i],
-          { width: 0 },
-          { width: "140px", duration: 0.3, ease: "linear" },
-          gsapTimelineDelay,
-        );
-      }
+  tlNewBlockAniIn.fromTo(
+    progressBarBgEls,
+    { width: 0 },
+    { width: "100%", duration: 0.3, ease: "linear" },
+    gsapTimelineDelay,
+  );
+
+  if (progressBarStateEls.length) {
+    for (let i = 0; i < progressBarStateEls.length; i++) {
+      if (!progressBarStateEls[i]) continue;
+
+      const progressStateValue = progressBarStateEls[i].dataset.progressState;
+      console.log("progressState", progressBarStateEls[i]);
+      tlNewBlockAniIn.fromTo(
+        progressBarStateEls[i],
+        { width: 0 },
+        { width: progressStateValue + "%", duration: 0.3, ease: "linear" },
+      );
     }
   }
 }
@@ -302,6 +311,7 @@ export function blockContentAniIn(
   const valuesElementsIndexTitle = el.querySelectorAll(".ani-index-title");
   aniContentValues(valuesElementsIndexTitle, tlNewBlockAniIn, "<");
 
-  const progressBarEls = el.querySelectorAll(".progress-bar");
-  aniProgressBar(progressBarEls, tlNewBlockAniIn, "<");
+  const progressBarBgEls = el.querySelectorAll(".progress-bar .progress-bg");
+  const progressBarStateEls = el.querySelectorAll(".progress-bar .progress-state");
+  aniProgressBar(progressBarBgEls, progressBarStateEls, tlNewBlockAniIn, "<");
 }
