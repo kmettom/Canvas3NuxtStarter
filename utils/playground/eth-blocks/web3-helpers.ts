@@ -190,11 +190,17 @@ export function generateMockBlockData() {
 }
 
 export function aniProgressBar(
-  progressBarBgEls: NodeListOf<Element>,
-  progressBarStateEls: NodeListOf<Element>,
+  blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
+  const progressBarBgEls = blockEl.querySelectorAll(
+    ".progress-bar .progress-bg",
+  );
+  const progressBarStateEls = blockEl.querySelectorAll<HTMLElement>(
+    ".progress-bar .progress-state",
+  );
+
   tlNewBlockAniIn.fromTo(
     progressBarBgEls,
     { width: 0 },
@@ -204,11 +210,11 @@ export function aniProgressBar(
 
   if (progressBarStateEls.length) {
     for (let i = 0; i < progressBarStateEls.length; i++) {
-      if (!progressBarStateEls[i]) continue;
-
-      const progressStateValue = progressBarStateEls[i].dataset.progressState;
+      const progressBarStateEl = progressBarStateEls[i];
+      if (!progressBarStateEl) continue;
+      const progressStateValue = progressBarStateEl.dataset.progressState;
       tlNewBlockAniIn.fromTo(
-        progressBarStateEls[i],
+        progressBarStateEl,
         { width: 0 },
         { width: progressStateValue + "%", duration: 0.3, ease: "linear" },
         "<+0.15",
@@ -218,10 +224,13 @@ export function aniProgressBar(
 }
 
 export function aniContentValues(
-  elementsToAni: NodeListOf<Element>,
+  blockEl: Element,
+  classSelector: string,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
+  const elementsToAni = blockEl.querySelectorAll(classSelector);
+
   if (elementsToAni.length) {
     for (let i = 0; i < elementsToAni.length; i++) {
       if (elementsToAni[i]) {
@@ -251,11 +260,12 @@ export function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
 }
 
 export function aniGasChart(
-  gasChartBg: Element | null,
-  gasChartValue: Element | null,
+  blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
+  const gasChartBg = blockEl.querySelector("#gas-chart-bg");
+  const gasChartValue = blockEl.querySelector("#gas-chart-value");
   if (!gasChartBg || !gasChartValue) return;
   const gasValue = gasChartValue.getAttribute("stroke-dashoffset") ?? 0;
   tlNewBlockAniIn.fromTo(
@@ -273,10 +283,12 @@ export function aniGasChart(
 }
 
 export function aniIcons(
-  elementsToAni: NodeListOf<Element>,
+  blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
+  const elementsToAni = blockEl.querySelectorAll(".ani-index-icon");
+
   tlNewBlockAniIn.fromTo(
     elementsToAni,
     {
@@ -291,28 +303,13 @@ export function aniIcons(
 }
 
 export function blockContentAniIn(
-  el: Element,
+  blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
 ) {
-  const gasChartBg = el.querySelector("#gas-chart-bg");
-  const gasChartValue = el.querySelector("#gas-chart-value");
-  aniGasChart(gasChartBg, gasChartValue, tlNewBlockAniIn, "<+0.5");
-
-  const iconEls = el.querySelectorAll(".ani-index-icon");
-  aniIcons(iconEls, tlNewBlockAniIn);
-
-  const valuesElementsIndex0 = el.querySelectorAll(".ani-index-0");
-  aniContentValues(valuesElementsIndex0, tlNewBlockAniIn, "<");
-
-  const valuesElementsIndex1 = el.querySelectorAll(".ani-index-1");
-  aniContentValues(valuesElementsIndex1, tlNewBlockAniIn, "<");
-
-  const valuesElementsIndexTitle = el.querySelectorAll(".ani-index-title");
-  aniContentValues(valuesElementsIndexTitle, tlNewBlockAniIn, "<");
-
-  const progressBarBgEls = el.querySelectorAll(".progress-bar .progress-bg");
-  const progressBarStateEls = el.querySelectorAll(
-    ".progress-bar .progress-state",
-  );
-  aniProgressBar(progressBarBgEls, progressBarStateEls, tlNewBlockAniIn, "<");
+  aniGasChart(blockEl, tlNewBlockAniIn, "<+0.3");
+  aniProgressBar(blockEl, tlNewBlockAniIn, "<");
+  aniIcons(blockEl, tlNewBlockAniIn, "<");
+  aniContentValues(blockEl, ".ani-index-0", tlNewBlockAniIn, "<");
+  aniContentValues(blockEl, ".ani-index-1", tlNewBlockAniIn, "<");
+  aniContentValues(blockEl, ".ani-index-title", tlNewBlockAniIn, "<");
 }
