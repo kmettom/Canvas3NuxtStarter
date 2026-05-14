@@ -100,6 +100,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
     if (aniCoef > 0.05) return;
+    // console.log("aniCoef", blockId);
     this.activeBlockId = blockId;
     const imageId = Number(el.dataset.bgImageId);
     this.imageTextureChange(imageId);
@@ -183,16 +184,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     // if()
     // TODO do something to make the transition nice
     if (this.setup.imageAniTimeline.progress() !== 1) {
-      console.log(
-        "REMOVE ALL IN THE MIDDLE",
-        this.setup.aniTimelineArray.length,
-      );
-      // if (this.setup.aniTimelineArray.length < 1) return;
-      for (let i = 0; i < this.setup.aniTimelineArray.length; i++) {
-        if (this.setup.aniTimelineArray[i])
-          this.setup.imageAniTimeline.remove(this.setup.aniTimelineArray[i]);
-      }
-      this.setup.aniTimelineArray.length = 0;
+      this.setup.imageAniTimeline.clear();
+      console.log("CLEAR", imageId);
     }
 
     if (!material.uniforms.uTransitionProgress) return;
@@ -201,34 +194,32 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       0.9 - (Canvas3.getScrollSpeed() ?? 1),
     );
 
-    console.log("imageChangeDuration", imageChangeDuration, imageId);
+    console.log("imageTextureChange", imageId, imageChangeDuration);
 
-    const ani = this.setup.imageAniTimeline.to(
-      material.uniforms.uTransitionProgress,
-      {
-        value: 1,
-        duration: imageChangeDuration,
-        ease: "linear",
-        onComplete: () => {
-          if (!this.setup) return;
-          if (!material?.uniforms?.uTextureNext) return;
-          if (!material?.uniforms?.uTextureCurrent) return;
+    this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
+      value: 1,
+      duration: imageChangeDuration,
+      ease: "linear",
+      // label: 'texturesChange_' + imageId,
+      onComplete: () => {
+        if (!this.setup) return;
+        if (!material?.uniforms?.uTextureNext) return;
+        if (!material?.uniforms?.uTextureCurrent) return;
 
-          const newTexture = this.textures[imageId];
-          if (!newTexture) return;
+        const newTexture = this.textures[imageId];
+        if (!newTexture) return;
 
-          newTexture.colorSpace = THREE.SRGBColorSpace;
-          newTexture.needsUpdate = true;
-          material.uniforms.uTextureCurrent.value =
-            material.uniforms.uTextureNext.value;
-          material.uniforms.uTextureNext.value = newTexture;
-          if (!material.uniforms.uTransitionProgress) return;
-          material.uniforms.uTransitionProgress.value = 0;
-          this.setup.aniTimelineArray.length = 0;
-        },
+        newTexture.colorSpace = THREE.SRGBColorSpace;
+        newTexture.needsUpdate = true;
+        material.uniforms.uTextureCurrent.value =
+          material.uniforms.uTextureNext.value;
+        material.uniforms.uTextureNext.value = newTexture;
+        if (!material.uniforms.uTransitionProgress) return;
+        material.uniforms.uTransitionProgress.value = 0;
+        // this.setup.aniTimelineArray.length = 0;
       },
-    );
-    this.setup.aniTimelineArray.push(ani);
+    });
+    // this.setup.aniTimelineArray.push(ani);
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
