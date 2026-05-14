@@ -312,6 +312,8 @@ export function blockContentAniIn(
   aniContentValues(valuesElementsIndexTitle, tlNewBlockAniIn, "<");
 
   const progressBarBgEls = el.querySelectorAll(".progress-bar .progress-bg");
-  const progressBarStateEls = el.querySelectorAll(".progress-bar .progress-state");
+  const progressBarStateEls = el.querySelectorAll(
+    ".progress-bar .progress-state",
+  );
   aniProgressBar(progressBarBgEls, progressBarStateEls, tlNewBlockAniIn, "<");
 }
