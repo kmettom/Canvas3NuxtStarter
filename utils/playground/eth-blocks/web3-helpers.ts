@@ -211,7 +211,7 @@ export function aniProgressBar(
         progressBarStateEls[i],
         { width: 0 },
         { width: progressStateValue + "%", duration: 0.3, ease: "linear" },
-        '<+0.15',
+        "<+0.15",
       );
     }
   }
