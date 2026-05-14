@@ -207,11 +207,11 @@ export function aniProgressBar(
       if (!progressBarStateEls[i]) continue;
 
       const progressStateValue = progressBarStateEls[i].dataset.progressState;
-      console.log("progressState", progressBarStateEls[i]);
       tlNewBlockAniIn.fromTo(
         progressBarStateEls[i],
         { width: 0 },
         { width: progressStateValue + "%", duration: 0.3, ease: "linear" },
+        '<+0.15',
       );
     }
   }
@@ -258,7 +258,6 @@ export function aniGasChart(
 ) {
   if (!gasChartBg || !gasChartValue) return;
   const gasValue = gasChartValue.getAttribute("stroke-dashoffset") ?? 0;
-  console.log("gasValue", gasValue);
   tlNewBlockAniIn.fromTo(
     gasChartBg,
     { strokeDashoffset: 125 },
