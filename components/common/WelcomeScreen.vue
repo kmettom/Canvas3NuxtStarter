@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, watch, defineEmits } from "vue";
 import { gsap } from "gsap";
 
 // Define props

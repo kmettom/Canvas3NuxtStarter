@@ -2,19 +2,6 @@
   <div class="page-container">
     <h1 class="heading-1 play-headline">Playground</h1>
     <div class="playground-projects">
-      <!--      <div id="ethBlocks" ref="ethBlocks">-->
-      <!--        <div>ethBlock 1</div>-->
-      <!--        <div>ethBlock 2</div>-->
-      <!--        <div>ethBlock 3</div>-->
-      <!--        <div>ethBlock 3</div>-->
-      <!--        <div>ethBlock 5</div>-->
-      <!--        <div>ethBlock 5</div>-->
-      <!--        <div>ethBlock 7</div>-->
-      <!--        <div>ethBlock 7</div>-->
-      <!--        <div>ethBlock 9</div>-->
-      <!--        <div>ethBlock 10</div>-->
-      <!--      </div>-->
-
       <!--      <nuxt-link href="/playground/1">-->
       <!--        <div class="play-1">-->
       <!--          <h3 class="body-l">Shaders playground</h3>-->
@@ -99,8 +86,6 @@ const navigationStore = useNavigationStore();
 const ethBlockImageAniIn = ref(false);
 const ethBlockHover = ref(false);
 
-// const ethBlocks = ref<HTMLElement | null>(null);
-
 onMounted(() => {
   const timeDelay = navigationStore.webFirstLoadDone
     ? pageTransition.setup.duration * 2500
@@ -109,10 +94,6 @@ onMounted(() => {
   setTimeout(() => {
     ethBlockImageAniIn.value = true;
   }, timeDelay);
-
-  // if (ethBlocks.value) {
-  //   ethBlocksAnimation.init(ethBlocks.value);
-  // }
 });
 </script>
 <style lang="scss" scoped>
