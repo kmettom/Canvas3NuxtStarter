@@ -53,7 +53,7 @@ export const blockGasUsedPercent = (
   const used = new Big(gasUsed.toString());
   const limit = new Big(gasLimit.toString());
 
-  return used.div(limit).times(100).toFixed(2) + "%";
+  return used.div(limit).times(100).toFixed(2);
 };
 
 export const blockGasTargetPercent = (
@@ -165,7 +165,7 @@ export function generateMockBlockData() {
     excessBlobGas: BigInt(1),
     extraData: "0xtest",
     gasLimit: BigInt(2500000000000000000),
-    gasUsed: BigInt(3500000000000000000),
+    gasUsed: BigInt(2000000000000000000),
     hash: "0xtest",
     logsBloom: "0xtest",
     miner: "xxxAddress",
@@ -246,7 +246,6 @@ export function aniIcons(
   tlNewBlockAniIn: gsap.core.Timeline,
   gsapTimelineDelay?: string,
 ) {
-
   tlNewBlockAniIn.fromTo(
     elementsToAni,
     {
@@ -265,7 +264,7 @@ export function blockContentAniIn(
   tlNewBlockAniIn: gsap.core.Timeline,
 ) {
   const iconEls = el.querySelectorAll<HTMLElement>(".ani-index-icon");
-  aniIcons(iconEls, tlNewBlockAniIn );
+  aniIcons(iconEls, tlNewBlockAniIn);
 
   const valuesElementsIndex0 = el.querySelectorAll<HTMLElement>(".ani-index-0");
   aniContentValues(valuesElementsIndex0, tlNewBlockAniIn, "<");
