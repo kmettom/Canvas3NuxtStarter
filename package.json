@@ -10,7 +10,7 @@
     "start": "node .output/server/index.mjs",
     "build": "nuxt build",
     "start-nuxt": "nuxt start",
-    "dev": "prettier --write . && npm run lint:eslint && nuxt dev --hostname myhost --port 4200",
+    "dev": "prettier --write . && npm run lint:eslint && nuxt dev --port 4200",
     "prettier": "prettier --write .",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
