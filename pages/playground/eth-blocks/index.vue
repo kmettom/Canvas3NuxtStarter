@@ -90,7 +90,6 @@ const tlNewBlockAniIn = gsap.timeline({
 //**************************
 
 async function newLoadingBlock() {
-  // console.log("newLoadingBlock");
   const newBlockId = new Date().getTime().toString();
   ethBlocksAnimation.loadingBlockId = newBlockId;
   blocks.value.set(
@@ -99,6 +98,9 @@ async function newLoadingBlock() {
   );
   await nextTick();
   const el = blocks.value.get(newBlockId)?.elRef as HTMLElement;
+  if (!el) {
+    return;
+  }
   tlNewBlockAniIn.to(el, {
     duration: 0.2,
     height: "10px",

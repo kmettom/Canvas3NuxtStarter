@@ -243,7 +243,7 @@ export function aniContentValues(
           splitValues.chars,
           { opacity: 0, x: 3 },
           { opacity: 1, x: 0, stagger: 0.03, duration: 0.15 },
-          gsapTimelineDelay,
+          i === 0 ? gsapTimelineDelay : "<",
         );
       }
     }
@@ -306,10 +306,10 @@ export function blockContentAniIn(
   blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
 ) {
-  aniGasChart(blockEl, tlNewBlockAniIn, "<+0.3");
-  aniProgressBar(blockEl, tlNewBlockAniIn, "<");
+  aniContentValues(blockEl, ".ani-index-title", tlNewBlockAniIn, "<+0.3");
   aniIcons(blockEl, tlNewBlockAniIn, "<");
   aniContentValues(blockEl, ".ani-index-0", tlNewBlockAniIn, "<");
   aniContentValues(blockEl, ".ani-index-1", tlNewBlockAniIn, "<");
-  aniContentValues(blockEl, ".ani-index-title", tlNewBlockAniIn, "<");
+  aniProgressBar(blockEl, tlNewBlockAniIn, "<+0.1");
+  aniGasChart(blockEl, tlNewBlockAniIn, "<");
 }

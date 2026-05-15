@@ -19,7 +19,7 @@ type EthBlocksAnimation = {
   blocksBasePosition: number;
   blocksTopPadding: number;
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
-  createMesh: () => Promise<THREE.Mesh>;
+  createMesh: () => Promise<THREE.Mesh | null>;
   getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
@@ -86,7 +86,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     ]);
 
     for (let i = 0; i < nextTextures.length; i++) {
-      if (nextTextures[i]) this.textures.push(nextTextures[i]);
+      const newTexture = nextTextures[i];
+      if (newTexture) this.textures.push(newTexture);
     }
   },
   firstEnterAnimation() {},
@@ -109,13 +110,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!el) return;
     const blockId = el.dataset.blockId;
     if (!blockId) return;
-    // console.log("animateBlockSizeOnScroll", blockId, this.loadingBlockId)
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
     if (aniCoef > 0.05) return;
-    // console.log("animateBlockSizeOnScroll", blockId, this.loadingBlockId)
-
-    // console.log("aniCoef", blockId);
     this.activeBlockId = blockId;
     const imageId = Number(el.dataset.bgImageId);
     this.imageTextureChange(imageId);
@@ -128,12 +125,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    if (!this.textures[0]) return;
+    if (!this.textures[0]) return null;
     const textureCurrent = this.textures[0];
     textureCurrent.colorSpace = THREE.SRGBColorSpace;
     textureCurrent.needsUpdate = true;
 
-    if (!this.textures[1]) return;
+    if (!this.textures[1]) return null;
     const textureNext = this.textures[1];
     textureNext.colorSpace = THREE.SRGBColorSpace;
     textureNext.needsUpdate = true;
@@ -184,8 +181,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
 
     Canvas3.addMeshToScene(mesh);
-
-    return mesh as THREE.Mesh;
+    if (!mesh) return null;
+    return mesh;
   },
 
   async imageTextureChange(imageId) {
@@ -293,8 +290,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const uBlocksPositions = this.calculateUBlockPositions();
 
-    material.uniforms.uBlocks.value = uBlocksPositions;
-    material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);
+    if (material.uniforms.uBlocks)
+      material.uniforms.uBlocks.value = uBlocksPositions;
+    if (material.uniforms.uBlockCount)
+      material.uniforms.uBlockCount.value = Math.min(
+        uBlocksPositions.length,
+        10,
+      );
   },
 };
 
