@@ -48,8 +48,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const loader = new THREE.TextureLoader();
 
     this.textures = await Promise.all([
-      loader.loadAsync("images/01.png"),
-      loader.loadAsync("images/02.jpg"),
+      loader.loadAsync("images/01.webp"),
+      loader.loadAsync("images/02.webp"),
     ]);
 
     const mesh = await this.createMesh();
@@ -63,14 +63,26 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.firstEnterAnimation();
 
     const nextTextures = await Promise.all([
-      // loader.loadAsync("images/01.png"),
-      // loader.loadAsync("images/02.png"),
-      loader.loadAsync("images/03.png"),
-      loader.loadAsync("images/04.jpg"),
-      loader.loadAsync("images/05.png"),
-      loader.loadAsync("images/06.jpg"),
-      loader.loadAsync("images/07.png"),
-      loader.loadAsync("images/08.jpg"),
+      // loader.loadAsync("images/01.jpg"),
+      // loader.loadAsync("images/02.jpg"),
+      loader.loadAsync("images/03.webp"),
+      loader.loadAsync("images/04.webp"),
+      loader.loadAsync("images/05.webp"),
+      loader.loadAsync("images/06.webp"),
+      loader.loadAsync("images/07.webp"),
+      loader.loadAsync("images/08.webp"),
+      loader.loadAsync("images/09.webp"),
+      loader.loadAsync("images/10.webp"),
+      loader.loadAsync("images/11.webp"),
+      loader.loadAsync("images/12.webp"),
+      loader.loadAsync("images/13.webp"),
+      loader.loadAsync("images/14.webp"),
+      loader.loadAsync("images/15.webp"),
+      loader.loadAsync("images/16.webp"),
+      loader.loadAsync("images/17.webp"),
+      loader.loadAsync("images/18.webp"),
+      loader.loadAsync("images/19.webp"),
+      loader.loadAsync("images/20.webp"),
     ]);
 
     for (let i = 0; i < nextTextures.length; i++) {
@@ -97,9 +109,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!el) return;
     const blockId = el.dataset.blockId;
     if (!blockId) return;
+    // console.log("animateBlockSizeOnScroll", blockId, this.loadingBlockId)
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
     if (aniCoef > 0.05) return;
+    // console.log("animateBlockSizeOnScroll", blockId, this.loadingBlockId)
+
     // console.log("aniCoef", blockId);
     this.activeBlockId = blockId;
     const imageId = Number(el.dataset.bgImageId);

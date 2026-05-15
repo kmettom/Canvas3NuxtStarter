@@ -74,11 +74,15 @@ initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
   const loadingBlock = generateLoadingBlockData(blockId);
   blocks.value.set(blockId, generateBlockData(block, loadingBlock));
 });
-ethBlocksAnimation.loadingBlockId = new Date().getTime().toString() + "_first";
 
 const tlNewBlockAniIn = gsap.timeline({
-  onComplete: () => {},
+  onComplete: () => {
+    newLoadingBlock();
+  },
   onUpdate: () => {},
+  onStart: () => {
+    // newLoadingBlock();
+  },
 });
 
 //**************************
@@ -86,21 +90,25 @@ const tlNewBlockAniIn = gsap.timeline({
 //**************************
 
 async function newLoadingBlock() {
-  ethBlocksAnimation.loadingBlockId = new Date().getTime().toString();
+  // console.log("newLoadingBlock");
+  const newBlockId = new Date().getTime().toString();
+  ethBlocksAnimation.loadingBlockId = newBlockId;
   blocks.value.set(
     ethBlocksAnimation.loadingBlockId,
-    generateLoadingBlockData(ethBlocksAnimation.loadingBlockId),
+    generateLoadingBlockData(newBlockId),
   );
   await nextTick();
-  tlNewBlockAniIn.to(".eth-block.block-loading", {
+  const el = blocks.value.get(newBlockId)?.elRef as HTMLElement;
+  tlNewBlockAniIn.to(el, {
     duration: 0.2,
     height: "10px",
   });
-  tlNewBlockAniIn.to(".eth-block.block-loading", {
+  tlNewBlockAniIn.to(el, {
     width: "423px",
     duration: 0.3,
   });
-  tlNewBlockAniIn.to(".eth-block.block-loading .block-loading-progress", {
+  const blockProgressBarEl = el.querySelector(".block-loading-progress");
+  tlNewBlockAniIn.to(blockProgressBarEl, {
     width: "100%",
     duration: ethBlocksAnimation.blockLoadingTime,
   });
@@ -150,9 +158,7 @@ const blockDoneAnimate = (blockId: string) => {
       width: 0,
       duration: 0,
       opacity: 1,
-      onComplete: () => {
-        newLoadingBlock();
-      },
+      onComplete: () => {},
     });
 
     tlNewBlockAniIn.play();
