@@ -19,7 +19,7 @@ type EthBlocksAnimation = {
   blocksBasePosition: number;
   blocksTopPadding: number;
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
-  createMesh: () => Promise<THREE.Mesh>;
+  createMesh: () => Promise<THREE.Mesh | null>;
   getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
@@ -48,8 +48,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const loader = new THREE.TextureLoader();
 
     this.textures = await Promise.all([
-      loader.loadAsync("images/01.png"),
-      loader.loadAsync("images/02.jpg"),
+      loader.loadAsync("images/01.webp"),
+      loader.loadAsync("images/02.webp"),
     ]);
 
     const mesh = await this.createMesh();
@@ -63,18 +63,31 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.firstEnterAnimation();
 
     const nextTextures = await Promise.all([
-      // loader.loadAsync("images/01.png"),
-      // loader.loadAsync("images/02.png"),
-      loader.loadAsync("images/03.png"),
-      loader.loadAsync("images/04.jpg"),
-      loader.loadAsync("images/05.png"),
-      loader.loadAsync("images/06.jpg"),
-      loader.loadAsync("images/07.png"),
-      loader.loadAsync("images/08.jpg"),
+      // loader.loadAsync("images/01.jpg"),
+      // loader.loadAsync("images/02.jpg"),
+      loader.loadAsync("images/03.webp"),
+      loader.loadAsync("images/04.webp"),
+      loader.loadAsync("images/05.webp"),
+      loader.loadAsync("images/06.webp"),
+      loader.loadAsync("images/07.webp"),
+      loader.loadAsync("images/08.webp"),
+      loader.loadAsync("images/09.webp"),
+      loader.loadAsync("images/10.webp"),
+      loader.loadAsync("images/11.webp"),
+      loader.loadAsync("images/12.webp"),
+      loader.loadAsync("images/13.webp"),
+      loader.loadAsync("images/14.webp"),
+      loader.loadAsync("images/15.webp"),
+      loader.loadAsync("images/16.webp"),
+      loader.loadAsync("images/17.webp"),
+      loader.loadAsync("images/18.webp"),
+      loader.loadAsync("images/19.webp"),
+      loader.loadAsync("images/20.webp"),
     ]);
 
     for (let i = 0; i < nextTextures.length; i++) {
-      if (nextTextures[i]) this.textures.push(nextTextures[i]);
+      const newTexture = nextTextures[i];
+      if (newTexture) this.textures.push(newTexture);
     }
   },
   firstEnterAnimation() {},
@@ -112,12 +125,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    if (!this.textures[0]) return;
+    if (!this.textures[0]) return null;
     const textureCurrent = this.textures[0];
     textureCurrent.colorSpace = THREE.SRGBColorSpace;
     textureCurrent.needsUpdate = true;
 
-    if (!this.textures[1]) return;
+    if (!this.textures[1]) return null;
     const textureNext = this.textures[1];
     textureNext.colorSpace = THREE.SRGBColorSpace;
     textureNext.needsUpdate = true;
@@ -168,8 +181,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
 
     Canvas3.addMeshToScene(mesh);
-
-    return mesh as THREE.Mesh;
+    if (!mesh) return null;
+    return mesh;
   },
 
   async imageTextureChange(imageId) {
@@ -183,16 +196,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     // if()
     // TODO do something to make the transition nice
     if (this.setup.imageAniTimeline.progress() !== 1) {
-      console.log(
-        "REMOVE ALL IN THE MIDDLE",
-        this.setup.aniTimelineArray.length,
-      );
-      // if (this.setup.aniTimelineArray.length < 1) return;
-      for (let i = 0; i < this.setup.aniTimelineArray.length; i++) {
-        if (this.setup.aniTimelineArray[i])
-          this.setup.imageAniTimeline.remove(this.setup.aniTimelineArray[i]);
-      }
-      this.setup.aniTimelineArray.length = 0;
+      this.setup.imageAniTimeline.clear();
+      console.log("CLEAR", imageId);
     }
 
     if (!material.uniforms.uTransitionProgress) return;
@@ -201,34 +206,32 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       0.9 - (Canvas3.getScrollSpeed() ?? 1),
     );
 
-    console.log("imageChangeDuration", imageChangeDuration, imageId);
+    console.log("imageTextureChange", imageId, imageChangeDuration);
 
-    const ani = this.setup.imageAniTimeline.to(
-      material.uniforms.uTransitionProgress,
-      {
-        value: 1,
-        duration: imageChangeDuration,
-        ease: "linear",
-        onComplete: () => {
-          if (!this.setup) return;
-          if (!material?.uniforms?.uTextureNext) return;
-          if (!material?.uniforms?.uTextureCurrent) return;
+    this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
+      value: 1,
+      duration: imageChangeDuration,
+      ease: "linear",
+      // label: 'texturesChange_' + imageId,
+      onComplete: () => {
+        if (!this.setup) return;
+        if (!material?.uniforms?.uTextureNext) return;
+        if (!material?.uniforms?.uTextureCurrent) return;
 
-          const newTexture = this.textures[imageId];
-          if (!newTexture) return;
+        const newTexture = this.textures[imageId];
+        if (!newTexture) return;
 
-          newTexture.colorSpace = THREE.SRGBColorSpace;
-          newTexture.needsUpdate = true;
-          material.uniforms.uTextureCurrent.value =
-            material.uniforms.uTextureNext.value;
-          material.uniforms.uTextureNext.value = newTexture;
-          if (!material.uniforms.uTransitionProgress) return;
-          material.uniforms.uTransitionProgress.value = 0;
-          this.setup.aniTimelineArray.length = 0;
-        },
+        newTexture.colorSpace = THREE.SRGBColorSpace;
+        newTexture.needsUpdate = true;
+        material.uniforms.uTextureCurrent.value =
+          material.uniforms.uTextureNext.value;
+        material.uniforms.uTextureNext.value = newTexture;
+        if (!material.uniforms.uTransitionProgress) return;
+        material.uniforms.uTransitionProgress.value = 0;
+        // this.setup.aniTimelineArray.length = 0;
       },
-    );
-    this.setup.aniTimelineArray.push(ani);
+    });
+    // this.setup.aniTimelineArray.push(ani);
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
@@ -287,8 +290,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const uBlocksPositions = this.calculateUBlockPositions();
 
-    material.uniforms.uBlocks.value = uBlocksPositions;
-    material.uniforms.uBlockCount.value = Math.min(uBlocksPositions.length, 10);
+    if (material.uniforms.uBlocks)
+      material.uniforms.uBlocks.value = uBlocksPositions;
+    if (material.uniforms.uBlockCount)
+      material.uniforms.uBlockCount.value = Math.min(
+        uBlocksPositions.length,
+        10,
+      );
   },
 };
 

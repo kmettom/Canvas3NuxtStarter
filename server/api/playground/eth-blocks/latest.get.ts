@@ -16,10 +16,10 @@ export default defineEventHandler(async (event) => {
 
   const mockBlocks = [
     generateMockBlockData(),
-    generateMockBlockData(),
-    generateMockBlockData(),
-    generateMockBlockData(),
-    generateMockBlockData(),
+    // generateMockBlockData(),
+    // generateMockBlockData(),
+    // generateMockBlockData(),
+    // generateMockBlockData(),
   ];
   return JSON.parse(
     JSON.stringify(mockBlocks, (_, v) =>
