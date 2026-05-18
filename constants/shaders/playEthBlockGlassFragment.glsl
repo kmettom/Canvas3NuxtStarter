@@ -1,10 +1,12 @@
 precision highp float;
 
 #define MAX_GLASS 6
+#define MAX_TESTURES 16
 
 varying vec2 vUv;
-uniform sampler2D uTextureCurrent;
-uniform sampler2D uTextureNext;
+uniform sampler2D uTextures[MAX_TESTURES];
+uniform int uTextureIndexCurrent;
+uniform int uTextureIndexNext;
 uniform float uTransitionProgress; // 0 -> 1
 uniform float uAniInImage;
 uniform vec4 uBlocks[MAX_GLASS];
@@ -28,8 +30,10 @@ vec2 coverUv(vec2 raw) {
 }
 
 vec4 getTransitionColor(vec2 uv) {
-    vec4 fromColor = texture2D(uTextureCurrent, uv);
-    vec4 toColor   = texture2D(uTextureNext, uv);
+//    vec4 fromColor = texture2D(uTextures[uTextureIndexCurrent], uv);
+    vec4 fromColor = texture2D(uTextures[0], uv);
+//    vec4 toColor   = texture2D(uTextures[uTextureIndexNext], uv);
+    vec4 toColor   = texture2D(uTextures[1], uv);
 
     float p = clamp(uTransitionProgress, 0.0, 1.0);
 

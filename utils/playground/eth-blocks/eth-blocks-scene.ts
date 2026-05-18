@@ -6,7 +6,6 @@ type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
   imageAniTimeline: gsap.core.Timeline;
-  aniTimelineArray: gsap.core.TimelineChild[];
 };
 
 type EthBlocksAnimation = {
@@ -58,7 +57,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
       imageAniTimeline: gsap.timeline(),
-      aniTimelineArray: [],
     };
     this.firstEnterAnimation();
 
@@ -78,11 +76,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/13.webp"),
       loader.loadAsync("images/14.webp"),
       loader.loadAsync("images/15.webp"),
-      loader.loadAsync("images/16.webp"),
-      loader.loadAsync("images/17.webp"),
-      loader.loadAsync("images/18.webp"),
-      loader.loadAsync("images/19.webp"),
-      loader.loadAsync("images/20.webp"),
+      // loader.loadAsync("images/16.webp"),
+      // loader.loadAsync("images/17.webp"),
+      // loader.loadAsync("images/18.webp"),
+      // loader.loadAsync("images/19.webp"),
+      // loader.loadAsync("images/20.webp"),
     ]);
 
     for (let i = 0; i < nextTextures.length; i++) {
@@ -141,8 +139,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
-        uTextureCurrent: { value: textureCurrent },
-        uTextureNext: { value: textureNext },
+        uTextures: { value: this.textures },
+        uTextureIndexCurrent: { value: 0 },
+        uTextureIndexNext: { value: 1 },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -193,17 +192,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const material = mesh.material as THREE.ShaderMaterial;
 
-    // if()
     // TODO do something to make the transition nice
     if (this.setup.imageAniTimeline.progress() !== 1) {
-      this.setup.imageAniTimeline.clear();
-      console.log("CLEAR", imageId);
+      console.log("CLEAR", this.setup.imageAniTimeline.progress());
+      // console.log("this.setup.imageAniTimeline.progress()",)
+      this.setup.imageAniTimeline.progress(1);
+      // this.setup.imageAniTimeline.clear();
     }
 
     if (!material.uniforms.uTransitionProgress) return;
     const imageChangeDuration = Math.max(
-      0.5,
-      0.9 - (Canvas3.getScrollSpeed() ?? 1),
+      0.3,
+      1.6 - (Canvas3.getScrollSpeed() ?? 1),
     );
 
     console.log("imageTextureChange", imageId, imageChangeDuration);
@@ -215,23 +215,30 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       // label: 'texturesChange_' + imageId,
       onComplete: () => {
         if (!this.setup) return;
-        if (!material?.uniforms?.uTextureNext) return;
-        if (!material?.uniforms?.uTextureCurrent) return;
 
-        const newTexture = this.textures[imageId];
-        if (!newTexture) return;
+        if (!material?.uniforms?.uTextureIndexNext) return;
+        if (!material?.uniforms?.uTextureIndexCurrent) return;
 
-        newTexture.colorSpace = THREE.SRGBColorSpace;
-        newTexture.needsUpdate = true;
-        material.uniforms.uTextureCurrent.value =
-          material.uniforms.uTextureNext.value;
-        material.uniforms.uTextureNext.value = newTexture;
+        material.uniforms.uTextureIndexCurrent.value =
+          material.uniforms.uTextureIndexNext.value;
+        material.uniforms.uTextureIndexNext.value = imageId;
+
         if (!material.uniforms.uTransitionProgress) return;
         material.uniforms.uTransitionProgress.value = 0;
-        // this.setup.aniTimelineArray.length = 0;
+
+        // if (!material?.uniforms?.uTextureNext) return;
+        // if (!material?.uniforms?.uTextureNext) return;
+
+        // const newTexture = this.textures[imageId];
+        // if (!newTexture) return;
+
+        // newTexture.colorSpace = THREE.SRGBColorSpace;
+        // newTexture.needsUpdate = true;
+        // material.uniforms.uTextureCurrent.value =
+        //   material.uniforms.uTextureNext.value;
+        // material.uniforms.uTextureNext.value = newTexture;
       },
     });
-    // this.setup.aniTimelineArray.push(ani);
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
@@ -302,11 +309,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - appear animation with loader, or transition
-// - data animate in in the blocks
 // - update glass size to fit design
 // - Shader -
 //           - uTransitionProgress - with better shader effect - from top to bottom first
-// - Images export/import - 20 images - J
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
 // -
