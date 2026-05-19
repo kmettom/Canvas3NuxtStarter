@@ -198,7 +198,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(imageId) {
-    console.log("imageTextureChange", imageId);
     if (this.currentImageId === imageId) return;
     if (this.pendingImageId === imageId) return;
     if (!this.setup) return;
@@ -223,11 +222,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     await new Promise(requestAnimationFrame);
+    const baseAniDuration = 0.7;
+    const minAniDuration = 0.2;
+    const imageChangeDuration =
+      baseAniDuration - (Canvas3.getScrollSpeed() ?? 1);
 
-    const imageChangeDuration = Math.max(
-      0.3,
-      0.6 - (Canvas3.getScrollSpeed() ?? 1),
-    );
+    if (imageChangeDuration < minAniDuration) return;
 
     if (this.imageAniTimeline) {
       this.imageAniTimeline.kill();
