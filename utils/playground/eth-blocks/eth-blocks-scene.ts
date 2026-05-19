@@ -76,11 +76,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/13.webp"),
       loader.loadAsync("images/14.webp"),
       loader.loadAsync("images/15.webp"),
-      // loader.loadAsync("images/16.webp"),
-      // loader.loadAsync("images/17.webp"),
-      // loader.loadAsync("images/18.webp"),
-      // loader.loadAsync("images/19.webp"),
-      // loader.loadAsync("images/20.webp"),
+      loader.loadAsync("images/16.webp"),
+      loader.loadAsync("images/17.webp"),
+      loader.loadAsync("images/18.webp"),
+      loader.loadAsync("images/19.webp"),
+      loader.loadAsync("images/20.webp"),
     ]);
 
     for (let i = 0; i < nextTextures.length; i++) {
@@ -140,8 +140,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTextures: { value: this.textures },
-        uTextureIndexCurrent: { value: 0 },
-        uTextureIndexNext: { value: 1 },
+        uTextureCurrent: { value: textureCurrent },
+        uTextureNext: { value: textureNext },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -212,31 +212,23 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       value: 1,
       duration: imageChangeDuration,
       ease: "linear",
-      // label: 'texturesChange_' + imageId,
       onComplete: () => {
         if (!this.setup) return;
 
-        if (!material?.uniforms?.uTextureIndexNext) return;
-        if (!material?.uniforms?.uTextureIndexCurrent) return;
+        if (!material?.uniforms?.uTextureNext) return;
+        if (!material?.uniforms?.uTextureCurrent) return;
 
-        material.uniforms.uTextureIndexCurrent.value =
-          material.uniforms.uTextureIndexNext.value;
-        material.uniforms.uTextureIndexNext.value = imageId;
+        const newTexture = this.textures[imageId];
+        if (!newTexture) return;
+
+        newTexture.colorSpace = THREE.SRGBColorSpace;
+        newTexture.needsUpdate = true;
+        material.uniforms.uTextureCurrent.value =
+          material.uniforms.uTextureNext.value;
+        material.uniforms.uTextureNext.value = newTexture;
 
         if (!material.uniforms.uTransitionProgress) return;
         material.uniforms.uTransitionProgress.value = 0;
-
-        // if (!material?.uniforms?.uTextureNext) return;
-        // if (!material?.uniforms?.uTextureNext) return;
-
-        // const newTexture = this.textures[imageId];
-        // if (!newTexture) return;
-
-        // newTexture.colorSpace = THREE.SRGBColorSpace;
-        // newTexture.needsUpdate = true;
-        // material.uniforms.uTextureCurrent.value =
-        //   material.uniforms.uTextureNext.value;
-        // material.uniforms.uTextureNext.value = newTexture;
       },
     });
   },
