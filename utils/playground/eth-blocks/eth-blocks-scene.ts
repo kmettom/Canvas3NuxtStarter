@@ -123,7 +123,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!blockId) return;
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
-    if (aniCoef > 0.05) return;
+    if (aniCoef > 0.03) return;
     this.activeBlockId = blockId;
     const imageId = Number(el.dataset.bgImageId);
     this.imageTextureChange(imageId);
@@ -199,6 +199,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
   async imageTextureChange(imageId) {
     console.log("imageTextureChange", imageId);
+    if (this.currentImageId === imageId) return;
     if (this.pendingImageId === imageId) return;
     if (!this.setup) return;
 

@@ -25,6 +25,7 @@
         <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->
         <!--        @mouseleave="hoverBlock($event, false, block.blockId)"-->
         <blockContent :block="block" />
+        {{ block.imageId }}
       </div>
     </div>
   </div>
