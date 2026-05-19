@@ -198,6 +198,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(imageId) {
+    console.log("imageTextureChange", imageId);
     if (this.pendingImageId === imageId) return;
     if (!this.setup) return;
 
@@ -227,9 +228,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       0.6 - (Canvas3.getScrollSpeed() ?? 1),
     );
 
-    // TODO do something to make the transition nice
     if (this.imageAniTimeline) {
-      console.log("CLEAR", this.imageAniTimeline.progress());
       this.imageAniTimeline.kill();
       this.imageAniTimeline = null;
     }
@@ -240,8 +239,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     uniforms.uTextureCurrent.value = currentTexture;
     uniforms.uTextureNext.value = newTexture;
     uniforms.uTransitionProgress.value = 0;
-
-    console.log("imageTextureChange", imageId, imageChangeDuration);
 
     this.imageAniTimeline = gsap.to(uniforms.uTransitionProgress, {
       value: 1,
