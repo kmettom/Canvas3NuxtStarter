@@ -5,7 +5,6 @@ import { gsap } from "gsap";
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
-  imageAniTimeline: gsap.core.Timeline;
 };
 
 type EthBlocksAnimation = {
@@ -25,6 +24,9 @@ type EthBlocksAnimation = {
   imageTextureChange: (index: number) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
   firstEnterAnimation: () => void;
+  pendingImageId: number;
+  currentImageId: number;
+  imageAniTimeline: gsap.core.Tween | null;
 };
 
 export const BLOCKS_ON_SCREEN_AMOUNT = 6;
@@ -39,6 +41,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   blockLoadingTime: 12,
   blocksTopPadding: 0.25,
   blocksBasePosition: 0,
+  pendingImageId: 0,
+  currentImageId: 0,
+  imageAniTimeline: null,
   async init(ethBlocksWrapper: HTMLElement) {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
 
@@ -56,7 +61,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
-      imageAniTimeline: gsap.timeline(),
     };
     this.firstEnterAnimation();
 
@@ -86,6 +90,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
       if (newTexture) this.textures.push(newTexture);
+    }
+
+    for (const texture of this.textures) {
+      if (!texture) continue;
+      texture.colorSpace = THREE.SRGBColorSpace;
+
+      if (Canvas3.renderer?.initTexture) {
+        Canvas3.renderer.initTexture(texture);
+      }
     }
   },
   firstEnterAnimation() {},
@@ -185,50 +198,67 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(imageId) {
+    if (this.pendingImageId === imageId) return;
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
 
     const material = mesh.material as THREE.ShaderMaterial;
+    const uniforms = material.uniforms;
 
-    // TODO do something to make the transition nice
-    if (this.setup.imageAniTimeline.progress() !== 1) {
-      console.log("CLEAR", this.setup.imageAniTimeline.progress());
-      // console.log("this.setup.imageAniTimeline.progress()",)
-      this.setup.imageAniTimeline.progress(1);
-      // this.setup.imageAniTimeline.clear();
+    if (!uniforms?.uTransitionProgress) return;
+    if (!uniforms?.uTextureCurrent) return;
+    if (!uniforms?.uTextureNext) return;
+
+    this.pendingImageId = imageId;
+
+    const newTexture = this.textures[imageId];
+    if (!newTexture) return;
+
+    if (Canvas3.renderer?.initTexture) {
+      Canvas3.renderer.initTexture(newTexture);
     }
 
-    if (!material.uniforms.uTransitionProgress) return;
+    await new Promise(requestAnimationFrame);
+
     const imageChangeDuration = Math.max(
       0.3,
-      1.6 - (Canvas3.getScrollSpeed() ?? 1),
+      0.6 - (Canvas3.getScrollSpeed() ?? 1),
     );
+
+    // TODO do something to make the transition nice
+    if (this.imageAniTimeline) {
+      console.log("CLEAR", this.imageAniTimeline.progress());
+      this.imageAniTimeline.kill();
+      this.imageAniTimeline = null;
+    }
+
+    const currentTexture = this.textures[this.currentImageId];
+    if (!currentTexture) return;
+
+    uniforms.uTextureCurrent.value = currentTexture;
+    uniforms.uTextureNext.value = newTexture;
+    uniforms.uTransitionProgress.value = 0;
 
     console.log("imageTextureChange", imageId, imageChangeDuration);
 
-    this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
+    this.imageAniTimeline = gsap.to(uniforms.uTransitionProgress, {
       value: 1,
       duration: imageChangeDuration,
       ease: "linear",
+      overwrite: true,
       onComplete: () => {
         if (!this.setup) return;
+        if (this.pendingImageId !== imageId) return;
 
-        if (!material?.uniforms?.uTextureNext) return;
-        if (!material?.uniforms?.uTextureCurrent) return;
+        this.currentImageId = imageId;
 
-        const newTexture = this.textures[imageId];
-        if (!newTexture) return;
+        uniforms.uTextureCurrent.value = newTexture;
+        uniforms.uTextureNext.value = newTexture;
+        uniforms.uTransitionProgress.value = 0;
 
-        newTexture.colorSpace = THREE.SRGBColorSpace;
-        newTexture.needsUpdate = true;
-        material.uniforms.uTextureCurrent.value =
-          material.uniforms.uTextureNext.value;
-        material.uniforms.uTextureNext.value = newTexture;
-
-        if (!material.uniforms.uTransitionProgress) return;
-        material.uniforms.uTransitionProgress.value = 0;
+        this.imageAniTimeline = null;
       },
     });
   },
