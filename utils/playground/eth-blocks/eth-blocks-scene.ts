@@ -5,8 +5,6 @@ import { gsap } from "gsap";
 type EthBlocksAnimationSetup = {
   mesh: THREE.Object3D | null;
   ethBlocks: HTMLCollection;
-  imageAniTimeline: gsap.core.Timeline;
-  aniTimelineArray: gsap.core.TimelineChild[];
 };
 
 type EthBlocksAnimation = {
@@ -26,6 +24,9 @@ type EthBlocksAnimation = {
   imageTextureChange: (index: number) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
   firstEnterAnimation: () => void;
+  pendingImageId: number;
+  currentImageId: number;
+  imageAniTimeline: gsap.core.Tween | null;
 };
 
 export const BLOCKS_ON_SCREEN_AMOUNT = 6;
@@ -40,6 +41,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   blockLoadingTime: 12,
   blocksTopPadding: 0.25,
   blocksBasePosition: 0,
+  pendingImageId: 0,
+  currentImageId: 0,
+  imageAniTimeline: null,
   async init(ethBlocksWrapper: HTMLElement) {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
 
@@ -57,8 +61,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.setup = {
       mesh: mesh,
       ethBlocks: ethBlocksWrapper.children,
-      imageAniTimeline: gsap.timeline(),
-      aniTimelineArray: [],
     };
     this.firstEnterAnimation();
 
@@ -89,6 +91,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       const newTexture = nextTextures[i];
       if (newTexture) this.textures.push(newTexture);
     }
+
+    for (const texture of this.textures) {
+      if (!texture) continue;
+      texture.colorSpace = THREE.SRGBColorSpace;
+
+      if (Canvas3.renderer?.initTexture) {
+        Canvas3.renderer.initTexture(texture);
+      }
+    }
   },
   firstEnterAnimation() {},
   animateBlockSizeOnScroll(elNode, index) {
@@ -112,7 +123,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!blockId) return;
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
-    if (aniCoef > 0.05) return;
+    if (aniCoef > 0.03) return;
     this.activeBlockId = blockId;
     const imageId = Number(el.dataset.bgImageId);
     this.imageTextureChange(imageId);
@@ -141,6 +152,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
+        uTextures: { value: this.textures },
         uTextureCurrent: { value: textureCurrent },
         uTextureNext: { value: textureNext },
         uTransitionProgress: { value: 0 },
@@ -186,52 +198,69 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageTextureChange(imageId) {
+    const baseAniDuration = 0.7;
+    const minAniDuration = 0.2;
+    const imageChangeDuration =
+      baseAniDuration - (Canvas3.getScrollSpeed() ?? 1);
+
+    if (imageChangeDuration < minAniDuration) return;
+
+    if (this.currentImageId === imageId) return;
+    if (this.pendingImageId === imageId) return;
+
     if (!this.setup) return;
 
     const mesh = this.setup?.mesh as THREE.Mesh | undefined;
     if (!mesh) return;
 
     const material = mesh.material as THREE.ShaderMaterial;
+    const uniforms = material.uniforms;
 
-    // if()
-    // TODO do something to make the transition nice
-    if (this.setup.imageAniTimeline.progress() !== 1) {
-      this.setup.imageAniTimeline.clear();
-      console.log("CLEAR", imageId);
+    if (!uniforms?.uTransitionProgress) return;
+    if (!uniforms?.uTextureCurrent) return;
+    if (!uniforms?.uTextureNext) return;
+
+    this.pendingImageId = imageId;
+
+    const newTexture = this.textures[imageId];
+    if (!newTexture) return;
+
+    if (Canvas3.renderer?.initTexture) {
+      Canvas3.renderer.initTexture(newTexture);
     }
 
-    if (!material.uniforms.uTransitionProgress) return;
-    const imageChangeDuration = Math.max(
-      0.5,
-      0.9 - (Canvas3.getScrollSpeed() ?? 1),
-    );
+    await new Promise(requestAnimationFrame);
 
-    console.log("imageTextureChange", imageId, imageChangeDuration);
+    if (this.imageAniTimeline) {
+      this.imageAniTimeline.kill();
+      this.imageAniTimeline = null;
+    }
 
-    this.setup.imageAniTimeline.to(material.uniforms.uTransitionProgress, {
+    const currentTexture = this.textures[this.currentImageId];
+    if (!currentTexture) return;
+
+    uniforms.uTextureCurrent.value = currentTexture;
+    uniforms.uTextureNext.value = newTexture;
+    uniforms.uTransitionProgress.value = 0;
+
+    this.imageAniTimeline = gsap.to(uniforms.uTransitionProgress, {
       value: 1,
       duration: imageChangeDuration,
       ease: "linear",
-      // label: 'texturesChange_' + imageId,
+      overwrite: true,
       onComplete: () => {
         if (!this.setup) return;
-        if (!material?.uniforms?.uTextureNext) return;
-        if (!material?.uniforms?.uTextureCurrent) return;
+        if (this.pendingImageId !== imageId) return;
 
-        const newTexture = this.textures[imageId];
-        if (!newTexture) return;
+        this.currentImageId = imageId;
 
-        newTexture.colorSpace = THREE.SRGBColorSpace;
-        newTexture.needsUpdate = true;
-        material.uniforms.uTextureCurrent.value =
-          material.uniforms.uTextureNext.value;
-        material.uniforms.uTextureNext.value = newTexture;
-        if (!material.uniforms.uTransitionProgress) return;
-        material.uniforms.uTransitionProgress.value = 0;
-        // this.setup.aniTimelineArray.length = 0;
+        uniforms.uTextureCurrent.value = newTexture;
+        uniforms.uTextureNext.value = newTexture;
+        uniforms.uTransitionProgress.value = 0;
+
+        this.imageAniTimeline = null;
       },
     });
-    // this.setup.aniTimelineArray.push(ani);
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
@@ -302,11 +331,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - appear animation with loader, or transition
-// - data animate in in the blocks
 // - update glass size to fit design
 // - Shader -
 //           - uTransitionProgress - with better shader effect - from top to bottom first
-// - Images export/import - 20 images - J
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
 // -

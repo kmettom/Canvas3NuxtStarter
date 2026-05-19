@@ -194,8 +194,14 @@ onMounted(async () => {
     ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
+  // setTimeout(() => {
   enterAni(tlNewBlockAniIn);
+  // },500)
   await newLoadingBlock();
+
+  // document.onresize(()=>{
+  //
+  // })
 });
 
 // https://www.shadertoy.com/view/wccSDf
