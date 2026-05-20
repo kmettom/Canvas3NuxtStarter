@@ -19,10 +19,6 @@ export default defineEventHandler(async (event) => {
     );
   }, 8033);
 
-  eventStream.onClosed(() => {
-    unwatch();
-  });
-
   return eventStream.send();
 
   //**************************
