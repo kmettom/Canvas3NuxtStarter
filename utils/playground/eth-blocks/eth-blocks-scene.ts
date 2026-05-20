@@ -93,12 +93,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     for (const texture of this.textures) {
-      if (!texture) continue;
       texture.colorSpace = THREE.SRGBColorSpace;
-
-      if (Canvas3.renderer?.initTexture) {
-        Canvas3.renderer.initTexture(texture);
-      }
+      texture.generateMipmaps = false;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.needsUpdate = true;
+      Canvas3.renderer?.initTexture?.(texture);
     }
   },
   firstEnterAnimation() {},
@@ -219,6 +219,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!uniforms?.uTransitionProgress) return;
     if (!uniforms?.uTextureCurrent) return;
     if (!uniforms?.uTextureNext) return;
+    // if (!uniforms?.uTextureSize) return;
 
     this.pendingImageId = imageId;
 
@@ -241,6 +242,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     uniforms.uTextureCurrent.value = currentTexture;
     uniforms.uTextureNext.value = newTexture;
+    // uniforms.uTextureSize.value.set(
+    //   newTexture?.image?.width,
+    //   newTexture?.image?.height,
+    // );
     uniforms.uTransitionProgress.value = 0;
 
     this.imageAniTimeline = gsap.to(uniforms.uTransitionProgress, {
