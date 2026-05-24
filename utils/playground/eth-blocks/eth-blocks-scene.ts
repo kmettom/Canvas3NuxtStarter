@@ -1,36 +1,8 @@
 import * as THREE from "three";
 import { Canvas3Options } from "~/constants/canvas3-options";
 import { gsap } from "gsap";
-
-type EthBlocksAnimationSetup = {
-  mesh: THREE.Object3D | null;
-  ethBlocks: HTMLCollection;
-};
-
-type EthBlocksAnimation = {
-  meshId: string;
-  textures: THREE.Texture[];
-  loadingBlockId: string;
-  activeBlockId: string;
-  blockLoadingTime: number;
-  setup: EthBlocksAnimationSetup | null;
-  blocksBasePosition: number;
-  blocksTopPadding: number;
-  init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
-  createMesh: () => Promise<THREE.Mesh | null>;
-  getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
-  calculateUBlockPositions: () => THREE.Vector4[];
-  render: () => void;
-  imageTextureChange: (index: number) => void;
-  animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
-  firstEnterAnimation: () => void;
-  pendingImageId: number;
-  currentImageId: number;
-  imageAniTimeline: gsap.core.Tween | null;
-};
-
-export const BLOCKS_ON_SCREEN_AMOUNT = 6;
-export const BLOCKS_HEIGHT = 236;
+import { BLOCKS_ON_SCREEN_AMOUNT } from "~/constants/playground/eth-blocks";
+import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
@@ -56,7 +28,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/02.webp"),
     ]);
 
-    const mesh = await this.createMesh();
+    const mesh = await this.createGlassBlockMesh();
 
     this.setup = {
       mesh: mesh,
@@ -100,6 +72,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       texture.needsUpdate = true;
       Canvas3.renderer?.initTexture?.(texture);
     }
+
+    for (const [index, texture] of this.textures.entries()) {
+      this.createImageBgMesh(texture, index);
+    }
   },
   firstEnterAnimation() {},
   animateBlockSizeOnScroll(elNode, index) {
@@ -129,22 +105,22 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.imageTextureChange(imageId);
   },
 
-  async createMesh() {
+  async createGlassBlockMesh() {
     const vertexShader = Canvas3Options.shaders.playEthBlockGlass.vertexShader;
     const fragmentShader =
       Canvas3Options.shaders.playEthBlockGlass.fragmentShader;
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    if (!this.textures[0]) return null;
-    const textureCurrent = this.textures[0];
-    textureCurrent.colorSpace = THREE.SRGBColorSpace;
-    textureCurrent.needsUpdate = true;
-
-    if (!this.textures[1]) return null;
-    const textureNext = this.textures[1];
-    textureNext.colorSpace = THREE.SRGBColorSpace;
-    textureNext.needsUpdate = true;
+    // if (!this.textures[0]) return null;
+    // const textureCurrent = this.textures[0];
+    // textureCurrent.colorSpace = THREE.SRGBColorSpace;
+    // textureCurrent.needsUpdate = true;
+    //
+    // if (!this.textures[1]) return null;
+    // const textureNext = this.textures[1];
+    // textureNext.colorSpace = THREE.SRGBColorSpace;
+    // textureNext.needsUpdate = true;
 
     const uBlocksPositions = this.calculateUBlockPositions();
 
@@ -153,8 +129,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTextures: { value: this.textures },
-        uTextureCurrent: { value: textureCurrent },
-        uTextureNext: { value: textureNext },
+        // uTextureCurrent: { value: textureCurrent },
+        // uTextureNext: { value: textureNext },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -165,7 +141,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uTextureSize: {
-          value: new THREE.Vector2(textureCurrent.width, textureCurrent.height),
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -184,6 +160,75 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       vertexShader: vertexShader,
       transparent: true,
       name: this.meshId,
+      // wireframe: true,
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = this.meshId;
+    const neutralZScale = 1;
+    mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+
+    Canvas3.addMeshToScene(mesh);
+    if (!mesh) return null;
+    return mesh;
+  },
+
+  async createImageBgMesh(texture, id) {
+    const vertexShader =
+      Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
+    const fragmentShader =
+      Canvas3Options.shaders.playEthBlockImageBg.fragmentShader;
+
+    const geometry = new THREE.PlaneGeometry(1, 1);
+
+    // if (!this.textures[0]) return null;
+    // const textureCurrent = this.textures[0];
+    // textureCurrent.colorSpace = THREE.SRGBColorSpace;
+    // textureCurrent.needsUpdate = true;
+    //
+    // if (!this.textures[1]) return null;
+    // const textureNext = this.textures[1];
+    // textureNext.colorSpace = THREE.SRGBColorSpace;
+    // textureNext.needsUpdate = true;
+
+    const uBlocksPositions = this.calculateUBlockPositions();
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uDevicePixelRatio: { value: window.devicePixelRatio },
+        uTime: { value: 0 },
+        uTexture: { value: texture },
+        // uTextureCurrent: { value: textureCurrent },
+        // uTextureNext: { value: textureNext },
+        uTransitionProgress: { value: 0 },
+        uAniInImage: { value: 1 },
+        uHover: { value: 1 },
+        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uMouseMovement: { value: new THREE.Vector2(0, 0) },
+        uMeshSize: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uTextureSize: {
+          value: new THREE.Vector2(texture.width, texture.height),
+        },
+        uViewport: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uBlockCount: {
+          value: Math.min(uBlocksPositions.length, 10),
+        },
+        uBlocks: {
+          value: uBlocksPositions,
+        },
+        uBlockColor: {
+          value: 0,
+        },
+      },
+      fragmentShader: fragmentShader,
+      vertexShader: vertexShader,
+      transparent: true,
+      name: "imageBgMesh_" + id,
       // wireframe: true,
     });
 
@@ -256,6 +301,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       onComplete: () => {
         if (!this.setup) return;
         if (this.pendingImageId !== imageId) return;
+        if (!uniforms.uTextureCurrent) return;
+        if (!uniforms.uTextureNext) return;
+        if (!uniforms.uTransitionProgress) return;
 
         this.currentImageId = imageId;
 
