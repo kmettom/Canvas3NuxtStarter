@@ -158,6 +158,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     mesh.name = this.meshId;
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.position.z = 2;
 
     Canvas3.addMeshToScene(mesh);
     if (!mesh) return null;
@@ -165,6 +166,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async createImageBgMesh(texture, id) {
+    console.log("createImageBgMesh", id);
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
     const fragmentShader =
@@ -204,6 +206,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     mesh.name = this.meshId;
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.position.z = id === 1 ? 1 : 0;
 
     Canvas3.addMeshToScene(mesh);
     if (!mesh) return null;
@@ -218,12 +221,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     if (imageChangeDuration < minAniDuration) return;
 
-    console.log("imageTextureChange", imageId);
     const mesh = this.imageBgMeshes[imageId];
     if (!mesh) return;
     const material = mesh.material as THREE.ShaderMaterial;
     if (!material.uniforms.uTransitionProgress) return;
-    material.uniforms.uTransitionProgress.value = 1;
+    gsap.to(material.uniforms.uTransitionProgress, { value: 1, duration: 0.5 });
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
