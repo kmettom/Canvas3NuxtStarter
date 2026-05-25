@@ -300,9 +300,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - appear animation with loader, or transition
+//            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
+// - Glass Mesh - image BG glass effect
 // - update glass size to fit design
 // - Shader -
 //           - uTransitionProgress - with better shader effect - from top to bottom first
+
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
 // -
