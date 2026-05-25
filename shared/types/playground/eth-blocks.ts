@@ -8,6 +8,7 @@ export type EthBlocksAnimationSetup = {
 export type EthBlocksAnimation = {
   meshId: string;
   textures: THREE.Texture[];
+  imageBgMeshes: THREE.Mesh[];
   loadingBlockId: string;
   activeBlockId: string;
   blockLoadingTime: number;

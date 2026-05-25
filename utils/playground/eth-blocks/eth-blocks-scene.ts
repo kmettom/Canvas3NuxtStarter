@@ -7,6 +7,7 @@ import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 export const ethBlocksAnimation: EthBlocksAnimation = {
   setup: null,
   textures: [],
+  imageBgMeshes: [],
   meshId: "ethBlockBg",
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
@@ -74,7 +75,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     for (const [index, texture] of this.textures.entries()) {
-      this.createImageBgMesh(texture, index);
+      const mesh = await this.createImageBgMesh(texture, index);
+      if (mesh) {
+        this.imageBgMeshes.push(mesh);
+      }
     }
   },
   firstEnterAnimation() {},
@@ -112,16 +116,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    // if (!this.textures[0]) return null;
-    // const textureCurrent = this.textures[0];
-    // textureCurrent.colorSpace = THREE.SRGBColorSpace;
-    // textureCurrent.needsUpdate = true;
-    //
-    // if (!this.textures[1]) return null;
-    // const textureNext = this.textures[1];
-    // textureNext.colorSpace = THREE.SRGBColorSpace;
-    // textureNext.needsUpdate = true;
-
     const uBlocksPositions = this.calculateUBlockPositions();
 
     const material = new THREE.ShaderMaterial({
@@ -129,9 +123,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTextures: { value: this.textures },
-        // uTextureCurrent: { value: textureCurrent },
-        // uTextureNext: { value: textureNext },
-        uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
@@ -181,25 +172,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    // if (!this.textures[0]) return null;
-    // const textureCurrent = this.textures[0];
-    // textureCurrent.colorSpace = THREE.SRGBColorSpace;
-    // textureCurrent.needsUpdate = true;
-    //
-    // if (!this.textures[1]) return null;
-    // const textureNext = this.textures[1];
-    // textureNext.colorSpace = THREE.SRGBColorSpace;
-    // textureNext.needsUpdate = true;
-
-    const uBlocksPositions = this.calculateUBlockPositions();
-
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTexture: { value: texture },
-        // uTextureCurrent: { value: textureCurrent },
-        // uTextureNext: { value: textureNext },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -214,15 +191,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         },
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-        },
-        uBlockCount: {
-          value: Math.min(uBlocksPositions.length, 10),
-        },
-        uBlocks: {
-          value: uBlocksPositions,
-        },
-        uBlockColor: {
-          value: 0,
         },
       },
       fragmentShader: fragmentShader,
@@ -250,70 +218,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     if (imageChangeDuration < minAniDuration) return;
 
-    if (this.currentImageId === imageId) return;
-    if (this.pendingImageId === imageId) return;
-
-    if (!this.setup) return;
-
-    const mesh = this.setup?.mesh as THREE.Mesh | undefined;
+    console.log("imageTextureChange", imageId);
+    const mesh = this.imageBgMeshes[imageId];
     if (!mesh) return;
-
     const material = mesh.material as THREE.ShaderMaterial;
-    const uniforms = material.uniforms;
-
-    if (!uniforms?.uTransitionProgress) return;
-    if (!uniforms?.uTextureCurrent) return;
-    if (!uniforms?.uTextureNext) return;
-    // if (!uniforms?.uTextureSize) return;
-
-    this.pendingImageId = imageId;
-
-    const newTexture = this.textures[imageId];
-    if (!newTexture) return;
-
-    if (Canvas3.renderer?.initTexture) {
-      Canvas3.renderer.initTexture(newTexture);
-    }
-
-    await new Promise(requestAnimationFrame);
-
-    if (this.imageAniTimeline) {
-      this.imageAniTimeline.kill();
-      this.imageAniTimeline = null;
-    }
-
-    const currentTexture = this.textures[this.currentImageId];
-    if (!currentTexture) return;
-
-    uniforms.uTextureCurrent.value = currentTexture;
-    uniforms.uTextureNext.value = newTexture;
-    // uniforms.uTextureSize.value.set(
-    //   newTexture?.image?.width,
-    //   newTexture?.image?.height,
-    // );
-    uniforms.uTransitionProgress.value = 0;
-
-    this.imageAniTimeline = gsap.to(uniforms.uTransitionProgress, {
-      value: 1,
-      duration: imageChangeDuration,
-      ease: "linear",
-      overwrite: true,
-      onComplete: () => {
-        if (!this.setup) return;
-        if (this.pendingImageId !== imageId) return;
-        if (!uniforms.uTextureCurrent) return;
-        if (!uniforms.uTextureNext) return;
-        if (!uniforms.uTransitionProgress) return;
-
-        this.currentImageId = imageId;
-
-        uniforms.uTextureCurrent.value = newTexture;
-        uniforms.uTextureNext.value = newTexture;
-        uniforms.uTransitionProgress.value = 0;
-
-        this.imageAniTimeline = null;
-      },
-    });
+    if (!material.uniforms.uTransitionProgress) return;
+    material.uniforms.uTransitionProgress.value = 1;
   },
 
   getVec4PositionFromClientRect: (clientRect) => {
