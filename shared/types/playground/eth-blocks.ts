@@ -1,22 +1,18 @@
 import type * as THREE from "three";
 
-export type EthBlocksAnimationSetup = {
-  mesh: THREE.Object3D | null;
-  ethBlocks: HTMLCollection;
-};
-
 export type EthBlocksAnimation = {
   meshId: string;
   textures: THREE.Texture[];
   imageBgMeshes: THREE.Mesh[];
+  glassMesh: THREE.Mesh | null;
+  ethBlocks: HTMLCollection | null;
   loadingBlockId: string;
   activeBlockId: string;
   blockLoadingTime: number;
-  setup: EthBlocksAnimationSetup | null;
   blocksBasePosition: number;
   blocksTopPadding: number;
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
-  createGlassBlockMesh: () => Promise<THREE.Mesh | null>;
+  createGlassBlockMesh: () => Promise<THREE.Mesh>;
   createImageBgMesh: (
     texture: THREE.Texture,
     id: number,
@@ -24,7 +20,7 @@ export type EthBlocksAnimation = {
   getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
-  imageTextureChange: (index: number) => void;
+  imageBgChange: (index: number) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
   firstEnterAnimation: () => void;
   pendingImageId: number;

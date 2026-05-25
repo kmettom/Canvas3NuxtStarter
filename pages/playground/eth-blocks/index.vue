@@ -191,7 +191,7 @@ onUnmounted(() => eventSource?.close());
 onMounted(async () => {
   addBlockListener();
   if (ethBlocks.value) {
-    ethBlocksAnimation.init(ethBlocks.value);
+    await ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
   // setTimeout(() => {
