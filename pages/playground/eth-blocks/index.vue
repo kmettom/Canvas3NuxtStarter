@@ -33,21 +33,19 @@
 import { onMounted, nextTick } from "vue";
 import {
   generateBlockData,
-  type BlockExtended,
   deserializeBlock,
   generateLoadingBlockData,
-  // aniContentValues,
   enterAni,
-  // aniProgressBar,
   blockContentAniIn,
 } from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
-import {
-  // BLOCKS_HEIGHT,
-  ethBlocksAnimation,
-} from "~/utils/playground/eth-blocks/eth-blocks-scene";
+import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 import BlockContent from "~/components/playground/eth-blocks/blockContent.vue";
+import type {
+  BlockExtended,
+  BlockItem,
+} from "#shared/types/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
 
 //**************************
@@ -58,8 +56,8 @@ const maxBlocks = 50;
 
 const ethBlocks = ref<HTMLElement | null>(null);
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
-const blocks = ref<Map<string, BlockExtended>>(new Map());
-const blocksToRender = computed<BlockExtended[]>(() => {
+const blocks = ref<Map<string, BlockItem>>(new Map());
+const blocksToRender = computed<BlockItem[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
     a.blockId > b.blockId ? -1 : 1,
   );
@@ -76,12 +74,9 @@ initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
 });
 
 const tlNewBlockAniIn = gsap.timeline({
+  paused: true,
   onComplete: () => {
     newLoadingBlock();
-  },
-  onUpdate: () => {},
-  onStart: () => {
-    // newLoadingBlock();
   },
 });
 
@@ -89,15 +84,18 @@ const tlNewBlockAniIn = gsap.timeline({
 // FUNCTIONS
 //**************************
 
+const blockIdCounter = ref(0);
+const newBlockId = computed(() => {
+  return "block_" + blockIdCounter.value;
+});
+
 async function newLoadingBlock() {
-  const newBlockId = new Date().getTime().toString();
-  ethBlocksAnimation.loadingBlockId = newBlockId;
-  blocks.value.set(
-    ethBlocksAnimation.loadingBlockId,
-    generateLoadingBlockData(newBlockId),
-  );
+  blockIdCounter.value += 1;
+  ethBlocksAnimation.loadingBlockId = newBlockId.value;
+  const blockData = generateLoadingBlockData(newBlockId.value);
+  blocks.value.set(ethBlocksAnimation.loadingBlockId, blockData);
   await nextTick();
-  const el = blocks.value.get(newBlockId)?.elRef as HTMLElement;
+  const el = blocks.value.get(newBlockId.value)?.elRef as HTMLElement;
   if (!el) {
     return;
   }
@@ -120,7 +118,7 @@ function addNewBlockEl(
   el: Element | ComponentPublicInstance | null,
   blockId: string,
 ) {
-  const block = blocks.value.get(blockId);
+  const block = blocks.value.get(blockId.toString());
   if (block && !block.elRef) {
     block.elRef = el;
   }
@@ -191,17 +189,12 @@ onUnmounted(() => eventSource?.close());
 onMounted(async () => {
   addBlockListener();
   if (ethBlocks.value) {
-    ethBlocksAnimation.init(ethBlocks.value);
+    await ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
-  // setTimeout(() => {
-  enterAni(tlNewBlockAniIn);
-  // },500)
+  await enterAni(tlNewBlockAniIn);
   await newLoadingBlock();
-
-  // document.onresize(()=>{
-  //
-  // })
+  tlNewBlockAniIn.play();
 });
 
 // https://www.shadertoy.com/view/wccSDf

@@ -1,41 +1,14 @@
 import * as THREE from "three";
 import { Canvas3Options } from "~/constants/canvas3-options";
 import { gsap } from "gsap";
-
-type EthBlocksAnimationSetup = {
-  mesh: THREE.Object3D | null;
-  ethBlocks: HTMLCollection;
-};
-
-type EthBlocksAnimation = {
-  meshId: string;
-  textures: THREE.Texture[];
-  loadingBlockId: string;
-  activeBlockId: string;
-  blockLoadingTime: number;
-  setup: EthBlocksAnimationSetup | null;
-  blocksBasePosition: number;
-  blocksTopPadding: number;
-  init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
-  createMesh: () => Promise<THREE.Mesh | null>;
-  getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
-  calculateUBlockPositions: () => THREE.Vector4[];
-  render: () => void;
-  imageTextureChange: (index: number) => void;
-  animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
-  firstEnterAnimation: () => void;
-  pendingImageId: number;
-  currentImageId: number;
-  imageAniTimeline: gsap.core.Tween | null;
-};
-
-export const BLOCKS_ON_SCREEN_AMOUNT = 6;
-export const BLOCKS_HEIGHT = 236;
+import { BLOCKS_ON_SCREEN_AMOUNT } from "~/constants/playground/eth-blocks";
+import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
-  setup: null,
   textures: [],
-  meshId: "ethBlockBg",
+  imageBgMeshes: [],
+  glassMesh: null,
+  ethBlocks: null,
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
   blockLoadingTime: 12,
@@ -56,17 +29,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       loader.loadAsync("images/02.webp"),
     ]);
 
-    const mesh = await this.createMesh();
+    this.glassMesh = await this.createGlassBlockMesh();
 
-    this.setup = {
-      mesh: mesh,
-      ethBlocks: ethBlocksWrapper.children,
-    };
-    this.firstEnterAnimation();
+    this.ethBlocks = ethBlocksWrapper.children;
+    // this.firstEnterAnimation();
 
     const nextTextures = await Promise.all([
-      // loader.loadAsync("images/01.jpg"),
-      // loader.loadAsync("images/02.jpg"),
+      // loader.loadAsync("images/01.webp"),
+      // loader.loadAsync("images/02.webp"),
       loader.loadAsync("images/03.webp"),
       loader.loadAsync("images/04.webp"),
       loader.loadAsync("images/05.webp"),
@@ -89,21 +59,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
-      if (newTexture) this.textures.push(newTexture);
-    }
-
-    for (const texture of this.textures) {
-      if (!texture) continue;
-      texture.colorSpace = THREE.SRGBColorSpace;
-
-      if (Canvas3.renderer?.initTexture) {
-        Canvas3.renderer.initTexture(texture);
+      if (!newTexture) continue;
+      const mesh = await this.createImageBgMesh(newTexture, i);
+      if (mesh) {
+        this.imageBgMeshes.push(mesh);
       }
     }
   },
-  firstEnterAnimation() {},
   animateBlockSizeOnScroll(elNode, index) {
-    if (!this.setup) return;
     const blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
     const aniCoef = Math.abs(
@@ -117,7 +80,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
-    const el = this.setup.ethBlocks[index] as HTMLElement;
+    if (!this.ethBlocks) return;
+    const el = this.ethBlocks[index] as HTMLElement;
     if (!el) return;
     const blockId = el.dataset.blockId;
     if (!blockId) return;
@@ -126,36 +90,24 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (aniCoef > 0.03) return;
     this.activeBlockId = blockId;
     const imageId = Number(el.dataset.bgImageId);
-    this.imageTextureChange(imageId);
+    this.imageBgChange(imageId);
   },
 
-  async createMesh() {
+  async createGlassBlockMesh() {
     const vertexShader = Canvas3Options.shaders.playEthBlockGlass.vertexShader;
     const fragmentShader =
       Canvas3Options.shaders.playEthBlockGlass.fragmentShader;
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    if (!this.textures[0]) return null;
-    const textureCurrent = this.textures[0];
-    textureCurrent.colorSpace = THREE.SRGBColorSpace;
-    textureCurrent.needsUpdate = true;
-
-    if (!this.textures[1]) return null;
-    const textureNext = this.textures[1];
-    textureNext.colorSpace = THREE.SRGBColorSpace;
-    textureNext.needsUpdate = true;
-
     const uBlocksPositions = this.calculateUBlockPositions();
 
+    const meshId = "ethBlockBg";
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTextures: { value: this.textures },
-        uTextureCurrent: { value: textureCurrent },
-        uTextureNext: { value: textureNext },
-        uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
@@ -165,7 +117,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uTextureSize: {
-          value: new THREE.Vector2(textureCurrent.width, textureCurrent.height),
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
@@ -183,83 +135,91 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
       transparent: true,
-      name: this.meshId,
+      name: meshId,
       // wireframe: true,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.name = this.meshId;
+    mesh.name = meshId;
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.position.z = 2;
+
+    Canvas3.addMeshToScene(mesh);
+    return mesh;
+  },
+
+  async createImageBgMesh(texture, id) {
+    const vertexShader =
+      Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
+    const fragmentShader =
+      Canvas3Options.shaders.playEthBlockImageBg.fragmentShader;
+
+    const geometry = new THREE.PlaneGeometry(1, 1);
+    const meshId = "imageBgMesh_" + id;
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uDevicePixelRatio: { value: window.devicePixelRatio },
+        uTime: { value: 0 },
+        uTexture: { value: texture },
+        uTransitionProgress: { value: 0 },
+        uAniInImage: { value: 1 },
+        uHover: { value: 1 },
+        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uMouseMovement: { value: new THREE.Vector2(0, 0) },
+        uMeshSize: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uTextureSize: {
+          value: new THREE.Vector2(texture.width, texture.height),
+        },
+        uViewport: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+      },
+      fragmentShader: fragmentShader,
+      vertexShader: vertexShader,
+      transparent: true,
+      name: meshId,
+      // wireframe: true,
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = meshId;
+    const neutralZScale = 1;
+    mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.position.z = id === 1 ? 1 : 0;
 
     Canvas3.addMeshToScene(mesh);
     if (!mesh) return null;
     return mesh;
   },
 
-  async imageTextureChange(imageId) {
+  async imageBgChange(imageId) {
     const baseAniDuration = 0.7;
-    const minAniDuration = 0.2;
     const imageChangeDuration =
       baseAniDuration - (Canvas3.getScrollSpeed() ?? 1);
 
-    if (imageChangeDuration < minAniDuration) return;
-
-    if (this.currentImageId === imageId) return;
-    if (this.pendingImageId === imageId) return;
-
-    if (!this.setup) return;
-
-    const mesh = this.setup?.mesh as THREE.Mesh | undefined;
+    const mesh = this.imageBgMeshes[imageId];
     if (!mesh) return;
 
     const material = mesh.material as THREE.ShaderMaterial;
-    const uniforms = material.uniforms;
-
-    if (!uniforms?.uTransitionProgress) return;
-    if (!uniforms?.uTextureCurrent) return;
-    if (!uniforms?.uTextureNext) return;
-
-    this.pendingImageId = imageId;
-
-    const newTexture = this.textures[imageId];
-    if (!newTexture) return;
-
-    if (Canvas3.renderer?.initTexture) {
-      Canvas3.renderer.initTexture(newTexture);
+    if (!material.uniforms.uTransitionProgress) return;
+    material.uniforms.uTransitionProgress.value = 1;
+    for (let i = 0; i < this.imageBgMeshes.length; i++) {
+      const meshToUpdate = this.imageBgMeshes[i];
+      if (!meshToUpdate) continue;
+      meshToUpdate.position.z = 0;
+      const materialToUpdate = meshToUpdate.material as THREE.ShaderMaterial;
+      if (!materialToUpdate.uniforms.uTransitionProgress) continue;
+      materialToUpdate.uniforms.uTransitionProgress.value = 0;
     }
+    mesh.position.z = 1;
 
-    await new Promise(requestAnimationFrame);
-
-    if (this.imageAniTimeline) {
-      this.imageAniTimeline.kill();
-      this.imageAniTimeline = null;
-    }
-
-    const currentTexture = this.textures[this.currentImageId];
-    if (!currentTexture) return;
-
-    uniforms.uTextureCurrent.value = currentTexture;
-    uniforms.uTextureNext.value = newTexture;
-    uniforms.uTransitionProgress.value = 0;
-
-    this.imageAniTimeline = gsap.to(uniforms.uTransitionProgress, {
+    gsap.to(material.uniforms.uTransitionProgress, {
       value: 1,
       duration: imageChangeDuration,
-      ease: "linear",
-      overwrite: true,
-      onComplete: () => {
-        if (!this.setup) return;
-        if (this.pendingImageId !== imageId) return;
-
-        this.currentImageId = imageId;
-
-        uniforms.uTextureCurrent.value = newTexture;
-        uniforms.uTextureNext.value = newTexture;
-        uniforms.uTransitionProgress.value = 0;
-
-        this.imageAniTimeline = null;
-      },
     });
   },
 
@@ -277,7 +237,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   calculateUBlockPositions() {
-    if (!this.setup?.ethBlocks) {
+    if (!this.ethBlocks) {
       return Array.from(
         { length: BLOCKS_ON_SCREEN_AMOUNT },
         () => new THREE.Vector4(0, 0, 0, 0),
@@ -286,17 +246,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const positions: THREE.Vector4[] = [];
 
-    for (let i = 0; i < this.setup.ethBlocks.length; i++) {
+    for (let i = 0; i < this.ethBlocks.length; i++) {
       if (
-        this.setup.ethBlocks[i] &&
-        this.setup.ethBlocks[i]?.classList.contains("active")
+        this.ethBlocks[i] &&
+        this.ethBlocks[i]?.classList.contains("active")
       ) {
-        const bounds = this.setup.ethBlocks[i]?.getBoundingClientRect();
+        const bounds = this.ethBlocks[i]?.getBoundingClientRect();
         if (bounds) positions.push(this.getVec4PositionFromClientRect(bounds));
-        this.animateBlockSizeOnScroll(
-          this.setup.ethBlocks[i] as HTMLElement,
-          i,
-        );
+        this.animateBlockSizeOnScroll(this.ethBlocks[i] as HTMLElement, i);
       }
     }
 
@@ -308,11 +265,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   render() {
-    if (!this.setup) return;
-    const { mesh } = this.setup;
-    if (!mesh) return;
+    if (!this.glassMesh) return;
 
-    const meshToUpdate = this.setup?.mesh as THREE.Mesh | undefined;
+    const meshToUpdate = this.glassMesh as THREE.Mesh | undefined;
     if (!meshToUpdate) return;
 
     const material = meshToUpdate.material as THREE.ShaderMaterial;
@@ -331,9 +286,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - appear animation with loader, or transition
+//            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
+// - Glass Mesh - image BG glass effect
 // - update glass size to fit design
 // - Shader -
 //           - uTransitionProgress - with better shader effect - from top to bottom first
+
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
 // -

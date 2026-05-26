@@ -17,11 +17,7 @@ export default defineEventHandler(async (event) => {
         (_, v) => (typeof v === "bigint" ? v.toString() : v), // BigInt is not JSON-serializable
       ),
     );
-  }, 8033);
-
-  eventStream.onClosed(() => {
-    unwatch();
-  });
+  }, 5033);
 
   return eventStream.send();
 

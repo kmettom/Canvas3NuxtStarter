@@ -2,31 +2,12 @@ import { type Block, formatEther, type Withdrawal } from "viem";
 import Big from "big.js";
 import SplitText from "gsap/SplitText";
 import { gsap } from "gsap";
+import type {
+  BlockExtended,
+  BlockLoading,
+} from "#shared/types/playground/eth-blocks";
 // import { BLOCKS_HEIGHT } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 gsap.registerPlugin(SplitText);
-
-export type BlockLoading = {
-  imageId: string;
-  loading: boolean;
-  blockId: string;
-  aniCoef?: number;
-};
-
-export type BlockExtended = BlockLoading &
-  Block & {
-    blockGasTargetPercent?: string;
-    blockGasTargetCoef?: number;
-    blockGasUsedPercent?: string;
-    blockETHBurned?: bigint;
-    blockWithdrawalsSum?: bigint;
-    blockNetIssuanceETH?: bigint;
-    blockHovered?: boolean;
-    imageId: string;
-    aniCoef?: number;
-    loading: boolean;
-    blockId: string;
-    elRef?: Element | ComponentPublicInstance | null;
-  };
 
 const GWEI_TO_WEI = 1_000_000_000n;
 
@@ -76,7 +57,7 @@ const imageAmount = 8;
 export function generateImageId() {
   const currentIndex = imageIndex;
   imageIndex = (imageIndex + 1) % imageAmount;
-  return currentIndex;
+  return currentIndex.toString();
 }
 
 export function generateLoadingBlockData(blockId: string) {
@@ -85,6 +66,7 @@ export function generateLoadingBlockData(blockId: string) {
     imageId: generateImageId(),
     loading: true,
     blockId: blockId,
+    kind: "loading",
   };
 }
 
@@ -98,6 +80,7 @@ export function generateBlockData(
     imageId: loadingBlockData.imageId,
     loading: false,
     blockId: loadingBlockData.blockId,
+    kind: "full",
   };
 
   newBlock.blockGasUsedPercent = blockGasUsedPercent(
@@ -250,12 +233,18 @@ export function aniContentValues(
   }
 }
 
-export function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
-  tlNewBlockAniIn.clear();
-  tlNewBlockAniIn.to(".eth-block", {
-    width: "423px",
-    height: "236px",
-    marginTop: "20px",
+export async function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
+  new Promise((resolve) => {
+    tlNewBlockAniIn.clear();
+    tlNewBlockAniIn.to(".eth-block", {
+      width: "423px",
+      height: "236px",
+      marginTop: "20px",
+      stagger: 0.2,
+      onComplete: () => {
+        resolve(true);
+      },
+    });
   });
 }
 
