@@ -181,12 +181,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
+        uSceneTexture: { value: null },
       },
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
       transparent: true,
       name: meshId,
-      // wireframe: true,
+      depthWrite: false,
+      depthTest: true,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -194,6 +196,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
     mesh.position.z = id === 1 ? 1 : 0;
+    mesh.renderOrder = id;
 
     Canvas3.addMeshToScene(mesh);
     if (!mesh) return null;
@@ -218,6 +221,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       const materialToUpdate = meshToUpdate.material as THREE.ShaderMaterial;
       if (!materialToUpdate.uniforms.uTransitionProgress) continue;
       materialToUpdate.uniforms.uTransitionProgress.value = 0;
+      if (!materialToUpdate.uniforms.uSceneTexture || !this.sceneRT) continue;
+      materialToUpdate.uniforms.uSceneTexture.value = this.sceneRT.texture;
     }
     mesh.position.z = 1;
 
@@ -306,13 +311,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - appear animation with loader, or transition
-//            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
-// - Glass Mesh - image BG glass effect
-// - update glass size to fit design
 // - Shader -
 //           - uTransitionProgress - with better shader effect - from top to bottom first
-
+// - appear animation with loader, or transition
+//            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
+// - update glass size to fit design
+// - Scroll magnet to closest block top
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
 // -
