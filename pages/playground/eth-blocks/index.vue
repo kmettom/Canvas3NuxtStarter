@@ -82,7 +82,7 @@ const tlNewBlockAniIn = gsap.timeline({
 // FUNCTIONS
 //**************************
 
-const blockIdCounter = ref(0)
+const blockIdCounter = ref(0);
 
 async function newLoadingBlock() {
   blockIdCounter.value += 1;
@@ -92,7 +92,8 @@ async function newLoadingBlock() {
     generateLoadingBlockData(blockIdCounter.value.toString()),
   );
   await nextTick();
-  const el = blocks.value.get(blockIdCounter.value.toString())?.elRef as HTMLElement;
+  const el = blocks.value.get(blockIdCounter.value.toString())
+    ?.elRef as HTMLElement;
   if (!el) {
     return;
   }
@@ -189,7 +190,7 @@ onMounted(async () => {
     await ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
-  enterAni(tlNewBlockAniIn);
+  await enterAni(tlNewBlockAniIn);
   await newLoadingBlock();
   tlNewBlockAniIn.play();
 });

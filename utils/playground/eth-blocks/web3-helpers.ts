@@ -250,13 +250,18 @@ export function aniContentValues(
   }
 }
 
-export function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
-  tlNewBlockAniIn.clear();
-  tlNewBlockAniIn.to(".eth-block", {
-    width: "423px",
-    height: "236px",
-    marginTop: "20px",
-    stagger: 0.2,
+export async function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
+  new Promise((resolve) => {
+    tlNewBlockAniIn.clear();
+    tlNewBlockAniIn.to(".eth-block", {
+      width: "423px",
+      height: "236px",
+      marginTop: "20px",
+      stagger: 0.2,
+      onComplete: () => {
+        resolve(true);
+      },
+    });
   });
 }
 
