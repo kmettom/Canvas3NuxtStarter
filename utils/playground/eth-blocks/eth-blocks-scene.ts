@@ -5,7 +5,6 @@ import { BLOCKS_ON_SCREEN_AMOUNT } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
-  textures: [],
   imageBgMeshes: [],
   glassMesh: null,
   sceneRT: null,
@@ -25,11 +24,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const loader = new THREE.TextureLoader();
 
-    this.textures = await Promise.all([
-      loader.loadAsync("images/01.webp"),
-      loader.loadAsync("images/02.webp"),
-    ]);
-
     this.glassMesh = await this.createGlassBlockMesh();
 
     this.sceneRT = new THREE.WebGLRenderTarget(
@@ -44,8 +38,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.ethBlocks = ethBlocksWrapper.children;
 
     const nextTextures = await Promise.all([
-      // loader.loadAsync("images/01.webp"),
-      // loader.loadAsync("images/02.webp"),
+      loader.loadAsync("images/00.webp"),
+      loader.loadAsync("images/01.webp"),
+      loader.loadAsync("images/02.webp"),
       loader.loadAsync("images/03.webp"),
       loader.loadAsync("images/04.webp"),
       loader.loadAsync("images/05.webp"),
@@ -116,7 +111,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
-        uTextures: { value: this.textures },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5

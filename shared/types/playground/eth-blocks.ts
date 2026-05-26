@@ -2,7 +2,6 @@ import type * as THREE from "three";
 import type { Block } from "viem";
 
 export type EthBlocksAnimation = {
-  textures: THREE.Texture[];
   imageBgMeshes: THREE.Mesh[];
   glassMesh: THREE.Mesh | null;
   sceneRT: THREE.WebGLRenderTarget | null;
