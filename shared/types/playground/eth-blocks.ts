@@ -5,6 +5,7 @@ export type EthBlocksAnimation = {
   textures: THREE.Texture[];
   imageBgMeshes: THREE.Mesh[];
   glassMesh: THREE.Mesh | null;
+  sceneRT: THREE.WebGLRenderTarget | null;
   ethBlocks: HTMLCollection | null;
   loadingBlockId: string;
   activeBlockId: string;

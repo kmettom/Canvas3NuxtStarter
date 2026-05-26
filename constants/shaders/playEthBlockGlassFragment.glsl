@@ -3,13 +3,44 @@ precision highp float;
 #define MAX_GLASS 6
 
 varying vec2 vUv;
+uniform sampler2D uSceneTexture;
+uniform float uTransitionProgress; // 0 -> 1
 uniform float uAniInImage;
 uniform vec4 uBlocks[MAX_GLASS];
 uniform int uBlockCount;
 uniform vec2 uMeshSize;
+uniform vec2 uTextureSize;
 uniform float time;
 
-vec4 glassPass(vec2 vUv, vec4 baseColor, vec4 rect) {
+vec2 coverUv(vec2 raw) {
+    float meshAspect = uMeshSize.x / uMeshSize.y;
+    float textureAspect = uTextureSize.x / uTextureSize.y;
+    vec2 uv = raw;
+    if (meshAspect > textureAspect) {
+        float s = textureAspect / meshAspect;
+        uv.y = uv.y * s + (1.0 - s) * 0.5;
+    } else {
+        float s = meshAspect / textureAspect;
+        uv.x = uv.x * s + (1.0 - s) * 0.5;
+    }
+    return uv;
+}
+
+vec4 getTransitionColor(vec2 uv) {
+    vec4 fromColor = texture2D(uSceneTexture, uv);
+    vec4 toColor   = texture2D(uSceneTexture, uv);
+
+    float p = clamp(uTransitionProgress, 0.0, 1.0);
+
+    // reveal new image from top to bottom
+    float edge = 1.0 - p;
+    float feather = 0.06;
+    float mask = smoothstep(edge - feather, edge + feather, vUv.y);
+
+    return mix(fromColor, toColor, mask);
+}
+
+vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
     vec2 glassCenter = vec2(0.5) + rect.xy / uMeshSize;
     vec2 glassHalfUv = rect.zw / uMeshSize;
 
@@ -26,27 +57,36 @@ vec4 glassPass(vec2 vUv, vec4 baseColor, vec4 rect) {
     float transition = smoothstep(0.0, 1.0, rb1 + rb2);
     if (transition <= 0.0) return baseColor;
 
+    vec2 lensVUv = glassCenter + (vUv - glassCenter) * (1.0 - roundedBox * 0.5);
+    vec2 lensUv = coverUv(lensVUv);
+
+    vec4 blurred = vec4(0.0);
+    float total = 0.0;
+    for (float x = -4.0; x <= 4.0; x++) {
+        for (float y = -4.0; y <= 4.0; y++) {
+            vec2 off = vec2(x, y) * 0.5 / uMeshSize;
+            blurred += getTransitionColor(lensUv + off);
+            total += 1.0;
+        }
+    }
+    blurred /= total;
+
     vec2 m2uv = vUv - glassCenter;
     float gradient =
     clamp((clamp(m2uv.y, 0.0, 0.2) + 0.1) * 0.5, 0.0, 1.0) +
     clamp((clamp(-m2uv.y, -1000.0, 0.2) * rb3 + 0.1) * 0.5, 0.0, 1.0);
 
-    // Glass color: slight tint and alpha for "see-through" look
-    vec4 glassColor = vec4(1.0, 1.0, 1.0, 0.1); 
-    
-    // Add highlights/edges
-    vec4 lighting = glassColor + vec4(rb1) * gradient * 0.5 + vec4(rb2) * 0.5;
-    lighting.a = clamp(glassColor.a + rb1 * 0.2 + rb2, 0.0, 1.0);
-
+    vec4 lighting = clamp(blurred + vec4(rb1) * gradient + vec4(rb2) * 0.3, 0.0, 1.0);
     return mix(baseColor, lighting, transition);
 }
 
 void main() {
-    vec4 color = vec4(0.0);
+    vec2 uv = coverUv(vUv);
+    vec4 color = getTransitionColor(uv);
 
     for (int i = 0; i < MAX_GLASS; i++) {
         if (i >= uBlockCount) break;
-        color = glassPass(vUv, color, uBlocks[i]);
+        color = glassPass(vUv, uv, color, uBlocks[i]);
     }
 
     gl_FragColor = color * uAniInImage;

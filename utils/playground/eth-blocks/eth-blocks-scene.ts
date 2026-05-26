@@ -8,6 +8,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   textures: [],
   imageBgMeshes: [],
   glassMesh: null,
+  sceneRT: null,
   ethBlocks: null,
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
@@ -30,6 +31,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     ]);
 
     this.glassMesh = await this.createGlassBlockMesh();
+
+    this.sceneRT = new THREE.WebGLRenderTarget(
+      window.innerWidth,
+      window.innerHeight,
+      {
+        depthBuffer: false,
+        stencilBuffer: false,
+      },
+    );
 
     this.ethBlocks = ethBlocksWrapper.children;
     // this.firstEnterAnimation();
@@ -131,6 +141,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uBlockColor: {
           value: 0,
         },
+        uSceneTexture: { value: null },
       },
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
@@ -265,11 +276,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   render() {
-    if (!this.glassMesh) return;
+    if (!this.glassMesh || !this.sceneRT) return;
 
-    const meshToUpdate = this.glassMesh as THREE.Mesh | undefined;
-    if (!meshToUpdate) return;
-
+    const meshToUpdate = this.glassMesh as THREE.Mesh;
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
     const uBlocksPositions = this.calculateUBlockPositions();
@@ -281,6 +290,26 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uBlocksPositions.length,
         10,
       );
+
+    this.glassMesh.visible = false;
+
+    const renderer = Canvas3.getRenderer();
+    const scene = Canvas3.getScene();
+    const camera = Canvas3.getCamera();
+
+    if (renderer && scene && camera) {
+      renderer.setRenderTarget(this.sceneRT);
+      renderer.setClearColor(0x000000, 0); // Ensure transparency
+      renderer.clear();
+      renderer.render(scene, camera);
+
+      this.glassMesh.visible = true;
+      if (!material.uniforms.uSceneTexture) return;
+      material.uniforms.uSceneTexture.value = this.sceneRT.texture;
+
+      renderer.setRenderTarget(null);
+      console.log("render");
+    }
   },
 };
 
