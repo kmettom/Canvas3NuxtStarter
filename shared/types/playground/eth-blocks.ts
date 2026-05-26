@@ -1,7 +1,6 @@
 import type * as THREE from "three";
 
 export type EthBlocksAnimation = {
-  meshId: string;
   textures: THREE.Texture[];
   imageBgMeshes: THREE.Mesh[];
   glassMesh: THREE.Mesh | null;

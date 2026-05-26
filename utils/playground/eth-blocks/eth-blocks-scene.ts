@@ -9,7 +9,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   imageBgMeshes: [],
   glassMesh: null,
   ethBlocks: null,
-  meshId: "ethBlockBg",
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
   blockLoadingTime: 12,
@@ -104,6 +103,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const uBlocksPositions = this.calculateUBlockPositions();
 
+    const meshId = "ethBlockBg";
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
@@ -136,12 +136,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
       transparent: true,
-      name: this.meshId,
+      name: meshId,
       // wireframe: true,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.name = this.meshId;
+    mesh.name = meshId;
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
     mesh.position.z = 2;
@@ -151,14 +151,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async createImageBgMesh(texture, id) {
-    console.log("createImageBgMesh", id);
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
     const fragmentShader =
       Canvas3Options.shaders.playEthBlockImageBg.fragmentShader;
 
     const geometry = new THREE.PlaneGeometry(1, 1);
-
+    const meshId = "imageBgMesh_" + id;
     const material = new THREE.ShaderMaterial({
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
@@ -183,12 +182,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
       transparent: true,
-      name: "imageBgMesh_" + id,
+      name: meshId,
       // wireframe: true,
     });
 
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.name = this.meshId;
+    mesh.name = meshId;
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
     mesh.position.z = id === 1 ? 1 : 0;

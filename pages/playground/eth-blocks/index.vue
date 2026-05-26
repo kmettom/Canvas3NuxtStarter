@@ -72,7 +72,6 @@ initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
 const tlNewBlockAniIn = gsap.timeline({
   paused: true,
   onComplete: () => {
-    console.log("onComplete");
     newLoadingBlock();
   },
 });
