@@ -42,6 +42,10 @@ import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
 import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 import BlockContent from "~/components/playground/eth-blocks/blockContent.vue";
+import type {
+  BlockExtended,
+  BlockItem,
+} from "#shared/types/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
 
 //**************************
@@ -52,8 +56,8 @@ const maxBlocks = 50;
 
 const ethBlocks = ref<HTMLElement | null>(null);
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
-const blocks = ref<Map<string, BlockExtended>>(new Map());
-const blocksToRender = computed<BlockExtended[]>(() => {
+const blocks = ref<Map<string, BlockItem>>(new Map());
+const blocksToRender = computed<BlockItem[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
     a.blockId > b.blockId ? -1 : 1,
   );
@@ -88,10 +92,8 @@ const newBlockId = computed(() => {
 async function newLoadingBlock() {
   blockIdCounter.value += 1;
   ethBlocksAnimation.loadingBlockId = newBlockId.value;
-  blocks.value.set(
-    ethBlocksAnimation.loadingBlockId,
-    generateLoadingBlockData(newBlockId.value),
-  );
+  const blockData = generateLoadingBlockData(newBlockId.value);
+  blocks.value.set(ethBlocksAnimation.loadingBlockId, blockData);
   await nextTick();
   const el = blocks.value.get(newBlockId.value)?.elRef as HTMLElement;
   if (!el) {
@@ -114,7 +116,7 @@ async function newLoadingBlock() {
 
 function addNewBlockEl(
   el: Element | ComponentPublicInstance | null,
-  blockId: number,
+  blockId: string,
 ) {
   const block = blocks.value.get(blockId.toString());
   if (block && !block.elRef) {

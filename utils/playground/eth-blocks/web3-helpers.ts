@@ -2,6 +2,11 @@ import { type Block, formatEther, type Withdrawal } from "viem";
 import Big from "big.js";
 import SplitText from "gsap/SplitText";
 import { gsap } from "gsap";
+import type {
+  BlockExtended,
+  BlockItem,
+  BlockLoading,
+} from "#shared/types/playground/eth-blocks";
 // import { BLOCKS_HEIGHT } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 gsap.registerPlugin(SplitText);
 
@@ -53,7 +58,7 @@ const imageAmount = 8;
 export function generateImageId() {
   const currentIndex = imageIndex;
   imageIndex = (imageIndex + 1) % imageAmount;
-  return currentIndex;
+  return currentIndex.toString();
 }
 
 export function generateLoadingBlockData(blockId: string) {
@@ -62,6 +67,7 @@ export function generateLoadingBlockData(blockId: string) {
     imageId: generateImageId(),
     loading: true,
     blockId: blockId,
+    kind: "loading",
   };
 }
 
@@ -75,6 +81,7 @@ export function generateBlockData(
     imageId: loadingBlockData.imageId,
     loading: false,
     blockId: loadingBlockData.blockId,
+    kind: "full",
   };
 
   newBlock.blockGasUsedPercent = blockGasUsedPercent(

@@ -1,4 +1,5 @@
 import type * as THREE from "three";
+import type { Block } from "viem";
 
 export type EthBlocksAnimation = {
   textures: THREE.Texture[];
@@ -21,21 +22,26 @@ export type EthBlocksAnimation = {
   render: () => void;
   imageBgChange: (index: number) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
-  firstEnterAnimation: () => void;
   pendingImageId: number;
   currentImageId: number;
   imageAniTimeline: gsap.core.Tween | null;
 };
 
-export type BlockLoading = {
-  imageId: string;
-  loading: boolean;
+type BlockBase = {
   blockId: string;
+  imageId: string;
   aniCoef?: number;
+  loading: boolean;
+  elRef?: Element | ComponentPublicInstance | null;
 };
 
-export type BlockExtended = BlockLoading &
+export type BlockLoading = BlockBase & {
+  kind: string;
+};
+
+export type BlockExtended = BlockBase &
   Block & {
+    kind: string;
     blockGasTargetPercent?: string;
     blockGasTargetCoef?: number;
     blockGasUsedPercent?: string;
@@ -43,9 +49,29 @@ export type BlockExtended = BlockLoading &
     blockWithdrawalsSum?: bigint;
     blockNetIssuanceETH?: bigint;
     blockHovered?: boolean;
-    imageId: string;
-    aniCoef?: number;
-    loading: boolean;
-    blockId: string;
-    elRef?: Element | ComponentPublicInstance | null;
   };
+
+export type BlockItem = BlockLoading | BlockExtended;
+
+// export type BlockLoading = {
+//   imageId: string;
+//   loading: boolean;
+//   blockId: string;
+//   aniCoef?: number;
+// };
+//
+// export type BlockExtended = BlockLoading &
+//   Block & {
+//     blockGasTargetPercent?: string;
+//     blockGasTargetCoef?: number;
+//     blockGasUsedPercent?: string;
+//     blockETHBurned?: bigint;
+//     blockWithdrawalsSum?: bigint;
+//     blockNetIssuanceETH?: bigint;
+//     blockHovered?: boolean;
+//     imageId: string;
+//     aniCoef?: number;
+//     loading: boolean;
+//     blockId: string;
+//     elRef?: Element | ComponentPublicInstance | null;
+//   };

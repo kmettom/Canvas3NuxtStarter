@@ -66,7 +66,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       }
     }
   },
-  firstEnterAnimation() {},
   animateBlockSizeOnScroll(elNode, index) {
     const blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
