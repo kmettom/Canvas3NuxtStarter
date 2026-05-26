@@ -4,7 +4,6 @@ import SplitText from "gsap/SplitText";
 import { gsap } from "gsap";
 import type {
   BlockExtended,
-  BlockItem,
   BlockLoading,
 } from "#shared/types/playground/eth-blocks";
 // import { BLOCKS_HEIGHT } from "~/utils/playground/eth-blocks/eth-blocks-scene";
