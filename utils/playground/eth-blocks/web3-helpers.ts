@@ -8,7 +8,7 @@ gsap.registerPlugin(SplitText);
 export type BlockLoading = {
   imageId: string;
   loading: boolean;
-  blockId: string;
+  blockId: number;
   aniCoef?: number;
 };
 
@@ -24,7 +24,7 @@ export type BlockExtended = BlockLoading &
     imageId: string;
     aniCoef?: number;
     loading: boolean;
-    blockId: string;
+    blockId: number;
     elRef?: Element | ComponentPublicInstance | null;
   };
 
@@ -256,6 +256,7 @@ export function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
     width: "423px",
     height: "236px",
     marginTop: "20px",
+    stagger: 0.2,
   });
 }
 

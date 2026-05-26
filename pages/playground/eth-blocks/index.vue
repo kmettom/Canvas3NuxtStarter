@@ -36,17 +36,12 @@ import {
   type BlockExtended,
   deserializeBlock,
   generateLoadingBlockData,
-  // aniContentValues,
   enterAni,
-  // aniProgressBar,
   blockContentAniIn,
 } from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
-import {
-  // BLOCKS_HEIGHT,
-  ethBlocksAnimation,
-} from "~/utils/playground/eth-blocks/eth-blocks-scene";
+import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 import BlockContent from "~/components/playground/eth-blocks/blockContent.vue";
 gsap.registerPlugin(SplitText);
 
@@ -76,12 +71,10 @@ initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
 });
 
 const tlNewBlockAniIn = gsap.timeline({
+  paused: true,
   onComplete: () => {
+    console.log("onComplete");
     newLoadingBlock();
-  },
-  onUpdate: () => {},
-  onStart: () => {
-    // newLoadingBlock();
   },
 });
 
@@ -89,15 +82,17 @@ const tlNewBlockAniIn = gsap.timeline({
 // FUNCTIONS
 //**************************
 
+const blockIdCounter = ref(0)
+
 async function newLoadingBlock() {
-  const newBlockId = new Date().getTime().toString();
-  ethBlocksAnimation.loadingBlockId = newBlockId;
+  blockIdCounter.value += 1;
+  ethBlocksAnimation.loadingBlockId = blockIdCounter.value.toString();
   blocks.value.set(
     ethBlocksAnimation.loadingBlockId,
-    generateLoadingBlockData(newBlockId),
+    generateLoadingBlockData(blockIdCounter.value.toString()),
   );
   await nextTick();
-  const el = blocks.value.get(newBlockId)?.elRef as HTMLElement;
+  const el = blocks.value.get(blockIdCounter.value.toString())?.elRef as HTMLElement;
   if (!el) {
     return;
   }
@@ -118,9 +113,9 @@ async function newLoadingBlock() {
 
 function addNewBlockEl(
   el: Element | ComponentPublicInstance | null,
-  blockId: string,
+  blockId: number,
 ) {
-  const block = blocks.value.get(blockId);
+  const block = blocks.value.get(blockId.toString());
   if (block && !block.elRef) {
     block.elRef = el;
   }
@@ -194,14 +189,9 @@ onMounted(async () => {
     await ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
-  // setTimeout(() => {
   enterAni(tlNewBlockAniIn);
-  // },500)
   await newLoadingBlock();
-
-  // document.onresize(()=>{
-  //
-  // })
+  tlNewBlockAniIn.play();
 });
 
 // https://www.shadertoy.com/view/wccSDf
