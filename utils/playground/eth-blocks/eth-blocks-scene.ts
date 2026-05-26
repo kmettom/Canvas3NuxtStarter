@@ -26,6 +26,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.ethBlocks = ethBlocksWrapper.children;
 
+    this.sceneRT = new THREE.WebGLRenderTarget(
+      window.innerWidth,
+      window.innerHeight,
+      {
+        depthBuffer: false,
+        stencilBuffer: false,
+      },
+    );
+
     const nextTextures = await Promise.all([
       loader.loadAsync("images/00.webp"),
       loader.loadAsync("images/01.webp"),
@@ -60,15 +69,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     this.glassMesh = await this.createGlassBlockMesh();
-
-    this.sceneRT = new THREE.WebGLRenderTarget(
-      window.innerWidth,
-      window.innerHeight,
-      {
-        depthBuffer: false,
-        stencilBuffer: false,
-      },
-    );
   },
   animateBlockSizeOnScroll(elNode, index) {
     const blockClientRect = elNode.getBoundingClientRect();
@@ -154,6 +154,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async createImageBgMesh(texture, id) {
+    if(!this.sceneRT) return null;
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
     const fragmentShader =
@@ -181,7 +182,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
-        uSceneTexture: { value: null },
+        uSceneTexture: { value: this.sceneRT.texture },
       },
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
