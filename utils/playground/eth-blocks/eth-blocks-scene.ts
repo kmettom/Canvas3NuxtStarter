@@ -33,7 +33,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.glassMesh = await this.createGlassBlockMesh();
 
     this.ethBlocks = ethBlocksWrapper.children;
-    this.firstEnterAnimation();
+    // this.firstEnterAnimation();
 
     const nextTextures = await Promise.all([
       // loader.loadAsync("images/01.webp"),
@@ -60,20 +60,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
-      if (newTexture) this.textures.push(newTexture);
-    }
-
-    // for (const texture of this.textures) {
-    //   texture.colorSpace = THREE.SRGBColorSpace;
-    //   texture.generateMipmaps = false;
-    //   texture.minFilter = THREE.LinearFilter;
-    //   texture.magFilter = THREE.LinearFilter;
-    //   texture.needsUpdate = true;
-    //   Canvas3.renderer?.initTexture?.(texture);
-    // }
-
-    for (const [index, texture] of this.textures.entries()) {
-      const mesh = await this.createImageBgMesh(texture, index);
+      if (!newTexture) continue;
+      const mesh = await this.createImageBgMesh(newTexture, i);
       if (mesh) {
         this.imageBgMeshes.push(mesh);
       }
@@ -81,7 +69,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
   firstEnterAnimation() {},
   animateBlockSizeOnScroll(elNode, index) {
-    // if (!this.setup) return;
     const blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
     const aniCoef = Math.abs(
@@ -95,6 +82,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
+    if (!this.ethBlocks) return;
     const el = this.ethBlocks[index] as HTMLElement;
     if (!el) return;
     const blockId = el.dataset.blockId;
