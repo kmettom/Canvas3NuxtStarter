@@ -24,17 +24,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const loader = new THREE.TextureLoader();
 
-    this.glassMesh = await this.createGlassBlockMesh();
-
-    this.sceneRT = new THREE.WebGLRenderTarget(
-      window.innerWidth,
-      window.innerHeight,
-      {
-        depthBuffer: false,
-        stencilBuffer: false,
-      },
-    );
-
     this.ethBlocks = ethBlocksWrapper.children;
 
     const nextTextures = await Promise.all([
@@ -69,6 +58,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         this.imageBgMeshes.push(mesh);
       }
     }
+
+    this.glassMesh = await this.createGlassBlockMesh();
+
+    this.sceneRT = new THREE.WebGLRenderTarget(
+      window.innerWidth,
+      window.innerHeight,
+      {
+        depthBuffer: false,
+        stencilBuffer: false,
+      },
+    );
   },
   animateBlockSizeOnScroll(elNode, index) {
     const blockClientRect = elNode.getBoundingClientRect();
