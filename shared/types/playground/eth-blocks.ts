@@ -27,3 +27,26 @@ export type EthBlocksAnimation = {
   currentImageId: number;
   imageAniTimeline: gsap.core.Tween | null;
 };
+
+export type BlockLoading = {
+  imageId: string;
+  loading: boolean;
+  blockId: string;
+  aniCoef?: number;
+};
+
+export type BlockExtended = BlockLoading &
+  Block & {
+    blockGasTargetPercent?: string;
+    blockGasTargetCoef?: number;
+    blockGasUsedPercent?: string;
+    blockETHBurned?: bigint;
+    blockWithdrawalsSum?: bigint;
+    blockNetIssuanceETH?: bigint;
+    blockHovered?: boolean;
+    imageId: string;
+    aniCoef?: number;
+    loading: boolean;
+    blockId: string;
+    elRef?: Element | ComponentPublicInstance | null;
+  };

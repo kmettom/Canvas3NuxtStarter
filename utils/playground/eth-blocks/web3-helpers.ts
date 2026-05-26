@@ -5,29 +5,6 @@ import { gsap } from "gsap";
 // import { BLOCKS_HEIGHT } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 gsap.registerPlugin(SplitText);
 
-export type BlockLoading = {
-  imageId: string;
-  loading: boolean;
-  blockId: number;
-  aniCoef?: number;
-};
-
-export type BlockExtended = BlockLoading &
-  Block & {
-    blockGasTargetPercent?: string;
-    blockGasTargetCoef?: number;
-    blockGasUsedPercent?: string;
-    blockETHBurned?: bigint;
-    blockWithdrawalsSum?: bigint;
-    blockNetIssuanceETH?: bigint;
-    blockHovered?: boolean;
-    imageId: string;
-    aniCoef?: number;
-    loading: boolean;
-    blockId: number;
-    elRef?: Element | ComponentPublicInstance | null;
-  };
-
 const GWEI_TO_WEI = 1_000_000_000n;
 
 export const blockWithdrawalsSumWei = (withdrawals: Withdrawal[]) => {

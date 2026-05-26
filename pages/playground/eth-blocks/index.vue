@@ -33,7 +33,6 @@
 import { onMounted, nextTick } from "vue";
 import {
   generateBlockData,
-  type BlockExtended,
   deserializeBlock,
   generateLoadingBlockData,
   enterAni,
@@ -83,17 +82,19 @@ const tlNewBlockAniIn = gsap.timeline({
 //**************************
 
 const blockIdCounter = ref(0);
+const newBlockId = computed(() => {
+  return "block_" + blockIdCounter.value;
+});
 
 async function newLoadingBlock() {
   blockIdCounter.value += 1;
-  ethBlocksAnimation.loadingBlockId = blockIdCounter.value.toString();
+  ethBlocksAnimation.loadingBlockId = newBlockId.value;
   blocks.value.set(
     ethBlocksAnimation.loadingBlockId,
-    generateLoadingBlockData(blockIdCounter.value.toString()),
+    generateLoadingBlockData(newBlockId.value),
   );
   await nextTick();
-  const el = blocks.value.get(blockIdCounter.value.toString())
-    ?.elRef as HTMLElement;
+  const el = blocks.value.get(newBlockId.value)?.elRef as HTMLElement;
   if (!el) {
     return;
   }
