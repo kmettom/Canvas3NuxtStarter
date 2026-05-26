@@ -53,26 +53,3 @@ export type BlockExtended = BlockBase &
   };
 
 export type BlockItem = BlockLoading | BlockExtended;
-
-// export type BlockLoading = {
-//   imageId: string;
-//   loading: boolean;
-//   blockId: string;
-//   aniCoef?: number;
-// };
-//
-// export type BlockExtended = BlockLoading &
-//   Block & {
-//     blockGasTargetPercent?: string;
-//     blockGasTargetCoef?: number;
-//     blockGasUsedPercent?: string;
-//     blockETHBurned?: bigint;
-//     blockWithdrawalsSum?: bigint;
-//     blockNetIssuanceETH?: bigint;
-//     blockHovered?: boolean;
-//     imageId: string;
-//     aniCoef?: number;
-//     loading: boolean;
-//     blockId: string;
-//     elRef?: Element | ComponentPublicInstance | null;
-//   };

@@ -42,7 +42,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     );
 
     this.ethBlocks = ethBlocksWrapper.children;
-    // this.firstEnterAnimation();
 
     const nextTextures = await Promise.all([
       // loader.loadAsync("images/01.webp"),
@@ -308,7 +307,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       material.uniforms.uSceneTexture.value = this.sceneRT.texture;
 
       renderer.setRenderTarget(null);
-      console.log("render");
     }
   },
 };
