@@ -338,12 +338,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - QA - Shader - uTransitionProgress - Adjust blocks to block amounts shader adjust with transaction amounts in block
-// - appear animation with loader, or transition
-//            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
-// - update glass size to fit design
-// ----------
-// - maxAmount of blocks 25, remove the oldest once
-//---------
-// - QA - Shader - uTransitionProgress
+// -  Shader - uTransitionProgress - Adjust blocks to block amounts shader adjust with transaction amounts in block
+// -  appear animation with loader, or transition - first load - make lazy with textures / meshes - textures and meshes array
+// - ? update glass size to fit design ?
+// - maxAmount of blocks 25, remove the oldest blocks
+// ---- QA - Feedback ----
+// - Q - First appear animation - Q
+// - Q - image change transition - Q
 // - ? QA - Scroll magnet to closest block top ?
