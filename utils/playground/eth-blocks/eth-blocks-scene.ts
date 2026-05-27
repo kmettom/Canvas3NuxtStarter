@@ -244,19 +244,23 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     console.log("image change ---- ", newImageId, imageChangeDuration);
 
-    gsap.to(material.uniforms.uTransitionProgress, {
-      value: 1,
-      duration: imageChangeDuration,
-    });
+    gsap.fromTo(
+      material.uniforms.uTransitionProgress,
+      { value: 0 },
+      {
+        value: 1,
+        duration: imageChangeDuration,
+      },
+    );
   },
 
-  getVec4PositionFromClientRect: (clientRect) => {
+  getVec4PositionFromClientRect: (clientRect, canvasRect) => {
     const centerX = clientRect.left + clientRect.width * 0.5;
     const centerY = clientRect.top + clientRect.height * 0.5;
     const blockPadding = 0;
 
-    const x = centerX - window.innerWidth * 0.5;
-    const y = window.innerHeight * 0.5 - centerY - blockPadding;
+    const x = centerX - canvasRect.width * 0.5;
+    const y = canvasRect.height * 0.5 - centerY - blockPadding;
 
     const halfW = Number((clientRect.width * 0.5).toFixed(1));
     const halfH = Number((clientRect.height * 0.5).toFixed(1));
@@ -278,8 +282,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         this.ethBlocks[i] &&
         this.ethBlocks[i]?.classList.contains("active")
       ) {
-        const bounds = this.ethBlocks[i]?.getBoundingClientRect();
-        if (bounds) positions.push(this.getVec4PositionFromClientRect(bounds));
+        const clientBounds = this.ethBlocks[i]?.getBoundingClientRect();
+        const renderer = Canvas3.getRenderer();
+        const canvasBounds = renderer?.domElement.getBoundingClientRect();
+        if (clientBounds && canvasBounds)
+          positions.push(
+            this.getVec4PositionFromClientRect(clientBounds, canvasBounds),
+          );
         this.animateBlockSizeOnScroll(this.ethBlocks[i] as HTMLElement, i);
       }
     }

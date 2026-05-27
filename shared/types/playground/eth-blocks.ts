@@ -23,7 +23,10 @@ export type EthBlocksAnimation = {
     texture: THREE.Texture,
     id: number,
   ) => Promise<THREE.Mesh | null>;
-  getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
+  getVec4PositionFromClientRect: (
+    clientRect: DOMRect,
+    canvasRect: DOMRect,
+  ) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
   imageBgChange: (prevImageId: number, nextImageId: number) => void;
