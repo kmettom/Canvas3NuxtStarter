@@ -324,6 +324,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     if (renderer && scene && camera) {
       renderer.setRenderTarget(this.sceneRT);
+      renderer.setClearColor(0x000000, 0); // Ensure transparency
       renderer.clear();
       renderer.render(scene, camera);
 
