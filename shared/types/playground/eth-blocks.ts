@@ -1,6 +1,11 @@
 import type * as THREE from "three";
 import type { Block } from "viem";
 
+type blockReference = {
+  blockId: string;
+  imageId: number;
+};
+
 export type EthBlocksAnimation = {
   imageBgMeshes: THREE.Mesh[];
   glassMesh: THREE.Mesh | null;
@@ -8,6 +13,7 @@ export type EthBlocksAnimation = {
   ethBlocks: HTMLCollection | null;
   loadingBlockId: string;
   activeBlockId: string;
+  activeImageId: number;
   blockLoadingTime: number;
   blocksBasePosition: number;
   blocksTopPadding: number;
@@ -20,7 +26,7 @@ export type EthBlocksAnimation = {
   getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
-  imageBgChange: (index: number) => void;
+  imageBgChange: (prevImageId: number, nextImageId: number) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
   pendingImageId: number;
   currentImageId: number;

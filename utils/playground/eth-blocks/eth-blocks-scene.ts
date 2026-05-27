@@ -11,6 +11,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   ethBlocks: null,
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
+  activeImageId: 0,
+  // activeBlock: { blockId: "activeBlockId", imageId: 0 },
+  // previousBlock: { blockId: "previousBlockId", imageId: 0 },
   blockLoadingTime: 12,
   blocksTopPadding: 0.25,
   blocksBasePosition: 0,
@@ -93,8 +96,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (this.activeBlockId === blockId) return;
     if (aniCoef > 0.03) return;
     this.activeBlockId = blockId;
+    if (!el.dataset.bgImageId) return;
     const imageId = Number(el.dataset.bgImageId);
-    this.imageBgChange(imageId);
+    const prevImageId = this.activeImageId;
+    this.activeImageId = imageId;
+    this.imageBgChange(prevImageId, imageId);
   },
 
   async createGlassBlockMesh() {
@@ -154,7 +160,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async createImageBgMesh(texture, id) {
-    if(!this.sceneRT) return null;
+    if (!this.sceneRT) return null;
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
     const fragmentShader =
@@ -167,6 +173,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTexture: { value: texture },
+        uTexturePrevious: { value: null },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -182,7 +189,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uViewport: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
-        uSceneTexture: { value: this.sceneRT.texture },
       },
       fragmentShader: fragmentShader,
       vertexShader: vertexShader,
@@ -204,17 +210,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async imageBgChange(imageId) {
-    const baseAniDuration = 0.7;
-    const imageChangeDuration =
-      baseAniDuration - (Canvas3.getScrollSpeed() ?? 1);
+  async imageBgChange(prevImageId, newImageId) {
+    const baseAniDuration = 1;
+    const imageChangeDuration = (
+      baseAniDuration -
+      (Canvas3.getScrollSpeed() ?? 1) +
+      0.2
+    ).toFixed(2);
 
-    const mesh = this.imageBgMeshes[imageId];
-    if (!mesh) return;
-
-    const material = mesh.material as THREE.ShaderMaterial;
-    if (!material.uniforms.uTransitionProgress) return;
-    material.uniforms.uTransitionProgress.value = 1;
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (!meshToUpdate) continue;
@@ -222,10 +225,24 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       const materialToUpdate = meshToUpdate.material as THREE.ShaderMaterial;
       if (!materialToUpdate.uniforms.uTransitionProgress) continue;
       materialToUpdate.uniforms.uTransitionProgress.value = 0;
-      if (!materialToUpdate.uniforms.uSceneTexture || !this.sceneRT) continue;
-      materialToUpdate.uniforms.uSceneTexture.value = this.sceneRT.texture;
     }
+
+    const mesh = this.imageBgMeshes[newImageId];
+    if (!mesh) return;
+
+    const material = mesh.material as THREE.ShaderMaterial;
+
     mesh.position.z = 1;
+
+    const prevMaterial = this.imageBgMeshes[prevImageId]
+      ?.material as THREE.ShaderMaterial;
+    const uTexturePreviousValue = prevMaterial.uniforms.uTexture?.value;
+    if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
+    material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
+
+    if (!material.uniforms.uTransitionProgress) return;
+
+    console.log("image change ---- ", newImageId, imageChangeDuration);
 
     gsap.to(material.uniforms.uTransitionProgress, {
       value: 1,
@@ -298,11 +315,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     if (renderer && scene && camera) {
       renderer.setRenderTarget(this.sceneRT);
-      renderer.setClearColor(0x000000, 0); // Ensure transparency
       renderer.clear();
       renderer.render(scene, camera);
 
       this.glassMesh.visible = true;
+
       if (!material.uniforms.uSceneTexture) return;
       material.uniforms.uSceneTexture.value = this.sceneRT.texture;
 

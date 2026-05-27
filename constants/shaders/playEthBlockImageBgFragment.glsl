@@ -2,7 +2,7 @@ precision highp float;
 
 varying vec2 vUv;
 uniform sampler2D uTexture;
-uniform sampler2D uSceneTexture;
+uniform sampler2D uTexturePrevious;
 uniform float uTransitionProgress; // 0 -> 1
 uniform float uAniInImage;
 uniform vec2 uMeshSize;
@@ -31,7 +31,9 @@ float hash21(vec2 p) {
 
 void main() {
     vec2 uv = coverUv(vUv);
-    vec4 color = texture2D(uTexture, uv);
+
+    vec4 prevColor = texture2D(uTexturePrevious, uv);
+    vec4 nextColor = texture2D(uTexture, uv);
 
     float cols = 24.0;
     float meshAR = uMeshSize.x / max(uMeshSize.y, 1.0);
@@ -39,12 +41,12 @@ void main() {
     vec2 grid = vec2(cols, rows);
 
     vec2 tileId = floor(vUv * grid);
-    float x01 = 1.0 - (tileId.y + 0.5) / grid.y;
+    float y01 = 1.0 - (tileId.y + 0.5) / grid.y;
     float rnd = hash21(tileId);
 
     float jitter = (rnd - 0.5) * 0.15;
     float w = 0.10;
-    float t0 = clamp(x01 + jitter, 0.0, 1.0 - w);
+    float t0 = clamp(y01 + jitter, 0.0, 1.0 - w);
 
     float tileMask = smoothstep(
     t0,
@@ -52,5 +54,7 @@ void main() {
     clamp(uTransitionProgress, 0.0, 1.0)
     );
 
-    gl_FragColor = vec4(color.rgb, color.a * uAniInImage * tileMask);
+    vec4 finalColor = mix(prevColor, nextColor, tileMask);
+
+    gl_FragColor = vec4(finalColor.rgb, finalColor.a * uAniInImage);
 }
