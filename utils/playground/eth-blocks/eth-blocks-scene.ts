@@ -27,14 +27,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.ethBlocks = ethBlocksWrapper.children;
 
-    this.sceneRT = new THREE.WebGLRenderTarget(
-      window.innerWidth,
-      window.innerHeight,
-      {
-        depthBuffer: false,
-        stencilBuffer: false,
-      },
-    );
+    const renderer = Canvas3.getRenderer();
+    const rtWidth = renderer
+      ? renderer.domElement.clientWidth * renderer.getPixelRatio()
+      : window.innerWidth;
+    const rtHeight = renderer
+      ? renderer.domElement.clientHeight * renderer.getPixelRatio()
+      : window.innerHeight;
+
+    this.sceneRT = new THREE.WebGLRenderTarget(rtWidth, rtHeight, {
+      depthBuffer: false,
+      stencilBuffer: false,
+    });
 
     const nextTextures = await Promise.all([
       loader.loadAsync("images/00.webp"),
@@ -334,6 +338,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
+// - QA - Shader - uTransitionProgress - Adjust blocks to block amounts shader adjust with transaction amounts in block
 // - appear animation with loader, or transition
 //            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
 // - update glass size to fit design
