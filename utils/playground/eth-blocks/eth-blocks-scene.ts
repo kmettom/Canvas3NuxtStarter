@@ -96,6 +96,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const el = this.ethBlocks[index] as HTMLElement;
     if (!el) return;
     const blockId = el.dataset.blockId;
+    const transactions = el.dataset.transactions;
     if (!blockId) return;
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
@@ -105,7 +106,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const imageId = Number(el.dataset.bgImageId);
     const prevImageId = this.activeImageId;
     this.activeImageId = imageId;
-    this.imageBgChange(prevImageId, imageId);
+    this.imageBgChange(prevImageId, imageId, Number(transactions));
   },
 
   async createGlassBlockMesh() {
@@ -178,7 +179,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTexture: { value: texture },
-        uTexturePrevious: { value: prevTexture },
+        uTexturePrevious: { value: null },
+        uColAmount: { value: 200 },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -214,7 +216,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async imageBgChange(prevImageId, newImageId) {
+  async imageBgChange(prevImageId, newImageId, transactions = 10) {
     const baseAniDuration = 1;
     const imageChangeDuration = (
       baseAniDuration -
@@ -240,6 +242,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const uTexturePreviousValue = prevMaterial.uniforms.uTexture?.value;
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
+    if (!material.uniforms.uColAmount) return;
+    material.uniforms.uColAmount.value = transactions;
 
     if (!material.uniforms.uTransitionProgress) return;
     gsap.fromTo(
@@ -339,6 +343,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // -  Shader - uTransitionProgress - Adjust blocks to block amounts shader adjust with transaction amounts in block
+// -
 // -  appear animation with loader, or transition - first load - make lazy with textures / meshes - textures and meshes array
 // - ? update glass size to fit design ?
 // - maxAmount of blocks 25, remove the oldest blocks

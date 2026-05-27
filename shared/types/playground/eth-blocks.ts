@@ -25,7 +25,11 @@ export type EthBlocksAnimation = {
   ) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
-  imageBgChange: (prevImageId: number, nextImageId: number) => void;
+  imageBgChange: (
+    prevImageId: number,
+    nextImageId: number,
+    transactions: number,
+  ) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
   pendingImageId: number;
   currentImageId: number;

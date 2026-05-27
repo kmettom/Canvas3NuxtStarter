@@ -20,6 +20,7 @@
         }"
         :data-bg-image-id="block.imageId"
         :data-block-id="block.blockId"
+        :data-transactions="block?.transactions?.length ?? 24"
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
       >
         <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->

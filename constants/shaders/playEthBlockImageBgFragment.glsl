@@ -4,6 +4,7 @@ varying vec2 vUv;
 uniform sampler2D uTexture;
 uniform sampler2D uTexturePrevious;
 uniform float uTransitionProgress;
+uniform float uColAmount;
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 uniform float time;
@@ -33,7 +34,8 @@ void main() {
     vec4 color = texture2D(uTexture, uv);
     vec4 colorPrev = texture2D(uTexturePrevious, uv);
 
-    float cols = 24.0;
+    float cols = uColAmount;
+//    float cols = 100.0;
     float meshAR = uMeshSize.x / max(uMeshSize.y, 1.0);
     float rows = max(1.0, floor(cols / meshAR));
     vec2 grid = vec2(cols, rows);
