@@ -52,8 +52,6 @@ void main() {
     clamp(uTransitionProgress, 0.0, 1.0)
     );
 
-        gl_FragColor = vec4(color.rgb, color.a  * tileMask);
-
-//    vec4 finalColor = mix(colorPrev, color, tileMask);
-//    gl_FragColor = vec4(finalColor.rgb, finalColor.a);
+    vec4 finalColor = mix(colorPrev, color, tileMask);
+    gl_FragColor = vec4(finalColor.rgb, finalColor.a);
 }

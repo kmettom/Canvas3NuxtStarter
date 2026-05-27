@@ -12,8 +12,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
   activeImageId: 0,
-  // activeBlock: { blockId: "activeBlockId", imageId: 0 },
-  // previousBlock: { blockId: "previousBlockId", imageId: 0 },
   blockLoadingTime: 12,
   blocksTopPadding: 0.25,
   blocksBasePosition: 0,
@@ -122,7 +120,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uTime: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
-        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
+        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) },
         uMouse: { value: new THREE.Vector2(0, 0) },
         uMouseMovement: { value: new THREE.Vector2(0, 0) },
         uMeshSize: {
@@ -206,7 +204,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
     mesh.position.z = id === 0 ? 1 : 0;
-    // mesh.renderOrder = id;
 
     Canvas3.addMeshToScene(mesh);
     if (!mesh) return null;
@@ -240,23 +237,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
 
-    if (material.uniforms.uTransitionProgress) {
-      console.log(
-        "image change ---- ",
-        newImageId,
-        imageChangeDuration,
-        material.uniforms.uTransitionProgress,
-      );
-      material.uniforms.uTransitionProgress.value = 0;
-      gsap.fromTo(
-        material.uniforms.uTransitionProgress,
-        { value: 0 },
-        {
-          value: 1,
-          duration: imageChangeDuration,
-        },
-      );
-    }
+    if (!material.uniforms.uTransitionProgress) return;
+    gsap.fromTo(
+      material.uniforms.uTransitionProgress,
+      { value: 0 },
+      {
+        value: 1,
+        duration: imageChangeDuration,
+      },
+    );
   },
 
   getVec4PositionFromClientRect: (clientRect, canvasRect) => {
@@ -344,12 +333,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - Shader -
-//           - uTransitionProgress - with better shader effect - from top to bottom first
 // - appear animation with loader, or transition
 //            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
 // - update glass size to fit design
-// - Scroll magnet to closest block top
 // ----------
 // - maxAmount of blocks 25, remove the oldest once
-// -
+//---------
+// - QA - Shader - uTransitionProgress
+// - ? QA - Scroll magnet to closest block top ?
