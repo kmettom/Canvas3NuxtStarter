@@ -52,11 +52,12 @@ export const blockGasTargetPercent = (
 };
 
 let imageIndex = 0;
-const imageAmount = 8;
+const imageAmount = 20;
 
 export function generateImageId() {
   const currentIndex = imageIndex;
-  imageIndex = (imageIndex + 1) % imageAmount;
+  imageIndex++;
+  if (imageIndex === imageAmount) imageIndex = 0;
   return currentIndex.toString();
 }
 

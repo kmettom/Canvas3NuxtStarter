@@ -2,25 +2,30 @@ import type * as THREE from "three";
 import type { Block } from "viem";
 
 export type EthBlocksAnimation = {
-  textures: THREE.Texture[];
   imageBgMeshes: THREE.Mesh[];
   glassMesh: THREE.Mesh | null;
+  sceneRT: THREE.WebGLRenderTarget | null;
   ethBlocks: HTMLCollection | null;
   loadingBlockId: string;
   activeBlockId: string;
+  activeImageId: number;
   blockLoadingTime: number;
   blocksBasePosition: number;
   blocksTopPadding: number;
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
   createGlassBlockMesh: () => Promise<THREE.Mesh>;
   createImageBgMesh: (
+    prevTexture: THREE.Texture,
     texture: THREE.Texture,
     id: number,
   ) => Promise<THREE.Mesh | null>;
-  getVec4PositionFromClientRect: (clientRect: DOMRect) => THREE.Vector4;
+  getVec4PositionFromClientRect: (
+    clientRect: DOMRect,
+    canvasRect: DOMRect,
+  ) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
-  imageBgChange: (index: number) => void;
+  imageBgChange: (prevImageId: number, nextImageId: number) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
   pendingImageId: number;
   currentImageId: number;
@@ -52,26 +57,3 @@ export type BlockExtended = BlockBase &
   };
 
 export type BlockItem = BlockLoading | BlockExtended;
-
-// export type BlockLoading = {
-//   imageId: string;
-//   loading: boolean;
-//   blockId: string;
-//   aniCoef?: number;
-// };
-//
-// export type BlockExtended = BlockLoading &
-//   Block & {
-//     blockGasTargetPercent?: string;
-//     blockGasTargetCoef?: number;
-//     blockGasUsedPercent?: string;
-//     blockETHBurned?: bigint;
-//     blockWithdrawalsSum?: bigint;
-//     blockNetIssuanceETH?: bigint;
-//     blockHovered?: boolean;
-//     imageId: string;
-//     aniCoef?: number;
-//     loading: boolean;
-//     blockId: string;
-//     elRef?: Element | ComponentPublicInstance | null;
-//   };
