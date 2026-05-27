@@ -3,9 +3,8 @@
 // import type { Address } from "abitype";
 // import {BLOCKS_ON_SCREEN_AMOUNT} from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
-// export const AMOUNT_OF_BLOCKS = BLOCKS_ON_SCREEN_AMOUNT;
-
 import { generateMockBlockData } from "~/utils/playground/eth-blocks/web3-helpers";
+// import {INITIAL_BLOCK_AMOUNT} from "~/constants/playground/eth-blocks";
 
 export default defineEventHandler(async (event) => {
   //**************************
@@ -13,10 +12,8 @@ export default defineEventHandler(async (event) => {
   //**************************
 
   console.log("event", event);
-
+  // INITIAL_BLOCK_AMOUNT
   const mockBlocks = [
-    generateMockBlockData(),
-    generateMockBlockData(),
     generateMockBlockData(),
     generateMockBlockData(),
     generateMockBlockData(),
@@ -39,7 +36,7 @@ export default defineEventHandler(async (event) => {
   //
   // const latestBlockNumber = await client.getBlockNumber();
   // const blockNumbers = Array.from(
-  //   { length: AMOUNT_OF_BLOCKS },
+  //   { length: INITIAL_BLOCK_AMOUNT },
   //   (_, i) => latestBlockNumber - BigInt(i),
   // );
   //

@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import {
   BLOCKS_ON_SCREEN_AMOUNT,
   IMAGE_FILE_AMOUNT,
+  INITIAL_BLOCK_AMOUNT,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
@@ -24,10 +25,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   async init(ethBlocksWrapper: HTMLElement) {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
 
-    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
-
-    const loader = new THREE.TextureLoader();
-
     this.ethBlocks = ethBlocksWrapper.children;
 
     const renderer = Canvas3.getRenderer();
@@ -43,9 +40,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       stencilBuffer: false,
     });
 
-    const imageAmount = IMAGE_FILE_AMOUNT;
+    await this.loadTextures(INITIAL_BLOCK_AMOUNT);
+    this.glassMesh = await this.createGlassBlockMesh();
+
+    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
+  },
+  async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT) {
+    const alreadyLoadedTextures = this.imageBgMeshes.length;
+    if (alreadyLoadedTextures === IMAGE_FILE_AMOUNT) return;
+    const loader = new THREE.TextureLoader();
+
     const texturesPromiseArray = [];
-    for (let i = 0; i < imageAmount; i++) {
+    for (let i = alreadyLoadedTextures; i < amountOfTextures; i++) {
       const imageName = i < 10 ? "0" + i : i;
       texturesPromiseArray.push(loader.loadAsync(`images/${imageName}.webp`));
     }
@@ -63,8 +69,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         this.imageBgMeshes.push(mesh);
       }
     }
-
-    this.glassMesh = await this.createGlassBlockMesh();
   },
   animateBlockSizeOnScroll(elNode, index) {
     const blockClientRect = elNode.getBoundingClientRect();

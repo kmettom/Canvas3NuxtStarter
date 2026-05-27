@@ -196,6 +196,7 @@ onMounted(async () => {
   await enterAni(tlNewBlockAniIn);
   await newLoadingBlock();
   tlNewBlockAniIn.play();
+  ethBlocksAnimation.loadTextures();
 });
 
 // https://www.shadertoy.com/view/wccSDf
