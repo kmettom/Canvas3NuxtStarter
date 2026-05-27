@@ -1,11 +1,6 @@
 import type * as THREE from "three";
 import type { Block } from "viem";
 
-type blockReference = {
-  blockId: string;
-  imageId: number;
-};
-
 export type EthBlocksAnimation = {
   imageBgMeshes: THREE.Mesh[];
   glassMesh: THREE.Mesh | null;
@@ -20,6 +15,7 @@ export type EthBlocksAnimation = {
   init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
   createGlassBlockMesh: () => Promise<THREE.Mesh>;
   createImageBgMesh: (
+    prevTexture: THREE.Texture,
     texture: THREE.Texture,
     id: number,
   ) => Promise<THREE.Mesh | null>;

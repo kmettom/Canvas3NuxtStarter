@@ -65,7 +65,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
       if (!newTexture) continue;
-      const mesh = await this.createImageBgMesh(newTexture, i);
+      const prevTextureIndex = i === 0 ? nextTextures.length - 1 : i - 1;
+      const prevTexture = nextTextures[prevTextureIndex];
+      if (!prevTexture) continue;
+      const mesh = await this.createImageBgMesh(prevTexture, newTexture, i);
       if (mesh) {
         this.imageBgMeshes.push(mesh);
       }
@@ -159,7 +162,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async createImageBgMesh(texture, id) {
+  async createImageBgMesh(prevTexture, texture, id) {
     if (!this.sceneRT) return null;
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
@@ -173,7 +176,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTexture: { value: texture },
-        uTexturePrevious: { value: null },
+        uTexturePrevious: { value: prevTexture },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
