@@ -4,7 +4,6 @@ varying vec2 vUv;
 uniform sampler2D uTexture;
 uniform sampler2D uTexturePrevious;
 uniform float uTransitionProgress;
-uniform float uAniInImage;
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 uniform float time;
@@ -32,6 +31,7 @@ float hash21(vec2 p) {
 void main() {
     vec2 uv = coverUv(vUv);
     vec4 color = texture2D(uTexture, uv);
+    vec4 colorPrev = texture2D(uTexturePrevious, uv);
 
     float cols = 24.0;
     float meshAR = uMeshSize.x / max(uMeshSize.y, 1.0);
@@ -52,5 +52,8 @@ void main() {
     clamp(uTransitionProgress, 0.0, 1.0)
     );
 
-    gl_FragColor = vec4(color.rgb, color.a * uAniInImage * tileMask);
+        gl_FragColor = vec4(color.rgb, color.a  * tileMask);
+
+//    vec4 finalColor = mix(colorPrev, color, tileMask);
+//    gl_FragColor = vec4(finalColor.rgb, finalColor.a);
 }

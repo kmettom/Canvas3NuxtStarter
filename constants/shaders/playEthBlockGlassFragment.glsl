@@ -4,8 +4,6 @@ precision highp float;
 
 varying vec2 vUv;
 uniform sampler2D uSceneTexture;
-uniform float uTransitionProgress; // 0 -> 1
-uniform float uAniInImage;
 uniform vec4 uBlocks[MAX_GLASS];
 uniform int uBlockCount;
 uniform vec2 uMeshSize;
@@ -24,20 +22,6 @@ vec2 coverUv(vec2 raw) {
         uv.x = uv.x * s + (1.0 - s) * 0.5;
     }
     return uv;
-}
-
-vec4 getTransitionColor(vec2 uv) {
-    vec4 fromColor = texture2D(uSceneTexture, uv);
-    vec4 toColor   = texture2D(uSceneTexture, uv);
-
-    float p = clamp(uTransitionProgress, 0.0, 1.0);
-
-    // reveal new image from top to bottom
-    float edge = 1.0 - p;
-    float feather = 0.06;
-    float mask = smoothstep(edge - feather, edge + feather, vUv.y);
-
-    return mix(fromColor, toColor, mask);
 }
 
 vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
@@ -65,7 +49,7 @@ vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
     for (float x = -4.0; x <= 4.0; x++) {
         for (float y = -4.0; y <= 4.0; y++) {
             vec2 off = vec2(x, y) * 0.5 / uMeshSize;
-            blurred += getTransitionColor(lensUv + off);
+            blurred += texture2D(uSceneTexture, lensUv + off);
             total += 1.0;
         }
     }
@@ -82,12 +66,12 @@ vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
 
 void main() {
     vec2 uv = coverUv(vUv);
-    vec4 color = getTransitionColor(uv);
+    vec4 color = texture2D(uSceneTexture, uv);
 
     for (int i = 0; i < MAX_GLASS; i++) {
         if (i >= uBlockCount) break;
         color = glassPass(vUv, uv, color, uBlocks[i]);
     }
 
-    gl_FragColor = color * uAniInImage;
+    gl_FragColor = color ;
 }

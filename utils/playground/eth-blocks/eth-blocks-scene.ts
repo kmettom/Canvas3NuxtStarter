@@ -205,8 +205,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     mesh.name = meshId;
     const neutralZScale = 1;
     mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
-    mesh.position.z = id === 1 ? 1 : 0;
-    mesh.renderOrder = id;
+    mesh.position.z = id === 0 ? 1 : 0;
+    // mesh.renderOrder = id;
 
     Canvas3.addMeshToScene(mesh);
     if (!mesh) return null;
@@ -224,7 +224,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (!meshToUpdate) continue;
-      meshToUpdate.position.z = 0;
+      meshToUpdate.position.z = newImageId === i ? 1 : 0;
       const materialToUpdate = meshToUpdate.material as THREE.ShaderMaterial;
       if (!materialToUpdate.uniforms.uTransitionProgress) continue;
       materialToUpdate.uniforms.uTransitionProgress.value = 0;
@@ -232,10 +232,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const mesh = this.imageBgMeshes[newImageId];
     if (!mesh) return;
-
     const material = mesh.material as THREE.ShaderMaterial;
-
-    mesh.position.z = 1;
 
     const prevMaterial = this.imageBgMeshes[prevImageId]
       ?.material as THREE.ShaderMaterial;
@@ -243,18 +240,23 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
 
-    if (!material.uniforms.uTransitionProgress) return;
-
-    console.log("image change ---- ", newImageId, imageChangeDuration);
-
-    gsap.fromTo(
-      material.uniforms.uTransitionProgress,
-      { value: 0 },
-      {
-        value: 1,
-        duration: imageChangeDuration,
-      },
-    );
+    if (material.uniforms.uTransitionProgress) {
+      console.log(
+        "image change ---- ",
+        newImageId,
+        imageChangeDuration,
+        material.uniforms.uTransitionProgress,
+      );
+      material.uniforms.uTransitionProgress.value = 0;
+      gsap.fromTo(
+        material.uniforms.uTransitionProgress,
+        { value: 0 },
+        {
+          value: 1,
+          duration: imageChangeDuration,
+        },
+      );
+    }
   },
 
   getVec4PositionFromClientRect: (clientRect, canvasRect) => {
