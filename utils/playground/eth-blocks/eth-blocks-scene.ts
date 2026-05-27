@@ -249,12 +249,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   getVec4PositionFromClientRect: (clientRect, canvasRect) => {
+    const blockPadding = 0;
     const centerX = clientRect.left + clientRect.width * 0.5;
     const centerY = clientRect.top + clientRect.height * 0.5;
-    const blockPadding = 0;
-
-    const x = centerX - canvasRect.width * 0.5;
-    const y = canvasRect.height * 0.5 - centerY - blockPadding;
+    const canvasCenterX = canvasRect.left + canvasRect.width * 0.5;
+    const canvasCenterY = canvasRect.top + canvasRect.height * 0.5;
+    const x = centerX - canvasCenterX;
+    const y = canvasCenterY - centerY - blockPadding;
 
     const halfW = Number((clientRect.width * 0.5).toFixed(1));
     const halfH = Number((clientRect.height * 0.5).toFixed(1));
