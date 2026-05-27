@@ -6,6 +6,7 @@ import type {
   BlockExtended,
   BlockLoading,
 } from "#shared/types/playground/eth-blocks";
+import { IMAGE_FILE_AMOUNT } from "~/constants/playground/eth-blocks";
 // import { BLOCKS_HEIGHT } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 gsap.registerPlugin(SplitText);
 
@@ -52,8 +53,7 @@ export const blockGasTargetPercent = (
 };
 
 let imageIndex = 0;
-const imageAmount = 20;
-
+const imageAmount = IMAGE_FILE_AMOUNT;
 export function generateImageId() {
   const currentIndex = imageIndex;
   imageIndex++;

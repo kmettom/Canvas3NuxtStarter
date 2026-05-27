@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import { Canvas3Options } from "~/constants/canvas3-options";
 import { gsap } from "gsap";
-import { BLOCKS_ON_SCREEN_AMOUNT } from "~/constants/playground/eth-blocks";
+import {
+  BLOCKS_ON_SCREEN_AMOUNT,
+  IMAGE_FILE_AMOUNT,
+} from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
@@ -40,29 +43,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       stencilBuffer: false,
     });
 
-    const nextTextures = await Promise.all([
-      loader.loadAsync("images/00.webp"),
-      loader.loadAsync("images/01.webp"),
-      loader.loadAsync("images/02.webp"),
-      loader.loadAsync("images/03.webp"),
-      loader.loadAsync("images/04.webp"),
-      loader.loadAsync("images/05.webp"),
-      loader.loadAsync("images/06.webp"),
-      loader.loadAsync("images/07.webp"),
-      loader.loadAsync("images/08.webp"),
-      loader.loadAsync("images/09.webp"),
-      loader.loadAsync("images/10.webp"),
-      loader.loadAsync("images/11.webp"),
-      loader.loadAsync("images/12.webp"),
-      loader.loadAsync("images/13.webp"),
-      loader.loadAsync("images/14.webp"),
-      loader.loadAsync("images/15.webp"),
-      loader.loadAsync("images/16.webp"),
-      loader.loadAsync("images/17.webp"),
-      loader.loadAsync("images/18.webp"),
-      loader.loadAsync("images/19.webp"),
-      loader.loadAsync("images/20.webp"),
-    ]);
+    const imageAmount = IMAGE_FILE_AMOUNT;
+    const texturesPromiseArray = [];
+    for (let i = 0; i < imageAmount; i++) {
+      const imageName = i < 10 ? "0" + i : i;
+      texturesPromiseArray.push(loader.loadAsync(`images/${imageName}.webp`));
+    }
+
+    const nextTextures = await Promise.all(texturesPromiseArray);
 
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
@@ -342,12 +330,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// -  Shader - uTransitionProgress - Adjust blocks to block amounts shader adjust with transaction amounts in block
-// -
 // -  appear animation with loader, or transition - first load - make lazy with textures / meshes - textures and meshes array
 // - ? update glass size to fit design ?
 // - maxAmount of blocks 25, remove the oldest blocks
 // ---- QA - Feedback ----
+// - Q shader Glass BG - darker glass to have good contrast
 // - Q - First appear animation - Q
 // - Q - image change transition - Q
 // - ? QA - Scroll magnet to closest block top ?
