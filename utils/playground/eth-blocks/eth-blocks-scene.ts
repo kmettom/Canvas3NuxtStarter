@@ -209,13 +209,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async imageBgChange(prevImageId, newImageId, transactions = 10) {
-    const baseAniDuration = 1;
-    const imageChangeDuration = (
-      baseAniDuration -
-      (Canvas3.getScrollSpeed() ?? 1) +
-      0.2
-    ).toFixed(2);
-
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (!meshToUpdate) continue;
@@ -231,13 +224,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const prevMaterial = this.imageBgMeshes[prevImageId]
       ?.material as THREE.ShaderMaterial;
+    if (!prevMaterial) return;
     const uTexturePreviousValue = prevMaterial.uniforms.uTexture?.value;
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
     if (!material.uniforms.uColAmount) return;
     material.uniforms.uColAmount.value = transactions;
 
+    const scrollBaseDuration = (1 - (Canvas3.getScrollSpeed() ?? 0)).toFixed(2);
+    const imageChangeDuration = Math.max(0.2, Number(scrollBaseDuration));
+
     if (!material.uniforms.uTransitionProgress) return;
+
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
       { value: 0 },

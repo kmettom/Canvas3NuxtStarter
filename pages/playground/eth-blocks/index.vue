@@ -20,7 +20,7 @@
         }"
         :data-bg-image-id="block.imageId"
         :data-block-id="block.blockId"
-        :data-transactions="block?.transactions?.length ?? 24"
+        :data-transactions="block?.transactions?.length ?? 100"
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
       >
         <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->
@@ -63,35 +63,41 @@ const blocksToRender = computed<BlockItem[]>(() => {
     a.blockId > b.blockId ? -1 : 1,
   );
 });
-let eventSource: EventSource;
-const { data: initialBlocks } = await useFetch(
-  "/api/playground/eth-blocks/latest",
-);
-initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
-  const block = deserializeBlock(raw);
-  const blockId = new Date().getTime().toString() + `_latest_${index}`;
-  const loadingBlock = generateLoadingBlockData(blockId);
-  blocks.value.set(blockId, generateBlockData(block, loadingBlock));
-});
 
 const tlNewBlockAniIn = gsap.timeline({
   paused: true,
-  onComplete: () => {
-    newLoadingBlock();
-  },
+  onComplete: () => {},
 });
+
+let eventSource: EventSource;
 
 //**************************
 // FUNCTIONS
 //**************************
+
+const fetchInitialBlocks = async () => {
+  const { data: initialBlocks } = await useFetch(
+    "/api/playground/eth-blocks/latest",
+  );
+  initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
+    const block = deserializeBlock(raw);
+    const blockId =
+      index === 0
+        ? "block_0"
+        : new Date().getTime().toString() + `_latest_${index}`;
+    const loadingBlock = generateLoadingBlockData(blockId);
+    blocks.value.set(blockId, generateBlockData(block, loadingBlock));
+  });
+};
+
+// const firstLoaderAni = async () => {};
 
 const blockIdCounter = ref(0);
 const newBlockId = computed(() => {
   return "block_" + blockIdCounter.value;
 });
 
-async function newLoadingBlock() {
-  blockIdCounter.value += 1;
+async function newLoadingBlock(firstAnimation = false) {
   ethBlocksAnimation.loadingBlockId = newBlockId.value;
   const blockData = generateLoadingBlockData(newBlockId.value);
   blocks.value.set(ethBlocksAnimation.loadingBlockId, blockData);
@@ -108,10 +114,17 @@ async function newLoadingBlock() {
     width: "423px",
     duration: 0.3,
   });
-  const blockProgressBarEl = el.querySelector(".block-loading-progress");
-  tlNewBlockAniIn.to(blockProgressBarEl, {
-    width: "100%",
-    duration: ethBlocksAnimation.blockLoadingTime,
+  tlNewBlockAniIn.play();
+  blockIdCounter.value += 1;
+  return new Promise((resolve) => {
+    const blockProgressBarEl = el.querySelector(".block-loading-progress");
+    tlNewBlockAniIn.to(blockProgressBarEl, {
+      width: "100%",
+      duration: firstAnimation ? 1 : ethBlocksAnimation.blockLoadingTime,
+      onComplete: () => {
+        resolve(true);
+      },
+    });
   });
 }
 
@@ -125,45 +138,49 @@ function addNewBlockEl(
   }
 }
 
-const blockDoneAnimate = (blockId: string) => {
+const blockDoneAnimate = async (blockId: string) => {
   const block = blocks.value.get(blockId);
   if (!block) return;
   const el = block.elRef as HTMLElement;
   if (!el) return;
 
-  tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
-    duration: 0.3,
-    ease: "linear",
-    onComplete: () => {
-      addTimelineAnimations();
-    },
+  return new Promise((resolve) => {
+    const addTimelineAnimations = () => {
+      tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+        width: "0%",
+        duration: 0.15,
+        right: 0,
+        left: "initial",
+      });
+
+      tlNewBlockAniIn.fromTo(
+        el,
+        { height: "10px" },
+        { height: "236px", duration: 0.5, marginTop: "20px" },
+      );
+
+      blockContentAniIn(el, tlNewBlockAniIn);
+
+      tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+        width: 0,
+        duration: 0,
+        opacity: 1,
+        onComplete: () => {
+          resolve(true);
+        },
+      });
+
+      // tlNewBlockAniIn.play();
+    };
+
+    tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
+      duration: 0.3,
+      ease: "linear",
+      onComplete: () => {
+        addTimelineAnimations();
+      },
+    });
   });
-
-  function addTimelineAnimations() {
-    tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
-      width: "0%",
-      duration: 0.15,
-      right: 0,
-      left: "initial",
-    });
-
-    tlNewBlockAniIn.fromTo(
-      el,
-      { height: "10px" },
-      { height: "236px", duration: 0.5, marginTop: "20px" },
-    );
-
-    blockContentAniIn(el, tlNewBlockAniIn);
-
-    tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
-      width: 0,
-      duration: 0,
-      opacity: 1,
-      onComplete: () => {},
-    });
-
-    tlNewBlockAniIn.play();
-  }
 };
 
 const addBlockListener = () => {
@@ -177,7 +194,8 @@ const addBlockListener = () => {
       generateBlockData(block, loadingBlock),
     );
     await nextTick();
-    blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
+    await blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
+    await newLoadingBlock();
     if (blocks.value.size > maxBlocks) {
       const oldestKey = blocks.value.keys().next().value;
       if (oldestKey) blocks.value.delete(oldestKey);
@@ -188,15 +206,16 @@ const addBlockListener = () => {
 onUnmounted(() => eventSource?.close());
 
 onMounted(async () => {
-  addBlockListener();
+  await newLoadingBlock(true);
   if (ethBlocks.value) {
     await ethBlocksAnimation.init(ethBlocks.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
+
+  await fetchInitialBlocks();
   await enterAni(tlNewBlockAniIn);
-  await newLoadingBlock();
-  tlNewBlockAniIn.play();
-  ethBlocksAnimation.loadTextures();
+  addBlockListener();
+  await ethBlocksAnimation.loadTextures();
 });
 
 // https://www.shadertoy.com/view/wccSDf
@@ -227,5 +246,8 @@ onMounted(async () => {
   height: 0;
   width: 0;
   border-radius: 25px;
+  //&:not(.loading-block){
+  //  opacity: 0;
+  //}
 }
 </style>

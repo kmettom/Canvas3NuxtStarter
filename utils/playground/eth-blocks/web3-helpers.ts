@@ -244,7 +244,11 @@ export function aniContentValues(
 export async function enterAni(tlNewBlockAniIn: gsap.core.Timeline) {
   new Promise((resolve) => {
     tlNewBlockAniIn.clear();
-    tlNewBlockAniIn.to(".eth-block", {
+    tlNewBlockAniIn.to(".eth-block:not(.block-loading)", {
+      opacity: 1,
+      duration: 0.1,
+    });
+    tlNewBlockAniIn.to(".eth-block:not(.block-loading)", {
       width: "423px",
       height: "236px",
       marginTop: "20px",
