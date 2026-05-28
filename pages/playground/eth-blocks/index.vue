@@ -56,7 +56,7 @@ gsap.registerPlugin(SplitText);
 const maxBlocks = 50;
 
 const ethBlocks = ref<HTMLElement | null>(null);
-const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
+const blocksBasePosition = ref(0);
 const blocks = ref<Map<string, BlockItem>>(new Map());
 const blocksToRender = computed<BlockItem[]>(() => {
   return [...blocks.value.values()].sort((a, b) =>
@@ -206,16 +206,18 @@ const addBlockListener = () => {
 onUnmounted(() => eventSource?.close());
 
 onMounted(async () => {
-  await newLoadingBlock(true);
+  ethBlocksAnimation.setBlockBasePosition();
+  blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   if (ethBlocks.value) {
     await ethBlocksAnimation.init(ethBlocks.value);
-    blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
+  await newLoadingBlock(true);
 
   await fetchInitialBlocks();
+
   await enterAni(tlNewBlockAniIn);
   addBlockListener();
-  await ethBlocksAnimation.loadTextures();
+  await ethBlocksAnimation.loadTextures(); // all final textures
 });
 
 // https://www.shadertoy.com/view/wccSDf
@@ -246,8 +248,8 @@ onMounted(async () => {
   height: 0;
   width: 0;
   border-radius: 25px;
-  //&:not(.loading-block){
-  //  opacity: 0;
-  //}
+  &:not(.block-loading) {
+    opacity: 0;
+  }
 }
 </style>

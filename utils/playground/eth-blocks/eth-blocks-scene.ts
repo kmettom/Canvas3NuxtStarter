@@ -22,9 +22,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   pendingImageId: 0,
   currentImageId: 0,
   imageAniTimeline: null,
-  async init(ethBlocksWrapper: HTMLElement) {
+  setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
-
+  },
+  async init(ethBlocksWrapper: HTMLElement) {
     this.ethBlocks = ethBlocksWrapper.children;
 
     const renderer = Canvas3.getRenderer();
