@@ -13,8 +13,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   glassMesh: null,
   sceneRT: null,
   ethBlockEls: null,
-  loadingBlockId: "loadingBlockInit",
-  activeBlockId: "activeBlockId",
+  loadingBlockId: 0,
+  activeBlockId: 0,
   activeImageId: 0,
   blockLoadingTime: 12,
   blocksTopPadding: 0.25,
@@ -90,7 +90,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!this.ethBlockEls) return;
     const el = this.ethBlockEls[index] as HTMLElement;
     if (!el) return;
-    const blockId = el.dataset.blockId;
+    const blockId = Number(el.dataset.blockId);
     const transactions = el.dataset.transactions;
     if (!blockId) return;
     if (this.loadingBlockId === blockId) return;
@@ -211,7 +211,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async imageBgChange(prevImageId, newImageId, transactions = 10) {
+  async imageBgChange(prevImageId, newImageId, transactions = 200) {
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (!meshToUpdate) continue;
@@ -232,8 +232,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
     if (!material.uniforms.uColAmount) return;
-    const colAmountFlat = Number((transactions / 10).toFixed(0));
-    material.uniforms.uColAmount.value = colAmountFlat;
+    material.uniforms.uColAmount.value = Math.max(
+      20,
+      Number((transactions / 10).toFixed(0)),
+    );
 
     const scrollBaseDuration = (1 - (Canvas3.getScrollSpeed() ?? 0)).toFixed(2);
     const imageChangeDuration = Math.max(0.2, Number(scrollBaseDuration));
