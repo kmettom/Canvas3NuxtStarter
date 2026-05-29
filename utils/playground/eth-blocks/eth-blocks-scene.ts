@@ -336,7 +336,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// -  appear animation with loader, or transition - first load - make lazy with textures / meshes - textures and meshes array
+// -  appear animation - image ani in.
+// - NewBlock loading - fix image transition only after new block
+// - New block ani in - fix previous Texture ID
+
 // - ? update glass size to fit design ?
 // - maxAmount of blocks 25, remove the oldest blocks
 // ---- QA - Feedback ----
