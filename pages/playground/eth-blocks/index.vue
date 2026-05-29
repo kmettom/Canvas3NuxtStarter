@@ -66,9 +66,7 @@ const blocksToRender = computed<BlockItem[]>(() => {
   );
 });
 
-const tlNewBlockAniIn = gsap.timeline({
-  // paused: true,
-});
+const tlNewBlockAniIn = gsap.timeline();
 
 let eventSource: EventSource;
 
