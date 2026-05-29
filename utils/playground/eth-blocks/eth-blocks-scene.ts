@@ -340,7 +340,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 //TODO:
 // -  appear animation - image ani in.
 // - NewBlock loading - fix image transition only after new block
-// - New block ani in - fix previous Texture ID
 
 // - ? update glass size to fit design ?
 // - maxAmount of blocks 25, remove the oldest blocks
