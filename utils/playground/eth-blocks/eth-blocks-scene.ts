@@ -25,8 +25,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
-  async init(ethBlocksWrapper: HTMLElement) {
-    this.ethBlockEls = ethBlocksWrapper.children;
+  async init(ethBlockEls: HTMLCollection | null) {
+    if (!ethBlockEls) return;
+
+    this.ethBlockEls = ethBlockEls;
 
     const renderer = Canvas3.getRenderer();
     const rtWidth = renderer
@@ -230,7 +232,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
     if (!material.uniforms.uColAmount) return;
-    const colAmountFlat = Number((transactions/10).toFixed(0));
+    const colAmountFlat = Number((transactions / 10).toFixed(0));
     material.uniforms.uColAmount.value = colAmountFlat;
 
     const scrollBaseDuration = (1 - (Canvas3.getScrollSpeed() ?? 0)).toFixed(2);

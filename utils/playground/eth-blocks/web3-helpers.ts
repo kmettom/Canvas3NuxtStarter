@@ -1,9 +1,6 @@
 import { type Block, formatEther, type Withdrawal } from "viem";
 import Big from "big.js";
-import type {
-  BlockExtended,
-  BlockLoading,
-} from "#shared/types/playground/eth-blocks";
+import type { BlockItem } from "#shared/types/playground/eth-blocks";
 import { IMAGE_FILE_AMOUNT } from "~/constants/playground/eth-blocks";
 
 const GWEI_TO_WEI = 1_000_000_000n;
@@ -67,16 +64,13 @@ export function generateLoadingBlockData(blockId: string) {
   };
 }
 
-export function generateBlockData(
-  blockData: Block,
-  loadingBlockData: BlockLoading,
-) {
-  const newBlock: BlockExtended = {
+export function generateBlockData(blockId: string, blockData: Block) {
+  const newBlock: BlockItem = {
     ...blockData,
     blockHovered: false,
-    imageId: loadingBlockData.imageId,
+    imageId: generateImageId(),
     loading: false,
-    blockId: loadingBlockData.blockId,
+    blockId: blockId,
     kind: "full",
   };
 

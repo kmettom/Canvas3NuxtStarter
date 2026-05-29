@@ -69,28 +69,19 @@ export function aniContentValues(
 
 export function enterAni(
   tlNewBlockAniIn: gsap.core.Timeline,
-  ethBlocks: HTMLElement | null,
+  ethBlockEls: HTMLCollection | null,
 ) {
-  if (!ethBlocks) return;
-  const blocks = ethBlocks.querySelectorAll(".eth-block");
-  // console.log("blocks", blocks);
-  // return new Promise((resolve) => {
-  // tlNewBlockAniIn.play();
-  tlNewBlockAniIn.to(blocks, {
+  if (!ethBlockEls) return;
+  tlNewBlockAniIn.to(ethBlockEls, {
     opacity: 1,
     duration: 0.1,
   });
-  tlNewBlockAniIn.to(blocks, {
+  tlNewBlockAniIn.to(ethBlockEls, {
     width: "423px",
     height: "236px",
     marginTop: "20px",
     stagger: 0.2,
-    onComplete: () => {
-      // console.log("2 enter ani");
-      // resolve(true);
-    },
   });
-  // });
 }
 
 export function aniGasChart(

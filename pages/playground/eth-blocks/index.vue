@@ -8,8 +8,6 @@
         paddingTop: blocksBasePosition + 'px',
       }"
     >
-      <!--      :ref="(el) => addNewBlockEl(el, block.blockId)"-->
-
       <div
         v-for="block in blocksToRender"
         :key="block.blockId"
@@ -70,7 +68,6 @@ const blocksToRender = computed<BlockItem[]>(() => {
 
 const tlNewBlockAniIn = gsap.timeline({
   // paused: true,
-  // onComplete: () => {},
 });
 
 let eventSource: EventSource;
@@ -84,12 +81,11 @@ const fetchInitialBlocks = async () => {
     "/api/playground/eth-blocks/latest",
   );
   initialBlocks.value?.forEach((raw: BlockExtended) => {
-    const block = deserializeBlock(raw);
+    const blockData = deserializeBlock(raw);
     const blockId = blockIdCounter.value;
-    const loadingBlock = generateLoadingBlockData(blockId.toString());
     ethBlocks.value.set(
       blockId.toString(),
-      generateBlockData(block, loadingBlock),
+      generateBlockData(blockId.toString(), blockData),
     );
     blockIdCounter.value += 1;
   });
@@ -102,10 +98,10 @@ const newBlockId = computed(() => {
 
 async function newLoadingBlock(firstAnimation = false) {
   ethBlocksAnimation.loadingBlockId = newBlockId.value;
-  const blockData = generateLoadingBlockData(newBlockId.value);
-  ethBlocks.value.set(ethBlocksAnimation.loadingBlockId, blockData);
+  const newLoadingBlockData = generateLoadingBlockData(newBlockId.value);
+  ethBlocks.value.set(newBlockId.value, newLoadingBlockData);
   await nextTick();
-  const el = getElFromBlockId(newBlockId.value);
+  const el = getBlockElFromBlockId(newBlockId.value);
   if (!el) {
     return;
   }
@@ -117,96 +113,85 @@ async function newLoadingBlock(firstAnimation = false) {
     width: "423px",
     duration: 0.3,
   });
-  tlNewBlockAniIn.play();
+  // tlNewBlockAniIn.play();
   blockIdCounter.value += 1;
-  return new Promise((resolve) => {
-    const blockProgressBarEl = el.querySelector(".block-loading-progress");
-    tlNewBlockAniIn.to(blockProgressBarEl, {
-      width: "100%",
-      duration: firstAnimation ? 5 : ethBlocksAnimation.blockLoadingTime,
-      onComplete: () => {
-        resolve(true);
-      },
-    });
+  // return new Promise((resolve) => {
+  const blockProgressBarEl = el.querySelector(".block-loading-progress");
+  tlNewBlockAniIn.to(blockProgressBarEl, {
+    width: "100%",
+    duration: firstAnimation ? 5 : ethBlocksAnimation.blockLoadingTime,
+    // onComplete: () => {
+    // resolve(true);
+    // },
   });
+  // });
 }
 
-// function addNewBlockEl(
-//   el: Element | ComponentPublicInstance | null,
-//   blockId: string,
-// ) {
-//   const block = blocks.value.get(blockId.toString());
-//   if (block && !block.elRef) {
-//     block.elRef = el;
-//   }
-// }
-
-const getElFromBlockId = (blockId: string) => {
-  const block = ethBlocks.value.get(blockId);
-  if (!block) return;
-  return block.elRef as HTMLElement;
+const getBlockElFromBlockId = (blockId: string) => {
+  if (!ethBlocksWrapper.value) return null;
+  return ethBlocksWrapper.value.querySelector(
+    '.eth-block[data-block-id="' + blockId + '"]',
+  );
 };
 
-// const progressBarFinish = () => {
-//   tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
-//     duration: 0.3,
-//     ease: "linear",
-//   });
-// };
-
-const resetProgressBar = (blockId: string) => {
-  const el = getElFromBlockId(blockId);
-  if (!el) return;
-  const blockProgressBarEl = el.querySelector(".block-loading-progress");
-  if (!blockProgressBarEl) return;
-  tlNewBlockAniIn.to(blockProgressBarEl, {
-    width: 0,
-    duration: 0,
-    opacity: 1,
-  });
-};
-
-const blockDoneAnimate = async (blockId: string) => {
-  const el = getElFromBlockId(blockId);
+const blockDoneAnimate = (blockId: string) => {
+  // return new Promise((resolve) => {
+  const el = getBlockElFromBlockId(blockId);
   if (!el) return;
 
-  return new Promise((resolve) => {
-    const addTimelineAnimations = async () => {
-      tlNewBlockAniIn.fromTo(
-        el,
-        { height: "10px" },
-        { height: "236px", duration: 0.5, marginTop: "20px" },
-      );
-      blockContentAniIn(el, tlNewBlockAniIn);
-      tlNewBlockAniIn.call(() => {
-        resolve(true);
-      });
-    };
-
-    tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
-      duration: 0.3,
-      ease: "linear",
+  const blockAppearAnimate = () => {
+    const blockProgressBarEl = el.querySelector(".block-loading-progress");
+    if (!blockProgressBarEl) return;
+    tlNewBlockAniIn.to(blockProgressBarEl, {
+      left: "initial",
+      right: 0,
+      duration: 0.2,
+    });
+    tlNewBlockAniIn.to(blockProgressBarEl, {
+      width: 0,
+      duration: 0.2,
+    });
+    tlNewBlockAniIn.fromTo(
+      el,
+      { height: "10px" },
+      { height: "236px", duration: 0.5, marginTop: "20px" },
+    );
+    blockContentAniIn(el, tlNewBlockAniIn);
+    tlNewBlockAniIn.to(blockProgressBarEl, {
+      width: 0,
+      duration: 0,
+      opacity: 1,
+      left: 0,
+      right: "initial",
       onComplete: () => {
-        resetProgressBar(blockId);
-        addTimelineAnimations();
+        newLoadingBlock();
       },
     });
+    tlNewBlockAniIn.play();
+  };
+
+  tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
+    duration: 0.3,
+    ease: "linear",
+    onComplete: () => {
+      blockAppearAnimate();
+    },
   });
+  // });
 };
 
 const addBlockListener = () => {
   eventSource = new EventSource("/api/playground/eth-blocks/watch");
   eventSource.onmessage = async ({ data }) => {
-    const block = deserializeBlock(JSON.parse(data));
+    const blockData = deserializeBlock(JSON.parse(data));
     const loadingBlock = ethBlocks.value.get(ethBlocksAnimation.loadingBlockId);
     if (!loadingBlock) return;
     ethBlocks.value.set(
       ethBlocksAnimation.loadingBlockId,
-      generateBlockData(block, loadingBlock),
+      generateBlockData(loadingBlock.blockId, blockData),
     );
     await nextTick();
-    await blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
-    await newLoadingBlock();
+    blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
     if (ethBlocks.value.size > maxBlocks) {
       const oldestKey = ethBlocks.value.keys().next().value;
       if (oldestKey) ethBlocks.value.delete(oldestKey);
@@ -218,16 +203,17 @@ onUnmounted(() => eventSource?.close());
 
 fetchInitialBlocks();
 onMounted(async () => {
-  console.log("mounted");
+  if (!ethBlocksWrapper.value) return;
+  const ethBlockEls = ethBlocksWrapper.value.children;
+  if (!ethBlockEls) return;
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
-  if (ethBlocksWrapper.value) {
-    await ethBlocksAnimation.init(ethBlocksWrapper.value);
-    ethBlocksAnimation.loadTextures(); // all final textures
-  }
-  enterAni(tlNewBlockAniIn, ethBlocksWrapper.value);
+  await ethBlocksAnimation.init(ethBlockEls);
+  ethBlocksAnimation.loadTextures(); // all final textures
+  // tlNewBlockAniIn.play();
+  enterAni(tlNewBlockAniIn, ethBlockEls);
   addBlockListener();
-  await newLoadingBlock();
+  newLoadingBlock();
 });
 
 // https://www.shadertoy.com/view/wccSDf
@@ -257,10 +243,10 @@ onMounted(async () => {
   margin: 0 auto;
   height: 0;
   width: 0;
-  opacity: 0;
+  //opacity: 0;
   border-radius: 25px;
-  &:not(.block-loading) {
-    opacity: 0;
-  }
+  //&:not(.block-loading) {
+  //  opacity: 0;
+  //}
 }
 </style>
