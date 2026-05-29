@@ -12,7 +12,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   imageBgMeshes: [],
   glassMesh: null,
   sceneRT: null,
-  ethBlocks: null,
+  ethBlockEls: null,
   loadingBlockId: "loadingBlockInit",
   activeBlockId: "activeBlockId",
   activeImageId: 0,
@@ -26,7 +26,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
   async init(ethBlocksWrapper: HTMLElement) {
-    this.ethBlocks = ethBlocksWrapper.children;
+    this.ethBlockEls = ethBlocksWrapper.children;
 
     const renderer = Canvas3.getRenderer();
     const rtWidth = renderer
@@ -85,8 +85,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       opacity: Math.max(1 - aniCoef * 3, 0.35),
     });
 
-    if (!this.ethBlocks) return;
-    const el = this.ethBlocks[index] as HTMLElement;
+    if (!this.ethBlockEls) return;
+    const el = this.ethBlockEls[index] as HTMLElement;
     if (!el) return;
     const blockId = el.dataset.blockId;
     const transactions = el.dataset.transactions;
@@ -173,7 +173,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uTime: { value: 0 },
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
-        uColAmount: { value: 200 },
+        uColAmount: { value: 30 },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -230,7 +230,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
     if (!material.uniforms.uColAmount) return;
-    material.uniforms.uColAmount.value = transactions;
+    const colAmountFlat = Number((transactions/10).toFixed(0));
+    material.uniforms.uColAmount.value = colAmountFlat;
 
     const scrollBaseDuration = (1 - (Canvas3.getScrollSpeed() ?? 0)).toFixed(2);
     const imageChangeDuration = Math.max(0.2, Number(scrollBaseDuration));
@@ -262,7 +263,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   calculateUBlockPositions() {
-    if (!this.ethBlocks) {
+    if (!this.ethBlockEls) {
       return Array.from(
         { length: BLOCKS_ON_SCREEN_AMOUNT },
         () => new THREE.Vector4(0, 0, 0, 0),
@@ -271,19 +272,19 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const positions: THREE.Vector4[] = [];
 
-    for (let i = 0; i < this.ethBlocks.length; i++) {
+    for (let i = 0; i < this.ethBlockEls.length; i++) {
       if (
-        this.ethBlocks[i] &&
-        this.ethBlocks[i]?.classList.contains("active")
+        this.ethBlockEls[i] &&
+        this.ethBlockEls[i]?.classList.contains("active")
       ) {
-        const clientBounds = this.ethBlocks[i]?.getBoundingClientRect();
+        const clientBounds = this.ethBlockEls[i]?.getBoundingClientRect();
         const renderer = Canvas3.getRenderer();
         const canvasBounds = renderer?.domElement.getBoundingClientRect();
         if (clientBounds && canvasBounds)
           positions.push(
             this.getVec4PositionFromClientRect(clientBounds, canvasBounds),
           );
-        this.animateBlockSizeOnScroll(this.ethBlocks[i] as HTMLElement, i);
+        this.animateBlockSizeOnScroll(this.ethBlockEls[i] as HTMLElement, i);
       }
     }
 

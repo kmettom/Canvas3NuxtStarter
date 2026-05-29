@@ -6,7 +6,7 @@ export type EthBlocksAnimation = {
   imageBgMeshes: THREE.Mesh[];
   glassMesh: THREE.Mesh | null;
   sceneRT: THREE.WebGLRenderTarget | null;
-  ethBlocks: HTMLCollection | null;
+  ethBlockEls: HTMLCollection | null;
   loadingBlockId: string;
   activeBlockId: string;
   activeImageId: number;
