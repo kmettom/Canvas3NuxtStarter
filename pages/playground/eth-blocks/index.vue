@@ -80,26 +80,26 @@ const fetchInitialBlocks = async () => {
   );
   initialBlocks.value?.forEach((raw: BlockExtended) => {
     const blockData = deserializeBlock(raw);
-    const blockId = blockIdCounter.value;
     ethBlocks.value.set(
-      blockId.toString(),
-      generateBlockData(blockId.toString(), blockData),
+      blockIdCounter.value,
+      generateBlockData(blockIdCounter.value, blockData),
     );
     blockIdCounter.value += 1;
   });
 };
 
 const blockIdCounter = ref(0);
-const newBlockId = computed(() => {
-  return "block_" + blockIdCounter.value;
-});
+
+const firstBlockLoaderAni = () => {
+  console.log("firstBlockLoaderAni", ethBlocks.value);
+};
 
 async function newLoadingBlock(firstAnimation = false) {
-  ethBlocksAnimation.loadingBlockId = newBlockId.value;
-  const newLoadingBlockData = generateLoadingBlockData(newBlockId.value);
-  ethBlocks.value.set(newBlockId.value, newLoadingBlockData);
+  ethBlocksAnimation.loadingBlockId = blockIdCounter.value;
+  const newLoadingBlockData = generateLoadingBlockData(blockIdCounter.value);
+  ethBlocks.value.set(blockIdCounter.value, newLoadingBlockData);
   await nextTick();
-  const el = getBlockElFromBlockId(newBlockId.value);
+  const el = getBlockElFromBlockId(blockIdCounter.value);
   if (!el) {
     return;
   }
@@ -125,14 +125,14 @@ async function newLoadingBlock(firstAnimation = false) {
   // });
 }
 
-const getBlockElFromBlockId = (blockId: string) => {
+const getBlockElFromBlockId = (blockId: number) => {
   if (!ethBlocksWrapper.value) return null;
   return ethBlocksWrapper.value.querySelector(
     '.eth-block[data-block-id="' + blockId + '"]',
   );
 };
 
-const blockDoneAnimate = (blockId: string) => {
+const blockDoneAnimate = (blockId: number) => {
   // return new Promise((resolve) => {
   const el = getBlockElFromBlockId(blockId);
   if (!el) return;
@@ -202,6 +202,7 @@ onUnmounted(() => eventSource?.close());
 fetchInitialBlocks();
 onMounted(async () => {
   if (!ethBlocksWrapper.value) return;
+  firstBlockLoaderAni();
   const ethBlockEls = ethBlocksWrapper.value.children;
   if (!ethBlockEls) return;
   ethBlocksAnimation.setBlockBasePosition();

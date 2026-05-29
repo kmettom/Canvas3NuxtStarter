@@ -1,8 +1,7 @@
 import type { BlockItem } from "#shared/types/playground/eth-blocks";
 
 export const useEthBlocks = () => {
-  // const ethBlocks = useState<BlockItem[]>('ethBlocks', () => [])
-  const ethBlocks = useState<Map<string, BlockItem>>(
+  const ethBlocks = useState<Map<number, BlockItem>>(
     "ethBlocks",
     () => new Map(),
   );

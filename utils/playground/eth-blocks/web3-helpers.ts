@@ -54,7 +54,7 @@ export function generateImageId() {
   return currentIndex.toString();
 }
 
-export function generateLoadingBlockData(blockId: string) {
+export function generateLoadingBlockData(blockId: number) {
   return {
     blockHovered: false,
     imageId: generateImageId(),
@@ -64,7 +64,7 @@ export function generateLoadingBlockData(blockId: string) {
   };
 }
 
-export function generateBlockData(blockId: string, blockData: Block) {
+export function generateBlockData(blockId: number, blockData: Block) {
   const newBlock: BlockItem = {
     ...blockData,
     blockHovered: false,
