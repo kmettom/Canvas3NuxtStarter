@@ -90,8 +90,21 @@ const fetchInitialBlocks = async () => {
 
 const blockIdCounter = ref(0);
 
+const blockToFullWidthAni = (block: Element) => {
+  tlNewBlockAniIn.to(block, {
+    duration: 0.2,
+    height: "10px",
+  });
+  tlNewBlockAniIn.to(block, {
+    width: "423px",
+    duration: 0.3,
+  });
+};
+
 const firstBlockLoaderAni = () => {
-  console.log("firstBlockLoaderAni", ethBlocks.value);
+  const lastOfInitialBlock = getBlockElFromBlockId(2);
+  if (!lastOfInitialBlock) return;
+  blockToFullWidthAni(lastOfInitialBlock);
 };
 
 async function newLoadingBlock(firstAnimation = false) {
@@ -103,14 +116,15 @@ async function newLoadingBlock(firstAnimation = false) {
   if (!el) {
     return;
   }
-  tlNewBlockAniIn.to(el, {
-    duration: 0.2,
-    height: "10px",
-  });
-  tlNewBlockAniIn.to(el, {
-    width: "423px",
-    duration: 0.3,
-  });
+  blockToFullWidthAni(el);
+  // tlNewBlockAniIn.to(el, {
+  //   duration: 0.2,
+  //   height: "10px",
+  // });
+  // tlNewBlockAniIn.to(el, {
+  //   width: "423px",
+  //   duration: 0.3,
+  // });
   // tlNewBlockAniIn.play();
   blockIdCounter.value += 1;
   // return new Promise((resolve) => {
@@ -202,11 +216,11 @@ onUnmounted(() => eventSource?.close());
 fetchInitialBlocks();
 onMounted(async () => {
   if (!ethBlocksWrapper.value) return;
-  firstBlockLoaderAni();
   const ethBlockEls = ethBlocksWrapper.value.children;
   if (!ethBlockEls) return;
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
+  firstBlockLoaderAni();
   await ethBlocksAnimation.init(ethBlockEls);
   ethBlocksAnimation.loadTextures(); // all final textures
   // tlNewBlockAniIn.play();
