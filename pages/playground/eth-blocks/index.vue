@@ -49,6 +49,7 @@ import {
   enterAni,
 } from "~/utils/playground/eth-blocks/eth-block-animation-helpers";
 import { useEthBlocks } from "~/stores/playground/eth-blocks-store";
+import { IMAGE_FILE_AMOUNT } from "~/constants/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
 
 //**************************
@@ -59,7 +60,7 @@ const maxBlocks = 50;
 
 const ethBlocksWrapper = ref<HTMLElement | null>(null);
 const blocksBasePosition = ref(0);
-const { ethBlocks } = useEthBlocks();
+const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
 const blocksToRender = computed<BlockItem[]>(() => {
   return [...ethBlocks.value.values()].sort((a, b) =>
     a.blockId > b.blockId ? -1 : 1,
@@ -82,13 +83,15 @@ const fetchInitialBlocks = async () => {
     const blockData = deserializeBlock(raw);
     ethBlocks.value.set(
       blockIdCounter.value,
-      generateBlockData(blockIdCounter.value, blockData),
+      generateBlockData(
+        blockIdCounter.value,
+        blockImageIdCounter.value,
+        blockData,
+      ),
     );
-    blockIdCounter.value += 1;
+    blockCountersUpdate();
   });
 };
-
-const blockIdCounter = ref(0);
 
 const blockToFullWidthAni = (block: Element) => {
   tlNewBlockAniIn.to(block, {
@@ -128,9 +131,19 @@ const firstBlockLoaderAni = () => {
   });
 };
 
+const blockCountersUpdate = () => {
+  blockIdCounter.value += 1;
+  blockImageIdCounter.value += 1;
+  if (blockImageIdCounter.value >= IMAGE_FILE_AMOUNT)
+    blockImageIdCounter.value = 0;
+};
+
 async function newLoadingBlock(firstAnimation = false) {
   ethBlocksAnimation.loadingBlockId = blockIdCounter.value;
-  const newLoadingBlockData = generateLoadingBlockData(blockIdCounter.value);
+  const newLoadingBlockData = generateLoadingBlockData(
+    blockIdCounter.value,
+    blockImageIdCounter.value,
+  );
   ethBlocks.value.set(blockIdCounter.value, newLoadingBlockData);
   await nextTick();
   const el = getBlockElFromBlockId(blockIdCounter.value);
@@ -138,7 +151,7 @@ async function newLoadingBlock(firstAnimation = false) {
     return;
   }
   blockToFullWidthAni(el);
-  blockIdCounter.value += 1;
+  blockCountersUpdate();
   const blockProgressBarEl = el.querySelector(".block-loading-progress");
   tlNewBlockAniIn.fromTo(
     blockProgressBarEl,
@@ -215,7 +228,7 @@ const addBlockListener = () => {
     if (!loadingBlock) return;
     ethBlocks.value.set(
       ethBlocksAnimation.loadingBlockId,
-      generateBlockData(loadingBlock.blockId, blockData),
+      generateBlockData(loadingBlock.blockId, loadingBlock.imageId, blockData),
     );
     await nextTick();
     blockDoneAnimate(ethBlocksAnimation.loadingBlockId);

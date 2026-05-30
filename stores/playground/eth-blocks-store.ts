@@ -5,7 +5,15 @@ export const useEthBlocks = () => {
     "ethBlocks",
     () => new Map(),
   );
+  const blockIdCounter = useState<number>("ethBlocksIdCounter", () => 0);
+  const blockImageIdCounter = useState<number>(
+    "ethBlockImageIdCounter",
+    () => 0,
+  );
+
   return {
     ethBlocks,
+    blockIdCounter,
+    blockImageIdCounter,
   };
 };

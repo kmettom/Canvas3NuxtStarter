@@ -41,7 +41,7 @@ export type EthBlocksAnimation = {
 
 type BlockBase = {
   blockId: number;
-  imageId: string;
+  imageId: number;
   aniCoef?: number;
   loading: boolean;
   elRef?: Element | ComponentPublicInstance | null;

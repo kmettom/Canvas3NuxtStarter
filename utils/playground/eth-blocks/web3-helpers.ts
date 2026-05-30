@@ -1,7 +1,6 @@
 import { type Block, formatEther, type Withdrawal } from "viem";
 import Big from "big.js";
 import type { BlockItem } from "#shared/types/playground/eth-blocks";
-import { IMAGE_FILE_AMOUNT } from "~/constants/playground/eth-blocks";
 
 const GWEI_TO_WEI = 1_000_000_000n;
 
@@ -45,30 +44,25 @@ export const blockGasTargetPercent = (
   return used.minus(target).div(target).times(100).toFixed(2);
 };
 
-let imageIndex = 0;
-const imageAmount = IMAGE_FILE_AMOUNT;
-export function generateImageId() {
-  const currentIndex = imageIndex;
-  imageIndex++;
-  if (imageIndex === imageAmount) imageIndex = 0;
-  return currentIndex.toString();
-}
-
-export function generateLoadingBlockData(blockId: number) {
+export function generateLoadingBlockData(blockId: number, imageId: number) {
   return {
     blockHovered: false,
-    imageId: generateImageId(),
+    imageId: imageId,
     loading: true,
     blockId: blockId,
     kind: "loading",
   };
 }
 
-export function generateBlockData(blockId: number, blockData: Block) {
+export function generateBlockData(
+  blockId: number,
+  imageId: number,
+  blockData: Block,
+) {
   const newBlock: BlockItem = {
     ...blockData,
     blockHovered: false,
-    imageId: generateImageId(),
+    imageId: imageId,
     loading: false,
     blockId: blockId,
     kind: "full",
