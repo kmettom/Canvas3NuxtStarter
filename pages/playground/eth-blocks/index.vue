@@ -154,7 +154,7 @@ const blockDoneAnimate = (blockId: string) => {
 
     blockContentAniIn(el, tlNewBlockAniIn);
 
-    tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+    tlNewBlockAniIn.set(el.querySelector(".block-loading-progress"), {
       width: 0,
       duration: 0,
       opacity: 1,
@@ -225,5 +225,7 @@ onMounted(async () => {
   height: 0;
   width: 0;
   border-radius: 25px;
+  will-change: transform, opacity;
+  contain: layout paint style; /* isolates paint work */
 }
 </style>
