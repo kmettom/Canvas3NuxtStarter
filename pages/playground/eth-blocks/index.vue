@@ -105,6 +105,27 @@ const firstBlockLoaderAni = () => {
   const lastOfInitialBlock = getBlockElFromBlockId(2);
   if (!lastOfInitialBlock) return;
   blockToFullWidthAni(lastOfInitialBlock);
+  const progressBarEl = lastOfInitialBlock.querySelector(
+    ".block-loading-progress",
+  );
+  tlNewBlockAniIn.to(progressBarEl, {
+    width: "100%",
+    duration: 0.5,
+  });
+  tlNewBlockAniIn.to(progressBarEl, {
+    duration: 0,
+    right: 0,
+    left: "initial",
+  });
+  tlNewBlockAniIn.to(progressBarEl, {
+    width: "0%",
+    duration: 0.2,
+  });
+  tlNewBlockAniIn.to(progressBarEl, {
+    duration: 0,
+    right: "initial",
+    left: 0,
+  });
 };
 
 async function newLoadingBlock(firstAnimation = false) {
@@ -117,26 +138,20 @@ async function newLoadingBlock(firstAnimation = false) {
     return;
   }
   blockToFullWidthAni(el);
-  // tlNewBlockAniIn.to(el, {
-  //   duration: 0.2,
-  //   height: "10px",
-  // });
-  // tlNewBlockAniIn.to(el, {
-  //   width: "423px",
-  //   duration: 0.3,
-  // });
-  // tlNewBlockAniIn.play();
   blockIdCounter.value += 1;
-  // return new Promise((resolve) => {
   const blockProgressBarEl = el.querySelector(".block-loading-progress");
-  tlNewBlockAniIn.to(blockProgressBarEl, {
-    width: "100%",
-    duration: firstAnimation ? 5 : ethBlocksAnimation.blockLoadingTime,
-    // onComplete: () => {
-    // resolve(true);
-    // },
-  });
-  // });
+  tlNewBlockAniIn.fromTo(
+    blockProgressBarEl,
+    {
+      left: 0,
+      right: "initial",
+      width: 0,
+    },
+    {
+      width: "100%",
+      duration: firstAnimation ? 5 : ethBlocksAnimation.blockLoadingTime,
+    },
+  );
 }
 
 const getBlockElFromBlockId = (blockId: number) => {
@@ -222,11 +237,15 @@ onMounted(async () => {
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   firstBlockLoaderAni();
   await ethBlocksAnimation.init(ethBlockEls);
-  ethBlocksAnimation.loadTextures(); // all final textures
-  // tlNewBlockAniIn.play();
+  await ethBlocksAnimation.startRender();
+
+  // Start animations as early as possible
   enterAni(tlNewBlockAniIn, ethBlockEls);
   addBlockListener();
   newLoadingBlock();
+
+  // Heavy initialization in background
+  ethBlocksAnimation.loadTextures(); // all final textures
 });
 
 // https://www.shadertoy.com/view/wccSDf

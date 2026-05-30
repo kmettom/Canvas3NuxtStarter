@@ -14,10 +14,10 @@ export type EthBlocksAnimation = {
   blocksBasePosition: number;
   blocksTopPadding: number;
   init: (ethBlockEls: HTMLCollection | null) => Promise<void>;
+  startRender: () => Promise<void>;
   loadTextures: (amountOfTextures?: number) => Promise<void>;
   createGlassBlockMesh: () => Promise<THREE.Mesh>;
   createImageBgMesh: (
-    prevTexture: THREE.Texture,
     texture: THREE.Texture,
     id: number,
   ) => Promise<THREE.Mesh | null>;

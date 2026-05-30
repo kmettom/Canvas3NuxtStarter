@@ -25,11 +25,29 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
-  async init(ethBlockEls: HTMLCollection | null) {
+  async init(ethBlockEls) {
     if (!ethBlockEls) return;
 
     this.ethBlockEls = ethBlockEls;
 
+    await this.loadTextures(1);
+    return new Promise((resolve) => {
+      const initMesh = this.imageBgMeshes[0];
+      if (!initMesh) return;
+      const initMaterial = initMesh.material as THREE.ShaderMaterial;
+      initMaterial.uniforms.uCols = { value: 50 };
+      if (!initMaterial.uniforms.uTransitionProgress) return;
+
+      gsap.to(initMaterial.uniforms.uTransitionProgress, {
+        value: 1,
+        duration: 0.7,
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
+  },
+  async startRender() {
     const renderer = Canvas3.getRenderer();
     const rtWidth = renderer
       ? renderer.domElement.clientWidth * renderer.getPixelRatio()
@@ -42,10 +60,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       depthBuffer: false,
       stencilBuffer: false,
     });
-
     await this.loadTextures(INITIAL_BLOCK_AMOUNT);
     this.glassMesh = await this.createGlassBlockMesh();
-
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
   },
   async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT) {
@@ -64,10 +80,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
       if (!newTexture) continue;
-      const prevTextureIndex = i === 0 ? nextTextures.length - 1 : i - 1;
-      const prevTexture = nextTextures[prevTextureIndex];
-      if (!prevTexture) continue;
-      const mesh = await this.createImageBgMesh(prevTexture, newTexture, i);
+      const mesh = await this.createImageBgMesh(newTexture, i);
       if (mesh) {
         this.imageBgMeshes.push(mesh);
       }
@@ -160,8 +173,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async createImageBgMesh(prevTexture, texture, id) {
-    if (!this.sceneRT) return null;
+  async createImageBgMesh(texture, id) {
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
     const fragmentShader =
@@ -302,10 +314,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   render() {
     if (!this.glassMesh || !this.sceneRT) return;
 
-    const meshToUpdate = this.glassMesh as THREE.Mesh;
-    const material = meshToUpdate.material as THREE.ShaderMaterial;
-
     const uBlocksPositions = this.calculateUBlockPositions();
+    const material = this.glassMesh.material as THREE.ShaderMaterial;
 
     if (material.uniforms.uBlocks)
       material.uniforms.uBlocks.value = uBlocksPositions;
