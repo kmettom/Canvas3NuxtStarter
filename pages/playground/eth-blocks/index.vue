@@ -287,6 +287,8 @@ onMounted(async () => {
   width: 0;
   //opacity: 0;
   border-radius: 25px;
+  will-change: transform, opacity;
+  contain: layout paint style;
   //&:not(.block-loading) {
   //  opacity: 0;
   //}

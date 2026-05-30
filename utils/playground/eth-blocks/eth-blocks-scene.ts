@@ -105,12 +105,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
     );
 
-    gsap.to(elNode, {
-      duration: 0,
-      ease: "linear",
-      scale: Math.max(1 - aniCoef / 3, 0.75),
-      opacity: Math.max(1 - aniCoef * 3, 0.35),
-    });
+    elNode.style.opacity = Math.max(1 - aniCoef * 3, 0.35).toString();
+    elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
 
     if (!this.ethBlockEls) return;
     const el = this.ethBlockEls[index] as HTMLElement;
