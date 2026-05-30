@@ -48,6 +48,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     });
   },
   async startRender() {
+    await this.loadTextures(INITIAL_BLOCK_AMOUNT);
+    this.glassMesh = await this.createGlassBlockMesh();
+
     const renderer = Canvas3.getRenderer();
     const rtWidth = renderer
       ? renderer.domElement.clientWidth * renderer.getPixelRatio()
@@ -60,8 +63,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       depthBuffer: false,
       stencilBuffer: false,
     });
-    await this.loadTextures(INITIAL_BLOCK_AMOUNT);
-    this.glassMesh = await this.createGlassBlockMesh();
+
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
   },
   async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT) {

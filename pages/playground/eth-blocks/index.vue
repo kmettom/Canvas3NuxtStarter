@@ -241,10 +241,10 @@ onMounted(async () => {
   // Start animations as early as possible
   enterAni(tlNewBlockAniIn, ethBlockEls);
 
+  await ethBlocksAnimation.startRender();
+
   addBlockListener();
   newLoadingBlock();
-
-  await ethBlocksAnimation.startRender();
 
   // Heavy initialization in background
   ethBlocksAnimation.loadTextures(); // all final textures
