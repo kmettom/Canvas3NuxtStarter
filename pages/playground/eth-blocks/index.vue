@@ -225,5 +225,7 @@ onMounted(async () => {
   height: 0;
   width: 0;
   border-radius: 25px;
+  will-change: transform, opacity;
+  contain: layout paint style; /* isolates paint work */
 }
 </style>
