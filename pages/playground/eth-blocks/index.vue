@@ -237,12 +237,14 @@ onMounted(async () => {
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   firstBlockLoaderAni();
   await ethBlocksAnimation.init(ethBlockEls);
-  await ethBlocksAnimation.startRender();
 
   // Start animations as early as possible
   enterAni(tlNewBlockAniIn, ethBlockEls);
+
   addBlockListener();
   newLoadingBlock();
+
+  await ethBlocksAnimation.startRender();
 
   // Heavy initialization in background
   ethBlocksAnimation.loadTextures(); // all final textures

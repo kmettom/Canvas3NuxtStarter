@@ -72,6 +72,7 @@ export function enterAni(
   ethBlockEls: HTMLCollection | null,
 ) {
   if (!ethBlockEls) return;
+  tlNewBlockAniIn.play();
   tlNewBlockAniIn.to(ethBlockEls, {
     opacity: 1,
     duration: 0.1,
