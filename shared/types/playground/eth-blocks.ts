@@ -15,6 +15,7 @@ export type EthBlocksAnimation = {
   blocksTopPadding: number;
   init: (ethBlockEls: HTMLCollection | null) => Promise<void>;
   startRender: () => Promise<void>;
+  revealFirstTexture: () => Promise<void>;
   loadTextures: (amountOfTextures?: number) => Promise<void>;
   createGlassBlockMesh: () => Promise<THREE.Mesh>;
   createImageBgMesh: (

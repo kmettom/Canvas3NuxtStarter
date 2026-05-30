@@ -30,17 +30,26 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.ethBlockEls = ethBlockEls;
 
-    await this.loadTextures(1);
+    await this.loadTextures(2);
+  },
+  async revealFirstTexture() {
     return new Promise((resolve) => {
       const initMesh = this.imageBgMeshes[0];
-      if (!initMesh) return;
+      if (!initMesh) {
+        resolve();
+        return;
+      }
       const initMaterial = initMesh.material as THREE.ShaderMaterial;
-      initMaterial.uniforms.uCols = { value: 50 };
-      if (!initMaterial.uniforms.uTransitionProgress) return;
+      initMaterial.uniforms.uColAmount = { value: 50 };
+      if (!initMaterial.uniforms.uTransitionProgress) {
+        resolve();
+        return;
+      }
 
       gsap.to(initMaterial.uniforms.uTransitionProgress, {
         value: 1,
-        duration: 0.7,
+        duration: 1.2,
+        ease: "power2.inOut",
         onComplete: () => {
           resolve();
         },
@@ -48,6 +57,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     });
   },
   async startRender() {
+    // We already loaded 1 texture in init, now load the rest for initial blocks
     await this.loadTextures(INITIAL_BLOCK_AMOUNT);
     this.glassMesh = await this.createGlassBlockMesh();
 
@@ -68,23 +78,23 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
   async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT) {
     const alreadyLoadedTextures = this.imageBgMeshes.length;
-    if (alreadyLoadedTextures === IMAGE_FILE_AMOUNT) return;
+    if (alreadyLoadedTextures >= amountOfTextures) return;
     const loader = new THREE.TextureLoader();
 
-    const texturesPromiseArray = [];
+    // To prevent freezing, we load and process textures one by one or in small steps
     for (let i = alreadyLoadedTextures; i < amountOfTextures; i++) {
       const imageName = i < 10 ? "0" + i : i;
-      texturesPromiseArray.push(loader.loadAsync(`images/${imageName}.webp`));
-    }
-
-    const nextTextures = await Promise.all(texturesPromiseArray);
-
-    for (let i = 0; i < nextTextures.length; i++) {
-      const newTexture = nextTextures[i];
-      if (!newTexture) continue;
-      const mesh = await this.createImageBgMesh(newTexture, i);
-      if (mesh) {
-        this.imageBgMeshes.push(mesh);
+      try {
+        const texture = await loader.loadAsync(`images/${imageName}.webp`);
+        if (!texture) continue;
+        const mesh = await this.createImageBgMesh(texture, i);
+        if (mesh) {
+          this.imageBgMeshes.push(mesh);
+        }
+        // Small delay to let the main thread breathe
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      } catch (e) {
+        console.error(`Failed to load texture ${imageName}`, e);
       }
     }
   },

@@ -233,21 +233,29 @@ onMounted(async () => {
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
   if (!ethBlockEls) return;
+
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
+
+  // 1. Show the loading block animation immediately
   firstBlockLoaderAni();
+  newLoadingBlock(true);
+
+  // 2. Initialize Three.js and load ONLY the first texture in background
   await ethBlocksAnimation.init(ethBlockEls);
 
-  // Start animations as early as possible
+  // 3. Once first texture is ready, trigger EnterAni and reveal animation together
   enterAni(tlNewBlockAniIn, ethBlockEls);
+  ethBlocksAnimation.revealFirstTexture();
 
+  // 4. Start rendering and other listeners
   await ethBlocksAnimation.startRender();
-
   addBlockListener();
-  newLoadingBlock();
 
-  // Heavy initialization in background
-  ethBlocksAnimation.loadTextures(); // all final textures
+  // 5. Load the rest of the textures in background
+  setTimeout(() => {
+    ethBlocksAnimation.loadTextures();
+  }, 3000);
 });
 
 // https://www.shadertoy.com/view/wccSDf
