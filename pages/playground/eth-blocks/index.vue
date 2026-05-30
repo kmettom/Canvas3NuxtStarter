@@ -154,7 +154,7 @@ const blockDoneAnimate = (blockId: string) => {
 
     blockContentAniIn(el, tlNewBlockAniIn);
 
-    tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
+    tlNewBlockAniIn.set(el.querySelector(".block-loading-progress"), {
       width: 0,
       duration: 0,
       opacity: 1,
