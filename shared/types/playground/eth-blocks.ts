@@ -6,8 +6,8 @@ export type EthBlocksAnimation = {
   glassMesh: THREE.Mesh | null;
   sceneRT: THREE.WebGLRenderTarget | null;
   ethBlocks: HTMLCollection | null;
-  loadingBlockId: string;
-  activeBlockId: string;
+  loadingBlockId: number;
+  activeBlockId: number;
   activeImageId: number;
   blockLoadingTime: number;
   blocksBasePosition: number;
@@ -33,8 +33,8 @@ export type EthBlocksAnimation = {
 };
 
 type BlockBase = {
-  blockId: string;
-  imageId: string;
+  blockId: number;
+  imageId: number;
   aniCoef?: number;
   loading: boolean;
   elRef?: Element | ComponentPublicInstance | null;

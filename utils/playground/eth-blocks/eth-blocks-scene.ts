@@ -9,8 +9,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   glassMesh: null,
   sceneRT: null,
   ethBlocks: null,
-  loadingBlockId: "loadingBlockInit",
-  activeBlockId: "activeBlockId",
+  // ethBlockEls: null,
+  loadingBlockId: 0,
+  activeBlockId: 0,
   activeImageId: 0,
   blockLoadingTime: 12,
   blocksTopPadding: 0.25,
@@ -91,8 +92,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!this.ethBlocks) return;
     const el = this.ethBlocks[index] as HTMLElement;
     if (!el) return;
-    const blockId = el.dataset.blockId;
-    if (!blockId) return;
+    const blockId = Number(el.dataset.blockId);
+    if (Number.isNaN(blockId)) return;
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
     if (aniCoef > 0.03) return;
