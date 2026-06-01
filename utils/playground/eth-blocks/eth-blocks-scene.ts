@@ -71,7 +71,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
       if (!newTexture) continue;
-      const mesh = await this.createImageBgMesh( newTexture, i);
+      const mesh = await this.createImageBgMesh(newTexture, i);
       if (mesh) {
         this.imageBgMeshes.push(mesh);
       }
@@ -183,7 +183,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async createImageBgMesh( texture, id) {
+  async createImageBgMesh(texture, id) {
     if (!this.sceneRT) return null;
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
