@@ -27,8 +27,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
 
-    const loader = new THREE.TextureLoader();
-
     this.ethBlocks = ethBlocksWrapper.children;
 
     const renderer = Canvas3.getRenderer();
@@ -44,38 +42,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       stencilBuffer: false,
     });
 
-    const nextTextures = await Promise.all([
-      loader.loadAsync("images/00.webp"),
-      loader.loadAsync("images/01.webp"),
-      loader.loadAsync("images/02.webp"),
-      loader.loadAsync("images/03.webp"),
-      loader.loadAsync("images/04.webp"),
-      loader.loadAsync("images/05.webp"),
-      loader.loadAsync("images/06.webp"),
-      loader.loadAsync("images/07.webp"),
-      loader.loadAsync("images/08.webp"),
-      loader.loadAsync("images/09.webp"),
-      loader.loadAsync("images/10.webp"),
-      loader.loadAsync("images/11.webp"),
-      loader.loadAsync("images/12.webp"),
-      loader.loadAsync("images/13.webp"),
-      loader.loadAsync("images/14.webp"),
-      loader.loadAsync("images/15.webp"),
-      loader.loadAsync("images/16.webp"),
-      loader.loadAsync("images/17.webp"),
-      loader.loadAsync("images/18.webp"),
-      loader.loadAsync("images/19.webp"),
-      loader.loadAsync("images/20.webp"),
-    ]);
-
-    for (let i = 0; i < nextTextures.length; i++) {
-      const newTexture = nextTextures[i];
-      if (!newTexture) continue;
-      const mesh = await this.createImageBgMesh(newTexture, i);
-      if (mesh) {
-        this.imageBgMeshes.push(mesh);
-      }
-    }
+    await this.loadTextures();
 
     this.glassMesh = await this.createGlassBlockMesh();
   },
