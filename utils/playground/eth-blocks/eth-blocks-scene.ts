@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import { Canvas3Options } from "~/constants/canvas3-options";
 import { gsap } from "gsap";
-import { BLOCKS_ON_SCREEN_AMOUNT } from "~/constants/playground/eth-blocks";
+import {
+  BLOCKS_ON_SCREEN_AMOUNT,
+  IMAGE_FILE_AMOUNT,
+} from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
@@ -68,10 +71,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     for (let i = 0; i < nextTextures.length; i++) {
       const newTexture = nextTextures[i];
       if (!newTexture) continue;
-      const prevTextureIndex = i === 0 ? nextTextures.length - 1 : i - 1;
-      const prevTexture = nextTextures[prevTextureIndex];
-      if (!prevTexture) continue;
-      const mesh = await this.createImageBgMesh(prevTexture, newTexture, i);
+      const mesh = await this.createImageBgMesh( newTexture, i);
       if (mesh) {
         this.imageBgMeshes.push(mesh);
       }
@@ -79,6 +79,28 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.glassMesh = await this.createGlassBlockMesh();
   },
+
+  async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT) {
+    const alreadyLoadedTextures = this.imageBgMeshes.length;
+    if (alreadyLoadedTextures >= amountOfTextures) return;
+    const loader = new THREE.TextureLoader();
+
+    for (let i = alreadyLoadedTextures; i < amountOfTextures; i++) {
+      const imageName = i < 10 ? "0" + i : i;
+      try {
+        const texture = await loader.loadAsync(`images/${imageName}.webp`);
+        if (!texture) continue;
+        const mesh = await this.createImageBgMesh(texture, i);
+        if (mesh) {
+          this.imageBgMeshes.push(mesh);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      } catch (e) {
+        console.error(`Failed to load texture ${imageName}`, e);
+      }
+    }
+  },
+
   animateBlockSizeOnScroll(elNode, index) {
     const blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
@@ -161,7 +183,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async createImageBgMesh(prevTexture, texture, id) {
+  async createImageBgMesh( texture, id) {
     if (!this.sceneRT) return null;
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
@@ -175,7 +197,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
         uTexture: { value: texture },
-        uTexturePrevious: { value: prevTexture },
+        uTexturePrevious: { value: null },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -234,6 +256,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const prevMaterial = this.imageBgMeshes[prevImageId]
       ?.material as THREE.ShaderMaterial;
+    if (!prevMaterial) return;
     const uTexturePreviousValue = prevMaterial.uniforms.uTexture?.value;
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
