@@ -93,7 +93,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const el = this.ethBlocks[index] as HTMLElement;
     if (!el) return;
     const blockId = Number(el.dataset.blockId);
-    if (!blockId) return;
+    if (Number.isNaN(blockId)) return;
     if (this.loadingBlockId === blockId) return;
     if (this.activeBlockId === blockId) return;
     if (aniCoef > 0.03) return;

@@ -73,7 +73,6 @@ async function fetchInitialBlocks() {
   const { data: initialBlocks } = await useFetch(
     "/api/playground/eth-blocks/latest",
   );
-  console.log("initialBlocks", initialBlocks);
   initialBlocks.value?.forEach((raw: BlockExtended) => {
     const blockData = deserializeBlock(raw);
     ethBlocks.value.set(
@@ -204,7 +203,7 @@ const addBlockListener = () => {
     blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
     if (ethBlocks.value.size > maxBlocks) {
       const oldestKey = ethBlocks.value.keys().next().value;
-      if (oldestKey) ethBlocks.value.delete(oldestKey);
+      if (oldestKey !== undefined) ethBlocks.value.delete(oldestKey);
     }
   };
 };

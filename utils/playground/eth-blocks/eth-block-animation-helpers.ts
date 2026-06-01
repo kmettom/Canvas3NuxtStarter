@@ -29,7 +29,7 @@ export function aniProgressBar(
     for (let i = 0; i < progressBarStateEls.length; i++) {
       const progressBarStateEl = progressBarStateEls[i];
       if (!progressBarStateEl) continue;
-      const progressStateValue = progressBarStateEl.dataset.progressState;
+      const progressStateValue = progressBarStateEl.dataset.progressState ?? 50;
       tlNewBlockAniIn.fromTo(
         progressBarStateEl,
         { width: 0 },
