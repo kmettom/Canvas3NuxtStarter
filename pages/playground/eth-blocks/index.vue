@@ -2,16 +2,16 @@
   <div class="eth-blocks-page page-container eth-base-text">
     <div
       id="ethBlocks"
-      ref="ethBlocks"
+      ref="ethBlocksWrapper"
       class="eth-blocks"
       :style="{
         paddingTop: blocksBasePosition + 'px',
+        paddingBottom: blocksBasePosition * 2 + 'px',
       }"
     >
       <div
         v-for="block in blocksToRender"
         :key="block.blockId"
-        :ref="(el) => addNewBlockEl(el, block.blockId)"
         v-action-on-scroll="{
           activeRange: 1,
           bidirectionalActivation: true,
@@ -35,8 +35,6 @@ import {
   generateBlockData,
   deserializeBlock,
   generateLoadingBlockData,
-  enterAni,
-  blockContentAniIn,
 } from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
@@ -46,6 +44,12 @@ import type {
   BlockExtended,
   BlockItem,
 } from "#shared/types/playground/eth-blocks";
+import { useEthBlocks } from "~/stores/playground/eth-blocks-store";
+import {
+  blockContentAniIn,
+  enterAni,
+} from "~/utils/playground/eth-blocks/eth-block-animation-helpers";
+import { IMAGE_FILE_AMOUNT } from "~/constants/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
 
 //**************************
@@ -53,25 +57,43 @@ gsap.registerPlugin(SplitText);
 //**************************
 
 const maxBlocks = 50;
-
-const ethBlocks = ref<HTMLElement | null>(null);
+const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
+// const ethBlocks = ref<HTMLElement | null>(null);
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
-const blocks = ref<Map<string, BlockItem>>(new Map());
+// const blocks = ref<Map<string, BlockItem>>(new Map());
+const ethBlocksWrapper = ref<HTMLElement | null>(null);
 const blocksToRender = computed<BlockItem[]>(() => {
-  return [...blocks.value.values()].sort((a, b) =>
+  return [...ethBlocks.value.values()].sort((a, b) =>
     a.blockId > b.blockId ? -1 : 1,
   );
 });
 let eventSource: EventSource;
-const { data: initialBlocks } = await useFetch(
-  "/api/playground/eth-blocks/latest",
-);
-initialBlocks.value?.forEach((raw: BlockExtended, index: number) => {
-  const block = deserializeBlock(raw);
-  const blockId = new Date().getTime().toString() + `_latest_${index}`;
-  const loadingBlock = generateLoadingBlockData(blockId);
-  blocks.value.set(blockId, generateBlockData(block, loadingBlock));
-});
+
+async function fetchInitialBlocks() {
+  const { data: initialBlocks } = await useFetch(
+    "/api/playground/eth-blocks/latest",
+  );
+  console.log("initialBlocks", initialBlocks);
+  initialBlocks.value?.forEach((raw: BlockExtended) => {
+    const blockData = deserializeBlock(raw);
+    ethBlocks.value.set(
+      blockIdCounter.value,
+      generateBlockData(
+        blockIdCounter.value,
+        blockImageIdCounter.value,
+        blockData,
+      ),
+    );
+    blockCountersUpdate();
+  });
+}
+
+const blockCountersUpdate = () => {
+  blockIdCounter.value += 1;
+  blockImageIdCounter.value += 1;
+  if (blockImageIdCounter.value >= IMAGE_FILE_AMOUNT)
+    blockImageIdCounter.value = 0;
+};
 
 const tlNewBlockAniIn = gsap.timeline({
   paused: true,
@@ -84,21 +106,31 @@ const tlNewBlockAniIn = gsap.timeline({
 // FUNCTIONS
 //**************************
 
-const blockIdCounter = ref(0);
-const newBlockId = computed(() => {
-  return "block_" + blockIdCounter.value;
-});
+// const blockIdCounter = ref(0);
+// const newBlockId = computed(() => {
+//   return "block_" + blockIdCounter.value;
+// });
+
+const getBlockElFromBlockId = (blockId: number) => {
+  if (!ethBlocksWrapper.value) return null;
+  return ethBlocksWrapper.value.querySelector(
+    '.eth-block[data-block-id="' + blockId + '"]',
+  );
+};
 
 async function newLoadingBlock() {
-  blockIdCounter.value += 1;
-  ethBlocksAnimation.loadingBlockId = newBlockId.value;
-  const blockData = generateLoadingBlockData(newBlockId.value);
-  blocks.value.set(ethBlocksAnimation.loadingBlockId, blockData);
+  ethBlocksAnimation.loadingBlockId = blockIdCounter.value;
+  const newLoadingBlockData = generateLoadingBlockData(
+    blockIdCounter.value,
+    blockImageIdCounter.value,
+  );
+  ethBlocks.value.set(blockIdCounter.value, newLoadingBlockData);
   await nextTick();
-  const el = blocks.value.get(newBlockId.value)?.elRef as HTMLElement;
+  const el = getBlockElFromBlockId(blockIdCounter.value);
   if (!el) {
     return;
   }
+  blockCountersUpdate();
   tlNewBlockAniIn.to(el, {
     duration: 0.2,
     height: "10px",
@@ -114,21 +146,11 @@ async function newLoadingBlock() {
   });
 }
 
-function addNewBlockEl(
-  el: Element | ComponentPublicInstance | null,
-  blockId: string,
-) {
-  const block = blocks.value.get(blockId.toString());
-  if (block && !block.elRef) {
-    block.elRef = el;
+const blockDoneAnimate = (blockId: number) => {
+  const el = getBlockElFromBlockId(blockId);
+  if (!el) {
+    return;
   }
-}
-
-const blockDoneAnimate = (blockId: string) => {
-  const block = blocks.value.get(blockId);
-  if (!block) return;
-  const el = block.elRef as HTMLElement;
-  if (!el) return;
 
   tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
     duration: 0.3,
@@ -139,6 +161,9 @@ const blockDoneAnimate = (blockId: string) => {
   });
 
   function addTimelineAnimations() {
+    if (!el) {
+      return;
+    }
     tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
       width: "0%",
       duration: 0.15,
@@ -168,31 +193,35 @@ const blockDoneAnimate = (blockId: string) => {
 const addBlockListener = () => {
   eventSource = new EventSource("/api/playground/eth-blocks/watch");
   eventSource.onmessage = async ({ data }) => {
-    const block = deserializeBlock(JSON.parse(data));
-    const loadingBlock = blocks.value.get(ethBlocksAnimation.loadingBlockId);
+    const blockData = deserializeBlock(JSON.parse(data));
+    const loadingBlock = ethBlocks.value.get(ethBlocksAnimation.loadingBlockId);
     if (!loadingBlock) return;
-    blocks.value.set(
-      ethBlocksAnimation.loadingBlockId,
-      generateBlockData(block, loadingBlock),
+    ethBlocks.value.set(
+      loadingBlock.blockId,
+      generateBlockData(loadingBlock.blockId, loadingBlock.imageId, blockData),
     );
     await nextTick();
     blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
-    if (blocks.value.size > maxBlocks) {
-      const oldestKey = blocks.value.keys().next().value;
-      if (oldestKey) blocks.value.delete(oldestKey);
+    if (ethBlocks.value.size > maxBlocks) {
+      const oldestKey = ethBlocks.value.keys().next().value;
+      if (oldestKey) ethBlocks.value.delete(oldestKey);
     }
   };
 };
 
 onUnmounted(() => eventSource?.close());
-
+fetchInitialBlocks();
 onMounted(async () => {
+  if (!ethBlocksWrapper.value) return;
+  const ethBlockEls = ethBlocksWrapper.value.children;
+  if (!ethBlockEls) return;
+
   addBlockListener();
-  if (ethBlocks.value) {
-    await ethBlocksAnimation.init(ethBlocks.value);
+  if (ethBlocksWrapper.value) {
+    await ethBlocksAnimation.init(ethBlocksWrapper.value);
     blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
   }
-  await enterAni(tlNewBlockAniIn);
+  enterAni(tlNewBlockAniIn, ethBlockEls);
   await newLoadingBlock();
   tlNewBlockAniIn.play();
 });
@@ -214,7 +243,6 @@ onMounted(async () => {
 }
 
 .eth-blocks {
-  padding-bottom: 65%;
 }
 
 .eth-block {

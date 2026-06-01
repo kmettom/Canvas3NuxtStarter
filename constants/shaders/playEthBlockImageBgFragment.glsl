@@ -33,7 +33,7 @@ void main() {
     vec4 color = texture2D(uTexture, uv);
     vec4 colorPrev = texture2D(uTexturePrevious, uv);
 
-    float cols = 24.0;
+    float cols = 30.0;
     float meshAR = uMeshSize.x / max(uMeshSize.y, 1.0);
     float rows = max(1.0, floor(cols / meshAR));
     vec2 grid = vec2(cols, rows);
