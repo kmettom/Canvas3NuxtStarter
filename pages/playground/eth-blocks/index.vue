@@ -49,7 +49,10 @@ import {
   blockContentAniIn,
   enterAni,
 } from "~/utils/playground/eth-blocks/eth-block-animation-helpers";
-import { IMAGE_FILE_AMOUNT } from "~/constants/playground/eth-blocks";
+import {
+  DEFAULT_BLOCK_LOADING_TIME,
+  IMAGE_FILE_AMOUNT,
+} from "~/constants/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
 
 //**************************
@@ -141,7 +144,7 @@ async function newLoadingBlock() {
   const blockProgressBarEl = el.querySelector(".block-loading-progress");
   tlNewBlockAniIn.to(blockProgressBarEl, {
     width: "100%",
-    duration: ethBlocksAnimation.blockLoadingTime,
+    duration: DEFAULT_BLOCK_LOADING_TIME,
   });
 }
 
@@ -150,6 +153,10 @@ const blockDoneAnimate = (blockId: number) => {
   if (!el) {
     return;
   }
+
+  setTimeout(() => {
+    ethBlocksAnimation.loadTextures(2, 1500);
+  }, 5000);
 
   tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
     duration: 0.3,
@@ -208,21 +215,69 @@ const addBlockListener = () => {
   };
 };
 
+const blockToFullWidthAni = (block: Element) => {
+  tlNewBlockAniIn.to(block, {
+    duration: 0.2,
+    height: "10px",
+  });
+  tlNewBlockAniIn.to(block, {
+    width: "423px",
+    duration: 0.3,
+  });
+};
+
+const firstBlockLoaderAni = () => {
+  const lastOfInitialBlock = getBlockElFromBlockId(2);
+  if (!lastOfInitialBlock) return;
+  blockToFullWidthAni(lastOfInitialBlock);
+  const progressBarEl = lastOfInitialBlock.querySelector(
+    ".block-loading-progress",
+  );
+  tlNewBlockAniIn.to(progressBarEl, {
+    width: "100%",
+    duration: 0.5,
+  });
+  tlNewBlockAniIn.to(progressBarEl, {
+    duration: 0,
+    right: 0,
+    left: "initial",
+  });
+  tlNewBlockAniIn.to(progressBarEl, {
+    width: "0%",
+    duration: 0.2,
+  });
+  tlNewBlockAniIn.to(progressBarEl, {
+    duration: 0,
+    right: "initial",
+    left: 0,
+  });
+};
+
 onUnmounted(() => eventSource?.close());
 fetchInitialBlocks();
+
 onMounted(async () => {
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
   if (!ethBlockEls) return;
 
-  addBlockListener();
-  if (ethBlocksWrapper.value) {
-    await ethBlocksAnimation.init(ethBlocksWrapper.value);
-    blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
-  }
+  ethBlocksAnimation.setBlockBasePosition();
+  blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
+
+  firstBlockLoaderAni();
+  newLoadingBlock();
+
+  await ethBlocksAnimation.init(ethBlockEls);
+
   enterAni(tlNewBlockAniIn, ethBlockEls);
-  await newLoadingBlock();
-  tlNewBlockAniIn.play();
+  ethBlocksAnimation.revealFirstTexture();
+
+  await ethBlocksAnimation.startRender();
+  addBlockListener();
+
+  setTimeout(() => {
+    ethBlocksAnimation.loadTextures(2, 2000);
+  }, 3000);
 });
 
 // https://www.shadertoy.com/view/wccSDf

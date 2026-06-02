@@ -9,11 +9,16 @@ export type EthBlocksAnimation = {
   loadingBlockId: number;
   activeBlockId: number;
   activeImageId: number;
-  blockLoadingTime: number;
   blocksBasePosition: number;
   blocksTopPadding: number;
-  init: (ethBlocksWrapper: HTMLElement) => Promise<void>;
-  loadTextures: (amountOfTextures?: number) => Promise<void>;
+  setBlockBasePosition: () => void;
+  init: (ethBlockEls: HTMLCollection) => Promise<void>;
+  revealFirstTexture: () => void;
+  startRender: () => Promise<void>;
+  loadTextures: (
+    amountOfTextures?: number | null,
+    delay?: number,
+  ) => Promise<void>;
   createGlassBlockMesh: () => Promise<THREE.Mesh>;
   createImageBgMesh: (
     texture: THREE.Texture,
