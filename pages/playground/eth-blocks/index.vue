@@ -269,14 +269,15 @@ onMounted(async () => {
 
   await ethBlocksAnimation.init(ethBlockEls);
 
+  // ethBlocksAnimation.revealFirstTexture();
+  //TODO: combine texture reviel with enter ani and image change is also triggered on enter ani
   enterAni(tlNewBlockAniIn, ethBlockEls);
-  ethBlocksAnimation.revealFirstTexture();
 
   await ethBlocksAnimation.startRender();
   addBlockListener();
 
   setTimeout(() => {
-    ethBlocksAnimation.loadTextures(2, 2000);
+    ethBlocksAnimation.loadTextures(3, 1000);
   }, 3000);
 });
 

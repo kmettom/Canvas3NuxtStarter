@@ -85,7 +85,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const loader = new THREE.TextureLoader();
 
     const endIndex = amountToLoad + alreadyLoadedTextures;
-    for (let i = alreadyLoadedTextures; i < endIndex; i++) {
+    const endIndexCapped =
+      endIndex >= IMAGE_FILE_AMOUNT ? IMAGE_FILE_AMOUNT : endIndex;
+    for (let i = alreadyLoadedTextures; i < endIndexCapped; i++) {
       const imageName = i < 10 ? "0" + i : i;
       try {
         const texture = await loader.loadAsync(`images/${imageName}.webp`);
@@ -357,12 +359,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - QA - Shader - uTransitionProgress - Adjust blocks to block amounts shader adjust with transaction amounts in block
 // - appear animation with loader, or transition
 //            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
 // - update glass size to fit design
-// ----------
-// - maxAmount of blocks 25, remove the oldest once
-//---------
 // - QA - Shader - uTransitionProgress
 // - ? QA - Scroll magnet to closest block top ?
+// ----------
+// - ? maxAmount of blocks 25, remove the oldest once
+//---------
