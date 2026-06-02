@@ -224,7 +224,7 @@ const blockToFullWidthAni = (block: Element) => {
   });
 };
 
-const firstBlockLoaderAni = () => {
+const firstBlockLoaderAni = async () => {
   const lastOfInitialBlock = getBlockElFromBlockId(2);
   if (!lastOfInitialBlock) return;
   blockToFullWidthAni(lastOfInitialBlock);
@@ -263,8 +263,7 @@ onMounted(async () => {
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
 
-  firstBlockLoaderAni();
-  newLoadingBlock();
+  await firstBlockLoaderAni();
 
   await ethBlocksAnimation.init(ethBlockEls);
 
@@ -274,6 +273,8 @@ onMounted(async () => {
 
   await ethBlocksAnimation.startRender();
   addBlockListener();
+
+  ethBlocksAnimation.firstEnterAniInProgress = false;
 
   setTimeout(() => {
     ethBlocksAnimation.loadTextures(3, 1000);
