@@ -3,6 +3,7 @@ import { Canvas3Options } from "~/constants/canvas3-options";
 import { gsap } from "gsap";
 import {
   BLOCKS_ON_SCREEN_AMOUNT,
+  DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
 } from "~/constants/playground/eth-blocks";
@@ -133,7 +134,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const imageId = Number(el.dataset.bgImageId);
     const prevImageId = this.activeImageId;
     this.activeImageId = imageId;
-    this.imageBgChange(prevImageId, imageId);
+    const transactionsAmount = Number(el.dataset.transactionsAmount);
+    this.imageBgChange(prevImageId, imageId, transactionsAmount);
   },
 
   async createGlassBlockMesh() {
@@ -206,6 +208,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uTime: { value: 0 },
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
+        uColAmount: { value: DEFAULT_TRANSACTIONS_AMOUNT },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -241,7 +244,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async imageBgChange(prevImageId, newImageId) {
+  async imageBgChange(
+    prevImageId,
+    newImageId,
+    transactionsAmount = DEFAULT_TRANSACTIONS_AMOUNT,
+  ) {
     const baseAniDuration = 1;
     const imageChangeDuration = (
       baseAniDuration -
@@ -268,6 +275,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const uTexturePreviousValue = prevMaterial.uniforms.uTexture?.value;
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
+    if (!material.uniforms.uColAmount) return;
+    material.uniforms.uColAmount.value = transactionsAmount;
 
     if (!material.uniforms.uTransitionProgress) return;
     gsap.fromTo(
