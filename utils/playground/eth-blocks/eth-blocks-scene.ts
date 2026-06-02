@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import {
   BLOCKS_ON_SCREEN_AMOUNT,
   IMAGE_FILE_AMOUNT,
+  INITIAL_BLOCK_AMOUNT,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
@@ -11,23 +12,53 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   imageBgMeshes: [],
   glassMesh: null,
   sceneRT: null,
-  ethBlocks: null,
-  // ethBlockEls: null,
+  ethBlockEls: null,
   loadingBlockId: 0,
   activeBlockId: 0,
   activeImageId: 0,
-  blockLoadingTime: 12,
   blocksTopPadding: 0.25,
   blocksBasePosition: 0,
   pendingImageId: 0,
   currentImageId: 0,
   imageAniTimeline: null,
-  async init(ethBlocksWrapper: HTMLElement) {
+  setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
+  },
+  async init(ethBlockEls) {
+    if (!ethBlockEls) return;
 
-    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
+    this.ethBlockEls = ethBlockEls;
 
-    this.ethBlocks = ethBlocksWrapper.children;
+    await this.loadTextures(1);
+  },
+  async revealFirstTexture() {
+    return new Promise((resolve) => {
+      const initMesh = this.imageBgMeshes[0];
+      if (!initMesh) {
+        resolve();
+        return;
+      }
+      const initMaterial = initMesh.material as THREE.ShaderMaterial;
+      initMaterial.uniforms.uColAmount = { value: 50 };
+      if (!initMaterial.uniforms.uTransitionProgress) {
+        resolve();
+        return;
+      }
+
+      gsap.to(initMaterial.uniforms.uTransitionProgress, {
+        value: 1,
+        duration: 1.2,
+        ease: "power2.inOut",
+        onComplete: () => {
+          resolve();
+        },
+      });
+    });
+  },
+  async startRender() {
+    // We already loaded 1 texture in init, now load the rest for initial blocks
+    await this.loadTextures(INITIAL_BLOCK_AMOUNT);
+    this.glassMesh = await this.createGlassBlockMesh();
 
     const renderer = Canvas3.getRenderer();
     const rtWidth = renderer
@@ -42,17 +73,21 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       stencilBuffer: false,
     });
 
-    await this.loadTextures();
-
-    this.glassMesh = await this.createGlassBlockMesh();
+    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
   },
 
-  async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT) {
+  async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT, delay = 0) {
     const alreadyLoadedTextures = this.imageBgMeshes.length;
-    if (alreadyLoadedTextures >= amountOfTextures) return;
+    if (alreadyLoadedTextures >= IMAGE_FILE_AMOUNT) return;
+    const amountToLoad = amountOfTextures
+      ? amountOfTextures
+      : IMAGE_FILE_AMOUNT;
     const loader = new THREE.TextureLoader();
 
-    for (let i = alreadyLoadedTextures; i < amountOfTextures; i++) {
+    const endIndex = amountToLoad + alreadyLoadedTextures;
+    const endIndexCapped =
+      endIndex >= IMAGE_FILE_AMOUNT ? IMAGE_FILE_AMOUNT : endIndex;
+    for (let i = alreadyLoadedTextures; i < endIndexCapped; i++) {
       const imageName = i < 10 ? "0" + i : i;
       try {
         const texture = await loader.loadAsync(`images/${imageName}.webp`);
@@ -61,7 +96,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         if (mesh) {
           this.imageBgMeshes.push(mesh);
         }
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       } catch (e) {
         console.error(`Failed to load texture ${imageName}`, e);
       }
@@ -78,8 +113,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
     elNode.style.opacity = `${Math.max(1 - aniCoef * 3, 0.35)}`;
 
-    if (!this.ethBlocks) return;
-    const el = this.ethBlocks[index] as HTMLElement;
+    if (!this.ethBlockEls) return;
+    const el = this.ethBlockEls[index] as HTMLElement;
     if (!el) return;
     const blockId = Number(el.dataset.blockId);
     if (Number.isNaN(blockId)) return;
@@ -151,7 +186,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   async createImageBgMesh(texture, id) {
-    if (!this.sceneRT) return null;
     const vertexShader =
       Canvas3Options.shaders.playEthBlockImageBg.vertexShader;
     const fragmentShader =
@@ -254,7 +288,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   calculateUBlockPositions() {
-    if (!this.ethBlocks) {
+    if (!this.ethBlockEls) {
       return Array.from(
         { length: BLOCKS_ON_SCREEN_AMOUNT },
         () => new THREE.Vector4(0, 0, 0, 0),
@@ -263,19 +297,19 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const positions: THREE.Vector4[] = [];
 
-    for (let i = 0; i < this.ethBlocks.length; i++) {
+    for (let i = 0; i < this.ethBlockEls.length; i++) {
       if (
-        this.ethBlocks[i] &&
-        this.ethBlocks[i]?.classList.contains("active")
+        this.ethBlockEls[i] &&
+        this.ethBlockEls[i]?.classList.contains("active")
       ) {
-        const clientBounds = this.ethBlocks[i]?.getBoundingClientRect();
+        const clientBounds = this.ethBlockEls[i]?.getBoundingClientRect();
         const renderer = Canvas3.getRenderer();
         const canvasBounds = renderer?.domElement.getBoundingClientRect();
         if (clientBounds && canvasBounds)
           positions.push(
             this.getVec4PositionFromClientRect(clientBounds, canvasBounds),
           );
-        this.animateBlockSizeOnScroll(this.ethBlocks[i] as HTMLElement, i);
+        this.animateBlockSizeOnScroll(this.ethBlockEls[i] as HTMLElement, i);
       }
     }
 
@@ -325,12 +359,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - QA - Shader - uTransitionProgress - Adjust blocks to block amounts shader adjust with transaction amounts in block
 // - appear animation with loader, or transition
 //            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
 // - update glass size to fit design
-// ----------
-// - maxAmount of blocks 25, remove the oldest once
-//---------
 // - QA - Shader - uTransitionProgress
 // - ? QA - Scroll magnet to closest block top ?
+// ----------
+// - ? maxAmount of blocks 25, remove the oldest once
+//---------

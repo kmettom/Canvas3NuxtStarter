@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
 
   const latestBlockNumber = await client.getBlockNumber();
   const blockNumbers = Array.from(
+    // { length: 2 },
     { length: INITIAL_BLOCK_AMOUNT },
     (_, i) => latestBlockNumber - BigInt(i),
   );
