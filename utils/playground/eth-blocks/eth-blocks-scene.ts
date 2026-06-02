@@ -11,8 +11,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   imageBgMeshes: [],
   glassMesh: null,
   sceneRT: null,
-  ethBlocks: null,
-  // ethBlockEls: null,
+  ethBlockEls: null,
   loadingBlockId: 0,
   activeBlockId: 0,
   activeImageId: 0,
@@ -27,7 +26,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
 
-    this.ethBlocks = ethBlocksWrapper.children;
+    this.ethBlockEls = ethBlocksWrapper.children;
 
     const renderer = Canvas3.getRenderer();
     const rtWidth = renderer
@@ -78,8 +77,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
     elNode.style.opacity = `${Math.max(1 - aniCoef * 3, 0.35)}`;
 
-    if (!this.ethBlocks) return;
-    const el = this.ethBlocks[index] as HTMLElement;
+    if (!this.ethBlockEls) return;
+    const el = this.ethBlockEls[index] as HTMLElement;
     if (!el) return;
     const blockId = Number(el.dataset.blockId);
     if (Number.isNaN(blockId)) return;
@@ -254,7 +253,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   calculateUBlockPositions() {
-    if (!this.ethBlocks) {
+    if (!this.ethBlockEls) {
       return Array.from(
         { length: BLOCKS_ON_SCREEN_AMOUNT },
         () => new THREE.Vector4(0, 0, 0, 0),
@@ -263,19 +262,19 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const positions: THREE.Vector4[] = [];
 
-    for (let i = 0; i < this.ethBlocks.length; i++) {
+    for (let i = 0; i < this.ethBlockEls.length; i++) {
       if (
-        this.ethBlocks[i] &&
-        this.ethBlocks[i]?.classList.contains("active")
+        this.ethBlockEls[i] &&
+        this.ethBlockEls[i]?.classList.contains("active")
       ) {
-        const clientBounds = this.ethBlocks[i]?.getBoundingClientRect();
+        const clientBounds = this.ethBlockEls[i]?.getBoundingClientRect();
         const renderer = Canvas3.getRenderer();
         const canvasBounds = renderer?.domElement.getBoundingClientRect();
         if (clientBounds && canvasBounds)
           positions.push(
             this.getVec4PositionFromClientRect(clientBounds, canvasBounds),
           );
-        this.animateBlockSizeOnScroll(this.ethBlocks[i] as HTMLElement, i);
+        this.animateBlockSizeOnScroll(this.ethBlockEls[i] as HTMLElement, i);
       }
     }
 
