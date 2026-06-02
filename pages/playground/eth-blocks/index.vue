@@ -73,20 +73,23 @@ const blocksToRender = computed<BlockItem[]>(() => {
 let eventSource: EventSource;
 
 async function fetchInitialBlocks() {
-  const { data: initialBlocks } = await useFetch(
-    "/api/playground/eth-blocks/latest",
-  );
-  initialBlocks.value?.forEach((raw: BlockExtended) => {
-    const blockData = deserializeBlock(raw);
-    ethBlocks.value.set(
-      blockIdCounter.value,
-      generateBlockData(
-        blockIdCounter.value,
-        blockImageIdCounter.value,
-        blockData,
-      ),
+  await useAsyncData("ethBlocksInitial", async () => {
+    const initialBlocks = await $fetch<BlockExtended[]>(
+      "/api/playground/eth-blocks/latest",
     );
-    blockCountersUpdate();
+    initialBlocks?.forEach((raw: BlockExtended) => {
+      const blockData = deserializeBlock(raw);
+      ethBlocks.value.set(
+        blockIdCounter.value,
+        generateBlockData(
+          blockIdCounter.value,
+          blockImageIdCounter.value,
+          blockData,
+        ),
+      );
+      blockCountersUpdate();
+    });
+    return true;
   });
 }
 
@@ -107,11 +110,6 @@ const tlNewBlockAniIn = gsap.timeline({
 //**************************
 // FUNCTIONS
 //**************************
-
-// const blockIdCounter = ref(0);
-// const newBlockId = computed(() => {
-//   return "block_" + blockIdCounter.value;
-// });
 
 const getBlockElFromBlockId = (blockId: number) => {
   if (!ethBlocksWrapper.value) return null;
@@ -254,7 +252,7 @@ const firstBlockLoaderAni = () => {
 };
 
 onUnmounted(() => eventSource?.close());
-fetchInitialBlocks();
+await fetchInitialBlocks();
 
 onMounted(async () => {
   if (!ethBlocksWrapper.value) return;
