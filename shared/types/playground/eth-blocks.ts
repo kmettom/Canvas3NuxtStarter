@@ -35,6 +35,7 @@ export type EthBlocksAnimation = {
   pendingImageId: number;
   currentImageId: number;
   imageAniTimeline: gsap.core.Tween | null;
+  firstEnterAniInProgress: boolean;
 };
 
 type BlockBase = {

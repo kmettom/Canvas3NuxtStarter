@@ -21,6 +21,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   pendingImageId: 0,
   currentImageId: 0,
   imageAniTimeline: null,
+  firstEnterAniInProgress: true,
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
@@ -113,6 +114,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
     elNode.style.opacity = `${Math.max(1 - aniCoef * 3, 0.35)}`;
 
+    //***************************
+    //Set Active Block and trigger inageBG chagne
+    //***************************
+
+    // console.log("firstEnterAniInProgress", this.firstEnterAniInProgress);
+    if (this.firstEnterAniInProgress) return;
     if (!this.ethBlockEls) return;
     const el = this.ethBlockEls[index] as HTMLElement;
     if (!el) return;
