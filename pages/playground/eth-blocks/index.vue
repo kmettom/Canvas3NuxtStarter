@@ -252,6 +252,7 @@ const firstBlockLoaderAni = () => {
 };
 
 onUnmounted(() => eventSource?.close());
+
 await fetchInitialBlocks();
 
 onMounted(async () => {
