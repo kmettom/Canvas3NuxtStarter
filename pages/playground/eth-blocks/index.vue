@@ -266,6 +266,7 @@ const addBlockListener = () => {
 onUnmounted(() => {
   ethBlocksAnimation.destroy();
   eventSource?.close();
+  tlNewBlockAniIn.kill();
 });
 
 await fetchInitialBlocks();
