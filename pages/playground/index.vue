@@ -48,12 +48,7 @@
                   ease: 'linear',
                 },
                 uBlockColor: {
-                  value: ethBlockHover ? 0.6 : 0.5,
-                  duration: 0.5,
-                  ease: 'linear',
-                },
-                uHover: {
-                  value: 1,
+                  value: 0.5,
                   duration: 0.5,
                   ease: 'linear',
                 },
