@@ -222,16 +222,16 @@ const addBlockListener = () => {
   };
 };
 
-const blockToFullWidthAni = (block: Element) => {
-  tlNewBlockAniIn.to(block, {
-    duration: 0.2,
-    height: "10px",
-  });
-  tlNewBlockAniIn.to(block, {
-    width: "423px",
-    duration: 0.3,
-  });
-};
+// const blockToFullWidthAni = (block: Element) => {
+//   tlNewBlockAniIn.to(block, {
+//     duration: 0.2,
+//     height: "10px",
+//   });
+//   tlNewBlockAniIn.to(block, {
+//     width: "423px",
+//     duration: 0.3,
+//   });
+// };
 
 // const firstBlockLoaderAni = () => {
 //   const lastOfInitialBlock = getBlockElFromBlockId(2);

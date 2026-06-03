@@ -46,8 +46,7 @@ export const pageTransition: PageTransition = {
     rectangle.scale.set(0, window.innerHeight, 0);
 
     Canvas3.addMeshToScene(rectangle);
-    const mesh = Canvas3.getMeshFromSceneByName(meshName);
-    return mesh ?? new THREE.Mesh();
+    return rectangle;
   },
 
   curtainShow: (
