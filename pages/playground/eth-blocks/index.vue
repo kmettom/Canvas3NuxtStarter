@@ -155,9 +155,6 @@ async function newLoadingBlock() {
     duration: DEFAULT_BLOCK_LOADING_TIME,
     onComplete: () => {
       el.classList.remove("animating");
-      if (ethBlocksAnimation.firstEnterAniInProgress) {
-        ethBlocksAnimation.firstEnterAniInProgress = false;
-      }
     },
   });
 }
@@ -254,9 +251,10 @@ onMounted(async () => {
   await ethBlocksAnimation.startRender();
   await ethBlocksAnimation.revealFirstTexture();
 
-  enterAni(tlNewBlockAniIn, ethBlockEls);
-
   addBlockListener();
+
+  await enterAni(tlNewBlockAniIn, ethBlockEls);
+  ethBlocksAnimation.firstEnterAniInProgress = false;
 
   setTimeout(() => {
     ethBlocksAnimation.loadTextures(2, 0);

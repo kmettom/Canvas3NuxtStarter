@@ -163,8 +163,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     //***************************
     //Set Active Block and trigger inageBG chagne
     //***************************
-
-    // console.log("firstEnterAniInProgress", this.firstEnterAniInProgress);
     if (this.firstEnterAniInProgress) return;
     if (!this.ethBlockEls) return;
     const el = this.ethBlockEls[index] as HTMLElement;
@@ -446,10 +444,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - appear animation with loader, or transition
-//            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
-// - update glass size to fit design
-// - DEBOUNCE IMAGE CHANGE?
 // - on screen resize - Mesh adjust
 // - QA - Shader - uTransitionProgress
 // - ? QA - Scroll magnet to closest block top ?

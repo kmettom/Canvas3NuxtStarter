@@ -67,23 +67,28 @@ export function aniContentValues(
   }
 }
 
-export function enterAni(
+export async function enterAni(
   tlNewBlockAniIn: gsap.core.Timeline,
   ethBlockEls: HTMLCollection | null,
 ) {
   if (!ethBlockEls) return;
-  tlNewBlockAniIn.play();
-  tlNewBlockAniIn.to(ethBlockEls, {
-    opacity: 1,
-    duration: 0.1,
-  });
-  tlNewBlockAniIn.to(ethBlockEls, {
-    width: "423px",
-    height: "236px",
-    marginTop: "20px",
-    duration: 0.5,
-    stagger: 0.1,
-    ease: "power2.out",
+  return new Promise((resolve) => {
+    tlNewBlockAniIn.play();
+    tlNewBlockAniIn.to(ethBlockEls, {
+      opacity: 1,
+      duration: 0.1,
+    });
+    tlNewBlockAniIn.to(ethBlockEls, {
+      width: "423px",
+      height: "236px",
+      marginTop: "20px",
+      duration: 0.5,
+      stagger: 0.1,
+      ease: "power2.out",
+      onComplete: () => {
+        resolve(true);
+      },
+    });
   });
 }
 
