@@ -29,6 +29,11 @@ export type EthBlocksAnimation = {
     clientRect: DOMRect,
     canvasRect: DOMRect,
   ) => THREE.Vector4;
+  updateVec4FromClientRect: (
+    vec4: THREE.Vector4,
+    clientRect: DOMRect,
+    canvasRect: DOMRect,
+  ) => void;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
   imageBgChange: (
@@ -36,11 +41,18 @@ export type EthBlocksAnimation = {
     nextImageId: number,
     transactionsAmount?: number,
   ) => void;
-  animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
+  animateBlockSizeOnScroll: (
+    elNode: HTMLElement,
+    index: number,
+    clientRect?: DOMRect,
+  ) => void;
   pendingImageId: number;
   currentImageId: number;
   imageAniTimeline: gsap.core.Tween | null;
   firstEnterAniInProgress: boolean;
+  isAnimating: boolean;
+  _uBlocksPositions?: THREE.Vector4[];
+  _lastScrollY?: number;
 };
 
 type BlockBase = {
