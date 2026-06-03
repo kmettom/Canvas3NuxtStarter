@@ -106,6 +106,9 @@ const blockCountersUpdate = () => {
 
 const tlNewBlockAniIn = gsap.timeline({
   paused: true,
+  onUpdate: () => {
+    ethBlocksAnimation.isAnimating = true;
+  },
   onComplete: () => {
     newLoadingBlock();
   },
@@ -135,6 +138,9 @@ async function newLoadingBlock() {
     return;
   }
   blockCountersUpdate();
+  tlNewBlockAniIn.add(() => {
+    el.classList.add("animating");
+  });
   tlNewBlockAniIn.to(el, {
     duration: 0.2,
     height: "10px",
@@ -148,6 +154,7 @@ async function newLoadingBlock() {
     width: "100%",
     duration: DEFAULT_BLOCK_LOADING_TIME,
     onComplete: () => {
+      el.classList.remove("animating");
       if (ethBlocksAnimation.firstEnterAniInProgress) {
         ethBlocksAnimation.firstEnterAniInProgress = false;
       }
@@ -177,6 +184,9 @@ const blockDoneAnimate = (blockId: number) => {
     if (!el) {
       return;
     }
+    tlNewBlockAniIn.add(() => {
+      el.classList.add("animating");
+    });
     tlNewBlockAniIn.to(el.querySelector(".block-loading-progress"), {
       width: "0%",
       duration: 0.15,
@@ -196,7 +206,9 @@ const blockDoneAnimate = (blockId: number) => {
       width: 0,
       duration: 0,
       opacity: 1,
-      onComplete: () => {},
+      onComplete: () => {
+        el.classList.remove("animating");
+      },
     });
 
     tlNewBlockAniIn.play();
@@ -221,47 +233,6 @@ const addBlockListener = () => {
     }
   };
 };
-
-// const blockToFullWidthAni = (block: Element) => {
-//   tlNewBlockAniIn.to(block, {
-//     duration: 0.2,
-//     height: "10px",
-//   });
-//   tlNewBlockAniIn.to(block, {
-//     width: "423px",
-//     duration: 0.3,
-//   });
-// };
-
-// const firstBlockLoaderAni = () => {
-//   const lastOfInitialBlock = getBlockElFromBlockId(2);
-//   if (!lastOfInitialBlock) return;
-//   blockToFullWidthAni(lastOfInitialBlock);
-//   const progressBarEl = lastOfInitialBlock.querySelector(
-//     ".block-loading-progress",
-//   );
-//   tlNewBlockAniIn.to(progressBarEl, {
-//     width: "100%",
-//     duration: 0.5,
-//   });
-//   tlNewBlockAniIn.to(progressBarEl, {
-//     duration: 0,
-//     right: 0,
-//     left: "initial",
-//   });
-//   tlNewBlockAniIn.to(progressBarEl, {
-//     width: "0%",
-//     duration: 0.2,
-//   });
-//   tlNewBlockAniIn.to(progressBarEl, {
-//     duration: 0,
-//     right: "initial",
-//     left: 0,
-//     onComplete: () => {
-//       ethBlocksAnimation.revealFirstTexture();
-//     },
-//   });
-// };
 
 onUnmounted(() => {
   ethBlocksAnimation.destroy();

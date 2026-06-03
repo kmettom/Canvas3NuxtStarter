@@ -23,6 +23,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   currentImageId: 0,
   imageAniTimeline: null,
   firstEnterAniInProgress: true,
+  isAnimating: false,
+  _uBlocksPositions: [],
+  _lastScrollY: -1,
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
@@ -51,6 +54,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.currentImageId = 0;
     this.imageAniTimeline = null;
     this.firstEnterAniInProgress = true;
+    this.isAnimating = false;
+    this._uBlocksPositions = [];
+    this._lastScrollY = -1;
   },
   async init(ethBlockEls) {
     if (!ethBlockEls) return;
@@ -82,17 +88,25 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     });
   },
   async startRender() {
+    this._uBlocksPositions = Array.from(
+      { length: BLOCKS_ON_SCREEN_AMOUNT },
+      () => new THREE.Vector4(0, 0, 0, 0),
+    );
+
     // We already loaded 1 texture in init, now load the rest for initial blocks
     await this.loadTextures(INITIAL_BLOCK_AMOUNT);
     this.glassMesh = await this.createGlassBlockMesh();
 
     const renderer = Canvas3.getRenderer();
-    const rtWidth = renderer
-      ? renderer.domElement.clientWidth * renderer.getPixelRatio()
-      : window.innerWidth;
-    const rtHeight = renderer
-      ? renderer.domElement.clientHeight * renderer.getPixelRatio()
-      : window.innerHeight;
+    const rtScale = 0.5;
+    const rtWidth =
+      (renderer
+        ? renderer.domElement.clientWidth * renderer.getPixelRatio()
+        : window.innerWidth) * rtScale;
+    const rtHeight =
+      (renderer
+        ? renderer.domElement.clientHeight * renderer.getPixelRatio()
+        : window.innerHeight) * rtScale;
 
     this.sceneRT = new THREE.WebGLRenderTarget(rtWidth, rtHeight, {
       depthBuffer: false,
@@ -129,15 +143,22 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
   },
 
-  animateBlockSizeOnScroll(elNode, index) {
-    const blockClientRect = elNode.getBoundingClientRect();
+  animateBlockSizeOnScroll(elNode, index, blockClientRect) {
+    if (!blockClientRect) blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
     const aniCoef = Math.abs(
       (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
     );
 
-    elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
-    elNode.style.opacity = `${Math.max(1 - aniCoef * 3, 0.35)}`;
+    const currentScrollY = window.scrollY;
+    if (
+      this._lastScrollY !== currentScrollY ||
+      this.firstEnterAniInProgress ||
+      this.isAnimating
+    ) {
+      elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
+      elNode.style.opacity = `${Math.max(1 - aniCoef * 3, 0.35)}`;
+    }
 
     //***************************
     //Set Active Block and trigger inageBG chagne
@@ -324,37 +345,63 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return new THREE.Vector4(x, y, halfW, halfH);
   },
 
+  updateVec4FromClientRect(vec4, clientRect, canvasRect) {
+    const blockPadding = 0;
+    const centerX = clientRect.left + clientRect.width * 0.5;
+    const centerY = clientRect.top + clientRect.height * 0.5;
+    const canvasCenterX = canvasRect.left + canvasRect.width * 0.5;
+    const canvasCenterY = canvasRect.top + canvasRect.height * 0.5;
+    const x = centerX - canvasCenterX;
+    const y = canvasCenterY - centerY - blockPadding;
+
+    const halfW = Number((clientRect.width * 0.5).toFixed(1));
+    const halfH = Number((clientRect.height * 0.5).toFixed(1));
+    vec4.set(x, y, halfW, halfH);
+  },
+
   calculateUBlockPositions() {
-    if (!this.ethBlockEls) {
-      return Array.from(
-        { length: BLOCKS_ON_SCREEN_AMOUNT },
-        () => new THREE.Vector4(0, 0, 0, 0),
+    if (!this.ethBlockEls || !this._uBlocksPositions) {
+      return (
+        this._uBlocksPositions ||
+        Array.from(
+          { length: BLOCKS_ON_SCREEN_AMOUNT },
+          () => new THREE.Vector4(0, 0, 0, 0),
+        )
       );
     }
 
-    const positions: THREE.Vector4[] = [];
+    const renderer = Canvas3.getRenderer();
+    const canvasBounds = renderer?.domElement.getBoundingClientRect();
+    if (!canvasBounds) return this._uBlocksPositions;
 
+    let activeIndex = 0;
     for (let i = 0; i < this.ethBlockEls.length; i++) {
+      const el = this.ethBlockEls[i] as HTMLElement;
       if (
-        this.ethBlockEls[i] &&
-        this.ethBlockEls[i]?.classList.contains("active")
+        el &&
+        (el.classList.contains("active") || el.classList.contains("animating"))
       ) {
-        const clientBounds = this.ethBlockEls[i]?.getBoundingClientRect();
-        const renderer = Canvas3.getRenderer();
-        const canvasBounds = renderer?.domElement.getBoundingClientRect();
-        if (clientBounds && canvasBounds)
-          positions.push(
-            this.getVec4PositionFromClientRect(clientBounds, canvasBounds),
+        const clientBounds = el.getBoundingClientRect();
+        if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
+          this.updateVec4FromClientRect(
+            this._uBlocksPositions[activeIndex],
+            clientBounds,
+            canvasBounds,
           );
-        this.animateBlockSizeOnScroll(this.ethBlockEls[i] as HTMLElement, i);
+          activeIndex++;
+        }
+        this.animateBlockSizeOnScroll(el, i, clientBounds);
       }
     }
 
-    while (positions.length < BLOCKS_ON_SCREEN_AMOUNT) {
-      positions.push(new THREE.Vector4(0, 0, 0, 0));
+    while (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
+      this._uBlocksPositions[activeIndex].set(0, 0, 0, 0);
+      activeIndex++;
     }
 
-    return positions;
+    this._lastScrollY = window.scrollY;
+    this.isAnimating = false;
+    return this._uBlocksPositions;
   },
 
   render() {
