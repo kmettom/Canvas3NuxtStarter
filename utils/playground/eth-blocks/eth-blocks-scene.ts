@@ -163,8 +163,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     //***************************
     //Set Active Block and trigger inageBG chagne
     //***************************
-
-    // console.log("firstEnterAniInProgress", this.firstEnterAniInProgress);
     if (this.firstEnterAniInProgress) return;
     if (!this.ethBlockEls) return;
     const el = this.ethBlockEls[index] as HTMLElement;
@@ -383,19 +381,22 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       ) {
         const clientBounds = el.getBoundingClientRect();
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
-          this.updateVec4FromClientRect(
-            this._uBlocksPositions[activeIndex],
-            clientBounds,
-            canvasBounds,
-          );
-          activeIndex++;
+          const uBlockPosition = this._uBlocksPositions[activeIndex];
+          if (uBlockPosition) {
+            this.updateVec4FromClientRect(
+              uBlockPosition,
+              clientBounds,
+              canvasBounds,
+            );
+            activeIndex++;
+          }
         }
         this.animateBlockSizeOnScroll(el, i, clientBounds);
       }
     }
 
     while (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
-      this._uBlocksPositions[activeIndex].set(0, 0, 0, 0);
+      this._uBlocksPositions[activeIndex]?.set(0, 0, 0, 0);
       activeIndex++;
     }
 
@@ -443,10 +444,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - appear animation with loader, or transition
-//            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
-// - update glass size to fit design
-// - DEBOUNCE IMAGE CHANGE?
 // - on screen resize - Mesh adjust
 // - QA - Shader - uTransitionProgress
 // - ? QA - Scroll magnet to closest block top ?
