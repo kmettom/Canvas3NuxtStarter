@@ -144,6 +144,11 @@ async function newLoadingBlock() {
   tlNewBlockAniIn.to(el, {
     duration: 0.2,
     height: "10px",
+    onComplete: () => {
+      if (ethBlocksAnimation.firstEnterAniInProgress) {
+        ethBlocksAnimation.firstEnterAniInProgress = false;
+      }
+    },
   });
   tlNewBlockAniIn.to(el, {
     width: "423px",
@@ -254,7 +259,6 @@ onMounted(async () => {
   addBlockListener();
 
   await enterAni(tlNewBlockAniIn, ethBlockEls);
-  ethBlocksAnimation.firstEnterAniInProgress = false;
 
   setTimeout(() => {
     ethBlocksAnimation.loadTextures(2, 0);
