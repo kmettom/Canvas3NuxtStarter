@@ -20,6 +20,9 @@
         }"
         :data-bg-image-id="block.imageId"
         :data-block-id="block.blockId"
+        :data-transactions-amount="
+          block.transactions?.length ?? DEFAULT_TRANSACTIONS_AMOUNT
+        "
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
       >
         <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->
@@ -51,6 +54,7 @@ import {
 } from "~/utils/playground/eth-blocks/eth-block-animation-helpers";
 import {
   DEFAULT_BLOCK_LOADING_TIME,
+  DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
 } from "~/constants/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
