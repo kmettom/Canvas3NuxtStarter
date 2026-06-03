@@ -2,32 +2,6 @@
   <div class="page-container">
     <h1 class="heading-1 play-headline">Playground</h1>
     <div class="playground-projects">
-      <!--      <nuxt-link href="/playground/1">-->
-      <!--        <div class="play-1">-->
-      <!--          <h3 class="body-l">Shaders playground</h3>-->
-      <!--          <p class="body-s">Exploring shaders and 3d geometry equations</p>-->
-      <!--          <Canvas3Image-->
-      <!--            :options="{-->
-      <!--              src: 'images/play/play1.JPG',-->
-      <!--              alt: '',-->
-      <!--              shaderName: 'play1',-->
-      <!--            }"-->
-      <!--          />-->
-      <!--        </div>-->
-      <!--      </nuxt-link>-->
-      <!--      <nuxt-link href="/playground/2">-->
-      <!--        <div class="play-1">-->
-      <!--          <h3 class="body-l">Infinite scroll</h3>-->
-      <!--          <p class="body-s">Infinite scroll playground</p>-->
-      <!--          <Canvas3Image-->
-      <!--            :options="{-->
-      <!--              src: 'images/play/play1.JPG',-->
-      <!--              alt: '',-->
-      <!--              shaderName: 'play1',-->
-      <!--            }"-->
-      <!--          />-->
-      <!--        </div>-->
-      <!--      </nuxt-link>-->
       <nuxt-link class="play-link" href="/playground/eth-blocks">
         <div
           class="play-1"
@@ -67,7 +41,6 @@
 <script setup lang="ts">
 import { pageTransition } from "~/utils/animations/pageTransition";
 import { onMounted } from "vue";
-// import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
 
 useSeoMeta({
   title: "Canvas3 - Playground",
@@ -92,12 +65,6 @@ onMounted(() => {
 });
 </script>
 <style lang="scss" scoped>
-#ethBlocks {
-  div {
-    height: 200px;
-    border: 1px solid purple;
-  }
-}
 .play-link {
   color: inherit;
   text-decoration: none;

@@ -42,7 +42,7 @@ export const pageTransition: PageTransition = {
     const rectangle = new THREE.Mesh(geometry, material);
 
     rectangle.name = meshName;
-    rectangle.position.set(0, 0, 0);
+    rectangle.position.set(0, 0, 3);
     rectangle.scale.set(0, window.innerHeight, 0);
 
     Canvas3.addMeshToScene(rectangle);
