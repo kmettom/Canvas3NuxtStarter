@@ -383,19 +383,22 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       ) {
         const clientBounds = el.getBoundingClientRect();
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
-          this.updateVec4FromClientRect(
-            this._uBlocksPositions[activeIndex],
-            clientBounds,
-            canvasBounds,
-          );
-          activeIndex++;
+          const uBlockPosition = this._uBlocksPositions[activeIndex];
+          if (uBlockPosition) {
+            this.updateVec4FromClientRect(
+              uBlockPosition,
+              clientBounds,
+              canvasBounds,
+            );
+            activeIndex++;
+          }
         }
         this.animateBlockSizeOnScroll(el, i, clientBounds);
       }
     }
 
     while (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
-      this._uBlocksPositions[activeIndex].set(0, 0, 0, 0);
+      this._uBlocksPositions[activeIndex]?.set(0, 0, 0, 0);
       activeIndex++;
     }
 
