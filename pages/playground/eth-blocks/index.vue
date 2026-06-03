@@ -21,7 +21,7 @@
         :data-bg-image-id="block.imageId"
         :data-block-id="block.blockId"
         :data-transactions-amount="
-          block.transactions.length ?? DEFAULT_TRANSACTIONS_AMOUNT
+          block.transactions?.length ?? DEFAULT_TRANSACTIONS_AMOUNT
         "
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
       >

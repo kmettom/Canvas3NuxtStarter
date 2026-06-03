@@ -249,13 +249,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     newImageId,
     transactionsAmount = DEFAULT_TRANSACTIONS_AMOUNT,
   ) {
-    const baseAniDuration = 1;
-    const imageChangeDuration = (
-      baseAniDuration -
-      (Canvas3.getScrollSpeed() ?? 1) +
-      0.2
-    ).toFixed(2);
-
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (!meshToUpdate) continue;
@@ -276,9 +269,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
     if (!material.uniforms.uColAmount) return;
-    material.uniforms.uColAmount.value = transactionsAmount;
+    material.uniforms.uColAmount.value = Math.max(15, transactionsAmount / 10);
 
     if (!material.uniforms.uTransitionProgress) return;
+
+    //   Canvas3.getScrollSpeed()
+    const imageChangeDuration = 0.5;
+
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
       { value: 0 },
