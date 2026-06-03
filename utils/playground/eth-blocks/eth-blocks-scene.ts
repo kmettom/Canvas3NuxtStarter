@@ -27,6 +27,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
   destroy() {
+    const scene = Canvas3.getScene();
+    if (this.glassMesh) {
+      scene.remove(this.glassMesh);
+    }
+    for (let i = 0; i < this.imageBgMeshes.length; i++) {
+      const meshToRemove = this.imageBgMeshes[i];
+      if (meshToRemove) {
+        scene.remove(meshToRemove);
+      }
+    }
+    Canvas3.removeAnimationFromRender("ethBlocksAnimation");
     this.imageBgMeshes = [];
     this.glassMesh = null;
     this.sceneRT = null;
