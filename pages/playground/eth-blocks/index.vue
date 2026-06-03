@@ -20,6 +20,9 @@
         }"
         :data-bg-image-id="block.imageId"
         :data-block-id="block.blockId"
+        :data-transactions-amount="
+          block.transactions?.length ?? DEFAULT_TRANSACTIONS_AMOUNT
+        "
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
       >
         <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->
@@ -51,6 +54,7 @@ import {
 } from "~/utils/playground/eth-blocks/eth-block-animation-helpers";
 import {
   DEFAULT_BLOCK_LOADING_TIME,
+  DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
 } from "~/constants/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
@@ -143,6 +147,11 @@ async function newLoadingBlock() {
   tlNewBlockAniIn.to(blockProgressBarEl, {
     width: "100%",
     duration: DEFAULT_BLOCK_LOADING_TIME,
+    onComplete: () => {
+      if (ethBlocksAnimation.firstEnterAniInProgress) {
+        ethBlocksAnimation.firstEnterAniInProgress = false;
+      }
+    },
   });
 }
 
@@ -153,7 +162,7 @@ const blockDoneAnimate = (blockId: number) => {
   }
 
   setTimeout(() => {
-    ethBlocksAnimation.loadTextures(2, 1500);
+    ethBlocksAnimation.loadTextures(2, 0);
   }, 5000);
 
   tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
@@ -213,45 +222,52 @@ const addBlockListener = () => {
   };
 };
 
-const blockToFullWidthAni = (block: Element) => {
-  tlNewBlockAniIn.to(block, {
-    duration: 0.2,
-    height: "10px",
-  });
-  tlNewBlockAniIn.to(block, {
-    width: "423px",
-    duration: 0.3,
-  });
-};
+// const blockToFullWidthAni = (block: Element) => {
+//   tlNewBlockAniIn.to(block, {
+//     duration: 0.2,
+//     height: "10px",
+//   });
+//   tlNewBlockAniIn.to(block, {
+//     width: "423px",
+//     duration: 0.3,
+//   });
+// };
 
-const firstBlockLoaderAni = async () => {
-  const lastOfInitialBlock = getBlockElFromBlockId(2);
-  if (!lastOfInitialBlock) return;
-  blockToFullWidthAni(lastOfInitialBlock);
-  const progressBarEl = lastOfInitialBlock.querySelector(
-    ".block-loading-progress",
-  );
-  tlNewBlockAniIn.to(progressBarEl, {
-    width: "100%",
-    duration: 0.5,
-  });
-  tlNewBlockAniIn.to(progressBarEl, {
-    duration: 0,
-    right: 0,
-    left: "initial",
-  });
-  tlNewBlockAniIn.to(progressBarEl, {
-    width: "0%",
-    duration: 0.2,
-  });
-  tlNewBlockAniIn.to(progressBarEl, {
-    duration: 0,
-    right: "initial",
-    left: 0,
-  });
-};
+// const firstBlockLoaderAni = () => {
+//   const lastOfInitialBlock = getBlockElFromBlockId(2);
+//   if (!lastOfInitialBlock) return;
+//   blockToFullWidthAni(lastOfInitialBlock);
+//   const progressBarEl = lastOfInitialBlock.querySelector(
+//     ".block-loading-progress",
+//   );
+//   tlNewBlockAniIn.to(progressBarEl, {
+//     width: "100%",
+//     duration: 0.5,
+//   });
+//   tlNewBlockAniIn.to(progressBarEl, {
+//     duration: 0,
+//     right: 0,
+//     left: "initial",
+//   });
+//   tlNewBlockAniIn.to(progressBarEl, {
+//     width: "0%",
+//     duration: 0.2,
+//   });
+//   tlNewBlockAniIn.to(progressBarEl, {
+//     duration: 0,
+//     right: "initial",
+//     left: 0,
+//     onComplete: () => {
+//       ethBlocksAnimation.revealFirstTexture();
+//     },
+//   });
+// };
 
-onUnmounted(() => eventSource?.close());
+onUnmounted(() => {
+  ethBlocksAnimation.destroy();
+  eventSource?.close();
+  tlNewBlockAniIn.kill();
+});
 
 await fetchInitialBlocks();
 
@@ -263,22 +279,17 @@ onMounted(async () => {
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
 
-  await firstBlockLoaderAni();
-
   await ethBlocksAnimation.init(ethBlockEls);
+  await ethBlocksAnimation.startRender();
+  await ethBlocksAnimation.revealFirstTexture();
 
-  // ethBlocksAnimation.revealFirstTexture();
-  //TODO: combine texture reviel with enter ani and image change is also triggered on enter ani
   enterAni(tlNewBlockAniIn, ethBlockEls);
 
-  await ethBlocksAnimation.startRender();
   addBlockListener();
 
-  ethBlocksAnimation.firstEnterAniInProgress = false;
-
   setTimeout(() => {
-    ethBlocksAnimation.loadTextures(3, 1000);
-  }, 3000);
+    ethBlocksAnimation.loadTextures(2, 0);
+  }, 5000);
 });
 
 // https://www.shadertoy.com/view/wccSDf

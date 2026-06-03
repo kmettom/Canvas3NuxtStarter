@@ -13,6 +13,7 @@ export type EthBlocksAnimation = {
   blocksTopPadding: number;
   setBlockBasePosition: () => void;
   init: (ethBlockEls: HTMLCollection) => Promise<void>;
+  destroy: () => void;
   revealFirstTexture: () => Promise<void>;
   startRender: () => Promise<void>;
   loadTextures: (
@@ -30,7 +31,11 @@ export type EthBlocksAnimation = {
   ) => THREE.Vector4;
   calculateUBlockPositions: () => THREE.Vector4[];
   render: () => void;
-  imageBgChange: (prevImageId: number, nextImageId: number) => void;
+  imageBgChange: (
+    prevImageId: number,
+    nextImageId: number,
+    transactionsAmount?: number,
+  ) => void;
   animateBlockSizeOnScroll: (elNode: HTMLElement, index: number) => void;
   pendingImageId: number;
   currentImageId: number;

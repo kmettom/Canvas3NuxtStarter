@@ -5,7 +5,6 @@ uniform sampler2D uImage;
 
 uniform float uAniInImage;   // 0..1 reveal progress
 
-uniform float uHover;
 uniform float uBlockColor;
 
 uniform vec2 uMeshSize;

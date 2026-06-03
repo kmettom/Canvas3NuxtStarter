@@ -3,6 +3,7 @@ import { Canvas3Options } from "~/constants/canvas3-options";
 import { gsap } from "gsap";
 import {
   BLOCKS_ON_SCREEN_AMOUNT,
+  DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
 } from "~/constants/playground/eth-blocks";
@@ -25,12 +26,36 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
+  destroy() {
+    const scene = Canvas3.getScene();
+    if (this.glassMesh) {
+      scene.remove(this.glassMesh);
+    }
+    for (let i = 0; i < this.imageBgMeshes.length; i++) {
+      const meshToRemove = this.imageBgMeshes[i];
+      if (meshToRemove) {
+        scene.remove(meshToRemove);
+      }
+    }
+    Canvas3.removeAnimationFromRender("ethBlocksAnimation");
+    this.imageBgMeshes = [];
+    this.glassMesh = null;
+    this.sceneRT = null;
+    this.ethBlockEls = null;
+    this.loadingBlockId = 0;
+    this.activeBlockId = 0;
+    this.activeImageId = 0;
+    this.blocksTopPadding = 0.25;
+    this.blocksBasePosition = 0;
+    this.pendingImageId = 0;
+    this.currentImageId = 0;
+    this.imageAniTimeline = null;
+    this.firstEnterAniInProgress = true;
+  },
   async init(ethBlockEls) {
     if (!ethBlockEls) return;
-
     this.ethBlockEls = ethBlockEls;
-
-    await this.loadTextures(1);
+    await this.loadTextures(2);
   },
   async revealFirstTexture() {
     return new Promise((resolve) => {
@@ -133,7 +158,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const imageId = Number(el.dataset.bgImageId);
     const prevImageId = this.activeImageId;
     this.activeImageId = imageId;
-    this.imageBgChange(prevImageId, imageId);
+    const transactionsAmount = Number(el.dataset.transactionsAmount);
+    this.imageBgChange(prevImageId, imageId, transactionsAmount);
   },
 
   async createGlassBlockMesh() {
@@ -206,6 +232,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uTime: { value: 0 },
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
+        uColAmount: { value: DEFAULT_TRANSACTIONS_AMOUNT },
         uTransitionProgress: { value: 0 },
         uAniInImage: { value: 1 },
         uHover: { value: 1 },
@@ -241,14 +268,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return mesh;
   },
 
-  async imageBgChange(prevImageId, newImageId) {
-    const baseAniDuration = 1;
-    const imageChangeDuration = (
-      baseAniDuration -
-      (Canvas3.getScrollSpeed() ?? 1) +
-      0.2
-    ).toFixed(2);
-
+  async imageBgChange(
+    prevImageId,
+    newImageId,
+    transactionsAmount = DEFAULT_TRANSACTIONS_AMOUNT,
+  ) {
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (!meshToUpdate) continue;
@@ -268,8 +292,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const uTexturePreviousValue = prevMaterial.uniforms.uTexture?.value;
     if (!material.uniforms.uTexturePrevious || !uTexturePreviousValue) return;
     material.uniforms.uTexturePrevious.value = uTexturePreviousValue;
+    if (!material.uniforms.uColAmount) return;
+    material.uniforms.uColAmount.value = Math.max(15, transactionsAmount / 10);
 
     if (!material.uniforms.uTransitionProgress) return;
+
+    //   Canvas3.getScrollSpeed()
+    const imageChangeDuration = 0.5;
+
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
       { value: 0 },
@@ -369,6 +399,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 // - appear animation with loader, or transition
 //            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
 // - update glass size to fit design
+// - DEBOUNCE IMAGE CHANGE?
+// - on screen resize - Mesh adjust
 // - QA - Shader - uTransitionProgress
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
