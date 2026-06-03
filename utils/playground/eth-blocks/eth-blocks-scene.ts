@@ -28,10 +28,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
   async init(ethBlockEls) {
     if (!ethBlockEls) return;
-
     this.ethBlockEls = ethBlockEls;
-
-    await this.loadTextures(1);
+    await this.loadTextures(2);
   },
   async revealFirstTexture() {
     return new Promise((resolve) => {
@@ -375,6 +373,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 // - appear animation with loader, or transition
 //            - first load - make lazy with textures / meshes - remove unnesesery dependencies - textures and meshes array
 // - update glass size to fit design
+// - DEBOUNCE IMAGE CHANGE?
+// - on screen resize - Mesh adjust
 // - QA - Shader - uTransitionProgress
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
