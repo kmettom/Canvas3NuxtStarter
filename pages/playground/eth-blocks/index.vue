@@ -263,7 +263,10 @@ const blockToFullWidthAni = (block: Element) => {
 //   });
 // };
 
-onUnmounted(() => eventSource?.close());
+onUnmounted(() => {
+  ethBlocksAnimation.destroy();
+  eventSource?.close();
+});
 
 await fetchInitialBlocks();
 

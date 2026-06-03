@@ -13,6 +13,7 @@ export type EthBlocksAnimation = {
   blocksTopPadding: number;
   setBlockBasePosition: () => void;
   init: (ethBlockEls: HTMLCollection) => Promise<void>;
+  destroy: () => void;
   revealFirstTexture: () => Promise<void>;
   startRender: () => Promise<void>;
   loadTextures: (

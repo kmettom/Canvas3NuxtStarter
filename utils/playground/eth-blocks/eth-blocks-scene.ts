@@ -26,6 +26,21 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
+  destroy() {
+    this.imageBgMeshes = [];
+    this.glassMesh = null;
+    this.sceneRT = null;
+    this.ethBlockEls = null;
+    this.loadingBlockId = 0;
+    this.activeBlockId = 0;
+    this.activeImageId = 0;
+    this.blocksTopPadding = 0.25;
+    this.blocksBasePosition = 0;
+    this.pendingImageId = 0;
+    this.currentImageId = 0;
+    this.imageAniTimeline = null;
+    this.firstEnterAniInProgress = true;
+  },
   async init(ethBlockEls) {
     if (!ethBlockEls) return;
     this.ethBlockEls = ethBlockEls;
