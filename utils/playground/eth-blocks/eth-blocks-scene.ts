@@ -449,6 +449,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 // - shader darker for better text contrast
 // - loading block border radius on glass
 // - bg image on resize change size to fit resize
+// - MOBILE RWD
+
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
 // - ? maxAmount of blocks 25, remove the oldest once
