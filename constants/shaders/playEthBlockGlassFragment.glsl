@@ -10,18 +10,22 @@ uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 uniform float time;
 
-vec2 coverUv(vec2 raw) {
-    float meshAspect = uMeshSize.x / uMeshSize.y;
-    float textureAspect = uTextureSize.x / uTextureSize.y;
-    vec2 uv = raw;
-    if (meshAspect > textureAspect) {
-        float s = textureAspect / meshAspect;
-        uv.y = uv.y * s + (1.0 - s) * 0.5;
+vec2 coverUv(vec2 uv) {
+    vec2 screen = uMeshSize;
+    vec2 image = uTextureSize;
+
+    float screenRatio = screen.x / screen.y;
+    float imageRatio = image.x / image.y;
+
+    vec2 ratio = vec2(1.0);
+
+    if (screenRatio < imageRatio) {
+        ratio.x = screenRatio / imageRatio;
     } else {
-        float s = meshAspect / textureAspect;
-        uv.x = uv.x * s + (1.0 - s) * 0.5;
+        ratio.y = imageRatio / screenRatio;
     }
-    return uv;
+
+    return uv * ratio + (1.0 - ratio) * 0.5;
 }
 
 vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
@@ -33,8 +37,8 @@ vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
     float roundedBox = pow(abs(m2.x), boxRadius) + pow(abs(m2.y), boxRadius);
 
     float rb1 = clamp((1.00 - roundedBox) * 8.0, 0.0, 1.0);
-    float rb2 = clamp((0.95 - roundedBox) * 16.0, 0.0, 1.0)
-    - clamp((0.90 - roundedBox) * 16.0, 0.0, 1.0);
+    float rb2 = clamp((0.95 - roundedBox) * 16.0, 0.0, 1.0) -
+    clamp((0.90 - roundedBox) * 16.0, 0.0, 1.0);
     float rb3 = clamp((1.50 - roundedBox) * 2.0, 0.0, 1.0)
     - clamp((1.00 - roundedBox) * 2.0, 0.0, 1.0);
 
