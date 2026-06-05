@@ -444,9 +444,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - on screen resize - Mesh adjust
-// - QA - Shader - uTransitionProgress
+// - shader darker for better text contrast
+// - loading block border radius on glass
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
 // - ? maxAmount of blocks 25, remove the oldest once
 //---------
+// - First transition missing

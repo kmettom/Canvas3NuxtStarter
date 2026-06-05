@@ -10,6 +10,7 @@ uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 uniform float time;
 
+
 vec2 coverUv(vec2 uv) {
     vec2 screen = uMeshSize;
     vec2 image = uTextureSize;
@@ -28,12 +29,13 @@ vec2 coverUv(vec2 uv) {
     return uv * ratio + (1.0 - ratio) * 0.5;
 }
 
+float boxRadius = 20.0;
+
 vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
     vec2 glassCenter = vec2(0.5) + rect.xy / uMeshSize;
     vec2 glassHalfUv = rect.zw / uMeshSize;
 
     vec2 m2 = (vUv - glassCenter) / glassHalfUv;
-    float boxRadius = 20.0;
     float roundedBox = pow(abs(m2.x), boxRadius) + pow(abs(m2.y), boxRadius);
 
     float rb1 = clamp((1.00 - roundedBox) * 8.0, 0.0, 1.0);
