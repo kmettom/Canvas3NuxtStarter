@@ -66,8 +66,18 @@ vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
     clamp((clamp(m2uv.y, 0.0, 0.2) + 0.1) * 0.5, 0.0, 1.0) +
     clamp((clamp(-m2uv.y, -1000.0, 0.2) * rb3 + 0.1) * 0.5, 0.0, 1.0);
 
-    vec4 lighting = clamp(blurred + vec4(rb1) * gradient + vec4(rb2) * 0.3, 0.0, 1.0);
-    return mix(baseColor, lighting, transition);
+    //    vec4 lighting = clamp(blurred + vec4(rb1) * gradient + vec4(rb2) * 0.3, 0.0, 1.0);
+    //    return mix(baseColor, lighting, transition);
+
+    vec4 lighting = clamp(
+    blurred
+    - vec4(vec3(rb1 * gradient * 0.15), 0.0)
+    - vec4(vec3(rb2 * 0.1), 0.0),
+    0.0, 1.0
+    );
+//    float glassOpacity = clamp(transition * 1.35, 0.0, 1.0);
+    float glassOpacity = clamp(0.25 + transition * 0.9, 0.0, 1.0);
+    return mix(baseColor, lighting, glassOpacity);
 }
 
 void main() {

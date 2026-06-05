@@ -289,8 +289,8 @@ onMounted(async () => {
   border-radius: 25px;
   will-change: transform, opacity;
   contain: layout paint style; /* isolates paint work */
-  border: 1px solid transparent;
   transition: border ease 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   &.block-loading {
     border: 1px solid rgba(255, 255, 255, 0.5);
   }
