@@ -228,8 +228,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = meshId;
-    const neutralZScale = 1;
-    mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.scale.set(window.innerWidth, window.innerHeight, 1);
     mesh.position.z = 2;
 
     Canvas3.addMeshToScene(mesh);
@@ -276,8 +275,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = meshId;
-    const neutralZScale = 1;
-    mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.scale.set(window.innerWidth, window.innerHeight, 1);
     mesh.position.z = id === 0 ? 1 : 0;
 
     Canvas3.addMeshToScene(mesh);
@@ -408,6 +406,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (meshToUpdate) {
+        // meshToUpdate.scale.set(window.innerWidth, window.innerHeight, 1);
+        meshToUpdate.scale.set(window.innerWidth, window.innerHeight, 1);
+        meshToUpdate.position.x = 0;
+        meshToUpdate.position.y = 0;
         const materialToUpdate = meshToUpdate.material as THREE.ShaderMaterial;
         if (materialToUpdate.uniforms.uViewport)
           materialToUpdate.uniforms.uViewport.value = new THREE.Vector2(
