@@ -245,6 +245,9 @@ onUnmounted(() => {
 await fetchInitialBlocks();
 
 onMounted(async () => {
+  window.addEventListener("resize", () => {
+    ethBlocksAnimation.resizeImageBGMesh();
+  });
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
   if (!ethBlockEls) return;

@@ -35,6 +35,7 @@ export type EthBlocksAnimation = {
     canvasRect: DOMRect,
   ) => void;
   calculateUBlockPositions: () => THREE.Vector4[];
+  resizeImageBGMesh: () => void;
   render: () => void;
   imageBgChange: (
     prevImageId: number,

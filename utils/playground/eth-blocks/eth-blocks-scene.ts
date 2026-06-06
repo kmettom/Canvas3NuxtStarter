@@ -195,7 +195,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uTime: { value: 0 },
-        uAniInImage: { value: 1 },
         uHover: { value: 1 },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) },
         uMouse: { value: new THREE.Vector2(0, 0) },
@@ -253,7 +252,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         uTexturePrevious: { value: null },
         uColAmount: { value: DEFAULT_TRANSACTIONS_AMOUNT },
         uTransitionProgress: { value: 0 },
-        uAniInImage: { value: 1 },
         uHover: { value: 1 },
         vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
         uMouse: { value: new THREE.Vector2(0, 0) },
@@ -406,6 +404,24 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.isAnimating = false;
     return this._uBlocksPositions;
   },
+  resizeImageBGMesh() {
+    for (let i = 0; i < this.imageBgMeshes.length; i++) {
+      const meshToUpdate = this.imageBgMeshes[i];
+      if (meshToUpdate) {
+        const materialToUpdate = meshToUpdate.material as THREE.ShaderMaterial;
+        if (materialToUpdate.uniforms.uViewport)
+          materialToUpdate.uniforms.uViewport.value = new THREE.Vector2(
+            window.innerWidth,
+            window.innerHeight,
+          );
+        if (materialToUpdate.uniforms.uMeshSize)
+          materialToUpdate.uniforms.uMeshSize.value = new THREE.Vector2(
+            window.innerWidth,
+            window.innerHeight,
+          );
+      }
+    }
+  },
 
   render() {
     if (!this.glassMesh || !this.sceneRT) return;
@@ -446,8 +462,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - shader darker for better text contrast
-// - loading block border radius on glass
+// - shader darker for better text contrast - improve more
 // - bg image on resize change size to fit resize
 // - MOBILE RWD
 
