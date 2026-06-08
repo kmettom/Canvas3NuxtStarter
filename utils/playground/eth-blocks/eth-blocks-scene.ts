@@ -464,6 +464,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 // - shader darker for better text contrast - improve more
 // - First transition missing
 // - transition Shader
+// - It might also be a nice idea to add a counting animation for the numbers - okey, I will add
 
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
