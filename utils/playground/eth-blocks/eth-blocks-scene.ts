@@ -405,26 +405,23 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   resizeImageBGMesh() {
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
-      if (meshToUpdate) {
-        // meshToUpdate.scale.set(window.innerWidth, window.innerHeight, 1);
-        meshToUpdate.scale.set(window.innerWidth, window.innerHeight, 1);
-        meshToUpdate.position.x = 0;
-        meshToUpdate.position.y = 0;
-        const materialToUpdate = meshToUpdate.material as THREE.ShaderMaterial;
-        if (materialToUpdate.uniforms.uViewport)
-          materialToUpdate.uniforms.uViewport.value = new THREE.Vector2(
-            window.innerWidth,
-            window.innerHeight,
-          );
-        if (materialToUpdate.uniforms.uMeshSize)
-          materialToUpdate.uniforms.uMeshSize.value = new THREE.Vector2(
-            window.innerWidth,
-            window.innerHeight,
-          );
-      }
+      if (!meshToUpdate) continue;
+
+      meshToUpdate.scale.set(window.innerWidth, window.innerHeight, 1);
+      meshToUpdate.position.x = 0;
+      meshToUpdate.position.y = 0;
+
+      const material = meshToUpdate.material as THREE.ShaderMaterial;
+      material.uniforms.uMeshSize?.value.set(
+        window.innerWidth,
+        window.innerHeight,
+      );
+      material.uniforms.uViewport?.value.set(
+        window.innerWidth,
+        window.innerHeight,
+      );
     }
   },
-
   render() {
     if (!this.glassMesh || !this.sceneRT) return;
 
