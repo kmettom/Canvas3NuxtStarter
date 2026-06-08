@@ -40,6 +40,40 @@ export function aniProgressBar(
   }
 }
 
+export function aniContentValuesCounter(
+  blockEl: Element,
+  classSelector: string,
+  tlNewBlockAniIn: gsap.core.Timeline,
+  gsapTimelineDelay?: string,
+) {
+  const elementsToAni = blockEl.querySelectorAll(classSelector);
+
+  if (elementsToAni.length) {
+    for (let i = 0; i < elementsToAni.length; i++) {
+      const content = elementsToAni[i] as HTMLElement;
+      if (elementsToAni[i] && content) {
+        tlNewBlockAniIn.fromTo(
+          content,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.15 },
+          "<",
+        );
+        tlNewBlockAniIn.from(
+          content,
+          {
+            innerText: 0,
+            duration: 0.75,
+            snap: {
+              innerText: 1,
+            },
+          },
+          gsapTimelineDelay,
+        );
+      }
+    }
+  }
+}
+
 export function aniContentValues(
   blockEl: Element,
   classSelector: string,
@@ -139,10 +173,16 @@ export function blockContentAniIn(
   blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
 ) {
-  aniContentValues(blockEl, ".ani-index-title", tlNewBlockAniIn, "<+0.3");
+  aniContentValues(blockEl, ".ani-index-title", tlNewBlockAniIn, "<+0.35");
   aniIcons(blockEl, tlNewBlockAniIn, "<");
-  aniContentValues(blockEl, ".ani-index-0", tlNewBlockAniIn, "<");
-  aniContentValues(blockEl, ".ani-index-1", tlNewBlockAniIn, "<");
+  aniContentValuesCounter(
+    blockEl,
+    ".ani-index-0-counter",
+    tlNewBlockAniIn,
+    "<+0.15",
+  );
+  aniContentValues(blockEl, ".ani-index-0", tlNewBlockAniIn, "<+0.15");
+  aniContentValues(blockEl, ".ani-index-1", tlNewBlockAniIn, "<+0.15");
   aniProgressBar(blockEl, tlNewBlockAniIn, "<+0.1");
   aniGasChart(blockEl, tlNewBlockAniIn, "<");
 }

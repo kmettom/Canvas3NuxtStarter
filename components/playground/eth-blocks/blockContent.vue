@@ -22,7 +22,8 @@ const props = defineProps<{
     <div class="content-row">
       <div class="content-block">
         <div class="content-title ani-index-title">Transactions:</div>
-        <div class="content-value ani-index-0 eth-large-text">
+        <!--        ani-index-0-->
+        <div class="content-value ani-index-0-counter eth-large-text">
           {{ block.transactions.length }}
         </div>
       </div>
