@@ -299,9 +299,18 @@ onMounted(async () => {
   will-change: transform, opacity;
   contain: layout paint style; /* isolates paint work */
   transition: border ease 0.3s;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   &.block-loading {
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    &:after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
   }
 }
 </style>

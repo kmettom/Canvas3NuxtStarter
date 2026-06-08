@@ -352,9 +352,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       const el = this.ethBlockEls[i] as HTMLElement;
       if (
         el &&
-        (el.classList.contains("active") ||
-          el.classList.contains("animating")) &&
-        !el.classList.contains("block-loading")
+        (el.classList.contains("active") || el.classList.contains("animating"))
+        // &&
+        // !el.classList.contains("block-loading")
       ) {
         const clientBounds = el.getBoundingClientRect();
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
