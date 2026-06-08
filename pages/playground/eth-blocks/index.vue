@@ -279,6 +279,9 @@ onMounted(async () => {
 .eth-blocks {
   width: 423px;
   margin: 0 auto;
+  @include respond-width($w-xs) {
+    width: 95%;
+  }
 }
 
 .eth-block {
