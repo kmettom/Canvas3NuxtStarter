@@ -79,7 +79,7 @@ export async function enterAni(
       duration: 0.1,
     });
     tlNewBlockAniIn.to(ethBlockEls, {
-      width: "423px",
+      width: "100%",
       height: "236px",
       marginTop: "20px",
       duration: 0.5,

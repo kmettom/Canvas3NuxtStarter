@@ -98,15 +98,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.glassMesh = await this.createGlassBlockMesh();
 
     const renderer = Canvas3.getRenderer();
-    const rtScale = 0.5;
-    const rtWidth =
-      (renderer
-        ? renderer.domElement.clientWidth * renderer.getPixelRatio()
-        : window.innerWidth) * rtScale;
-    const rtHeight =
-      (renderer
-        ? renderer.domElement.clientHeight * renderer.getPixelRatio()
-        : window.innerHeight) * rtScale;
+    const rtWidth = renderer
+      ? renderer.domElement.clientWidth * renderer.getPixelRatio()
+      : window.innerWidth;
+    const rtHeight = renderer
+      ? renderer.domElement.clientHeight * renderer.getPixelRatio()
+      : window.innerHeight;
 
     this.sceneRT = new THREE.WebGLRenderTarget(rtWidth, rtHeight, {
       depthBuffer: false,
@@ -193,17 +190,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const meshId = "ethBlockBg";
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        uDevicePixelRatio: { value: window.devicePixelRatio },
-        uTime: { value: 0 },
-        uAniInImage: { value: 1 },
-        uHover: { value: 1 },
-        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) },
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uMouseMovement: { value: new THREE.Vector2(0, 0) },
         uMeshSize: {
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-        },
-        uTextureSize: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uViewport: {
@@ -214,9 +201,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         },
         uBlocks: {
           value: uBlocksPositions,
-        },
-        uBlockColor: {
-          value: 0,
         },
         uSceneTexture: { value: null },
       },
@@ -229,8 +213,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = meshId;
-    const neutralZScale = 1;
-    mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.scale.set(window.innerWidth, window.innerHeight, 1);
     mesh.position.z = 2;
 
     Canvas3.addMeshToScene(mesh);
@@ -247,17 +230,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const meshId = "imageBgMesh_" + id;
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        uDevicePixelRatio: { value: window.devicePixelRatio },
-        uTime: { value: 0 },
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
         uColAmount: { value: DEFAULT_TRANSACTIONS_AMOUNT },
         uTransitionProgress: { value: 0 },
-        uAniInImage: { value: 1 },
-        uHover: { value: 1 },
-        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uMouseMovement: { value: new THREE.Vector2(0, 0) },
         uMeshSize: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
@@ -278,8 +254,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = meshId;
-    const neutralZScale = 1;
-    mesh.scale.set(window.innerWidth, window.innerHeight, neutralZScale);
+    mesh.scale.set(window.innerWidth, window.innerHeight, 1);
     mesh.position.z = id === 0 ? 1 : 0;
 
     Canvas3.addMeshToScene(mesh);
@@ -377,7 +352,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       const el = this.ethBlockEls[i] as HTMLElement;
       if (
         el &&
-        (el.classList.contains("active") || el.classList.contains("animating"))
+        (el.classList.contains("active") ||
+          el.classList.contains("animating")) &&
+        !el.classList.contains("block-loading")
       ) {
         const clientBounds = el.getBoundingClientRect();
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
@@ -404,7 +381,47 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.isAnimating = false;
     return this._uBlocksPositions;
   },
+  resizeImageBGMesh() {
+    if (this.glassMesh) {
+      this.glassMesh.scale.set(window.innerWidth, window.innerHeight, 1);
+      this.glassMesh.position.x = 0;
+      this.glassMesh.position.y = 0;
 
+      const mat = this.glassMesh.material as THREE.ShaderMaterial;
+      mat.uniforms.uMeshSize?.value.set(window.innerWidth, window.innerHeight);
+      mat.uniforms.uViewport?.value.set(window.innerWidth, window.innerHeight);
+    }
+
+    if (this.sceneRT) {
+      const renderer = Canvas3.getRenderer();
+      const w =
+        (renderer?.domElement.clientWidth ?? window.innerWidth) *
+        (renderer?.getPixelRatio() ?? 1);
+      const h =
+        (renderer?.domElement.clientHeight ?? window.innerHeight) *
+        (renderer?.getPixelRatio() ?? 1);
+      this.sceneRT.setSize(w, h);
+    }
+
+    for (let i = 0; i < this.imageBgMeshes.length; i++) {
+      const meshToUpdate = this.imageBgMeshes[i];
+      if (!meshToUpdate) continue;
+
+      meshToUpdate.scale.set(window.innerWidth, window.innerHeight, 1);
+      meshToUpdate.position.x = 0;
+      meshToUpdate.position.y = 0;
+
+      const material = meshToUpdate.material as THREE.ShaderMaterial;
+      material.uniforms.uMeshSize?.value.set(
+        window.innerWidth,
+        window.innerHeight,
+      );
+      material.uniforms.uViewport?.value.set(
+        window.innerWidth,
+        window.innerHeight,
+      );
+    }
+  },
   render() {
     if (!this.glassMesh || !this.sceneRT) return;
 
@@ -444,9 +461,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - on screen resize - Mesh adjust
-// - QA - Shader - uTransitionProgress
+// - shader darker for better text contrast - improve more
+// - First transition missing
+// - transition Shader
+
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
 // - ? maxAmount of blocks 25, remove the oldest once
-//---------
+
+//1- https://www.shadertoy.com/view/tfyXRz
+//2- https://www.shadertoy.com/view/wccSDf
+//3- https://www.shadertoy.com/view/3cdXDX

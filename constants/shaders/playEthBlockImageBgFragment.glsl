@@ -6,7 +6,6 @@ uniform sampler2D uTexturePrevious;
 uniform float uTransitionProgress;
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
-uniform float time;
 uniform float uColAmount;
 
 vec2 coverUv(vec2 raw) {

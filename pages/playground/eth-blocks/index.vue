@@ -25,8 +25,6 @@
         "
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
       >
-        <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->
-        <!--        @mouseleave="hoverBlock($event, false, block.blockId)"-->
         <blockContent :block="block" />
       </div>
     </div>
@@ -65,9 +63,7 @@ gsap.registerPlugin(SplitText);
 
 const maxBlocks = 50;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
-// const ethBlocks = ref<HTMLElement | null>(null);
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
-// const blocks = ref<Map<string, BlockItem>>(new Map());
 const ethBlocksWrapper = ref<HTMLElement | null>(null);
 const blocksToRender = computed<BlockItem[]>(() => {
   return [...ethBlocks.value.values()].sort((a, b) =>
@@ -144,9 +140,14 @@ async function newLoadingBlock() {
   tlNewBlockAniIn.to(el, {
     duration: 0.2,
     height: "10px",
+    onComplete: () => {
+      if (ethBlocksAnimation.firstEnterAniInProgress) {
+        ethBlocksAnimation.firstEnterAniInProgress = false;
+      }
+    },
   });
   tlNewBlockAniIn.to(el, {
-    width: "423px",
+    width: "100%",
     duration: 0.3,
   });
   const blockProgressBarEl = el.querySelector(".block-loading-progress");
@@ -235,11 +236,19 @@ onUnmounted(() => {
   ethBlocksAnimation.destroy();
   eventSource?.close();
   tlNewBlockAniIn.kill();
+  window.removeEventListener("resize", handleResize);
 });
 
 await fetchInitialBlocks();
 
+const handleResize = () => {
+  Canvas3.resizeOnChange();
+  ethBlocksAnimation.resizeImageBGMesh();
+};
+
 onMounted(async () => {
+  window.addEventListener("resize", handleResize);
+
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
   if (!ethBlockEls) return;
@@ -254,17 +263,11 @@ onMounted(async () => {
   addBlockListener();
 
   await enterAni(tlNewBlockAniIn, ethBlockEls);
-  ethBlocksAnimation.firstEnterAniInProgress = false;
 
   setTimeout(() => {
     ethBlocksAnimation.loadTextures(2, 0);
   }, 5000);
 });
-
-// https://www.shadertoy.com/view/wccSDf
-// https://www.shadertoy.com/view/wccSDf
-// https://www.shadertoy.com/view/3cdXDX
-// https://www.shadertoy.com/view/tfyXRz
 </script>
 <style lang="scss" scoped>
 .eth-base-text {
@@ -278,6 +281,11 @@ onMounted(async () => {
 }
 
 .eth-blocks {
+  width: 423px;
+  margin: 0 auto;
+  @include respond-width($w-xs) {
+    width: 95%;
+  }
 }
 
 .eth-block {
@@ -290,5 +298,10 @@ onMounted(async () => {
   border-radius: 25px;
   will-change: transform, opacity;
   contain: layout paint style; /* isolates paint work */
+  transition: border ease 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  &.block-loading {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
 }
 </style>
