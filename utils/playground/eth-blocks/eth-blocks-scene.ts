@@ -462,13 +462,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - shader darker for better text contrast - improve more
-// - MOBILE RWD
+// - First transition missing
+// - transition Shader
 
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
 // - ? maxAmount of blocks 25, remove the oldest once
-//---------
-// - First transition missing
+
 
 //1- https://www.shadertoy.com/view/tfyXRz
 //2- https://www.shadertoy.com/view/wccSDf
