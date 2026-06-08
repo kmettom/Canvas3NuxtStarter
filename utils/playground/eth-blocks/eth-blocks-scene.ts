@@ -403,6 +403,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return this._uBlocksPositions;
   },
   resizeImageBGMesh() {
+
+    this.glassMesh?.scale.set(window.innerWidth, window.innerHeight, 1);
+    const materialGlass = this.glassMesh?.material as THREE.ShaderMaterial;
+    materialGlass.uniforms.uMeshSize?.value.set(window.innerWidth, window.innerHeight);
+
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];
       if (!meshToUpdate) continue;
