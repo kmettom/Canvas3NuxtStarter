@@ -394,15 +394,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     if (this.sceneRT) {
       const renderer = Canvas3.getRenderer();
-      const rtScale = 0.5;
       const w =
         (renderer?.domElement.clientWidth ?? window.innerWidth) *
-        (renderer?.getPixelRatio() ?? 1) *
-        rtScale;
+        (renderer?.getPixelRatio() ?? 1);
       const h =
         (renderer?.domElement.clientHeight ?? window.innerHeight) *
-        (renderer?.getPixelRatio() ?? 1) *
-        rtScale;
+        (renderer?.getPixelRatio() ?? 1);
       this.sceneRT.setSize(w, h);
     }
 
