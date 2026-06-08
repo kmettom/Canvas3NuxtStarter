@@ -190,16 +190,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const meshId = "ethBlockBg";
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        uDevicePixelRatio: { value: window.devicePixelRatio },
-        uTime: { value: 0 },
-        uHover: { value: 1 },
-        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) },
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uMouseMovement: { value: new THREE.Vector2(0, 0) },
         uMeshSize: {
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-        },
-        uTextureSize: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uViewport: {
@@ -210,9 +201,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         },
         uBlocks: {
           value: uBlocksPositions,
-        },
-        uBlockColor: {
-          value: 0,
         },
         uSceneTexture: { value: null },
       },
@@ -242,16 +230,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const meshId = "imageBgMesh_" + id;
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        uDevicePixelRatio: { value: window.devicePixelRatio },
-        uTime: { value: 0 },
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
         uColAmount: { value: DEFAULT_TRANSACTIONS_AMOUNT },
         uTransitionProgress: { value: 0 },
-        uHover: { value: 1 },
-        vectorVNoise: { value: new THREE.Vector2(1.5, 1.5) }, // 1.5
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uMouseMovement: { value: new THREE.Vector2(0, 0) },
         uMeshSize: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
