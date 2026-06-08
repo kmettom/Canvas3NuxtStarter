@@ -25,8 +25,6 @@
         "
         :class="`eth-block ${block.loading ? 'block-loading' : ''}`"
       >
-        <!--        @mouseenter="hoverBlock($event, true, block.blockId)"-->
-        <!--        @mouseleave="hoverBlock($event, false, block.blockId)"-->
         <blockContent :block="block" />
       </div>
     </div>
@@ -65,9 +63,7 @@ gsap.registerPlugin(SplitText);
 
 const maxBlocks = 50;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
-// const ethBlocks = ref<HTMLElement | null>(null);
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
-// const blocks = ref<Map<string, BlockItem>>(new Map());
 const ethBlocksWrapper = ref<HTMLElement | null>(null);
 const blocksToRender = computed<BlockItem[]>(() => {
   return [...ethBlocks.value.values()].sort((a, b) =>
@@ -151,7 +147,7 @@ async function newLoadingBlock() {
     },
   });
   tlNewBlockAniIn.to(el, {
-    width: "423px",
+    width: "100%",
     duration: 0.3,
   });
   const blockProgressBarEl = el.querySelector(".block-loading-progress");
@@ -281,6 +277,8 @@ onMounted(async () => {
 }
 
 .eth-blocks {
+  width: 423px;
+  margin: 0 auto;
 }
 
 .eth-block {

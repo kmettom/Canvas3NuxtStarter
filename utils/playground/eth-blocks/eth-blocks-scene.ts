@@ -462,7 +462,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - shader darker for better text contrast - improve more
-// - bg image on resize change size to fit resize
 // - MOBILE RWD
 
 // - ? QA - Scroll magnet to closest block top ?
