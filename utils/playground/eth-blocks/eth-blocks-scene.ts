@@ -469,7 +469,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 // ----------
 // - ? maxAmount of blocks 25, remove the oldest once
 
-
 //1- https://www.shadertoy.com/view/tfyXRz
 //2- https://www.shadertoy.com/view/wccSDf
 //3- https://www.shadertoy.com/view/3cdXDX

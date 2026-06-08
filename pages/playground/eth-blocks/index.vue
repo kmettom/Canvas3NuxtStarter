@@ -236,15 +236,19 @@ onUnmounted(() => {
   ethBlocksAnimation.destroy();
   eventSource?.close();
   tlNewBlockAniIn.kill();
+  window.removeEventListener("resize", handleResize);
 });
 
 await fetchInitialBlocks();
 
+const handleResize = () => {
+  Canvas3.resizeOnChange();
+  ethBlocksAnimation.resizeImageBGMesh();
+};
+
 onMounted(async () => {
-  window.addEventListener("resize", () => {
-    Canvas3.resizeOnChange();
-    ethBlocksAnimation.resizeImageBGMesh();
-  });
+  window.addEventListener("resize", handleResize);
+
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
   if (!ethBlockEls) return;
