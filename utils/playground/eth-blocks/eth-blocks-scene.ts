@@ -98,15 +98,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.glassMesh = await this.createGlassBlockMesh();
 
     const renderer = Canvas3.getRenderer();
-    const rtScale = 0.5;
-    const rtWidth =
-      (renderer
-        ? renderer.domElement.clientWidth * renderer.getPixelRatio()
-        : window.innerWidth) * rtScale;
-    const rtHeight =
-      (renderer
-        ? renderer.domElement.clientHeight * renderer.getPixelRatio()
-        : window.innerHeight) * rtScale;
+    const rtWidth = renderer
+      ? renderer.domElement.clientWidth * renderer.getPixelRatio()
+      : window.innerWidth;
+    const rtHeight = renderer
+      ? renderer.domElement.clientHeight * renderer.getPixelRatio()
+      : window.innerHeight;
 
     this.sceneRT = new THREE.WebGLRenderTarget(rtWidth, rtHeight, {
       depthBuffer: false,
@@ -403,10 +400,29 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return this._uBlocksPositions;
   },
   resizeImageBGMesh() {
+    if (this.glassMesh) {
+      this.glassMesh.scale.set(window.innerWidth, window.innerHeight, 1);
+      this.glassMesh.position.x = 0;
+      this.glassMesh.position.y = 0;
 
-    this.glassMesh?.scale.set(window.innerWidth, window.innerHeight, 1);
-    const materialGlass = this.glassMesh?.material as THREE.ShaderMaterial;
-    materialGlass.uniforms.uMeshSize?.value.set(window.innerWidth, window.innerHeight);
+      const mat = this.glassMesh.material as THREE.ShaderMaterial;
+      mat.uniforms.uMeshSize?.value.set(window.innerWidth, window.innerHeight);
+      mat.uniforms.uViewport?.value.set(window.innerWidth, window.innerHeight);
+    }
+
+    if (this.sceneRT) {
+      const renderer = Canvas3.getRenderer();
+      const rtScale = 0.5;
+      const w =
+        (renderer?.domElement.clientWidth ?? window.innerWidth) *
+        (renderer?.getPixelRatio() ?? 1) *
+        rtScale;
+      const h =
+        (renderer?.domElement.clientHeight ?? window.innerHeight) *
+        (renderer?.getPixelRatio() ?? 1) *
+        rtScale;
+      this.sceneRT.setSize(w, h);
+    }
 
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToUpdate = this.imageBgMeshes[i];

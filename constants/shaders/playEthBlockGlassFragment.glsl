@@ -11,22 +11,18 @@ uniform vec2 uTextureSize;
 uniform float time;
 
 
-vec2 coverUv(vec2 uv) {
-    vec2 screen = uMeshSize;
-    vec2 image = uTextureSize;
-
-    float screenRatio = screen.x / screen.y;
-    float imageRatio = image.x / image.y;
-
-    vec2 ratio = vec2(1.0);
-
-    if (screenRatio < imageRatio) {
-        ratio.x = screenRatio / imageRatio;
+vec2 coverUv(vec2 raw) {
+    float meshAspect = uMeshSize.x / uMeshSize.y;
+    float textureAspect = uTextureSize.x / uTextureSize.y;
+    vec2 uv = raw;
+    if (meshAspect > textureAspect) {
+        float s = textureAspect / meshAspect;
+        uv.y = uv.y * s + (1.0 - s) * 0.5;
     } else {
-        ratio.y = imageRatio / screenRatio;
+        float s = meshAspect / textureAspect;
+        uv.x = uv.x * s + (1.0 - s) * 0.5;
     }
-
-    return uv * ratio + (1.0 - ratio) * 0.5;
+    return uv;
 }
 
 float boxRadius = 20.0;
