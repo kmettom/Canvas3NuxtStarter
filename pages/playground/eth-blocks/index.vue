@@ -246,6 +246,7 @@ await fetchInitialBlocks();
 
 onMounted(async () => {
   window.addEventListener("resize", () => {
+    Canvas3.resizeOnChange();
     ethBlocksAnimation.resizeImageBGMesh();
   });
   if (!ethBlocksWrapper.value) return;
