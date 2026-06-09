@@ -292,7 +292,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTransitionProgress) return;
 
     //   Canvas3.getScrollSpeed()
-    const imageChangeDuration = 0.5;
+    const imageChangeDuration = 3;
 
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
@@ -461,14 +461,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - Q- shader darker for better text contrast - improve more
-// - Q- First transition missing
-// - Q- transition Shader
+// - Q - First transition missing
+// - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy
 
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
 // - ? maxAmount of blocks 25, remove the oldest once
 
-//1- https://www.shadertoy.com/view/tfyXRz
-//2- https://www.shadertoy.com/view/wccSDf
-//3- https://www.shadertoy.com/view/3cdXDX
