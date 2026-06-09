@@ -3,12 +3,28 @@ precision highp float;
 varying vec2 vUv;
 uniform sampler2D uTexture;
 uniform sampler2D uTexturePrevious;
-//uniform sampler2D uDisplacementMap; // noise/mask texture (was iChannel0)
+uniform sampler2D uTextureMaskNoise;
 uniform float uTransitionProgress;
 uniform vec2 uMeshSize;
 uniform vec2 uTextureSize;
 
-#define S(v) smoothstep(0.0, 1.5 * fwidth(v), v)
+#define S(v) smoothstep(0., 1.5*fwidth(v), v)
+
+vec2 mirror(vec2 v) {
+    vec2 m = mod(v, 2.0);
+    return mix(m, 2.0 - m, step(1.0, m));
+}
+
+float cubicInOut(float t) {
+    return t < 0.5
+    ? 4.0 * t * t * t
+    : 0.5 * pow(2.0 * t - 2.0, 3.0) + 1.0;
+}
+
+bool keyToggle(int ascii)
+{
+    return (texture(uTextureMaskNoise, vec2((.5+float(ascii))/256., 0.75)).x > 0.);
+}
 
 vec2 coverUv(vec2 raw) {
     float meshAspect = uMeshSize.x / uMeshSize.y;
@@ -24,22 +40,17 @@ vec2 coverUv(vec2 raw) {
     return uv;
 }
 
-vec2 mirror(vec2 v) {
-    vec2 m = mod(v, 2.0);
-    return mix(m, 2.0 - m, step(1.0, m));
-}
-
-void main() {
+void main()
+{
     vec2 uv = coverUv(vUv);
 
-    //    float mask = texture2D(uDisplacementMap, vUv).r;
-    float mask = texture2D(uTexture, vUv).r;
+    vec3 col = 0.5 + 0.5*cos(uTransitionProgress+uv.xyx+vec3(0, 2, 4));
+    float progress = cubicInOut(smoothstep(0.1, 0.9, uTransitionProgress));
+    float mask = texture(uTextureMaskNoise, uv).r;
 
-    float stepMask = S(mask - uTransitionProgress);
+    float stepMask = S(mask - progress);
+    vec4 img2 = texture(uTexturePrevious, mirror(vec2(uv.x + progress * mask, uv.y)));
+    vec4 img1 = texture(uTexture, mirror(vec2(uv.x - (1. - progress) * mask, uv.y)));
 
-    vec4 img2 = texture2D(uTexture, mirror(vec2(uv.x + uTransitionProgress * mask, uv.y)));
-    vec4 img1 = texture2D(uTexturePrevious, mirror(vec2(uv.x - (1.0 - uTransitionProgress) * mask, uv.y)));
-
-    vec4 finalColor = mix(img1, img2, stepMask);
-    gl_FragColor = vec4(finalColor.rgb, finalColor.a);
+    gl_FragColor = mix(img1, img2, stepMask);
 }
