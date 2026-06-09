@@ -14,6 +14,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   glassMesh: null,
   sceneRT: null,
   ethBlockEls: null,
+  textureMaskNoise: null,
   loadingBlockId: 0,
   activeBlockId: 0,
   activeImageId: 0,
@@ -112,8 +113,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
   },
-
+  async loadTextureMaskNoise() {
+    const loader = new THREE.TextureLoader();
+    const texture = await loader.loadAsync(`images/textureMaskNoise3.png`);
+    if (texture) {
+      this.textureMaskNoise = texture;
+    }
+  },
   async loadTextures(amountOfTextures = IMAGE_FILE_AMOUNT, delay = 0) {
+    if (!this.textureMaskNoise) {
+      await this.loadTextureMaskNoise();
+    }
     const alreadyLoadedTextures = this.imageBgMeshes.length;
     if (alreadyLoadedTextures >= IMAGE_FILE_AMOUNT) return;
     const amountToLoad = amountOfTextures
@@ -232,6 +242,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
+        uTextureMaskNoise: { value: this.textureMaskNoise },
         uColAmount: { value: DEFAULT_TRANSACTIONS_AMOUNT },
         uTransitionProgress: { value: 0 },
         uMeshSize: {
@@ -292,7 +303,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTransitionProgress) return;
 
     //   Canvas3.getScrollSpeed()
-    const imageChangeDuration = 0.5;
+    const imageChangeDuration = 3;
 
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
@@ -461,14 +472,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - Q- shader darker for better text contrast - improve more
-// - Q- First transition missing
-// - Q- transition Shader
+// - Q - First transition missing
+// - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
 
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
 // - ? maxAmount of blocks 25, remove the oldest once
-
-//1- https://www.shadertoy.com/view/tfyXRz
-//2- https://www.shadertoy.com/view/wccSDf
-//3- https://www.shadertoy.com/view/3cdXDX

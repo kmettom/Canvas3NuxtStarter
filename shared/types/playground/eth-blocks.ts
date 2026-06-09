@@ -6,6 +6,7 @@ export type EthBlocksAnimation = {
   glassMesh: THREE.Mesh | null;
   sceneRT: THREE.WebGLRenderTarget | null;
   ethBlockEls: HTMLCollection | null;
+  textureMaskNoise: THREE.Texture | null;
   loadingBlockId: number;
   activeBlockId: number;
   activeImageId: number;
@@ -15,6 +16,7 @@ export type EthBlocksAnimation = {
   init: (ethBlockEls: HTMLCollection) => Promise<void>;
   destroy: () => void;
   revealFirstTexture: () => Promise<void>;
+  loadTextureMaskNoise: () => Promise<void>;
   startRender: () => Promise<void>;
   loadTextures: (
     amountOfTextures?: number | null,

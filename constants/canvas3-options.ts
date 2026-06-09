@@ -20,6 +20,7 @@ import playEthBlockNoDesignFragment from "./shaders/playEthBlockNoDesignFragment
 import playEthBlockNoDesignVertex from "./shaders/playEthBlockNoDesignVertex.glsl";
 import playEthBlockGlassFragment from "./shaders/playEthBlockGlassFragment.glsl";
 import playEthBlockGlassVertex from "./shaders/playEthBlockGlassVertex.glsl";
+// import playEthBlockImageBgFragmentBlocks from "./shaders/playEthBlockImageBgFragment_blocks.glsl";
 import playEthBlockImageBgFragment from "./shaders/playEthBlockImageBgFragment.glsl";
 import playEthBlockImageBgVertex from "./shaders/playEthBlockImageBgVertex.glsl";
 
