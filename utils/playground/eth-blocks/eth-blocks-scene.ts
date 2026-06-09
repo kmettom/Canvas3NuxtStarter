@@ -242,7 +242,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
-        utextureMaskNoise: { value: this.textureMaskNoise },
+        uTextureMaskNoise: { value: this.textureMaskNoise },
         uColAmount: { value: DEFAULT_TRANSACTIONS_AMOUNT },
         uTransitionProgress: { value: 0 },
         uMeshSize: {
