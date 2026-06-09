@@ -115,7 +115,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
   async loadTextureMaskNoise() {
     const loader = new THREE.TextureLoader();
-    const texture = await loader.loadAsync(`images/textureMaskNoise.png`);
+    const texture = await loader.loadAsync(`images/textureMaskNoise3.png`);
     if (texture) {
       this.textureMaskNoise = texture;
     }
@@ -473,7 +473,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - Q - First transition missing
-// - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy
+// - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
 
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
