@@ -80,7 +80,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
       gsap.to(initMaterial.uniforms.uTransitionProgress, {
         value: 1,
-        duration: 1.2,
+        duration: 1,
         ease: "power2.inOut",
         onComplete: () => {
           resolve();
@@ -303,7 +303,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTransitionProgress) return;
 
     //   Canvas3.getScrollSpeed()
-    const imageChangeDuration = 3;
+    const imageChangeDuration = 1;
 
     gsap.fromTo(
       material.uniforms.uTransitionProgress,

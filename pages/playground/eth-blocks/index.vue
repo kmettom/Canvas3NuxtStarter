@@ -110,6 +110,16 @@ const tlNewBlockAniIn = gsap.timeline({
   },
 });
 
+const tlEnterBlockAniIn = gsap.timeline({
+  // paused: true,
+  // onUpdate: () => {
+  // ethBlocksAnimation.isAnimating = true;
+  // },
+  onComplete: () => {
+    // tlNewBlockAniIn.play();
+  },
+});
+
 //**************************
 // FUNCTIONS
 //**************************
@@ -120,6 +130,45 @@ const getBlockElFromBlockId = (blockId: number) => {
     '.eth-block[data-block-id="' + blockId + '"]',
   );
 };
+
+function firstLoadingBlock() {
+  const el = document.querySelectorAll(".eth-block")[0];
+  if (!el) return;
+  // const tlLoadingBlockAniIn = gsap.timeline({ delay: 0 });
+  // tlEnterBlockAniIn.play();
+  tlEnterBlockAniIn.to(el, {
+    duration: 0,
+    // opacity: 1,
+    height: "10px",
+    // border: "1px solid rgba(255, 255, 255, 0.35)",
+  });
+  // tlEnterBlockAniIn.to(el, {
+  //   duration: 0.2,
+  //   border: "1px solid rgba(255, 255, 255, 0.35)",
+  // });
+  tlEnterBlockAniIn.to(el, {
+    opacity: 1,
+    border: "1px solid rgba(255, 255, 255, 0.35)",
+    width: "100%",
+    duration: 0.4,
+  });
+  const blockProgressBarEl = el.querySelector(".block-loading-progress");
+  tlEnterBlockAniIn.to(blockProgressBarEl, {
+    width: "100%",
+    duration: 0.5,
+    onComplete: () => {
+      // const ethBlockEls = ethBlocksWrapper.value?.children;
+      // if (!ethBlockEls) return;
+      // enterAni(tlNewBlockAniIn, ethBlockEls);
+    },
+  });
+  tlEnterBlockAniIn.to(blockProgressBarEl, {
+    width: "0%",
+    duration: 0.2,
+    right: 0,
+    left: "initial",
+  });
+}
 
 async function newLoadingBlock() {
   ethBlocksAnimation.loadingBlockId = blockIdCounter.value;
@@ -140,6 +189,7 @@ async function newLoadingBlock() {
   tlNewBlockAniIn.to(el, {
     duration: 0.2,
     height: "10px",
+    border: "1px solid rgba(255, 255, 255, 0.35)",
     onComplete: () => {
       if (ethBlocksAnimation.firstEnterAniInProgress) {
         ethBlocksAnimation.firstEnterAniInProgress = false;
@@ -256,13 +306,16 @@ onMounted(async () => {
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
 
+  firstLoadingBlock();
+
   await ethBlocksAnimation.init(ethBlockEls);
   await ethBlocksAnimation.startRender();
-  await ethBlocksAnimation.revealFirstTexture();
+  // await ethBlocksAnimation.revealFirstTexture();
 
   addBlockListener();
 
-  await enterAni(tlNewBlockAniIn, ethBlockEls);
+  await enterAni(tlEnterBlockAniIn, ethBlockEls);
+  // blockDoneAnimate(ethBlockEls[0].dataset.blockId as unknown as number);
 
   setTimeout(() => {
     ethBlocksAnimation.loadTextures(2, 0);
@@ -299,9 +352,9 @@ onMounted(async () => {
   will-change: transform, opacity;
   contain: layout paint style; /* isolates paint work */
   transition: border ease 0.3s;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  //border: 1px solid rgba(255, 255, 255, 0.25);
   &.block-loading {
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    //border: 1px solid rgba(255, 255, 255, 0.35);
     &:after {
       content: "";
       width: 100%;
