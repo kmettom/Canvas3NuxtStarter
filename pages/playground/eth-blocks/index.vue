@@ -106,6 +106,7 @@ const tlNewBlockAniIn = gsap.timeline({
     ethBlocksAnimation.isAnimating = true;
   },
   onComplete: () => {
+    console.log("newLoadingBlock");
     newLoadingBlock();
   },
 });
@@ -134,18 +135,10 @@ const getBlockElFromBlockId = (blockId: number) => {
 function firstLoadingBlock() {
   const el = document.querySelectorAll(".eth-block")[0];
   if (!el) return;
-  // const tlLoadingBlockAniIn = gsap.timeline({ delay: 0 });
-  // tlEnterBlockAniIn.play();
   tlEnterBlockAniIn.to(el, {
     duration: 0,
-    // opacity: 1,
     height: "10px",
-    // border: "1px solid rgba(255, 255, 255, 0.35)",
   });
-  // tlEnterBlockAniIn.to(el, {
-  //   duration: 0.2,
-  //   border: "1px solid rgba(255, 255, 255, 0.35)",
-  // });
   tlEnterBlockAniIn.to(el, {
     opacity: 1,
     border: "1px solid rgba(255, 255, 255, 0.35)",
@@ -156,11 +149,6 @@ function firstLoadingBlock() {
   tlEnterBlockAniIn.to(blockProgressBarEl, {
     width: "100%",
     duration: 0.5,
-    onComplete: () => {
-      // const ethBlockEls = ethBlocksWrapper.value?.children;
-      // if (!ethBlockEls) return;
-      // enterAni(tlNewBlockAniIn, ethBlockEls);
-    },
   });
   tlEnterBlockAniIn.to(blockProgressBarEl, {
     width: "0%",
@@ -186,19 +174,20 @@ async function newLoadingBlock() {
   tlNewBlockAniIn.add(() => {
     el.classList.add("animating");
   });
-  tlNewBlockAniIn.to(el, {
-    duration: 0.2,
+  tlNewBlockAniIn.set(el, {
     height: "10px",
+    opacity: 0,
+  });
+  tlNewBlockAniIn.to(el, {
     border: "1px solid rgba(255, 255, 255, 0.35)",
-    onComplete: () => {
+    opacity: 1,
+    width: "100%",
+    duration: 0.3,
+    onStart: () => {
       if (ethBlocksAnimation.firstEnterAniInProgress) {
         ethBlocksAnimation.firstEnterAniInProgress = false;
       }
     },
-  });
-  tlNewBlockAniIn.to(el, {
-    width: "100%",
-    duration: 0.3,
   });
   const blockProgressBarEl = el.querySelector(".block-loading-progress");
   tlNewBlockAniIn.to(blockProgressBarEl, {
@@ -258,7 +247,6 @@ const blockDoneAnimate = (blockId: number) => {
         el.classList.remove("animating");
       },
     });
-
     tlNewBlockAniIn.play();
   }
 };
@@ -310,12 +298,11 @@ onMounted(async () => {
 
   await ethBlocksAnimation.init(ethBlockEls);
   await ethBlocksAnimation.startRender();
-  // await ethBlocksAnimation.revealFirstTexture();
 
   addBlockListener();
 
   await enterAni(tlEnterBlockAniIn, ethBlockEls);
-  // blockDoneAnimate(ethBlockEls[0].dataset.blockId as unknown as number);
+  tlNewBlockAniIn.play();
 
   setTimeout(() => {
     ethBlocksAnimation.loadTextures(2, 0);
@@ -350,7 +337,7 @@ onMounted(async () => {
   width: 0;
   border-radius: 25px;
   will-change: transform, opacity;
-  contain: layout paint style; /* isolates paint work */
+  contain: layout paint style;
   transition: border ease 0.3s;
   //border: 1px solid rgba(255, 255, 255, 0.25);
   &.block-loading {

@@ -108,7 +108,6 @@ export async function enterAni(
   tlEnterBlockAniIn: gsap.core.Timeline,
   ethBlockEls: HTMLCollection | null,
 ) {
-  console.log("enterAni", ethBlockEls);
   if (!ethBlockEls) return;
   return new Promise((resolve) => {
     // tlEnterBlockAniIn.play();
