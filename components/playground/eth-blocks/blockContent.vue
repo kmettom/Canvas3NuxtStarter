@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  type BlockExtended,
-  formatEth2,
-} from "~/utils/playground/eth-blocks/web3-helpers";
+import { formatEth2 } from "~/utils/playground/eth-blocks/web3-helpers";
 import ProgressBar from "~/components/playground/eth-blocks/progressBar.vue";
 import BurnedIcon from "~/components/playground/eth-blocks/icons/burnedIcon.vue";
 import WithdrawIcon from "~/components/playground/eth-blocks/icons/withdrawIcon.vue";
@@ -16,13 +13,11 @@ const props = defineProps<{
 
 <template>
   <div class="block-loading-progress" />
-  <!--  {{ block.blockId }}-->
   <div v-if="props.block.loading" />
   <div v-else class="content-wrapper">
     <div class="content-row">
       <div class="content-block">
         <div class="content-title ani-index-title">Transactions:</div>
-        <!--        ani-index-0-->
         <div class="content-value ani-index-0-counter eth-large-text">
           {{ block.transactions.length }}
         </div>
@@ -97,7 +92,7 @@ const props = defineProps<{
   top: 0;
   left: 0;
   width: 0;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 .content-wrapper {
@@ -154,10 +149,6 @@ const props = defineProps<{
 
 .gas-stat-line {
   margin-bottom: 13px;
-}
-
-.content-char {
-  //opacity: 0;
 }
 
 .text-bold {

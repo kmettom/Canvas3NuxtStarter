@@ -15,12 +15,6 @@ vec2 mirror(vec2 v) {
     return mix(m, 2.0 - m, step(1.0, m));
 }
 
-//float cubicInOut(float t) {
-//    return t < 0.5
-//    ? 4.0 * t * t * t
-//    : 0.5 * pow(2.0 * t - 2.0, 3.0) + 1.0;
-//}
-
 bool keyToggle(int ascii)
 {
     return (texture(uTextureMaskNoise, vec2((.5+float(ascii))/256., 0.75)).x > 0.);
@@ -45,13 +39,10 @@ void main()
     vec2 uv = coverUv(vUv);
 
     vec3 col = 0.5 + 0.5*cos(uTransitionProgress+uv.xyx+vec3(0, 2, 4));
-    //    float progress = cubicInOut(smoothstep(0.1, 0.9, uTransitionProgress));
     float progress = uTransitionProgress;
     float mask = texture(uTextureMaskNoise, uv).r;
 
     float stepMask = S(mask - progress);
-    //    vec4 img2 = texture(uTexturePrevious, mirror(vec2(uv.x + progress * mask, uv.y)));
-    //    vec4 img1 = texture(uTexture, mirror(vec2(uv.x - (1. - progress) * mask, uv.y)));
     vec4 img2 = texture(uTexturePrevious, mirror(vec2(uv.x, uv.y + progress * mask)));
     vec4 img1 = texture(uTexture, mirror(vec2(uv.x , uv.y - (1. - progress) * mask)));
 

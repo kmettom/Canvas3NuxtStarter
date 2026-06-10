@@ -106,20 +106,11 @@ const tlNewBlockAniIn = gsap.timeline({
     ethBlocksAnimation.isAnimating = true;
   },
   onComplete: () => {
-    console.log("newLoadingBlock");
     newLoadingBlock();
   },
 });
 
-const tlEnterBlockAniIn = gsap.timeline({
-  // paused: true,
-  // onUpdate: () => {
-  // ethBlocksAnimation.isAnimating = true;
-  // },
-  onComplete: () => {
-    // tlNewBlockAniIn.play();
-  },
-});
+const tlEnterBlockAniIn = gsap.timeline({});
 
 //**************************
 // FUNCTIONS
@@ -132,6 +123,8 @@ const getBlockElFromBlockId = (blockId: number) => {
   );
 };
 
+const blockBorder = "1px solid rgba(255, 255, 255, 0.25)";
+
 function firstLoadingBlock() {
   const el = document.querySelectorAll(".eth-block")[0];
   if (!el) return;
@@ -141,7 +134,7 @@ function firstLoadingBlock() {
   });
   tlEnterBlockAniIn.to(el, {
     opacity: 1,
-    border: "1px solid rgba(255, 255, 255, 0.35)",
+    border: blockBorder,
     width: "100%",
     duration: 0.4,
   });
@@ -179,7 +172,7 @@ async function newLoadingBlock() {
     opacity: 0,
   });
   tlNewBlockAniIn.to(el, {
-    border: "1px solid rgba(255, 255, 255, 0.35)",
+    border: blockBorder,
     opacity: 1,
     width: "100%",
     duration: 0.3,
@@ -339,9 +332,7 @@ onMounted(async () => {
   will-change: transform, opacity;
   contain: layout paint style;
   transition: border ease 0.3s;
-  //border: 1px solid rgba(255, 255, 255, 0.25);
   &.block-loading {
-    //border: 1px solid rgba(255, 255, 255, 0.35);
     &:after {
       content: "";
       width: 100%;
@@ -349,7 +340,7 @@ onMounted(async () => {
       position: absolute;
       top: 0;
       left: 0;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(0, 0, 0, 0.2);
     }
   }
 }

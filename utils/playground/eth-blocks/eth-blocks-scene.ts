@@ -80,7 +80,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
       gsap.to(initMaterial.uniforms.uTransitionProgress, {
         value: 1,
-        duration: 1,
+        duration: 0.8,
         ease: "power2.inOut",
         onComplete: () => {
           resolve();
@@ -303,7 +303,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTransitionProgress) return;
 
     //   Canvas3.getScrollSpeed()
-    const imageChangeDuration = 1;
+    const imageChangeDuration = 0.7;
 
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
@@ -472,7 +472,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - Q - First transition missing
 // - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
 
 // - ? QA - Scroll magnet to closest block top ?
