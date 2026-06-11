@@ -1,5 +1,8 @@
 import SplitText from "gsap/SplitText";
 import { gsap } from "gsap";
+import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
+// import { ethBlocksAnimation } from "~/utils/playground/eth-blocks/eth-blocks-scene";
+
 gsap.registerPlugin(SplitText);
 
 //*********************************
@@ -102,27 +105,43 @@ export function aniContentValues(
 }
 
 export async function enterAni(
-  tlNewBlockAniIn: gsap.core.Timeline,
+  tlEnterBlockAniIn: gsap.core.Timeline,
   ethBlockEls: HTMLCollection | null,
 ) {
   if (!ethBlockEls) return;
   return new Promise((resolve) => {
-    tlNewBlockAniIn.play();
-    tlNewBlockAniIn.to(ethBlockEls, {
-      opacity: 1,
-      duration: 0.1,
-    });
-    tlNewBlockAniIn.to(ethBlockEls, {
-      width: "100%",
-      height: "236px",
-      marginTop: "20px",
-      duration: 0.5,
-      stagger: 0.1,
-      ease: "power2.out",
-      onComplete: () => {
-        resolve(true);
-      },
-    });
+    // tlEnterBlockAniIn.play();
+    for (let i = 0; i < ethBlockEls.length; i++) {
+      const ethBlock = ethBlockEls[i];
+      if (ethBlock) {
+        tlEnterBlockAniIn.to(ethBlock, {
+          opacity: 1,
+          duration: 0.1,
+        });
+        tlEnterBlockAniIn.to(
+          ethBlock,
+          {
+            width: "100%",
+            height: "236px",
+            marginTop: "20px",
+            duration: 0.3,
+            ease: "power2.out",
+            onComplete: () => {
+              if (i === ethBlockEls.length - 1) {
+                resolve(true);
+              }
+            },
+            onStart: () => {
+              if (i === 0) {
+                ethBlocksAnimation.revealFirstTexture();
+              }
+            },
+          },
+          "<",
+        );
+      }
+    }
+    // tlNewBlockAniIn.play();
   });
 }
 
