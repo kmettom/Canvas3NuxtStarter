@@ -47,8 +47,8 @@ vec4 glassPass(vec2 vUv, vec2 uv, vec4 baseColor, vec4 rect) {
 
     vec4 lighting = clamp(
     blurred
-    - vec4(vec3(rb1 * gradient * 0.45), 0.0)// was 0.15
-    - vec4(vec3(rb2 * 0.3), 0.0), // was 0.1
+    - vec4(vec3(rb1 * gradient * 0.95), 0.0)
+    - vec4(vec3(rb2 * 0.3), 0.0),
     0.0, 1.0
     );
     float glassOpacity = clamp(0.85 + transition * 0.9, 0.0, 1.0);

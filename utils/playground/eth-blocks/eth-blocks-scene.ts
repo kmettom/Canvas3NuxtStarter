@@ -303,7 +303,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!material.uniforms.uTransitionProgress) return;
 
     //   Canvas3.getScrollSpeed()
-    const imageChangeDuration = 0.7;
+    const imageChangeDuration = 0.5;
 
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
