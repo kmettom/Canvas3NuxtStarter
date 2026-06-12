@@ -395,6 +395,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.isAnimating = false;
     return this._uBlocksPositions;
   },
+  magnetScroll() {
+    Canvas3.scrollToElBySelector(
+      `.eth-block[data-block-id="${this.activeBlockId}"]`,
+      0,
+      -this.blocksBasePosition,
+    );
+  },
   resizeImageBGMesh() {
     if (this.glassMesh) {
       this.glassMesh.scale.set(window.innerWidth, window.innerHeight, 1);
