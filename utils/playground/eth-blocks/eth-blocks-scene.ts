@@ -483,7 +483,4 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
 //TODO:
 // - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
-
-// - ? QA - Scroll magnet to closest block top ?
-// ----------
 // - ? maxAmount of blocks 25, remove the oldest once
