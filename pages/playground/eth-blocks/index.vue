@@ -268,6 +268,7 @@ onUnmounted(() => {
   eventSource?.close();
   tlNewBlockAniIn.kill();
   window.removeEventListener("resize", handleResize);
+  window.removeEventListener("scroll", handleScroll);
 });
 
 await fetchInitialBlocks();
@@ -277,8 +278,13 @@ const handleResize = () => {
   ethBlocksAnimation.resizeImageBGMesh();
 };
 
+const handleScroll = () => {
+  console.log("handleScroll")
+}
+
 onMounted(async () => {
   window.addEventListener("resize", handleResize);
+  window.addEventListener("scroll", handleScroll);
 
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
