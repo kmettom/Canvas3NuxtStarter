@@ -39,6 +39,7 @@ export type EthBlocksAnimation = {
   calculateUBlockPositions: () => THREE.Vector4[];
   resizeImageBGMesh: () => void;
   render: () => void;
+  magnetScroll: () => void;
   imageBgChange: (
     prevImageId: number,
     nextImageId: number,
