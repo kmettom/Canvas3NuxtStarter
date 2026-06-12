@@ -93,6 +93,7 @@ const props = defineProps<{
   left: 0;
   width: 0;
   background-color: rgba(255, 255, 255, 0.8);
+  z-index: 10;
 }
 
 .content-wrapper {

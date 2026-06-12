@@ -287,10 +287,10 @@ onMounted(async () => {
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
 
-  firstLoadingBlock();
-
   await ethBlocksAnimation.init(ethBlockEls);
   await ethBlocksAnimation.startRender();
+
+  firstLoadingBlock();
 
   addBlockListener();
 
