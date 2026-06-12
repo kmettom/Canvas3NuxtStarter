@@ -56,6 +56,13 @@ export type EthBlocksAnimation = {
   isAnimating: boolean;
   _uBlocksPositions?: THREE.Vector4[];
   _lastScrollY?: number;
+  _lastImageBgChangeAt: number;
+  _imageBgChangeTimeout: number | null;
+  scheduleImageBgChange: (
+    prevImageId: number,
+    nextImageId: number,
+    transactionsAmount?: number,
+  ) => void;
 };
 
 type BlockBase = {

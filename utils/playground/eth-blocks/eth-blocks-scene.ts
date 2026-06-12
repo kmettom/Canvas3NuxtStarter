@@ -27,10 +27,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   isAnimating: false,
   _uBlocksPositions: [],
   _lastScrollY: -1,
+  _lastImageBgChangeAt: 0,
+  _imageBgChangeTimeout: null,
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
   destroy() {
+    if (this._imageBgChangeTimeout) {
+      clearTimeout(this._imageBgChangeTimeout);
+    }
+    this._imageBgChangeTimeout = null;
+    this._lastImageBgChangeAt = 0;
+
     const scene = Canvas3.getScene();
     if (this.glassMesh) {
       scene.remove(this.glassMesh);
@@ -58,6 +66,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.isAnimating = false;
     this._uBlocksPositions = [];
     this._lastScrollY = -1;
+    this._imageBgChangeTimeout = null;
+    this._lastImageBgChangeAt = 0;
   },
   async init(ethBlockEls) {
     if (!ethBlockEls) return;
@@ -185,7 +195,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const prevImageId = this.activeImageId;
     this.activeImageId = imageId;
     const transactionsAmount = Number(el.dataset.transactionsAmount);
-    this.imageBgChange(prevImageId, imageId, transactionsAmount);
+    // this.imageBgChange(prevImageId, imageId, transactionsAmount);
+    this.scheduleImageBgChange(prevImageId, imageId, transactionsAmount);
   },
 
   async createGlassBlockMesh() {
@@ -271,6 +282,34 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     Canvas3.addMeshToScene(mesh);
     if (!mesh) return null;
     return mesh;
+  },
+
+  scheduleImageBgChange(
+    prevImageId,
+    imageId,
+    transactionsAmount = DEFAULT_TRANSACTIONS_AMOUNT,
+  ) {
+    const now = Date.now();
+    const minDelay = 500;
+    const elapsed = now - this._lastImageBgChangeAt;
+
+    const run = () => {
+      this._lastImageBgChangeAt = Date.now();
+      this._imageBgChangeTimeout = null;
+      this.imageBgChange(prevImageId, imageId, transactionsAmount);
+    };
+
+    if (elapsed >= minDelay && !this._imageBgChangeTimeout) {
+      run();
+      return;
+    }
+
+    if (this._imageBgChangeTimeout) return;
+
+    this._imageBgChangeTimeout = window.setTimeout(
+      run,
+      Math.max(minDelay - elapsed, 0),
+    );
   },
 
   async imageBgChange(
@@ -472,7 +511,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
-// - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
+// - debounce image change
+
+// - reference Shader -> https://www.shadertoy.com/view/WsB3Wy
 
 // - ? QA - Scroll magnet to closest block top ?
 // ----------
