@@ -127,7 +127,7 @@ export async function enterAni(
             duration: 0.3,
             ease: "power2.out",
             onComplete: () => {
-              if (i === ethBlockEls.length - 1) {
+              if (i === 1) {
                 resolve(true);
               }
             },
@@ -139,6 +139,9 @@ export async function enterAni(
           },
           "<",
         );
+        if (i === 0) {
+          blockContentAniIn(ethBlock, tlEnterBlockAniIn, true);
+        }
       }
     }
     // tlNewBlockAniIn.play();
@@ -191,17 +194,35 @@ export function aniIcons(
 export function blockContentAniIn(
   blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
+  aniPositionImmediate: boolean = false,
 ) {
-  aniContentValues(blockEl, ".ani-index-title", tlNewBlockAniIn, "<+0.35");
+  const firstAniPosition = aniPositionImmediate ? "<" : "<+0.35";
+  const aniPositionDelayed = aniPositionImmediate ? "<" : "<+0.15";
+  aniContentValues(
+    blockEl,
+    ".ani-index-title",
+    tlNewBlockAniIn,
+    firstAniPosition,
+  );
   aniIcons(blockEl, tlNewBlockAniIn, "<");
   aniContentValuesCounter(
     blockEl,
     ".ani-index-0-counter",
     tlNewBlockAniIn,
-    "<+0.15",
+    aniPositionDelayed,
   );
-  aniContentValues(blockEl, ".ani-index-0", tlNewBlockAniIn, "<+0.15");
-  aniContentValues(blockEl, ".ani-index-1", tlNewBlockAniIn, "<+0.15");
-  aniProgressBar(blockEl, tlNewBlockAniIn, "<+0.1");
+  aniContentValues(
+    blockEl,
+    ".ani-index-0",
+    tlNewBlockAniIn,
+    aniPositionDelayed,
+  );
+  aniContentValues(
+    blockEl,
+    ".ani-index-1",
+    tlNewBlockAniIn,
+    aniPositionDelayed,
+  );
+  aniProgressBar(blockEl, tlNewBlockAniIn, aniPositionDelayed);
   aniGasChart(blockEl, tlNewBlockAniIn, "<");
 }

@@ -3,6 +3,7 @@ import { Canvas3Options } from "~/constants/canvas3-options";
 import { gsap } from "gsap";
 import {
   BLOCKS_ON_SCREEN_AMOUNT,
+  DEFAULT_IMAGE_CHANGE_DURATION,
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
@@ -80,7 +81,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
       gsap.to(initMaterial.uniforms.uTransitionProgress, {
         value: 1,
-        duration: 0.8,
+        duration: DEFAULT_IMAGE_CHANGE_DURATION,
         ease: "power2.inOut",
         onComplete: () => {
           resolve();
@@ -168,7 +169,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     //***************************
-    //Set Active Block and trigger inageBG chagne
+    //Set Active Block and trigger imageBG chagne
     //***************************
     if (this.firstEnterAniInProgress) return;
     if (!this.ethBlockEls) return;
@@ -302,8 +303,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     if (!material.uniforms.uTransitionProgress) return;
 
-    //   Canvas3.getScrollSpeed()
-    const imageChangeDuration = 0.5;
+    const coef = Canvas3.getScrollSpeed() ?? 0;
+    const imageChangeDuration = (
+      1.1 - Math.max(coef, DEFAULT_IMAGE_CHANGE_DURATION)
+    ).toFixed(2);
 
     gsap.fromTo(
       material.uniforms.uTransitionProgress,
