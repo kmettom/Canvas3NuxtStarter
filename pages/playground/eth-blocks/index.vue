@@ -54,6 +54,7 @@ import {
   DEFAULT_BLOCK_LOADING_TIME,
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
+  SCROLL_MAGNET_DELAY,
 } from "~/constants/playground/eth-blocks";
 gsap.registerPlugin(SplitText);
 
@@ -65,6 +66,7 @@ const maxBlocks = 50;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
 const ethBlocksWrapper = ref<HTMLElement | null>(null);
+let scrollTimeout: number | null = null;
 const blocksToRender = computed<BlockItem[]>(() => {
   return [...ethBlocks.value.values()].sort((a, b) =>
     a.blockId > b.blockId ? -1 : 1,
@@ -129,7 +131,6 @@ function firstLoadingBlock() {
   const el = document.querySelectorAll(".eth-block")[0];
   if (!el) return;
   tlEnterBlockAniIn.to(el, {
-    duration: 0,
     height: "10px",
   });
   tlEnterBlockAniIn.to(el, {
@@ -167,8 +168,9 @@ async function newLoadingBlock() {
   tlNewBlockAniIn.add(() => {
     el.classList.add("animating");
   });
-  tlNewBlockAniIn.set(el, {
+  tlNewBlockAniIn.to(el, {
     height: "10px",
+    duration: 0.15,
     opacity: 0,
   });
   tlNewBlockAniIn.to(el, {
@@ -264,10 +266,12 @@ const addBlockListener = () => {
 };
 
 onUnmounted(() => {
+  if (scrollTimeout) clearTimeout(scrollTimeout);
   ethBlocksAnimation.destroy();
   eventSource?.close();
   tlNewBlockAniIn.kill();
   window.removeEventListener("resize", handleResize);
+  window.removeEventListener("scroll", handleScroll);
 });
 
 await fetchInitialBlocks();
@@ -277,8 +281,16 @@ const handleResize = () => {
   ethBlocksAnimation.resizeImageBGMesh();
 };
 
+const handleScroll = () => {
+  if (scrollTimeout) clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => {
+    ethBlocksAnimation.magnetScroll();
+  }, SCROLL_MAGNET_DELAY);
+};
+
 onMounted(async () => {
   window.addEventListener("resize", handleResize);
+  window.addEventListener("scroll", handleScroll);
 
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
