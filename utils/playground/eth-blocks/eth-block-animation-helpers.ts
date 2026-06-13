@@ -226,3 +226,12 @@ export function blockContentAniIn(
   aniProgressBar(blockEl, tlNewBlockAniIn, aniPositionDelayed);
   aniGasChart(blockEl, tlNewBlockAniIn, "<");
 }
+
+export function credentialsAniIn(tl: gsap.core.Timeline) {
+  const blockEl = document.querySelector("#credentials") as HTMLElement;
+  if (!blockEl) return;
+  blockEl.style.opacity = "1";
+  const aniPositionDelayed = "<";
+  aniContentValues(blockEl, ".cred-name", tl, aniPositionDelayed);
+  aniContentValues(blockEl, "#credentials .cred-link", tl, "<+0.15");
+}
