@@ -1,5 +1,6 @@
 <template>
   <div class="eth-blocks-page page-container eth-base-text">
+    <credentials />
     <div
       id="ethBlocks"
       ref="ethBlocksWrapper"
@@ -48,6 +49,7 @@ import type {
 import { useEthBlocks } from "~/stores/playground/eth-blocks-store";
 import {
   blockContentAniIn,
+  credentialsAniIn,
   enterAni,
 } from "~/utils/playground/eth-blocks/eth-block-animation-helpers";
 import {
@@ -56,6 +58,7 @@ import {
   IMAGE_FILE_AMOUNT,
   SCROLL_MAGNET_DELAY,
 } from "~/constants/playground/eth-blocks";
+import Credentials from "~/components/playground/eth-blocks/credentials.vue";
 gsap.registerPlugin(SplitText);
 
 //**************************
@@ -308,6 +311,8 @@ onMounted(async () => {
 
   await enterAni(tlEnterBlockAniIn, ethBlockEls);
   tlNewBlockAniIn.play();
+
+  credentialsAniIn(tlEnterBlockAniIn);
 
   setTimeout(() => {
     ethBlocksAnimation.loadTextures(2, 0);
