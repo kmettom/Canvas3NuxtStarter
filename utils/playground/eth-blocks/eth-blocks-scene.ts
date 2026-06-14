@@ -52,7 +52,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.activeBlockId = 0;
     this.activeImageId = 0;
     this.blocksTopPadding = 0.25;
-    this.blocksBasePosition = 0;
     this.pendingImageId = 0;
     this.currentImageId = 0;
     this.imageAniTimeline = null;
@@ -401,7 +400,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     Canvas3.scrollToElBySelector(
       `.eth-block[data-block-id="${this.activeBlockId}"]`,
       0,
-      -this.blocksBasePosition,
+      -this.blocksBasePosition - LOADING_BLOCK_SIZE,
     );
   },
   resizeImageBGMesh() {
