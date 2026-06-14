@@ -7,6 +7,7 @@ import {
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
+  LOADING_BLOCK_SIZE,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
@@ -51,7 +52,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.activeBlockId = 0;
     this.activeImageId = 0;
     this.blocksTopPadding = 0.25;
-    this.blocksBasePosition = 0;
     this.pendingImageId = 0;
     this.currentImageId = 0;
     this.imageAniTimeline = null;
@@ -155,7 +155,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!blockClientRect) blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
     const aniCoef = Math.abs(
-      (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
+      (blockPositionTop - this.blocksBasePosition - LOADING_BLOCK_SIZE) /
+        window.innerHeight,
     );
 
     const currentScrollY = window.scrollY;
@@ -399,7 +400,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     Canvas3.scrollToElBySelector(
       `.eth-block[data-block-id="${this.activeBlockId}"]`,
       0,
-      -this.blocksBasePosition,
+      -this.blocksBasePosition - LOADING_BLOCK_SIZE,
     );
   },
   resizeImageBGMesh() {

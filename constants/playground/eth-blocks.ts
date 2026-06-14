@@ -5,3 +5,4 @@ export const BLOCKS_ON_SCREEN_AMOUNT = 6;
 export const DEFAULT_TRANSACTIONS_AMOUNT = 225;
 export const DEFAULT_IMAGE_CHANGE_DURATION = 0.5;
 export const SCROLL_MAGNET_DELAY = 500;
+export const LOADING_BLOCK_SIZE = 30;
