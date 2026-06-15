@@ -274,7 +274,6 @@ onUnmounted(() => {
   eventSource?.close();
   tlNewBlockAniIn.kill();
   window.removeEventListener("resize", handleResize);
-  window.removeEventListener("scroll", handleScroll);
 });
 
 await fetchInitialBlocks();
@@ -284,16 +283,8 @@ const handleResize = () => {
   ethBlocksAnimation.resizeImageBGMesh();
 };
 
-const handleScroll = () => {
-  if (scrollTimeout) clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
-    ethBlocksAnimation.magnetScroll();
-  }, SCROLL_MAGNET_DELAY);
-};
-
 onMounted(async () => {
   window.addEventListener("resize", handleResize);
-  window.addEventListener("scroll", handleScroll);
 
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
