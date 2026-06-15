@@ -7,7 +7,6 @@ import {
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
-  LOADING_BLOCK_SIZE,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
@@ -155,8 +154,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!blockClientRect) blockClientRect = elNode.getBoundingClientRect();
     const blockPositionTop = blockClientRect.top;
     const aniCoef = Math.abs(
-      (blockPositionTop - this.blocksBasePosition - LOADING_BLOCK_SIZE) /
-        window.innerHeight,
+      (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
     );
 
     const currentScrollY = window.scrollY;
@@ -400,7 +398,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     Canvas3.scrollToElBySelector(
       `.eth-block[data-block-id="${this.activeBlockId}"]`,
       0,
-      -this.blocksBasePosition - LOADING_BLOCK_SIZE,
+      -this.blocksBasePosition,
     );
   },
   resizeImageBGMesh() {
@@ -483,5 +481,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 };
 
 //TODO:
+//PERFORMACE IMPROVE
+
+// Bigger line height; Opacity to 70% - OK
+// First photo animation: slower - OK
+// Bug: cannot come back up when I scroll down - OK
+// Disable the active card - OK
+
 // - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
 // - ? maxAmount of blocks 25, remove the oldest once

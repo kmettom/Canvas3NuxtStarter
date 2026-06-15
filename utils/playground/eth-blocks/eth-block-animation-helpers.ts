@@ -230,7 +230,7 @@ export function blockContentAniIn(
 export function credentialsAniIn(tl: gsap.core.Timeline) {
   const blockEl = document.querySelector("#credentials") as HTMLElement;
   if (!blockEl) return;
-  blockEl.style.opacity = "1";
+  blockEl.style.opacity = "0.7";
   const aniPositionDelayed = "<";
   aniContentValues(blockEl, ".cred-name", tl, aniPositionDelayed);
   aniContentValues(blockEl, "#credentials .cred-link", tl, "<+0.15");
