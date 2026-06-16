@@ -197,7 +197,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    const uBlocksPositions = this.calculateUBlockPositions();
+    this.calculateUBlockPositions();
+    if (!this._uBlocksPositions) return;
 
     const meshId = "ethBlockBg";
     const material = new THREE.ShaderMaterial({
@@ -209,10 +210,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uBlockCount: {
-          value: Math.min(uBlocksPositions.length, 10),
+          value: Math.min(
+            this._uBlocksPositions.length,
+            BLOCKS_ON_SCREEN_AMOUNT,
+          ),
         },
         uBlocks: {
-          value: uBlocksPositions,
+          value: this._uBlocksPositions,
         },
         uSceneTexture: { value: null },
       },
@@ -367,8 +371,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       if (
         el &&
         (el.classList.contains("active") || el.classList.contains("animating"))
-        // &&
-        // !el.classList.contains("block-loading")
       ) {
         const clientBounds = el.getBoundingClientRect();
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
@@ -451,15 +453,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const meshToUpdate = this.glassMesh as THREE.Mesh;
     const material = meshToUpdate.material as THREE.ShaderMaterial;
 
-    const uBlocksPositions = this.calculateUBlockPositions();
-
-    if (material.uniforms.uBlocks)
-      material.uniforms.uBlocks.value = uBlocksPositions;
-    if (material.uniforms.uBlockCount)
-      material.uniforms.uBlockCount.value = Math.min(
-        uBlocksPositions.length,
-        10,
-      );
+    this.calculateUBlockPositions();
 
     this.glassMesh.visible = false;
 
