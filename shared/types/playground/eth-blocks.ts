@@ -57,6 +57,7 @@ export type EthBlocksAnimation = {
   isAnimating: boolean;
   _uBlocksPositions?: THREE.Vector4[];
   _lastScrollY?: number;
+  _cachedCanvasBounds: DOMRect | null;
 };
 
 type BlockBase = {

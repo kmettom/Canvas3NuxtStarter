@@ -99,6 +99,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.glassMesh = await this.createGlassBlockMesh();
 
     const renderer = Canvas3.getRenderer();
+    this._cachedCanvasBounds =
+      renderer?.domElement.getBoundingClientRect() ?? null;
     const rtWidth = renderer
       ? renderer.domElement.clientWidth * renderer.getPixelRatio()
       : window.innerWidth;
@@ -356,8 +358,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       );
     }
 
-    const renderer = Canvas3.getRenderer();
-    const canvasBounds = renderer?.domElement.getBoundingClientRect();
+    const canvasBounds = this._cachedCanvasBounds;
     if (!canvasBounds) return this._uBlocksPositions;
 
     let activeIndex = 0;
@@ -420,6 +421,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       const h =
         (renderer?.domElement.clientHeight ?? window.innerHeight) *
         (renderer?.getPixelRatio() ?? 1);
+      this._cachedCanvasBounds =
+        renderer?.domElement.getBoundingClientRect() ?? null;
       this.sceneRT.setSize(w, h);
     }
 
