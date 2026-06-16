@@ -33,14 +33,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
   destroy() {
-    const scene = Canvas3.getScene();
     if (this.glassMesh) {
-      scene.remove(this.glassMesh);
+      if (this._scene) this._scene.remove(this.glassMesh);
     }
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToRemove = this.imageBgMeshes[i];
-      if (meshToRemove) {
-        scene.remove(meshToRemove);
+      if (meshToRemove && this._scene) {
+        this._scene.remove(meshToRemove);
       }
     }
     Canvas3.removeAnimationFromRender("ethBlocksAnimation");
@@ -102,24 +101,31 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       () => new THREE.Vector4(0, 0, 0, 0),
     );
 
+    this._renderer = Canvas3.getRenderer();
+    this._scene = Canvas3.getScene();
+    this._camera = Canvas3.getCamera();
+
     // We already loaded 1 texture in init, now load the rest for initial blocks
     await this.loadTextures(INITIAL_BLOCK_AMOUNT);
     this.glassMesh = await this.createGlassBlockMesh();
 
-    const renderer = Canvas3.getRenderer();
     this._cachedCanvasBounds =
-      renderer?.domElement.getBoundingClientRect() ?? null;
-    const rtWidth = renderer
-      ? renderer.domElement.clientWidth * renderer.getPixelRatio()
+      this._renderer?.domElement.getBoundingClientRect() ?? null;
+    const rtWidth = this._renderer
+      ? this._renderer.domElement.clientWidth * this._renderer.getPixelRatio()
       : window.innerWidth;
-    const rtHeight = renderer
-      ? renderer.domElement.clientHeight * renderer.getPixelRatio()
+    const rtHeight = this._renderer
+      ? this._renderer.domElement.clientHeight * this._renderer.getPixelRatio()
       : window.innerHeight;
 
     this.sceneRT = new THREE.WebGLRenderTarget(rtWidth, rtHeight, {
       depthBuffer: false,
       stencilBuffer: false,
     });
+
+    const glassMaterial = this.glassMesh.material as THREE.ShaderMaterial;
+    if (glassMaterial.uniforms.uSceneTexture)
+      glassMaterial.uniforms.uSceneTexture.value = this.sceneRT.texture;
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
   },
@@ -425,15 +431,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     if (this.sceneRT) {
-      const renderer = Canvas3.getRenderer();
       const w =
-        (renderer?.domElement.clientWidth ?? window.innerWidth) *
-        (renderer?.getPixelRatio() ?? 1);
+        (this._renderer?.domElement.clientWidth ?? window.innerWidth) *
+        (this._renderer?.getPixelRatio() ?? 1);
       const h =
-        (renderer?.domElement.clientHeight ?? window.innerHeight) *
-        (renderer?.getPixelRatio() ?? 1);
+        (this._renderer?.domElement.clientHeight ?? window.innerHeight) *
+        (this._renderer?.getPixelRatio() ?? 1);
       this._cachedCanvasBounds =
-        renderer?.domElement.getBoundingClientRect() ?? null;
+        this._renderer?.domElement.getBoundingClientRect() ?? null;
       this.sceneRT.setSize(w, h);
     }
 
@@ -461,27 +466,17 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this.calculateUBlockPositions();
 
-    const renderer = Canvas3.getRenderer();
-    const scene = Canvas3.getScene();
-    const camera = Canvas3.getCamera();
-
-    if (renderer && scene && camera) {
+    if (this._renderer && this._scene && this._camera) {
       this.glassMesh.visible = false;
 
-      renderer.setRenderTarget(this.sceneRT);
-      renderer.setClearColor(0x000000, 0); // Ensure transparency
-      renderer.clear();
-      renderer.render(scene, camera);
+      this._renderer.setRenderTarget(this.sceneRT);
+      this._renderer.setClearColor(0x000000, 0); // Ensure transparency
+      this._renderer.clear();
+      this._renderer.render(this._scene, this._camera);
 
       this.glassMesh.visible = true;
 
-      const meshToUpdate = this.glassMesh as THREE.Mesh;
-      const material = meshToUpdate.material as THREE.ShaderMaterial;
-
-      if (!material.uniforms.uSceneTexture) return;
-      material.uniforms.uSceneTexture.value = this.sceneRT.texture;
-
-      renderer.setRenderTarget(null);
+      this._renderer.setRenderTarget(null);
     }
   },
 };

@@ -59,6 +59,9 @@ export type EthBlocksAnimation = {
   // _blockClientRects: DOMRect[];
   _lastScrollY?: number;
   _cachedCanvasBounds: DOMRect | null;
+  _renderer: THREE.WebGLRenderer | null;
+  _scene: THREE.Scene | null;
+  _camera: THREE.Camera | null;
 };
 
 type BlockBase = {
