@@ -463,31 +463,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
   render() {
     if (!this.glassMesh || !this.sceneRT) return;
-
     this.calculateUBlockPositions();
-
     if (this._renderer && this._scene && this._camera) {
-      this.glassMesh.visible = false;
-
       this._renderer.setRenderTarget(this.sceneRT);
-      this._renderer.setClearColor(0x000000, 0); // Ensure transparency
       this._renderer.clear();
       this._renderer.render(this._scene, this._camera);
-
-      this.glassMesh.visible = true;
-
       this._renderer.setRenderTarget(null);
     }
   },
 };
-
-//TODO:
-//PERFORMACE IMPROVE
-
-// Bigger line height; Opacity to 70% - OK
-// First photo animation: slower - OK
-// Bug: cannot come back up when I scroll down - OK
-// Disable the active card - OK
-
-// - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
-// - ? maxAmount of blocks 25, remove the oldest once
