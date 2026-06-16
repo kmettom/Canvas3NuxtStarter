@@ -56,6 +56,7 @@ export type EthBlocksAnimation = {
   firstEnterAniInProgress: boolean;
   isAnimating: boolean;
   _uBlocksPositions?: THREE.Vector4[];
+  // _blockClientRects: DOMRect[];
   _lastScrollY?: number;
   _cachedCanvasBounds: DOMRect | null;
 };
