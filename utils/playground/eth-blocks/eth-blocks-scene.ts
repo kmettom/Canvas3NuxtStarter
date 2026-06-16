@@ -27,19 +27,19 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   firstEnterAniInProgress: true,
   isAnimating: false,
   _uBlocksPositions: [],
+  // _blockClientRects: [],
   _lastScrollY: -1,
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
   destroy() {
-    const scene = Canvas3.getScene();
     if (this.glassMesh) {
-      scene.remove(this.glassMesh);
+      if (this._scene) this._scene.remove(this.glassMesh);
     }
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToRemove = this.imageBgMeshes[i];
-      if (meshToRemove) {
-        scene.remove(meshToRemove);
+      if (meshToRemove && this._scene) {
+        this._scene.remove(meshToRemove);
       }
     }
     Canvas3.removeAnimationFromRender("ethBlocksAnimation");
@@ -62,6 +62,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   async init(ethBlockEls) {
     if (!ethBlockEls) return;
     this.ethBlockEls = ethBlockEls;
+    // if (this._blockClientRects && this.ethBlockEls) {
+    //   for (let i = 0; i < this.ethBlockEls.length; i++) {
+    //     const box = this.ethBlockEls[i]?.getBoundingClientRect();
+    //     if (box) this._blockClientRects[i] = box;
+    //   }
+    // }
+
     await this.loadTextures(2);
   },
   async revealFirstTexture() {
@@ -94,22 +101,31 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       () => new THREE.Vector4(0, 0, 0, 0),
     );
 
+    this._renderer = Canvas3.getRenderer();
+    this._scene = Canvas3.getScene();
+    this._camera = Canvas3.getCamera();
+
     // We already loaded 1 texture in init, now load the rest for initial blocks
     await this.loadTextures(INITIAL_BLOCK_AMOUNT);
     this.glassMesh = await this.createGlassBlockMesh();
 
-    const renderer = Canvas3.getRenderer();
-    const rtWidth = renderer
-      ? renderer.domElement.clientWidth * renderer.getPixelRatio()
+    this._cachedCanvasBounds =
+      this._renderer?.domElement.getBoundingClientRect() ?? null;
+    const rtWidth = this._renderer
+      ? this._renderer.domElement.clientWidth * this._renderer.getPixelRatio()
       : window.innerWidth;
-    const rtHeight = renderer
-      ? renderer.domElement.clientHeight * renderer.getPixelRatio()
+    const rtHeight = this._renderer
+      ? this._renderer.domElement.clientHeight * this._renderer.getPixelRatio()
       : window.innerHeight;
 
     this.sceneRT = new THREE.WebGLRenderTarget(rtWidth, rtHeight, {
       depthBuffer: false,
       stencilBuffer: false,
     });
+
+    const glassMaterial = this.glassMesh.material as THREE.ShaderMaterial;
+    if (glassMaterial.uniforms.uSceneTexture)
+      glassMaterial.uniforms.uSceneTexture.value = this.sceneRT.texture;
 
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
   },
@@ -151,41 +167,41 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
 
   animateBlockSizeOnScroll(elNode, index, blockClientRect) {
-    if (!blockClientRect) blockClientRect = elNode.getBoundingClientRect();
-    const blockPositionTop = blockClientRect.top;
-    const aniCoef = Math.abs(
-      (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
-    );
-
     const currentScrollY = window.scrollY;
     if (
       this._lastScrollY !== currentScrollY ||
       this.firstEnterAniInProgress ||
       this.isAnimating
     ) {
+      if (!blockClientRect) blockClientRect = elNode.getBoundingClientRect();
+      const blockPositionTop = blockClientRect.top;
+      const aniCoef = Math.abs(
+        (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
+      );
+
       elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
       elNode.style.opacity = `${Math.max(1 - aniCoef * 3, 0.35)}`;
-    }
 
-    //***************************
-    //Set Active Block and trigger imageBG chagne
-    //***************************
-    if (this.firstEnterAniInProgress) return;
-    if (!this.ethBlockEls) return;
-    const el = this.ethBlockEls[index] as HTMLElement;
-    if (!el) return;
-    const blockId = Number(el.dataset.blockId);
-    if (Number.isNaN(blockId)) return;
-    if (this.loadingBlockId === blockId) return;
-    if (this.activeBlockId === blockId) return;
-    if (aniCoef > 0.03) return;
-    this.activeBlockId = blockId;
-    if (!el.dataset.bgImageId) return;
-    const imageId = Number(el.dataset.bgImageId);
-    const prevImageId = this.activeImageId;
-    this.activeImageId = imageId;
-    const transactionsAmount = Number(el.dataset.transactionsAmount);
-    this.imageBgChange(prevImageId, imageId, transactionsAmount);
+      //***************************
+      //Set Active Block and trigger imageBG chagne
+      //***************************
+      if (this.firstEnterAniInProgress) return;
+      if (!this.ethBlockEls) return;
+      const el = this.ethBlockEls[index] as HTMLElement;
+      if (!el) return;
+      const blockId = Number(el.dataset.blockId);
+      if (Number.isNaN(blockId)) return;
+      if (this.loadingBlockId === blockId) return;
+      if (this.activeBlockId === blockId) return;
+      if (aniCoef > 0.03) return;
+      this.activeBlockId = blockId;
+      if (!el.dataset.bgImageId) return;
+      const imageId = Number(el.dataset.bgImageId);
+      const prevImageId = this.activeImageId;
+      this.activeImageId = imageId;
+      const transactionsAmount = Number(el.dataset.transactionsAmount);
+      this.imageBgChange(prevImageId, imageId, transactionsAmount);
+    }
   },
 
   async createGlassBlockMesh() {
@@ -195,7 +211,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
-    const uBlocksPositions = this.calculateUBlockPositions();
+    this.calculateUBlockPositions();
+    if (!this._uBlocksPositions) return;
 
     const meshId = "ethBlockBg";
     const material = new THREE.ShaderMaterial({
@@ -207,10 +224,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uBlockCount: {
-          value: Math.min(uBlocksPositions.length, 10),
+          value: Math.min(
+            this._uBlocksPositions.length,
+            BLOCKS_ON_SCREEN_AMOUNT,
+          ),
         },
         uBlocks: {
-          value: uBlocksPositions,
+          value: this._uBlocksPositions,
         },
         uSceneTexture: { value: null },
       },
@@ -356,8 +376,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       );
     }
 
-    const renderer = Canvas3.getRenderer();
-    const canvasBounds = renderer?.domElement.getBoundingClientRect();
+    const canvasBounds = this._cachedCanvasBounds;
     if (!canvasBounds) return this._uBlocksPositions;
 
     let activeIndex = 0;
@@ -366,10 +385,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       if (
         el &&
         (el.classList.contains("active") || el.classList.contains("animating"))
-        // &&
-        // !el.classList.contains("block-loading")
       ) {
         const clientBounds = el.getBoundingClientRect();
+        // this._blockClientRects[i] = clientBounds;
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
           const uBlockPosition = this._uBlocksPositions[activeIndex];
           if (uBlockPosition) {
@@ -413,13 +431,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     if (this.sceneRT) {
-      const renderer = Canvas3.getRenderer();
       const w =
-        (renderer?.domElement.clientWidth ?? window.innerWidth) *
-        (renderer?.getPixelRatio() ?? 1);
+        (this._renderer?.domElement.clientWidth ?? window.innerWidth) *
+        (this._renderer?.getPixelRatio() ?? 1);
       const h =
-        (renderer?.domElement.clientHeight ?? window.innerHeight) *
-        (renderer?.getPixelRatio() ?? 1);
+        (this._renderer?.domElement.clientHeight ?? window.innerHeight) *
+        (this._renderer?.getPixelRatio() ?? 1);
+      this._cachedCanvasBounds =
+        this._renderer?.domElement.getBoundingClientRect() ?? null;
       this.sceneRT.setSize(w, h);
     }
 
@@ -444,49 +463,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   },
   render() {
     if (!this.glassMesh || !this.sceneRT) return;
-
-    const meshToUpdate = this.glassMesh as THREE.Mesh;
-    const material = meshToUpdate.material as THREE.ShaderMaterial;
-
-    const uBlocksPositions = this.calculateUBlockPositions();
-
-    if (material.uniforms.uBlocks)
-      material.uniforms.uBlocks.value = uBlocksPositions;
-    if (material.uniforms.uBlockCount)
-      material.uniforms.uBlockCount.value = Math.min(
-        uBlocksPositions.length,
-        10,
-      );
-
-    this.glassMesh.visible = false;
-
-    const renderer = Canvas3.getRenderer();
-    const scene = Canvas3.getScene();
-    const camera = Canvas3.getCamera();
-
-    if (renderer && scene && camera) {
-      renderer.setRenderTarget(this.sceneRT);
-      renderer.setClearColor(0x000000, 0); // Ensure transparency
-      renderer.clear();
-      renderer.render(scene, camera);
-
-      this.glassMesh.visible = true;
-
-      if (!material.uniforms.uSceneTexture) return;
-      material.uniforms.uSceneTexture.value = this.sceneRT.texture;
-
-      renderer.setRenderTarget(null);
+    this.calculateUBlockPositions();
+    if (this._renderer && this._scene && this._camera) {
+      this._renderer.setRenderTarget(this.sceneRT);
+      this._renderer.clear();
+      this._renderer.render(this._scene, this._camera);
+      this._renderer.setRenderTarget(null);
     }
   },
 };
-
-//TODO:
-//PERFORMACE IMPROVE
-
-// Bigger line height; Opacity to 70% - OK
-// First photo animation: slower - OK
-// Bug: cannot come back up when I scroll down - OK
-// Disable the active card - OK
-
-// - Q- transition Shader -> https://www.shadertoy.com/view/WsB3Wy - finish timing, easing and possible mask image update
-// - ? maxAmount of blocks 25, remove the oldest once

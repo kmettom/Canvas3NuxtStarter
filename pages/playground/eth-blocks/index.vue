@@ -56,7 +56,6 @@ import {
   DEFAULT_BLOCK_LOADING_TIME,
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
-  SCROLL_MAGNET_DELAY,
 } from "~/constants/playground/eth-blocks";
 import Credentials from "~/components/playground/eth-blocks/credentials.vue";
 gsap.registerPlugin(SplitText);
@@ -69,7 +68,7 @@ const maxBlocks = 50;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
 const ethBlocksWrapper = ref<HTMLElement | null>(null);
-let scrollTimeout: number | null = null;
+const scrollTimeout: number | null = null;
 const blocksToRender = computed<BlockItem[]>(() => {
   return [...ethBlocks.value.values()].sort((a, b) =>
     a.blockId > b.blockId ? -1 : 1,
