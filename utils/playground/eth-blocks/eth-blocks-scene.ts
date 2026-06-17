@@ -6,7 +6,7 @@ import {
   DEFAULT_IMAGE_CHANGE_DURATION,
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
-  INITIAL_BLOCK_AMOUNT,
+  INITIAL_BLOCK_AMOUNT, LOADING_BLOCK_SIZE,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
@@ -176,7 +176,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       if (!blockClientRect) blockClientRect = elNode.getBoundingClientRect();
       const blockPositionTop = blockClientRect.top;
       const aniCoef = Math.abs(
-        (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
+        (blockPositionTop - this.blocksBasePosition - LOADING_BLOCK_SIZE) / window.innerHeight,
       );
 
       elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
