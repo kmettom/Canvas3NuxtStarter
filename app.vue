@@ -25,7 +25,7 @@
       }"
     />
   </NuxtLayout>
-  <Cursor />
+  <!--  <Cursor />-->
   <img
     alt="hidden image for font"
     loading="eager"
