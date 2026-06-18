@@ -53,6 +53,7 @@ import {
   enterAni,
 } from "~/utils/playground/eth-blocks/eth-block-animation-helpers";
 import {
+  BLOCKS_MAX_AMOUNT,
   DEFAULT_BLOCK_LOADING_TIME,
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
@@ -66,7 +67,6 @@ gsap.registerPlugin(SplitText);
 
 const displayStore = useDisplayStore();
 
-const maxBlocks = 15;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
 const ethBlocksWrapper = ref<HTMLElement | null>(null);
@@ -269,7 +269,7 @@ const addBlockListener = () => {
     );
     await nextTick();
     blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
-    if (ethBlocks.value.size > maxBlocks) {
+    if (ethBlocks.value.size > BLOCKS_MAX_AMOUNT) {
       const oldestKey = ethBlocks.value.keys().next().value;
       if (oldestKey !== undefined) ethBlocks.value.delete(oldestKey);
     }
