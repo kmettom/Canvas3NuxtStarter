@@ -64,6 +64,8 @@ gsap.registerPlugin(SplitText);
 // DECLARATIONS
 //**************************
 
+const displayStore = useDisplayStore();
+
 const maxBlocks = 50;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
@@ -231,7 +233,11 @@ const blockDoneAnimate = (blockId: number) => {
     tlNewBlockAniIn.fromTo(
       el,
       { height: "10px" },
-      { height: "236px", duration: 0.5, marginTop: "20px" },
+      {
+        height: "236px",
+        duration: 0.5,
+        marginTop: displayStore.isMobile ? "10px" : "20px",
+      },
     );
 
     blockContentAniIn(el, tlNewBlockAniIn);
