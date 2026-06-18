@@ -66,7 +66,7 @@ gsap.registerPlugin(SplitText);
 
 const displayStore = useDisplayStore();
 
-const maxBlocks = 50;
+const maxBlocks = 20;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
 const ethBlocksWrapper = ref<HTMLElement | null>(null);

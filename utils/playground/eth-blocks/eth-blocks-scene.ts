@@ -8,7 +8,6 @@ import {
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
   LOADING_BLOCK_SIZE,
-  // LOADING_BLOCK_SIZE,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
@@ -418,13 +417,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.isAnimating = false;
     return this._uBlocksPositions;
   },
-  magnetScroll() {
-    Canvas3.scrollToElBySelector(
-      `.eth-block[data-block-id="${this.activeBlockId}"]`,
-      0,
-      -this.blocksBasePosition,
-    );
-  },
   resizeImageBGMesh() {
     if (this.glassMesh) {
       this.glassMesh.scale.set(window.innerWidth, window.innerHeight, 1);
@@ -471,7 +463,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!this.glassMesh || !this.sceneRT) return;
     this.calculateUBlockPositions();
     if (this._renderer && this._scene && this._camera) {
-
       // Pass 1: render scene into render target WITHOUT the mesh that samples it
       this.glassMesh.visible = false;
       this._renderer.setRenderTarget(this.sceneRT);
