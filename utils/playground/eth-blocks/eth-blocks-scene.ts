@@ -471,10 +471,18 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!this.glassMesh || !this.sceneRT) return;
     this.calculateUBlockPositions();
     if (this._renderer && this._scene && this._camera) {
+
+      // Pass 1: render scene into render target WITHOUT the mesh that samples it
+      this.glassMesh.visible = false;
       this._renderer.setRenderTarget(this.sceneRT);
       this._renderer.clear();
       this._renderer.render(this._scene, this._camera);
+
+      // Pass 2: render full scene to screen WITH the glass mesh visible
+      this.glassMesh.visible = true;
       this._renderer.setRenderTarget(null);
+      this._renderer.clear();
+      this._renderer.render(this._scene, this._camera);
     }
   },
 };
