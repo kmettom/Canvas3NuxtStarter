@@ -7,6 +7,8 @@ import {
   DEFAULT_TRANSACTIONS_AMOUNT,
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
+  LOADING_BLOCK_SIZE,
+  // LOADING_BLOCK_SIZE,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 
@@ -176,10 +178,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       if (!blockClientRect) blockClientRect = elNode.getBoundingClientRect();
       const blockPositionTop = blockClientRect.top;
       const aniCoef = Math.abs(
-        (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
+        (blockPositionTop - this.blocksBasePosition - LOADING_BLOCK_SIZE) /
+          window.innerHeight,
       );
 
-      elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.75)})`;
+      elNode.style.transform = `scale(${Math.max(1 - aniCoef / 3, 0.8)})`;
       elNode.style.opacity = `${Math.max(1 - aniCoef * 3, 0.35)}`;
 
       //***************************
@@ -193,7 +196,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       if (Number.isNaN(blockId)) return;
       if (this.loadingBlockId === blockId) return;
       if (this.activeBlockId === blockId) return;
-      if (aniCoef > 0.03) return;
+      const blockActivateCoef = Math.abs(
+        (blockPositionTop - this.blocksBasePosition) / window.innerHeight,
+      );
+      if (blockActivateCoef > 0.03) return;
       this.activeBlockId = blockId;
       if (!el.dataset.bgImageId) return;
       const imageId = Number(el.dataset.bgImageId);

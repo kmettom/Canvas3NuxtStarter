@@ -64,6 +64,8 @@ gsap.registerPlugin(SplitText);
 // DECLARATIONS
 //**************************
 
+const displayStore = useDisplayStore();
+
 const maxBlocks = 50;
 const { ethBlocks, blockIdCounter, blockImageIdCounter } = useEthBlocks();
 const blocksBasePosition = ref(ethBlocksAnimation.blocksBasePosition);
@@ -127,17 +129,19 @@ const getBlockElFromBlockId = (blockId: number) => {
   );
 };
 
-const blockBorder = "1px solid rgba(255, 255, 255, 0.25)";
+const blockBorderTrans = "1px solid transparent";
+const blockBorderFull = "1px solid rgba(255, 255, 255, 0.25)";
 
 function firstLoadingBlock() {
   const el = document.querySelectorAll(".eth-block")[0];
   if (!el) return;
   tlEnterBlockAniIn.to(el, {
     height: "10px",
+    border: blockBorderTrans,
   });
   tlEnterBlockAniIn.to(el, {
     opacity: 1,
-    border: blockBorder,
+    border: blockBorderFull,
     width: "100%",
     duration: 0.4,
   });
@@ -172,11 +176,12 @@ async function newLoadingBlock() {
   });
   tlNewBlockAniIn.to(el, {
     height: "10px",
+    border: blockBorderTrans,
     duration: 0.15,
     opacity: 0,
   });
   tlNewBlockAniIn.to(el, {
-    border: blockBorder,
+    border: blockBorderFull,
     opacity: 1,
     width: "100%",
     duration: 0.3,
@@ -231,7 +236,11 @@ const blockDoneAnimate = (blockId: number) => {
     tlNewBlockAniIn.fromTo(
       el,
       { height: "10px" },
-      { height: "236px", duration: 0.5, marginTop: "20px" },
+      {
+        height: "236px",
+        duration: 0.5,
+        marginTop: displayStore.isMobile ? "10px" : "20px",
+      },
     );
 
     blockContentAniIn(el, tlNewBlockAniIn);
@@ -299,7 +308,7 @@ onMounted(async () => {
 
   addBlockListener();
 
-  await enterAni(tlEnterBlockAniIn, ethBlockEls);
+  await enterAni(tlEnterBlockAniIn, ethBlockEls, !!displayStore.isMobile);
   tlNewBlockAniIn.play();
 
   credentialsAniIn(tlEnterBlockAniIn);

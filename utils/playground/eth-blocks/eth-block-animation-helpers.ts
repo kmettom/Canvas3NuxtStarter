@@ -107,6 +107,7 @@ export function aniContentValues(
 export async function enterAni(
   tlEnterBlockAniIn: gsap.core.Timeline,
   ethBlockEls: HTMLCollection | null,
+  isMobile: boolean,
 ) {
   if (!ethBlockEls) return;
   return new Promise((resolve) => {
@@ -123,7 +124,7 @@ export async function enterAni(
           {
             width: "100%",
             height: "236px",
-            marginTop: "20px",
+            marginTop: isMobile ? "10px" : "20px",
             duration: 0.3,
             ease: "power2.out",
             onComplete: () => {
