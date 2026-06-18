@@ -305,7 +305,7 @@ onMounted(async () => {
 
   addBlockListener();
 
-  await enterAni(tlEnterBlockAniIn, ethBlockEls);
+  await enterAni(tlEnterBlockAniIn, ethBlockEls, !!displayStore.isMobile);
   tlNewBlockAniIn.play();
 
   credentialsAniIn(tlEnterBlockAniIn);

@@ -101,7 +101,7 @@ const props = defineProps<{
   position: relative;
   display: flex;
   flex-direction: column;
-  margin: 15px 0;
+  padding: 15px 0;
 }
 
 .content-row {

@@ -1,7 +1,13 @@
 import { defineStore } from "pinia";
 
 export const useDisplayStore = defineStore("displayStore", {
-  state: () => ({
+  state: (): {
+    isMobile: boolean | null;
+    isTablet: boolean | null;
+    mobileBreakPoint: number;
+    tabletBreakPoint: number;
+    prefersReducedMotion: boolean;
+  } => ({
     isMobile: null,
     isTablet: null,
     mobileBreakPoint: 768,
