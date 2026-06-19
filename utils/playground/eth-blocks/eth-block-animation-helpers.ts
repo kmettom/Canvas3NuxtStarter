@@ -128,7 +128,8 @@ export async function enterAni(
             width: "100%",
             height: "236px",
             border: blockBorderFull,
-            marginTop: isMobile ? "10px" : "20px",
+            marginBottom: "-12px",
+            marginTop: isMobile ? "20px" : "30px",
             duration: 0.3,
             ease: "power2.out",
             onComplete: () => {
