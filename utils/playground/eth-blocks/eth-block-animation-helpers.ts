@@ -9,6 +9,9 @@ gsap.registerPlugin(SplitText);
 // ANIMATIONS
 //*********************************
 
+export const blockBorderFull = "1px solid rgba(255, 255, 255, 0.25)";
+export const blockBorderTrans = "1px solid transparent";
+
 export function aniProgressBar(
   blockEl: Element,
   tlNewBlockAniIn: gsap.core.Timeline,
@@ -124,6 +127,7 @@ export async function enterAni(
           {
             width: "100%",
             height: "236px",
+            border: blockBorderFull,
             marginTop: isMobile ? "10px" : "20px",
             duration: 0.3,
             ease: "power2.out",

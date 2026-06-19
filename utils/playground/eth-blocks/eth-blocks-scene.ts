@@ -30,6 +30,51 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   _uBlocksPositions: [],
   // _blockClientRects: [],
   _lastScrollY: -1,
+  _intersectionObserver: null as IntersectionObserver | null,
+  _visibleBlockIds: new Set<number>(),
+
+  _setupIntersectionObserver() {
+    if (!this.ethBlockEls) return;
+
+    // Clean up any previous observer
+    if (this._intersectionObserver) {
+      this._intersectionObserver.disconnect();
+      this._intersectionObserver = null;
+    }
+
+    // Create a new observer
+    this._intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const target = entry.target as HTMLElement;
+          const blockIdAttr = target.dataset.blockId;
+          if (!blockIdAttr) continue;
+
+          const blockId = Number(blockIdAttr);
+          if (Number.isNaN(blockId)) continue;
+
+          if (entry.isIntersecting) {
+            this._visibleBlockIds.add(blockId);
+          } else {
+            this._visibleBlockIds.delete(blockId);
+          }
+        }
+      },
+      {
+        root: null, // viewport
+        rootMargin: "0px",
+        threshold: 0, // consider visible as soon as any intersection
+      },
+    );
+
+    // Start observing all current block elements
+    for (let i = 0; i < this.ethBlockEls.length; i++) {
+      const el = this.ethBlockEls[i] as HTMLElement | undefined;
+      if (!el) continue;
+      this._intersectionObserver.observe(el);
+    }
+  },
+
   setBlockBasePosition() {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
@@ -43,6 +88,13 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         this._scene.remove(meshToRemove);
       }
     }
+
+    if (this._intersectionObserver) {
+      this._intersectionObserver.disconnect();
+      this._intersectionObserver = null;
+    }
+    this._visibleBlockIds.clear();
+
     Canvas3.removeAnimationFromRender("ethBlocksAnimation");
     this.imageBgMeshes = [];
     this.glassMesh = null;
@@ -63,12 +115,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
   async init(ethBlockEls) {
     if (!ethBlockEls) return;
     this.ethBlockEls = ethBlockEls;
-    // if (this._blockClientRects && this.ethBlockEls) {
-    //   for (let i = 0; i < this.ethBlockEls.length; i++) {
-    //     const box = this.ethBlockEls[i]?.getBoundingClientRect();
-    //     if (box) this._blockClientRects[i] = box;
-    //   }
-    // }
+
+    this._setupIntersectionObserver();
 
     await this.loadTextures(2);
   },
@@ -387,12 +435,16 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     let activeIndex = 0;
     for (let i = 0; i < this.ethBlockEls.length; i++) {
       const el = this.ethBlockEls[i] as HTMLElement;
-      if (
-        el &&
-        (el.classList.contains("active") || el.classList.contains("animating"))
-      ) {
+
+      const blockIdAttr = el.dataset.blockId;
+      const blockId = blockIdAttr ? Number(blockIdAttr) : NaN;
+
+      const inViewport =
+        !Number.isNaN(blockId) && this._visibleBlockIds.has(blockId);
+      const isAnimating = el.classList.contains("animating");
+
+      if (inViewport || isAnimating) {
         const clientBounds = el.getBoundingClientRect();
-        // this._blockClientRects[i] = clientBounds;
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
           const uBlockPosition = this._uBlocksPositions[activeIndex];
           if (uBlockPosition) {

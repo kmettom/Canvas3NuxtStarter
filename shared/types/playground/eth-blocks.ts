@@ -61,6 +61,10 @@ export type EthBlocksAnimation = {
   _renderer: THREE.WebGLRenderer | null;
   _scene: THREE.Scene | null;
   _camera: THREE.Camera | null;
+
+  _intersectionObserver: IntersectionObserver | null;
+  _visibleBlockIds: Set<number>;
+  _setupIntersectionObserver: () => void;
 };
 
 type BlockBase = {
