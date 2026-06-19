@@ -57,13 +57,6 @@ import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 import SectionPlayground from "~/pages/index/SectionPlayground.vue";
 
-useSeoMeta({
-  title: "Canvas3 NUXT Starter",
-  ogTitle: "Canvas3 NUXT Starter",
-  description: "Canvas3 NUXT Starter",
-  ogDescription: "Canvas3 NUXT Starter",
-});
-
 const navigationStore = useNavigationStore();
 
 const setSectionActivationOptions = (

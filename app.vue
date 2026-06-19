@@ -40,6 +40,13 @@ import WelcomeScreen from "~/components/common/WelcomeScreen.vue";
 import { waitOutDone } from "~/composables/useOutPromise";
 import { pageTransition } from "~/utils/animations/pageTransition";
 
+useSeoMeta({
+  title: "Web developer - Tomas Kmet - creative - web3",
+  description: "Web developer - Tomas Kmet - creative - web3",
+  ogTitle: "Web developer - Tomas Kmet - creative - web3",
+  ogDescription: "Web developer - Tomas Kmet - creative - web3",
+});
+
 useHead({
   htmlAttrs: {
     lang: "en",
