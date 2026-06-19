@@ -13,12 +13,6 @@
       <div
         v-for="block in blocksToRender"
         :key="block.blockId"
-        v-action-on-scroll="{
-          activeRange: 1,
-          bidirectionalActivation: true,
-          activateOnce: false,
-          // trackOnly: true,
-        }"
         :data-bg-image-id="block.imageId"
         :data-block-id="block.blockId"
         :data-transactions-amount="
@@ -48,6 +42,8 @@ import type {
 } from "#shared/types/playground/eth-blocks";
 import { useEthBlocks } from "~/stores/playground/eth-blocks-store";
 import {
+  blockBorderFull,
+  blockBorderTrans,
   blockContentAniIn,
   credentialsAniIn,
   enterAni,
@@ -128,9 +124,6 @@ const getBlockElFromBlockId = (blockId: number) => {
     '.eth-block[data-block-id="' + blockId + '"]',
   );
 };
-
-const blockBorderTrans = "1px solid transparent";
-const blockBorderFull = "1px solid rgba(255, 255, 255, 0.25)";
 
 function firstLoadingBlock() {
   const el = document.querySelectorAll(".eth-block")[0];
@@ -268,6 +261,7 @@ const addBlockListener = () => {
       generateBlockData(loadingBlock.blockId, loadingBlock.imageId, blockData),
     );
     await nextTick();
+    ethBlocksAnimation._setupIntersectionObserver();
     blockDoneAnimate(ethBlocksAnimation.loadingBlockId);
     if (ethBlocks.value.size > BLOCKS_MAX_AMOUNT) {
       const oldestKey = ethBlocks.value.keys().next().value;
