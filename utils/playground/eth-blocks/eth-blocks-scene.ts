@@ -175,8 +175,6 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const glassMaterial = this.glassMesh.material as THREE.ShaderMaterial;
     if (glassMaterial.uniforms.uSceneTexture)
       glassMaterial.uniforms.uSceneTexture.value = this.sceneRT.texture;
-
-    console.log("start render init");
     Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
   },
   async loadTextureMaskNoise() {
