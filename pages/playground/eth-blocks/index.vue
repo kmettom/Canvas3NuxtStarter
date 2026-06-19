@@ -169,6 +169,7 @@ async function newLoadingBlock() {
   });
   tlNewBlockAniIn.to(el, {
     height: "10px",
+    marginBottom: "-12px",
     border: blockBorderTrans,
     duration: 0.15,
     opacity: 0,
@@ -232,7 +233,7 @@ const blockDoneAnimate = (blockId: number) => {
       {
         height: "236px",
         duration: 0.5,
-        marginTop: displayStore.isMobile ? "10px" : "20px",
+        marginTop: displayStore.isMobile ? "20px" : "30px",
       },
     );
 
@@ -335,10 +336,11 @@ onMounted(async () => {
   overflow: hidden;
   display: block;
   position: relative;
-  margin: 0 auto;
+  margin: 0 auto -2px;
   height: 0;
   width: 0;
-  border-radius: 20px;
+  border-radius: 18px;
+  border: 1px solid transparent;
   will-change: transform, opacity;
   contain: layout paint style;
   transition: border ease 0.3s;
