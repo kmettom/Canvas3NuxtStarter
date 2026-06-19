@@ -339,6 +339,7 @@ onMounted(async () => {
   height: 0;
   width: 0;
   border-radius: 20px;
+  border: 1px solid transparent;
   will-change: transform, opacity;
   contain: layout paint style;
   transition: border ease 0.3s;
