@@ -10,6 +10,7 @@ import {
   LOADING_BLOCK_SIZE,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
+import { ETH_ANI_CALLBACK_NAME } from "~/utils/playground/eth-blocks/web3-helpers";
 
 export const ethBlocksAnimation: EthBlocksAnimation = {
   imageBgMeshes: [],
@@ -175,7 +176,14 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const glassMaterial = this.glassMesh.material as THREE.ShaderMaterial;
     if (glassMaterial.uniforms.uSceneTexture)
       glassMaterial.uniforms.uSceneTexture.value = this.sceneRT.texture;
-    Canvas3.addAnimationToRender("ethBlocksAnimation", this.render.bind(this));
+    Canvas3.addAnimationToRender("ethBlocksAnimation", {
+      onAnimationsRender: true,
+      onResize: true,
+      onMouseMove: false,
+      onScroll: true,
+      render: false,
+      animationCallback: this.render.bind(this),
+    });
   },
   async loadTextureMaskNoise() {
     const loader = new THREE.TextureLoader();
@@ -385,6 +393,12 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       {
         value: 1,
         duration: imageChangeDuration,
+        onStart: () => {
+          Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true);
+        },
+        onComplete: () => {
+          Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, false);
+        },
       },
     );
   },
@@ -441,8 +455,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       const inViewport =
         !Number.isNaN(blockId) && this._visibleBlockIds.has(blockId);
       const isAnimating = el.classList.contains("animating");
+      const isLoadingBlock = el.classList.contains("block-loading");
 
-      if (inViewport || isAnimating) {
+      if ((inViewport || isAnimating) && !isLoadingBlock) {
         const clientBounds = el.getBoundingClientRect();
         if (activeIndex < BLOCKS_ON_SCREEN_AMOUNT) {
           const uBlockPosition = this._uBlocksPositions[activeIndex];

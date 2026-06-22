@@ -31,6 +31,7 @@ import {
   generateBlockData,
   deserializeBlock,
   generateLoadingBlockData,
+  ETH_ANI_CALLBACK_NAME,
 } from "~/utils/playground/eth-blocks/web3-helpers";
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
@@ -217,6 +218,8 @@ const blockDoneAnimate = (blockId: number) => {
     if (!el) {
       return;
     }
+    Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true);
+    tlNewBlockAniIn.clear();
     tlNewBlockAniIn.add(() => {
       el.classList.add("animating");
     });
@@ -244,6 +247,7 @@ const blockDoneAnimate = (blockId: number) => {
       duration: 0,
       opacity: 1,
       onComplete: () => {
+        Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, false);
         el.classList.remove("animating");
       },
     });
@@ -302,7 +306,7 @@ onMounted(async () => {
   firstLoadingBlock();
 
   addBlockListener();
-
+  Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true);
   await enterAni(tlEnterBlockAniIn, ethBlockEls, !!displayStore.isMobile);
   tlNewBlockAniIn.play();
 

@@ -36,7 +36,13 @@ const state = reactive({
 
 const cursorInit = () => {
   // Set up draw callback
-  Canvas3.addAnimationToRender("cursorDraw", draw);
+  Canvas3.addAnimationToRender("cursorDraw", {
+    onScroll: false,
+    onAnimationsRender: false,
+    onResize: false,
+    onMouseMove: true,
+    animationCallback: draw,
+  });
 
   // Track mouse movements
   window.onmousemove = (event) => {

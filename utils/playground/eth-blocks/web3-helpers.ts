@@ -4,6 +4,8 @@ import type { BlockItem } from "#shared/types/playground/eth-blocks";
 
 const GWEI_TO_WEI = 1_000_000_000n;
 
+export const ETH_ANI_CALLBACK_NAME = "ethBlocksAnimation";
+
 export const blockWithdrawalsSumWei = (withdrawals: Withdrawal[]) => {
   let sumGwei = 0n;
   for (const w of withdrawals) sumGwei += BigInt(w.amount);

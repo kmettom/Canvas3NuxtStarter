@@ -33,7 +33,14 @@ export const pageTransition: PageTransition = {
       "curtain",
       "rgb(20, 20, 20)",
     );
-    Canvas3.addAnimationToRender("pageTransition", pageTransition.render);
+    Canvas3.addAnimationToRender("pageTransition", {
+      onScroll: false,
+      onResize: false,
+      onAnimationsRender: true,
+      onMouseMove: false,
+      render: false,
+      animationCallback: pageTransition.render,
+    });
     pageTransition.reset();
   },
   addMeshRectangle: (meshName: string, color: string): THREE.Mesh => {
@@ -71,10 +78,10 @@ export const pageTransition: PageTransition = {
           ease: "power2.out",
         },
         onStart: () => {
-          Canvas3.setMeshPositionsUpdate(true);
+          Canvas3.setAnimationsToRender(true);
         },
         onComplete: () => {
-          Canvas3.setMeshPositionsUpdate(false);
+          Canvas3.setAnimationsToRender(false);
           resolve();
         },
       });
@@ -105,7 +112,11 @@ export const pageTransition: PageTransition = {
         defaults: {
           ease: "power2.in",
         },
+        onStart: () => {
+          Canvas3.setAnimationsToRender(true);
+        },
         onComplete: () => {
+          Canvas3.setAnimationsToRender(false);
           pageTransition.reset();
           resolve();
         },
