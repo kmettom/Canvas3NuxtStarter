@@ -394,10 +394,20 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
         value: 1,
         duration: imageChangeDuration,
         onStart: () => {
-          Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true);
+          Canvas3.setAnimationToRender(
+            ETH_ANI_CALLBACK_NAME,
+            true,
+            "imageChange",
+          );
         },
         onComplete: () => {
-          Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, false);
+          setTimeout(() => {
+            Canvas3.setAnimationToRender(
+              ETH_ANI_CALLBACK_NAME,
+              false,
+              "imageChange",
+            );
+          }, 300);
         },
       },
     );

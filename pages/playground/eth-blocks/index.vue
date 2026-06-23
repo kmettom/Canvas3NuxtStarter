@@ -110,6 +110,11 @@ const tlNewBlockAniIn = gsap.timeline({
   },
   onComplete: () => {
     newLoadingBlock();
+    Canvas3.setAnimationToRender(
+      ETH_ANI_CALLBACK_NAME,
+      false,
+      "firstAnimationIn",
+    );
   },
 });
 
@@ -218,7 +223,7 @@ const blockDoneAnimate = (blockId: number) => {
     if (!el) {
       return;
     }
-    Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true);
+    Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true, "newBlockIn");
     tlNewBlockAniIn.clear();
     tlNewBlockAniIn.add(() => {
       el.classList.add("animating");
@@ -247,7 +252,11 @@ const blockDoneAnimate = (blockId: number) => {
       duration: 0,
       opacity: 1,
       onComplete: () => {
-        Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, false);
+        Canvas3.setAnimationToRender(
+          ETH_ANI_CALLBACK_NAME,
+          false,
+          "newBlockIn",
+        );
         el.classList.remove("animating");
       },
     });
@@ -306,7 +315,7 @@ onMounted(async () => {
   firstLoadingBlock();
 
   addBlockListener();
-  Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true);
+  Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true, "firstAnimationIn");
   await enterAni(tlEnterBlockAniIn, ethBlockEls, !!displayStore.isMobile);
   tlNewBlockAniIn.play();
 

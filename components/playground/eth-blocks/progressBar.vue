@@ -39,7 +39,7 @@ const props = defineProps({
   background: rgba(255, 255, 255, 0.8);
 }
 .progress-bg {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.5);
   width: 100%;
 }
 </style>
