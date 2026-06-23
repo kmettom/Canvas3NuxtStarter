@@ -35,13 +35,13 @@
     "sass-embedded": "^1.89.2",
     "three": "^0.178.0",
     "typescript": "^5.7.2",
-    "viem": "^2.45.1",
+    "viem": "^0.2.1",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-glsl": "^1.5.1",
     "vue": "^3.5.34",
     "vue-router": "^4.5.1"
   },
   "dependencies": {
-    "@canvas3/nuxt": "^0.1.20"
+    "@canvas3/nuxt": "^0.1.22"
   }
 }
