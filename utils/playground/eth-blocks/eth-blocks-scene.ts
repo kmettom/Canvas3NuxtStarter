@@ -384,7 +384,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     const coef = Canvas3.getScrollSpeed() ?? 0;
     const imageChangeDuration = (
-      1.5 - Math.max(coef, DEFAULT_IMAGE_CHANGE_DURATION)
+      1.25 - Math.max(coef, DEFAULT_IMAGE_CHANGE_DURATION)
     ).toFixed(2);
 
     gsap.fromTo(
@@ -401,10 +401,15 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           );
         },
         onComplete: () => {
-          Canvas3.setAnimationToRender(
-            ETH_ANI_CALLBACK_NAME,
-            false,
-            "imageChange",
+          setTimeout(
+            () => {
+              Canvas3.setAnimationToRender(
+                ETH_ANI_CALLBACK_NAME,
+                false,
+                "imageChange",
+              );
+            },
+            Number(imageChangeDuration) * 1000,
           );
         },
       },

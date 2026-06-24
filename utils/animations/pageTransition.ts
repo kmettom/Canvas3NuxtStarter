@@ -83,14 +83,14 @@ export const pageTransition: PageTransition = {
           Canvas3.setAnimationToRender(
             PAGE_TRANSITION_ANI_NAME,
             true,
-            "curtain",
+            "curtainIn",
           );
         },
         onComplete: () => {
           Canvas3.setAnimationToRender(
             PAGE_TRANSITION_ANI_NAME,
             false,
-            "curtain",
+            "curtainIn",
           );
           resolve();
         },
@@ -127,7 +127,7 @@ export const pageTransition: PageTransition = {
           Canvas3.setAnimationToRender(
             PAGE_TRANSITION_ANI_NAME,
             true,
-            "curtain",
+            "curtainOut",
           );
         },
         onComplete: () => {
@@ -136,9 +136,9 @@ export const pageTransition: PageTransition = {
             Canvas3.setAnimationToRender(
               PAGE_TRANSITION_ANI_NAME,
               false,
-              "curtain",
+              "curtainOut",
             );
-          },200);
+          }, 200);
           resolve();
         },
       });
