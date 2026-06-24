@@ -208,7 +208,7 @@ const blockDoneAnimate = (blockId: number) => {
   }
 
   setTimeout(() => {
-    ethBlocksAnimation.loadTextures(2, 0);
+    ethBlocksAnimation.loadTextures(25, 0);
   }, 5000);
 
   tlNewBlockAniIn.tweenTo(tlNewBlockAniIn.duration(), {
@@ -252,11 +252,13 @@ const blockDoneAnimate = (blockId: number) => {
       duration: 0,
       opacity: 1,
       onComplete: () => {
-        Canvas3.setAnimationToRender(
-          ETH_ANI_CALLBACK_NAME,
-          false,
-          "newBlockIn",
-        );
+        setTimeout(() => {
+          Canvas3.setAnimationToRender(
+            ETH_ANI_CALLBACK_NAME,
+            false,
+            "newBlockIn",
+          );
+        }, 500);
         el.classList.remove("animating");
       },
     });
