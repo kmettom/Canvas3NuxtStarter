@@ -20,6 +20,8 @@ type PageTransition = {
   reset: () => void;
 };
 
+const PAGE_TRANSITION_ANI_NAME = "pageTransition";
+
 export const pageTransition: PageTransition = {
   setup: {
     positionX: { value: 0 },
@@ -33,7 +35,7 @@ export const pageTransition: PageTransition = {
       "curtain",
       "rgb(20, 20, 20)",
     );
-    Canvas3.addAnimationToRender("pageTransition", {
+    Canvas3.addAnimationToRender(PAGE_TRANSITION_ANI_NAME, {
       onScroll: false,
       onResize: false,
       onAnimationsRender: true,
@@ -78,10 +80,18 @@ export const pageTransition: PageTransition = {
           ease: "power2.out",
         },
         onStart: () => {
-          Canvas3.setAnimationsToRender(true);
+          Canvas3.setAnimationToRender(
+            PAGE_TRANSITION_ANI_NAME,
+            true,
+            "curtain",
+          );
         },
         onComplete: () => {
-          Canvas3.setAnimationsToRender(false);
+          Canvas3.setAnimationToRender(
+            PAGE_TRANSITION_ANI_NAME,
+            false,
+            "curtain",
+          );
           resolve();
         },
       });
@@ -111,13 +121,24 @@ export const pageTransition: PageTransition = {
       const tl = gsap.timeline({
         defaults: {
           ease: "power2.in",
+          duration: pageTransition.setup.duration,
         },
         onStart: () => {
-          Canvas3.setAnimationsToRender(true);
+          Canvas3.setAnimationToRender(
+            PAGE_TRANSITION_ANI_NAME,
+            true,
+            "curtain",
+          );
         },
         onComplete: () => {
-          Canvas3.setAnimationsToRender(false);
           pageTransition.reset();
+          setTimeout(() => {
+            Canvas3.setAnimationToRender(
+              PAGE_TRANSITION_ANI_NAME,
+              false,
+              "curtain",
+            );
+          },200);
           resolve();
         },
       });
@@ -126,7 +147,6 @@ export const pageTransition: PageTransition = {
         pageTransition.setup.positionX,
         {
           value: window.innerWidth / 2,
-          duration: pageTransition.setup.duration,
           delay: pageTransition.setup.duration / 2,
         },
         "<=",
@@ -136,7 +156,6 @@ export const pageTransition: PageTransition = {
         pageTransition.setup.scaleX,
         {
           value: 0,
-          duration: pageTransition.setup.duration,
         },
         "<=",
       );
