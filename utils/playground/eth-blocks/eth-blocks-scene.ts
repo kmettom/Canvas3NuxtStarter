@@ -401,13 +401,11 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           );
         },
         onComplete: () => {
-          setTimeout(() => {
-            Canvas3.setAnimationToRender(
-              ETH_ANI_CALLBACK_NAME,
-              false,
-              "imageChange",
-            );
-          }, 300);
+          Canvas3.setAnimationToRender(
+            ETH_ANI_CALLBACK_NAME,
+            false,
+            "imageChange",
+          );
         },
       },
     );
