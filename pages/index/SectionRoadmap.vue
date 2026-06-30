@@ -11,16 +11,11 @@
           }"
           class="roadmap-txt"
         >
-          → Canvas initiation improvements<br />
-          → 3D model imports<br />
+          → 3D model imports and scroll 3D object scroll control<br />
           <!--          → Responsiveness management - improve Display store<br />-->
-          → Enable/Disable canvas animations dynamically<br />
+          <!--          → Enable/Disable canvas render dynamically<br />-->
           <!--          → Side scroll sections<br />-->
-          → Create Type for working with TypeScript<br />
-          → Canvas3Text MSDF font implement<br />
-
-          <!--          → Create SDK for generic usage<br />-->
-          <!--          → Refactor to Typescript <br/>-->
+          → Canvas3Text MSDF font directive<br />
         </p>
       </div>
     </Container>

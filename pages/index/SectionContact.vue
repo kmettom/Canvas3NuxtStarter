@@ -59,9 +59,9 @@
                 >Instagram</a
               >
             </div>
-            <div>
-              <a href="https://x.com/KmetTom" target="_blank">X (Twitter)</a>
-            </div>
+            <!--            <div>-->
+            <!--              <a href="https://x.com/KmetTom" target="_blank">X (Twitter)</a>-->
+            <!--            </div>-->
             <div>
               <a href="https://www.linkedin.com/in/tomas-kmet/" target="_blank"
                 >LinkedIn</a
