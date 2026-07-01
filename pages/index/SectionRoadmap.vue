@@ -11,10 +11,9 @@
           }"
           class="roadmap-txt"
         >
-          → 3D model imports and scroll 3D object scroll control<br />
-          <!--          → Responsiveness management - improve Display store<br />-->
-          <!--          → Enable/Disable canvas render dynamically<br />-->
-          <!--          → Side scroll sections<br />-->
+          → 3D model imports and scroll 3D object scroll control and 3D object
+          story telling<br />
+          → Dynamic page section position - Fixed, Side scroll sections<br />
           → Canvas3Text MSDF font directive<br />
         </p>
       </div>
