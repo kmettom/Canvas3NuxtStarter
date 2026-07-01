@@ -1,28 +1,30 @@
-import scrollFragment from "./shaders/scrollFragment.glsl";
-import scrollVertex from "./shaders/scrollVertex.glsl";
-import projectBlurFragment from "./shaders/projectBlurFragment.glsl";
-import projectBlurVertex from "./shaders/projectBlurVertex.glsl";
-import TextBlurFragment from "./shaders/TextBlurFragment.glsl";
-import TextBlurVertex from "./shaders/TextBlurVertex.glsl";
-import heroBlurFragment from "./shaders/heroBlurFragment.glsl";
-import heroBlurVertex from "./shaders/heroBlurVertex.glsl";
-import example1Fragment from "./shaders/example1Fragment.glsl";
-import example1Vertex from "./shaders/example1Vertex.glsl";
-import example2Fragment from "./shaders/example2Fragment.glsl";
-import example2Vertex from "./shaders/example2Vertex.glsl";
-import example3Fragment from "./shaders/example3Fragment.glsl";
-import example3Vertex from "./shaders/example3Vertex.glsl";
-import example4Fragment from "./shaders/example4Fragment.glsl";
-import example4Vertex from "./shaders/example4Vertex.glsl";
-import example6Fragment from "./shaders/example6Fragment.glsl";
-import example6Vertex from "./shaders/example6Vertex.glsl";
-import playEthBlockNoDesignFragment from "./shaders/playEthBlockNoDesignFragment.glsl";
-import playEthBlockNoDesignVertex from "./shaders/playEthBlockNoDesignVertex.glsl";
-import playEthBlockGlassFragment from "./shaders/playEthBlockGlassFragment.glsl";
-import playEthBlockGlassVertex from "./shaders/playEthBlockGlassVertex.glsl";
+import scrollFragment from "~/assets/shaders/scrollFragment.glsl";
+import scrollVertex from "~/assets/shaders/scrollVertex.glsl";
+import projectBlurFragment from "~/assets/shaders/projectBlurFragment.glsl";
+import projectBlurVertex from "~/assets/shaders/projectBlurVertex.glsl";
+import TextBlurFragment from "~/assets/shaders/TextBlurFragment.glsl";
+import TextBlurVertex from "~/assets/shaders/TextBlurVertex.glsl";
+import heroBlurFragment from "~/assets/shaders/heroBlurFragment.glsl";
+import heroBlurVertex from "~/assets/shaders/heroBlurVertex.glsl";
+import example0Fragment from "~/assets/shaders/example0Fragment.glsl";
+import example0Vertex from "~/assets/shaders/example0Vertex.glsl";
+import example1Fragment from "~/assets/shaders/example1Fragment.glsl";
+import example1Vertex from "~/assets/shaders/example1Vertex.glsl";
+import example2Fragment from "~/assets/shaders/example2Fragment.glsl";
+import example2Vertex from "~/assets/shaders/example2Vertex.glsl";
+import example3Fragment from "~/assets/shaders/example3Fragment.glsl";
+import example3Vertex from "~/assets/shaders/example3Vertex.glsl";
+import example4Fragment from "~/assets/shaders/example4Fragment.glsl";
+import example4Vertex from "~/assets/shaders/example4Vertex.glsl";
+import example6Fragment from "~/assets/shaders/example6Fragment.glsl";
+import example6Vertex from "~/assets/shaders/example6Vertex.glsl";
+import playEthBlockNoDesignFragment from "~/assets/shaders/playEthBlockNoDesignFragment.glsl";
+import playEthBlockNoDesignVertex from "~/assets/shaders/playEthBlockNoDesignVertex.glsl";
+import playEthBlockGlassFragment from "~/assets/shaders/playEthBlockGlassFragment.glsl";
+import playEthBlockGlassVertex from "~/assets/shaders/playEthBlockGlassVertex.glsl";
 // import playEthBlockImageBgFragmentBlocks from "./shaders/playEthBlockImageBgFragment_blocks.glsl";
-import playEthBlockImageBgFragment from "./shaders/playEthBlockImageBgFragment.glsl";
-import playEthBlockImageBgVertex from "./shaders/playEthBlockImageBgVertex.glsl";
+import playEthBlockImageBgFragment from "~/assets/shaders/playEthBlockImageBgFragment.glsl";
+import playEthBlockImageBgVertex from "~/assets/shaders/playEthBlockImageBgVertex.glsl";
 
 export const Canvas3Options = {
   font: {
@@ -43,6 +45,10 @@ export const Canvas3Options = {
     hero: {
       fragmentShader: heroBlurFragment,
       vertexShader: heroBlurVertex,
+    },
+    example0: {
+      fragmentShader: example0Fragment,
+      vertexShader: example0Vertex,
     },
     example1: {
       fragmentShader: example1Fragment,
