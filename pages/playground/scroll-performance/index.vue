@@ -75,8 +75,9 @@
   </div>
 </template>
 <script setup lang="ts">
-// TODO:
+// TODO BEFORE RELEASE:
 // - first init test - image can be not loaded in some conditions - investigate from TK.com
+// - add guard for layout change - if scroll is on bottom, scroll up a bit first and then change layout
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
