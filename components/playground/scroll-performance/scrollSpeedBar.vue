@@ -46,13 +46,23 @@ onBeforeUnmount(() => {
         <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
       </div>
       <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
-      <div class="cred-holder">xxx</div>
+      <div class="cred-holder">
+        <div class="person">
+          <span>Photography by </span>
+          <a href="https://jagodakondratiuk.com">Jagoda Kondratiuk</a>
+        </div>
+        <div class="person">
+          <span>Developed by </span>
+          <a href="https://tomaskmet.com">Tomas Kmet</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .scroll-speed-container {
+  font-family: "PP Neue Montreal Bold", serif;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -73,7 +83,6 @@ onBeforeUnmount(() => {
 .scroll-speed-text {
   text-transform: uppercase;
   font-size: 14px;
-  font-family: "PP Neue Montreal Bold", serif;
   z-index: 2;
   color: var(--dark-color);
   margin: 3px 3px 3px 15px;
@@ -105,5 +114,13 @@ onBeforeUnmount(() => {
   height: 200px;
   width: 100%;
   color: var(--dark-color);
+  font-size: 35px;
+  .person{
+    margin: 15px;
+  }
+  a{
+    color: var(--dark-color);
+    pointer-events: auto;
+  }
 }
 </style>

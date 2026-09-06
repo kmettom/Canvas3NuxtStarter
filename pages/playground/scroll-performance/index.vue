@@ -49,7 +49,7 @@
               uniforms: {
                 uAniIn: {
                   value: blocksActivatedMap[index] ? 1 : 0,
-                  duration: 0.35,
+                  duration: index < 3 ? 0.75 : 0.4,
                   ease: 'power2.inOut',
                 },
                 uLayoutChangeProgress: {
