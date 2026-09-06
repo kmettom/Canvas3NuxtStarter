@@ -301,27 +301,27 @@ const slides = ref<
     position: 2,
   },
   {
-    image: "/playground/images/02.webp",
+    image: "/playground/images/04.webp",
     position: 0,
     scrollSpeed: 0.3,
   },
   {
-    image: "/playground/images/03.webp",
+    image: "/playground/images/05.webp",
     position: 1,
     scrollSpeed: 0.15,
   },
   {
-    image: "/playground/images/04.webp",
+    image: "/playground/images/06.webp",
     position: 2,
     // scrollSpeed: 0.15,
   },
   {
-    image: "/playground/images/02.webp",
+    image: "/playground/images/07.webp",
     position: 1,
     scrollSpeed: -0.1,
   },
   {
-    image: "/playground/images/03.webp",
+    image: "/playground/images/08.webp",
     position: 0,
     scrollSpeed: -0.2,
   },
@@ -341,17 +341,17 @@ const slides = ref<
     scrollSpeed: 0,
   },
   {
-    image: "/playground/images/04.webp",
+    image: "/playground/images/09.webp",
     position: 0,
     scrollSpeed: 0.5,
   },
   {
-    image: "/playground/images/05.webp",
+    image: "/playground/images/10.webp",
     position: 1,
     scrollSpeed: 0.25,
   },
   {
-    image: "/playground/images/06.webp",
+    image: "/playground/images/11.webp",
     position: 2,
   },
   {
@@ -369,19 +369,19 @@ const slides = ref<
     scrollSpeed: -0.3,
   },
   {
-    image: "/playground/images/07.webp",
+    image: "/playground/images/12.webp",
     position: 1,
-    scrollSpeed: 0.1,
+    scrollSpeed: 0.3,
   },
   {
-    image: "/playground/images/07.webp",
+    image: "/playground/images/13.webp",
     position: 2,
-    scrollSpeed: -0.15,
+    scrollSpeed: -0.2,
   },
   {
-    image: "/playground/images/08.webp",
+    image: "/playground/images/14.webp",
     position: 0,
-    scrollSpeed: -0.3,
+    scrollSpeed: -0.4,
   },
   {
     text: "smooth",
@@ -394,26 +394,26 @@ const slides = ref<
     scrollSpeed: 0.2,
   },
   {
-    image: "/playground/images/09.webp",
+    image: "/playground/images/15.webp",
     position: 2,
     // scrollSpeed: -0.15,
   },
   {
-    image: "/playground/images/10.webp",
+    image: "/playground/images/16.webp",
     position: 1,
   },
   {
-    image: "/playground/images/11.webp",
+    image: "/playground/images/17.webp",
     position: 0,
     // scrollSpeed: -0.35,
   },
   {
-    image: "/playground/images/11.webp",
+    image: "/playground/images/18.webp",
     position: 1,
     scrollSpeed: -0.2,
   },
   {
-    image: "/playground/images/11.webp",
+    image: "/playground/images/19.webp",
     position: 2,
     scrollSpeed: -0.4,
   },
