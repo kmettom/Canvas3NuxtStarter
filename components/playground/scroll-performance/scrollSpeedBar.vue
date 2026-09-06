@@ -22,15 +22,15 @@ const scrollSpeedBarOptions = computed(() => ({
 }));
 
 const fps = ref<number | null>(null);
-let fpsInterval = null;
+const fpsInterval = ref<null | number>();
 
 onMounted(() => {
-  fpsInterval = setInterval(() => {
+  fpsInterval.value = setInterval(() => {
     fps.value = Canvas3.getFPS();
   }, 500);
 });
 onBeforeUnmount(() => {
-  fpsInterval = null;
+  fpsInterval.value = null;
 });
 </script>
 
