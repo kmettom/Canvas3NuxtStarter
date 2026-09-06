@@ -6,7 +6,7 @@ void main(){
     vec2 newUV = vUv;
 
     // Ease: slow start, faster end
-    //    float t = clamp(scrollSpeed/0.1, 0.0, 1.0);
+    //    float t = clamp(scrollSpeed / 0.1, 0.0, 1.0);
     //    float easePower = 1.5;              // >1 = ease-out (slow then fast)
     //    float easedSpeed = pow(t, easePower);
 

@@ -77,7 +77,6 @@
 <script setup lang="ts">
 // TODO:
 // - first init test - image can be not loaded in some conditions - investigate from TK.com
-// - content finish
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
