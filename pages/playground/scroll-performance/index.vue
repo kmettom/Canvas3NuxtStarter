@@ -34,8 +34,7 @@
               duration: layoutChangeDuration,
             },
             activateCallback: (item: ScrollActionBinding) => {
-              if (slide.text) animateTextIn(item.elNode);
-              blocksActivatedMap[index] = true;
+              setSlideActive(item.elNode, slide.text, index);
             },
             deactivateCallback: () => {
               blocksActivatedMap[index] = false;
@@ -49,7 +48,7 @@
               uniforms: {
                 uAniIn: {
                   value: blocksActivatedMap[index] ? 1 : 0,
-                  duration: index < 3 ? 0.75 : 0.4,
+                  duration: index <= 3 ? 1 : 0.4,
                   ease: 'power2.inOut',
                 },
                 uLayoutChangeProgress: {
@@ -76,10 +75,9 @@
 </template>
 <script setup lang="ts">
 // TODO:
-// - output FPS
+// - first init test - image can be not loaded in some conditions
 // - content finish
 // - smooth down scroll
-// - speed bar on the side - update font
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
@@ -89,7 +87,7 @@ import scrollSpeedBar from "~/components/playground/scroll-performance/scrollSpe
 
 gsap.registerPlugin(SplitText);
 
-const slidesRefs = useTemplateRefsList();
+const slidesRefs = useTemplateRefsList<HTMLElement>();
 
 const blocksActivatedMap = ref<boolean[]>([]);
 
@@ -103,6 +101,19 @@ const layoutNavigationOptions = computed(() => ({
     margin: 0,
   },
 }));
+
+const setSlideActive = (
+  elNode: HTMLElement,
+  slideText: string | undefined,
+  index: number,
+) => {
+  if (slideText) animateTextIn(elNode);
+  const timeoutTime = index <= 3 ? 100 : 0;
+  console.log(timeoutTime);
+  setTimeout(() => {
+    blocksActivatedMap.value[index] = true;
+  }, timeoutTime);
+};
 
 const animateTextIn = (el: HTMLElement) => {
   const text = el.querySelector(".slide-text");
@@ -196,8 +207,8 @@ const layoutChangeSwitch = () => {
   for (let i = 0; i < slidesRefs.value.length; i++) {
     if (slidesRefs.value[i]) {
       const position = slidesRefs.value[i]?.dataset.itemPosition ?? 0;
-      let marginLeft = layoutSmall.value ? 37.5 : position * 33;
-      const text = slidesRefs.value[i].querySelector(".slide-text");
+      let marginLeft = layoutSmall.value ? 37.5 : Number(position) * 33;
+      const text = slidesRefs.value[i]?.querySelector(".slide-text");
       let refItemWidth = itemWidth;
       if (text) {
         if (layoutSmall.value) {
@@ -222,7 +233,7 @@ const layoutChangeSwitch = () => {
         );
       }
       layoutChangeTl.to(
-        slidesRefs.value[i],
+        slidesRefs.value[i] ?? null,
         {
           marginLeft: `${marginLeft}%`,
           width: `${refItemWidth}%`,

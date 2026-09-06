@@ -16,7 +16,7 @@ void main() {
     newPos.y += sin(uLayoutChangeDirection * uTime + position.x * waveAmp) * intensity * uLayoutChangeProgress;
     newPos.x += sin(uLayoutChangeDirection * uTime + position.x * waveAmp) * intensity / 3.0 * uLayoutChangeProgress;
 
-    newPos.y += sin(uLayoutChangeDirection * uTime + position.x * waveAmp/2.0) * intensity/ 2.0 * enterAni;
+    newPos.y += sin(uLayoutChangeDirection * uTime + position.x * waveAmp/1.0) * intensity/ 1.0 * enterAni;
 //    newPos.x += sin(uLayoutChangeDirection * uTime + position.x * waveAmp/2.0) * intensity / 4.0 * enterAni;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);

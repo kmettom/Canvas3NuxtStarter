@@ -115,10 +115,10 @@ onBeforeUnmount(() => {
   width: 100%;
   color: var(--dark-color);
   font-size: 35px;
-  .person{
+  .person {
     margin: 15px;
   }
-  a{
+  a {
     color: var(--dark-color);
     pointer-events: auto;
   }
