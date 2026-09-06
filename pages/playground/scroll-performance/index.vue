@@ -65,6 +65,7 @@
             }"
             :src="slide.image"
             class="slide-image"
+            :loading="index <= 3 ? 'eager' : 'lazy'"
             alt=""
           />
           <div v-if="slide.text" class="slide-text">{{ slide.text }}</div>
