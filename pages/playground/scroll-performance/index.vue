@@ -114,7 +114,7 @@ const setSlideActive = (
 };
 
 const textAniIn = (el: HTMLElement, slideIndex: number) => {
-  if(slideActiveArray.value[slideIndex])return;
+  if (slideActiveArray.value[slideIndex]) return;
   const text = el.querySelector(".slide-text");
   const chars = new SplitText(text, {
     type: "chars",
