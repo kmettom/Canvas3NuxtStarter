@@ -27,7 +27,7 @@
       >
         <div
           v-canvas3-scroll-action="{
-            activeRange: 0.99,
+            activeRange: 0.95,
             activateOnce: true,
             scrollSpeedSetTo: {
               value: layoutSmall ? 0 : (slide.scrollSpeed ?? 0),
@@ -49,7 +49,7 @@
                 uAniIn: {
                   value: blocksActivatedMap[index] ? 1 : 0,
                   duration: index <= 3 ? 1 : 0.4,
-                  ease: 'power2.inOut',
+                  ease: index <= 3 ? 'power2.inOut' : 'linear',
                 },
                 uLayoutChangeProgress: {
                   value: layoutChangeUniform,
@@ -76,9 +76,8 @@
 </template>
 <script setup lang="ts">
 // TODO:
-// - first init test - image can be not loaded in some conditions
+// - first init test - image can be not loaded in some conditions - investigate from TK.com
 // - content finish
-// - smooth down scroll
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
@@ -110,7 +109,6 @@ const setSlideActive = (
 ) => {
   if (slideText) animateTextIn(elNode);
   const timeoutTime = index <= 3 ? 100 : 0;
-  console.log(timeoutTime);
   setTimeout(() => {
     blocksActivatedMap.value[index] = true;
   }, timeoutTime);
@@ -272,18 +270,22 @@ const slides = ref<
   {
     text: "Canvas3",
     position: 1,
+    // scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/01.webp",
     position: 0,
+    scrollSpeed: 0.3,
   },
   {
     image: "/playground/images/02.webp",
     position: 1,
+    scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/03.webp",
     position: 2,
+    // scrollSpeed: 0.3,
   },
   {
     text: "scroll",
@@ -300,6 +302,7 @@ const slides = ref<
   {
     image: "/playground/images/02.webp",
     position: 0,
+    scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/03.webp",
@@ -308,71 +311,97 @@ const slides = ref<
   {
     image: "/playground/images/04.webp",
     position: 2,
+    // scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/02.webp",
     position: 1,
+    scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/03.webp",
     position: 0,
+    scrollSpeed: -0.25,
   },
   {
-    image: "/playground/images/04.webp",
-    position: 2,
+    text: "dynamic",
+    position: 0,
+    scrollSpeed: 0.5,
   },
   {
     text: "scroll",
     position: 1,
-    scrollSpeed: -0.05,
+    scrollSpeed: 0.25,
   },
   {
-    text: "performance",
+    text: "settings",
     position: 2,
-    scrollSpeed: -0.15,
+    scrollSpeed: 0,
   },
   {
     image: "/playground/images/04.webp",
     position: 0,
-    scrollSpeed: 0.3,
+    scrollSpeed: 0.5,
   },
   {
     image: "/playground/images/05.webp",
     position: 1,
-    scrollSpeed: 0.15,
+    scrollSpeed: 0.25,
   },
   {
     image: "/playground/images/06.webp",
     position: 2,
   },
   {
-    text: "dynamic",
+    text: "full",
     position: 0,
   },
   {
     text: "scroll",
     position: 1,
-    scrollSpeed: -0.05,
-  },
-  {
-    text: "speed",
-    position: 2,
     scrollSpeed: -0.15,
   },
   {
+    text: "control",
+    position: 2,
+    scrollSpeed: -0.3,
+  },
+  {
     image: "/playground/images/07.webp",
-    position: 0,
+    position: 2,
+    scrollSpeed: 0.5,
   },
   {
     image: "/playground/images/08.webp",
-    position: 1,
+    position: 0,
+    scrollSpeed: -0.25,
+  },
+  {
+    text: "smooth",
+    position: 0,
+    scrollSpeed: -0.15,
+  },
+  {
+    text: "performance",
+    position: 2,
+    // scrollSpeed: -0.15,
   },
   {
     image: "/playground/images/09.webp",
-    position: 2,
+    position: 1,
+    scrollSpeed: -0.15,
   },
   {
     image: "/playground/images/10.webp",
+    position: 2,
+  },
+  {
+    image: "/playground/images/11.webp",
+    position: 0,
+    scrollSpeed: -0.35,
+  },
+  {
+    image: "/playground/images/11.webp",
     position: 0,
   },
   {
