@@ -37,7 +37,7 @@
               setSlideActive(item.elNode, slide.text, index);
             },
             deactivateCallback: () => {
-              blocksActivatedMap[index] = false;
+              slideActiveArray[index] = false;
             },
           }"
         >
@@ -47,7 +47,7 @@
               shaderName: 'playScrollPerformance',
               uniforms: {
                 uAniIn: {
-                  value: blocksActivatedMap[index] ? 1 : 0,
+                  value: slideActiveArray[index] ? 1 : 0,
                   duration: index <= 3 ? 1 : 0.4,
                   ease: index <= 3 ? 'power2.inOut' : 'linear',
                 },
@@ -88,7 +88,7 @@ gsap.registerPlugin(SplitText);
 
 const slidesRefs = useTemplateRefsList<HTMLElement>();
 
-const blocksActivatedMap = ref<boolean[]>([]);
+const slideActiveArray = ref<boolean[]>([]);
 
 const layoutSmall = ref(false);
 
@@ -106,14 +106,15 @@ const setSlideActive = (
   slideText: string | undefined,
   index: number,
 ) => {
-  if (slideText) animateTextIn(elNode);
+  if (slideText) textAniIn(elNode, index);
   const timeoutTime = index <= 3 ? 100 : 0;
   setTimeout(() => {
-    blocksActivatedMap.value[index] = true;
+    slideActiveArray.value[index] = true;
   }, timeoutTime);
 };
 
-const animateTextIn = (el: HTMLElement) => {
+const textAniIn = (el: HTMLElement, slideIndex: number) => {
+  if(slideActiveArray.value[slideIndex])return;
   const text = el.querySelector(".slide-text");
   const chars = new SplitText(text, {
     type: "chars",
