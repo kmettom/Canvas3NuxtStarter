@@ -103,6 +103,7 @@ onBeforeUnmount(() => {
 
 .scroll-speed-ani {
   margin: 0 auto;
+  width: 0;
   height: 10px;
   border-radius: 5px;
   background: var(--dark-color);
@@ -114,8 +115,11 @@ onBeforeUnmount(() => {
   height: 200px;
   width: 100%;
   color: var(--dark-color);
-  font-size: 35px;
+  font-size: 20px;
+  font-weight: 100;
+  text-transform: uppercase;
   .person {
+    text-align: center;
     margin: 15px;
   }
   a {
