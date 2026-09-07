@@ -28,7 +28,7 @@
         <div
           v-canvas3-scroll-action="{
             activeRange: 0.95,
-            activateOnce: true,
+            activateOnce: false,
             scrollSpeedSetTo: {
               value: layoutSmall ? 0 : (slide.scrollSpeed ?? 0),
               duration: layoutChangeDuration,
@@ -37,9 +37,11 @@
               setSlideActive(item.elNode, slide.text, index);
             },
             deactivateCallback: () => {
-              slideActiveArray[index] = false;
+              setSlideNonActive(index);
+              // slideActiveArray[index] = false;
             },
           }"
+          :id="`slide_${index}`"
         >
           <img
             v-if="slide.image"
@@ -102,6 +104,10 @@ const layoutNavigationOptions = computed(() => ({
   },
 }));
 
+const setSlideNonActive = (index: number) => {
+  slideActiveArray.value[index] = false;
+};
+
 const setSlideActive = (
   elNode: HTMLElement,
   slideText: string | undefined,
@@ -159,6 +165,7 @@ const layoutChangeTl = gsap.timeline({
   },
   onComplete: () => {
     layoutSwitchInProgress.value = false;
+    Canvas3.setFixedScrollToElement(null);
     setTimeout(() => {
       Canvas3.setMeshPositionsUpdate(false);
     }, 100);
@@ -169,6 +176,23 @@ const layoutChangeSwitch = () => {
   if (layoutSwitchInProgress.value) return;
   layoutSwitchInProgress.value = true;
   layoutChangeUniform.value = 1;
+
+  let fixTargetIndex = null;
+  for (let i = 0; i < slideActiveArray.value.length; i++) {
+    if (slideActiveArray.value[i]) {
+      fixTargetIndex = i;
+      break;
+    }
+  }
+  if (fixTargetIndex) {
+    const fixTargetEl = slidesRefs.value[fixTargetIndex];
+    if (fixTargetEl) {
+      Canvas3.scrollToElBySelector(`#slide_${fixTargetIndex}`);
+      setTimeout(() => {
+        Canvas3.setFixedScrollToElement(fixTargetEl);
+      }, 300);
+    }
+  }
 
   layoutSmall.value = !layoutSmall.value;
   const itemWidth = layoutSmall.value ? 25 : 33;
