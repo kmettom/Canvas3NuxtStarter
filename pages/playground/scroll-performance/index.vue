@@ -167,9 +167,9 @@ const layoutChangeTl = gsap.timeline({
   onComplete: () => {
     layoutSwitchInProgress.value = false;
     Canvas3.setFixedScrollToElement(null);
-    setTimeout(() => {
-      Canvas3.setMeshPositionsUpdate(false);
-    }, 100);
+    // setTimeout(() => {
+    //   Canvas3.setMeshPositionsUpdate(false);
+    // }, 100);
   },
 });
 
@@ -201,6 +201,15 @@ const getFixTargetIndex = () => {
 const layoutChangeSwitch = async () => {
   if (layoutSwitchInProgress.value) return;
 
+  layoutChangeTl.clear();
+  gsap.to(".nav-icon-line", {
+    x: layoutSmall.value ? 10 : 0, // from origin down /
+    y: layoutSmall.value ? 0 : 0, //  / to origin, down
+    width: 0,
+    duration: layoutChangeDuration / 2,
+    stagger: 0.05,
+  });
+
   const fixTargetIndex = getFixTargetIndex();
   await scrollToFirstActiveSlide(fixTargetIndex);
   if (fixTargetIndex) {
@@ -216,18 +225,18 @@ const layoutChangeSwitch = async () => {
   layoutSmall.value = !layoutSmall.value;
   const itemWidth = layoutSmall.value ? 25 : 33;
 
-  layoutChangeTl.clear();
-  layoutChangeTl.to(
-    ".nav-icon-line",
-    {
-      x: layoutSmall.value ? 10 : 0, // from origin down /
-      y: layoutSmall.value ? 0 : 0, //  / to origin, down
-      width: 0,
-      duration: layoutChangeDuration / 2,
-      stagger: 0.05,
-    },
-    "<",
-  );
+  // layoutChangeTl.clear();
+  // layoutChangeTl.to(
+  //   ".nav-icon-line",
+  //   {
+  //     x: layoutSmall.value ? 10 : 0, // from origin down /
+  //     y: layoutSmall.value ? 0 : 0, //  / to origin, down
+  //     width: 0,
+  //     duration: layoutChangeDuration / 2 + 0.3,
+  //     stagger: 0.05,
+  //   },
+  //   "<",
+  // );
   layoutChangeTl.set(".nav-icon", {
     transform: `rotate(${layoutSmall.value ? 0 : 90}deg)`,
   });
