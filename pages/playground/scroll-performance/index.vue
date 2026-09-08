@@ -25,6 +25,7 @@
         :style="`margin-left:${slide.position * 33}%`"
         :data-item-position="slide.position"
       >
+        <!--                {{index}}-->
         <div
           v-canvas3-scroll-action="{
             activeRange: 0.95,
@@ -38,10 +39,8 @@
             },
             deactivateCallback: () => {
               setSlideNonActive(index);
-              // slideActiveArray[index] = false;
             },
           }"
-          :id="`slide_${index}`"
         >
           <img
             v-if="slide.image"
@@ -91,6 +90,7 @@ gsap.registerPlugin(SplitText);
 
 const slidesRefs = useTemplateRefsList<HTMLElement>();
 
+const slideActivateOnceArray = ref<boolean[]>([]);
 const slideActiveArray = ref<boolean[]>([]);
 
 const layoutSmall = ref(false);
@@ -113,9 +113,11 @@ const setSlideActive = (
   slideText: string | undefined,
   index: number,
 ) => {
-  if (slideText) textAniIn(elNode, index);
   const timeoutTime = index <= 3 ? 100 : 0;
   setTimeout(() => {
+    if (slideText && !slideActivateOnceArray.value[index])
+      textAniIn(elNode, index);
+    slideActivateOnceArray.value[index] = true;
     slideActiveArray.value[index] = true;
   }, timeoutTime);
 };
@@ -172,11 +174,21 @@ const layoutChangeTl = gsap.timeline({
   },
 });
 
-const layoutChangeSwitch = () => {
-  if (layoutSwitchInProgress.value) return;
-  layoutSwitchInProgress.value = true;
-  layoutChangeUniform.value = 1;
+const scrollToFirstActiveSlide = (fixTargetIndex: number | null) => {
+  if (fixTargetIndex) {
+    const targetElPosition =
+      slidesRefs.value[fixTargetIndex]?.getBoundingClientRect().top ?? 0;
+    const position = window.scrollY + targetElPosition;
+    Canvas3.scrollTo(position);
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 500);
+  });
+};
 
+const getFixTargetIndex = () => {
   let fixTargetIndex = null;
   for (let i = 0; i < slideActiveArray.value.length; i++) {
     if (slideActiveArray.value[i]) {
@@ -184,15 +196,23 @@ const layoutChangeSwitch = () => {
       break;
     }
   }
+  return fixTargetIndex;
+};
+
+const layoutChangeSwitch = async () => {
+  if (layoutSwitchInProgress.value) return;
+
+  const fixTargetIndex = getFixTargetIndex();
+  await scrollToFirstActiveSlide(fixTargetIndex);
   if (fixTargetIndex) {
     const fixTargetEl = slidesRefs.value[fixTargetIndex];
     if (fixTargetEl) {
-      Canvas3.scrollToElBySelector(`#slide_${fixTargetIndex}`);
-      setTimeout(() => {
-        Canvas3.setFixedScrollToElement(fixTargetEl);
-      }, 300);
+      Canvas3.setFixedScrollToElement(fixTargetEl);
     }
   }
+
+  layoutSwitchInProgress.value = true;
+  layoutChangeUniform.value = 1;
 
   layoutSmall.value = !layoutSmall.value;
   const itemWidth = layoutSmall.value ? 25 : 33;
