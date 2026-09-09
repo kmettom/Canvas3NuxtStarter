@@ -359,12 +359,12 @@ const slides = ref<
   {
     text: "scroll",
     position: 0,
-    scrollSpeed: 0.3,
+    scrollSpeed: 0.2,
   },
   {
     text: "performance",
     position: 1,
-    scrollSpeed: 0.15,
+    scrollSpeed: 0.1,
   },
   {
     text: "playground",
@@ -398,12 +398,12 @@ const slides = ref<
   {
     text: "dynamic",
     position: 0,
-    scrollSpeed: 0.5,
+    scrollSpeed: 0.4,
   },
   {
     text: "scroll",
     position: 1,
-    scrollSpeed: 0.25,
+    scrollSpeed: 0.20,
   },
   {
     text: "settings",
@@ -413,12 +413,12 @@ const slides = ref<
   {
     image: "/playground/images/09.webp",
     position: 0,
-    scrollSpeed: 0.5,
+    scrollSpeed: 0.3,
   },
   {
     image: "/playground/images/10.webp",
     position: 1,
-    scrollSpeed: 0.25,
+    scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/11.webp",
@@ -456,7 +456,7 @@ const slides = ref<
   {
     text: "smooth",
     position: 0,
-    scrollSpeed: 0.5,
+    scrollSpeed: 0.4,
   },
   {
     text: "performance",
@@ -480,12 +480,12 @@ const slides = ref<
   {
     image: "/playground/images/18.webp",
     position: 1,
-    scrollSpeed: -0.2,
+    scrollSpeed: -0.15,
   },
   {
     image: "/playground/images/19.webp",
     position: 2,
-    scrollSpeed: -0.4,
+    scrollSpeed: -0.3,
   },
 ]);
 </script>
