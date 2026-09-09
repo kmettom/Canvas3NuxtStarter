@@ -7,8 +7,9 @@
       class="layout-nav-container"
     >
       <div class="nav-holder">
-        <div @click="() => layoutChangeSwitch()"
-        @mouseenter="() => navHoverAni()"
+        <div
+          @click="() => layoutChangeSwitch()"
+          @mouseenter="() => navHoverAni()"
         >
           <div class="nav-icon">
             <div class="nav-icon-line" />
@@ -27,8 +28,9 @@
         :style="`margin-left:${slide.position * 33}%`"
         :data-item-position="slide.position"
       >
-                        {{index}}
+        <!--        {{ index }}-->
         <div
+          :id="`slide_${index}`"
           v-canvas3-scroll-action="{
             activeRange: 0.95,
             activateOnce: false,
@@ -44,7 +46,7 @@
             },
           }"
         >
-          <div>{{ index }}</div>
+          <!--          <div>{{ index }}</div>-->
           <img
             v-if="slide.image"
             v-canvas3-image="{
@@ -69,9 +71,9 @@
             }"
             :src="slide.image"
             class="slide-image"
-            :loading="index <= 3 ? 'eager' : 'lazy'"
             alt=""
           />
+          <!--          :loading="index <= 3 ? 'eager' : 'lazy'"-->
           <div v-if="slide.text" class="slide-text">{{ slide.text }}</div>
         </div>
       </div>
@@ -155,14 +157,14 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
 };
 
 const navHoverAni = () => {
-  const hoverTl = gsap.timeline({yoyo: true, repeat: 1});
+  const hoverTl = gsap.timeline({ yoyo: true, repeat: 1 });
   hoverTl.to(".nav-icon-line", {
-    transform: 'scale(1.3)',
+    transform: "scale(1.3)",
     stagger: 0.05,
     duration: 0.2,
     ease: "linear",
   });
-}
+};
 
 const layoutSwitchInProgress = ref(false);
 const layoutChangeUniform = ref(0);
