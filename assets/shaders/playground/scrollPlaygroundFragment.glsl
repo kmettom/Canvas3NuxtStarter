@@ -1,6 +1,6 @@
 uniform sampler2D tDiffuse;
 varying vec2 vUv;
-uniform float scrollSpeed; // 0–1 from JS
+uniform float uScrollSpeed; // 0–1 from JS
 
 void main(){
     vec2 newUV = vUv;
@@ -9,7 +9,7 @@ void main(){
     float area = smoothstep(0.9, 0.0, distFromEdge);
     area = pow(area, 8.0);
 
-    float scrollIntensity = 0.125 * scrollSpeed;
+    float scrollIntensity = 0.125 * uScrollSpeed;
     float finalIntensity = 0.05 + scrollIntensity;
     newUV.x -= (vUv.x - 0.5) * finalIntensity * area;
 

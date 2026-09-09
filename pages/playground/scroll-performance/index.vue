@@ -402,7 +402,7 @@ const slides = ref<
   {
     text: "scroll",
     position: 1,
-    scrollSpeed: 0.20,
+    scrollSpeed: 0.2,
   },
   {
     text: "settings",
