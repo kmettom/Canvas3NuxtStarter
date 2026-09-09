@@ -10,7 +10,7 @@ void main(){
     area = pow(area, 8.0);
 
     float scrollIntensity = 0.125 * uScrollSpeed;
-    float finalIntensity = 0.05 + scrollIntensity;
+    float finalIntensity = 0.035 + scrollIntensity;
     newUV.x -= (vUv.x - 0.5) * finalIntensity * area;
 
     gl_FragColor = texture2D(tDiffuse, newUV);
