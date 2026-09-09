@@ -83,7 +83,6 @@
 <script setup lang="ts">
 // TODO BEFORE RELEASE:
 // - first init test - image can be not loaded in some conditions - investigate from TK.com
-// - layout change causes text to flinch
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
@@ -342,17 +341,17 @@ const slides = ref<
     // scrollSpeed: 0.15,
   },
   {
-    image: "/playground/images/01.webp",
+    image: "/playground/images/sm/01.webp",
     position: 0,
     // scrollSpeed: 0.3,
   },
   {
-    image: "/playground/images/02.webp",
+    image: "/playground/images/sm/02.webp",
     position: 1,
     // scrollSpeed: 0.15,
   },
   {
-    image: "/playground/images/03.webp",
+    image: "/playground/images/sm/03.webp",
     position: 2,
     // scrollSpeed: 0.3,
   },
@@ -371,27 +370,27 @@ const slides = ref<
     position: 2,
   },
   {
-    image: "/playground/images/04.webp",
+    image: "/playground/images/sm/04.webp",
     position: 0,
     scrollSpeed: 0.3,
   },
   {
-    image: "/playground/images/05.webp",
+    image: "/playground/images/sm/05.webp",
     position: 1,
     scrollSpeed: 0.15,
   },
   {
-    image: "/playground/images/06.webp",
+    image: "/playground/images/sm/06.webp",
     position: 2,
     // scrollSpeed: 0.15,
   },
   {
-    image: "/playground/images/07.webp",
+    image: "/playground/images/sm/07.webp",
     position: 1,
     scrollSpeed: -0.1,
   },
   {
-    image: "/playground/images/08.webp",
+    image: "/playground/images/sm/08.webp",
     position: 0,
     scrollSpeed: -0.2,
   },
@@ -411,17 +410,17 @@ const slides = ref<
     scrollSpeed: 0,
   },
   {
-    image: "/playground/images/09.webp",
+    image: "/playground/images/sm/09.webp",
     position: 0,
     scrollSpeed: 0.3,
   },
   {
-    image: "/playground/images/10.webp",
+    image: "/playground/images/sm/10.webp",
     position: 1,
     scrollSpeed: 0.15,
   },
   {
-    image: "/playground/images/11.webp",
+    image: "/playground/images/sm/11.webp",
     position: 2,
   },
   {
@@ -439,17 +438,17 @@ const slides = ref<
     scrollSpeed: -0.3,
   },
   {
-    image: "/playground/images/12.webp",
+    image: "/playground/images/sm/12.webp",
     position: 1,
     scrollSpeed: 0.3,
   },
   {
-    image: "/playground/images/13.webp",
+    image: "/playground/images/sm/13.webp",
     position: 2,
     scrollSpeed: -0.2,
   },
   {
-    image: "/playground/images/14.webp",
+    image: "/playground/images/sm/14.webp",
     position: 0,
     scrollSpeed: -0.4,
   },
@@ -464,26 +463,26 @@ const slides = ref<
     scrollSpeed: 0.2,
   },
   {
-    image: "/playground/images/15.webp",
+    image: "/playground/images/sm/15.webp",
     position: 2,
     // scrollSpeed: -0.15,
   },
   {
-    image: "/playground/images/16.webp",
+    image: "/playground/images/sm/16.webp",
     position: 1,
   },
   {
-    image: "/playground/images/17.webp",
+    image: "/playground/images/sm/17.webp",
     position: 0,
     // scrollSpeed: -0.35,
   },
   {
-    image: "/playground/images/18.webp",
+    image: "/playground/images/sm/18.webp",
     position: 1,
     scrollSpeed: -0.15,
   },
   {
-    image: "/playground/images/19.webp",
+    image: "/playground/images/sm/19.webp",
     position: 2,
     scrollSpeed: -0.3,
   },
