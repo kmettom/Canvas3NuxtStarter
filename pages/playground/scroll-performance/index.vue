@@ -7,11 +7,13 @@
       class="layout-nav-container"
     >
       <div class="nav-holder">
-        <div @click="() => layoutChangeSwitch()">
+        <div @click="() => layoutChangeSwitch()"
+        @mouseenter="() => navHoverAni()"
+        >
           <div class="nav-icon">
-            <span class="nav-icon-line" />
-            <span class="nav-icon-line" />
-            <span class="nav-icon-line" />
+            <div class="nav-icon-line" />
+            <div class="nav-icon-line" />
+            <div class="nav-icon-line" />
           </div>
         </div>
       </div>
@@ -25,7 +27,7 @@
         :style="`margin-left:${slide.position * 33}%`"
         :data-item-position="slide.position"
       >
-        <!--                {{index}}-->
+                        {{index}}
         <div
           v-canvas3-scroll-action="{
             activeRange: 0.95,
@@ -42,13 +44,14 @@
             },
           }"
         >
+          <div>{{ index }}</div>
           <img
             v-if="slide.image"
             v-canvas3-image="{
               shaderName: 'playScrollPerformance',
               uniforms: {
                 uAniIn: {
-                  value: slideActiveArray[index] ? 1 : 0,
+                  value: slideActivateOnceArray[index] ? 1 : 0,
                   duration: index <= 3 ? 1 : 0.4,
                   ease: index <= 3 ? 'power2.inOut' : 'linear',
                 },
@@ -78,6 +81,7 @@
 <script setup lang="ts">
 // TODO BEFORE RELEASE:
 // - first init test - image can be not loaded in some conditions - investigate from TK.com
+// - layout change causes text to flinch
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
@@ -149,6 +153,16 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     stagger: 0.025,
   });
 };
+
+const navHoverAni = () => {
+  const hoverTl = gsap.timeline({yoyo: true, repeat: 1});
+  hoverTl.to(".nav-icon-line", {
+    transform: 'scale(1.3)',
+    stagger: 0.05,
+    duration: 0.2,
+    ease: "linear",
+  });
+}
 
 const layoutSwitchInProgress = ref(false);
 const layoutChangeUniform = ref(0);
