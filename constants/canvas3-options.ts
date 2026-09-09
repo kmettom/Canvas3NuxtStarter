@@ -79,6 +79,7 @@ export const Canvas3Options = {
   isMobile: false,
   disabled: false,
   mouseTrackingEnabled: true,
+  trackFps: true,
 };
 
 // export default CanvasOptionDefaults = CanvasOptions;

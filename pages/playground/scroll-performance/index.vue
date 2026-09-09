@@ -6,80 +6,84 @@
       v-canvas3-scroll-action="layoutNavigationOptions"
       class="layout-nav-container"
     >
-      <div class="">
-        <div class="nav-holder">
-          <div @click="() => layoutChangeSwitch()">
-            <div class="nav-icon">
-              <span class="nav-icon-line" />
-              <span class="nav-icon-line" />
-              <span class="nav-icon-line" />
-            </div>
+      <div class="nav-holder">
+        <div
+          @click="() => layoutChangeSwitch()"
+          @mouseenter="() => navHoverAni()"
+        >
+          <div class="nav-icon">
+            <div class="nav-icon-line" />
+            <div class="nav-icon-line" />
+            <div class="nav-icon-line" />
           </div>
         </div>
       </div>
     </div>
-    <div
-      v-for="(slide, index) in slides"
-      :key="index"
-      :ref="slidesRefs.set"
-      class="slide"
-      :style="`margin-left:${slide.position * 33}%`"
-      :data-item-position="slide.position"
-    >
+    <div class="sections-container">
       <div
-        v-canvas3-scroll-action="{
-          activeRange: 0.99,
-          activateOnce: true,
-          scrollSpeedSetTo: {
-            value: layoutSmall ? 0 : (slide.scrollSpeed ?? 0),
-            duration: layoutChangeDuration,
-          },
-          activateCallback: (item: ScrollActionBinding) => {
-            if (slide.text) animateTextIn(item.elNode);
-            blocksActivatedMap[index] = true;
-          },
-          deactivateCallback: () => {
-            blocksActivatedMap[index] = false;
-          },
-        }"
+        v-for="(slide, index) in slides"
+        :key="index"
+        :ref="slidesRefs.set"
+        class="slide"
+        :style="`margin-left:${slide.position * 33}%`"
+        :data-item-position="slide.position"
       >
-        <img
-          v-if="slide.image"
-          v-canvas3-image="{
-            shaderName: 'playScrollPerformance',
-            uniforms: {
-              uAniIn: {
-                value: blocksActivatedMap[index] ? 1 : 0,
-                duration: 0.35,
-                ease: 'power2.inOut',
-              },
-              uLayoutChangeProgress: {
-                value: layoutChangeUniform,
-                duration: layoutChangeDuration,
-                ease: 'power2.inOut',
-              },
-              uLayoutChangeDirection: {
-                value: layoutSmall ? -1 : 1,
-                duration: 0,
-                ease: 'power2.inOut',
-              },
+        <!--        {{ index }}-->
+        <div
+          :id="`slide_${index}`"
+          v-canvas3-scroll-action="{
+            activeRange: 0.95,
+            activateOnce: false,
+            scrollSpeedSetTo: {
+              value: layoutSmall ? 0 : (slide.scrollSpeed ?? 0),
+              duration: layoutChangeDuration,
+            },
+            activateCallback: (item: ScrollActionBinding) => {
+              setSlideActive(item.elNode, slide.text, index);
+            },
+            deactivateCallback: () => {
+              setSlideNonActive(index);
             },
           }"
-          :src="slide.image"
-          class="slide-image"
-          alt=""
-        />
-        <div v-if="slide.text" class="slide-text">{{ slide.text }}</div>
+        >
+          <!--          <div>{{ index }}</div>-->
+          <img
+            v-if="slide.image"
+            v-canvas3-image="{
+              shaderName: 'playScrollPerformance',
+              uniforms: {
+                uAniIn: {
+                  value: slideActivateOnceArray[index] ? 1 : 0,
+                  duration: index <= 3 ? 1 : 0.4,
+                  ease: index <= 3 ? 'power2.inOut' : 'linear',
+                },
+                uLayoutChangeProgress: {
+                  value: layoutChangeUniform,
+                  duration: layoutChangeDuration,
+                  ease: 'power2.inOut',
+                },
+                uLayoutChangeDirection: {
+                  value: layoutSmall ? -1 : 1,
+                  duration: 0,
+                  ease: 'power2.inOut',
+                },
+              },
+            }"
+            :src="slide.image"
+            class="slide-image"
+            alt=""
+          />
+          <!--          :loading="index <= 3 ? 'eager' : 'lazy'"-->
+          <div v-if="slide.text" class="slide-text">{{ slide.text }}</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-// TODO:
-// - output FPS
-// - content finish
-// - smooth down scroll
-// - speed bar on the side - update font
+// TODO BEFORE RELEASE:
+// - first init test - image can be not loaded in some conditions - investigate from TK.com
+// - layout change causes text to flinch
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
@@ -89,9 +93,10 @@ import scrollSpeedBar from "~/components/playground/scroll-performance/scrollSpe
 
 gsap.registerPlugin(SplitText);
 
-const slidesRefs = useTemplateRefsList();
+const slidesRefs = useTemplateRefsList<HTMLElement>();
 
-const blocksActivatedMap = ref<boolean[]>([]);
+const slideActivateOnceArray = ref<boolean[]>([]);
+const slideActiveArray = ref<boolean[]>([]);
 
 const layoutSmall = ref(false);
 
@@ -104,7 +109,26 @@ const layoutNavigationOptions = computed(() => ({
   },
 }));
 
-const animateTextIn = (el: HTMLElement) => {
+const setSlideNonActive = (index: number) => {
+  slideActiveArray.value[index] = false;
+};
+
+const setSlideActive = (
+  elNode: HTMLElement,
+  slideText: string | undefined,
+  index: number,
+) => {
+  const timeoutTime = index <= 3 ? 100 : 0;
+  setTimeout(() => {
+    if (slideText && !slideActivateOnceArray.value[index])
+      textAniIn(elNode, index);
+    slideActivateOnceArray.value[index] = true;
+    slideActiveArray.value[index] = true;
+  }, timeoutTime);
+};
+
+const textAniIn = (el: HTMLElement, slideIndex: number) => {
+  if (slideActiveArray.value[slideIndex]) return;
   const text = el.querySelector(".slide-text");
   const chars = new SplitText(text, {
     type: "chars",
@@ -132,6 +156,16 @@ const animateTextIn = (el: HTMLElement) => {
   });
 };
 
+const navHoverAni = () => {
+  const hoverTl = gsap.timeline({ yoyo: true, repeat: 1 });
+  hoverTl.to(".nav-icon-line", {
+    transform: "scale(1.3)",
+    stagger: 0.05,
+    duration: 0.2,
+    ease: "linear",
+  });
+};
+
 const layoutSwitchInProgress = ref(false);
 const layoutChangeUniform = ref(0);
 const layoutChangeDuration = 0.75;
@@ -148,32 +182,77 @@ const layoutChangeTl = gsap.timeline({
   },
   onComplete: () => {
     layoutSwitchInProgress.value = false;
-    setTimeout(() => {
-      Canvas3.setMeshPositionsUpdate(false);
-    }, 100);
+    Canvas3.setFixedScrollToElement(null);
+    // setTimeout(() => {
+    //   Canvas3.setMeshPositionsUpdate(false);
+    // }, 100);
   },
 });
 
-const layoutChangeSwitch = () => {
+const scrollToFirstActiveSlide = (fixTargetIndex: number | null) => {
+  if (fixTargetIndex) {
+    const targetElPosition =
+      slidesRefs.value[fixTargetIndex]?.getBoundingClientRect().top ?? 0;
+    const position = window.scrollY + targetElPosition;
+    Canvas3.scrollTo(position);
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, 500);
+  });
+};
+
+const getFixTargetIndex = () => {
+  let fixTargetIndex = null;
+  for (let i = 0; i < slideActiveArray.value.length; i++) {
+    if (slideActiveArray.value[i]) {
+      fixTargetIndex = i;
+      break;
+    }
+  }
+  return fixTargetIndex;
+};
+
+const layoutChangeSwitch = async () => {
   if (layoutSwitchInProgress.value) return;
+
+  layoutChangeTl.clear();
+  gsap.to(".nav-icon-line", {
+    x: layoutSmall.value ? 10 : 0, // from origin down /
+    y: layoutSmall.value ? 0 : 0, //  / to origin, down
+    width: 0,
+    duration: layoutChangeDuration / 2,
+    stagger: 0.05,
+  });
+
+  const fixTargetIndex = getFixTargetIndex();
+  await scrollToFirstActiveSlide(fixTargetIndex);
+  if (fixTargetIndex) {
+    const fixTargetEl = slidesRefs.value[fixTargetIndex];
+    if (fixTargetEl) {
+      Canvas3.setFixedScrollToElement(fixTargetEl);
+    }
+  }
+
   layoutSwitchInProgress.value = true;
   layoutChangeUniform.value = 1;
 
   layoutSmall.value = !layoutSmall.value;
-  let itemWidth = layoutSmall.value ? 25 : 33;
+  const itemWidth = layoutSmall.value ? 25 : 33;
 
-  layoutChangeTl.clear();
-  layoutChangeTl.to(
-    ".nav-icon-line",
-    {
-      x: layoutSmall.value ? 10 : 0, // from origin down /
-      y: layoutSmall.value ? 0 : 0, //  / to origin, down
-      width: 0,
-      duration: layoutChangeDuration / 2,
-      stagger: 0.05,
-    },
-    "<",
-  );
+  // layoutChangeTl.clear();
+  // layoutChangeTl.to(
+  //   ".nav-icon-line",
+  //   {
+  //     x: layoutSmall.value ? 10 : 0, // from origin down /
+  //     y: layoutSmall.value ? 0 : 0, //  / to origin, down
+  //     width: 0,
+  //     duration: layoutChangeDuration / 2 + 0.3,
+  //     stagger: 0.05,
+  //   },
+  //   "<",
+  // );
   layoutChangeTl.set(".nav-icon", {
     transform: `rotate(${layoutSmall.value ? 0 : 90}deg)`,
   });
@@ -196,8 +275,8 @@ const layoutChangeSwitch = () => {
   for (let i = 0; i < slidesRefs.value.length; i++) {
     if (slidesRefs.value[i]) {
       const position = slidesRefs.value[i]?.dataset.itemPosition ?? 0;
-      let marginLeft = layoutSmall.value ? 37.5 : position * 33;
-      const text = slidesRefs.value[i].querySelector(".slide-text");
+      let marginLeft = layoutSmall.value ? 37.5 : Number(position) * 33;
+      const text = slidesRefs.value[i]?.querySelector(".slide-text");
       let refItemWidth = itemWidth;
       if (text) {
         if (layoutSmall.value) {
@@ -222,7 +301,7 @@ const layoutChangeSwitch = () => {
         );
       }
       layoutChangeTl.to(
-        slidesRefs.value[i],
+        slidesRefs.value[i] ?? null,
         {
           marginLeft: `${marginLeft}%`,
           width: `${refItemWidth}%`,
@@ -260,64 +339,36 @@ const slides = ref<
   {
     text: "Canvas3",
     position: 1,
+    // scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/01.webp",
     position: 0,
+    // scrollSpeed: 0.3,
   },
   {
     image: "/playground/images/02.webp",
     position: 1,
+    // scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/03.webp",
     position: 2,
+    // scrollSpeed: 0.3,
   },
   {
     text: "scroll",
     position: 0,
+    scrollSpeed: 0.2,
   },
   {
     text: "performance",
     position: 1,
+    scrollSpeed: 0.1,
   },
   {
     text: "playground",
     position: 2,
-  },
-  {
-    image: "/playground/images/02.webp",
-    position: 0,
-  },
-  {
-    image: "/playground/images/03.webp",
-    position: 1,
-  },
-  {
-    image: "/playground/images/04.webp",
-    position: 2,
-  },
-  {
-    image: "/playground/images/02.webp",
-    position: 1,
-  },
-  {
-    image: "/playground/images/03.webp",
-    position: 0,
-  },
-  {
-    image: "/playground/images/04.webp",
-    position: 2,
-  },
-  {
-    text: "scroll",
-    position: 1,
-    scrollSpeed: -0.05,
-  },
-  {
-    text: "performance",
-    position: 2,
-    scrollSpeed: -0.15,
   },
   {
     image: "/playground/images/04.webp",
@@ -332,44 +383,109 @@ const slides = ref<
   {
     image: "/playground/images/06.webp",
     position: 2,
+    // scrollSpeed: 0.15,
+  },
+  {
+    image: "/playground/images/07.webp",
+    position: 1,
+    scrollSpeed: -0.1,
+  },
+  {
+    image: "/playground/images/08.webp",
+    position: 0,
+    scrollSpeed: -0.2,
   },
   {
     text: "dynamic",
+    position: 0,
+    scrollSpeed: 0.4,
+  },
+  {
+    text: "scroll",
+    position: 1,
+    scrollSpeed: 0.20,
+  },
+  {
+    text: "settings",
+    position: 2,
+    scrollSpeed: 0,
+  },
+  {
+    image: "/playground/images/09.webp",
+    position: 0,
+    scrollSpeed: 0.3,
+  },
+  {
+    image: "/playground/images/10.webp",
+    position: 1,
+    scrollSpeed: 0.15,
+  },
+  {
+    image: "/playground/images/11.webp",
+    position: 2,
+  },
+  {
+    text: "full",
     position: 0,
   },
   {
     text: "scroll",
     position: 1,
-    scrollSpeed: -0.05,
-  },
-  {
-    text: "speed",
-    position: 2,
     scrollSpeed: -0.15,
   },
   {
-    image: "/playground/images/07.webp",
-    position: 0,
-  },
-  {
-    image: "/playground/images/08.webp",
-    position: 1,
-  },
-  {
-    image: "/playground/images/09.webp",
+    text: "control",
     position: 2,
-  },
-  {
-    image: "/playground/images/10.webp",
-    position: 0,
-  },
-  {
-    image: "/playground/images/11.webp",
-    position: 1,
+    scrollSpeed: -0.3,
   },
   {
     image: "/playground/images/12.webp",
+    position: 1,
+    scrollSpeed: 0.3,
+  },
+  {
+    image: "/playground/images/13.webp",
     position: 2,
+    scrollSpeed: -0.2,
+  },
+  {
+    image: "/playground/images/14.webp",
+    position: 0,
+    scrollSpeed: -0.4,
+  },
+  {
+    text: "smooth",
+    position: 0,
+    scrollSpeed: 0.4,
+  },
+  {
+    text: "performance",
+    position: 1,
+    scrollSpeed: 0.2,
+  },
+  {
+    image: "/playground/images/15.webp",
+    position: 2,
+    // scrollSpeed: -0.15,
+  },
+  {
+    image: "/playground/images/16.webp",
+    position: 1,
+  },
+  {
+    image: "/playground/images/17.webp",
+    position: 0,
+    // scrollSpeed: -0.35,
+  },
+  {
+    image: "/playground/images/18.webp",
+    position: 1,
+    scrollSpeed: -0.15,
+  },
+  {
+    image: "/playground/images/19.webp",
+    position: 2,
+    scrollSpeed: -0.3,
   },
 ]);
 </script>
@@ -429,6 +545,10 @@ const slides = ref<
   height: 3px;
   margin: 5px 0;
   background-color: var(--light-color);
+}
+
+.sections-container {
+  padding-bottom: 350px;
 }
 
 .slide {

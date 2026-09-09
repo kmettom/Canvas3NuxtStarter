@@ -6,7 +6,7 @@ const scrollSpeedCoef = ref(0);
 
 const scrollSpeedCallback = (_item: any, speed: number) => {
   const newSpeedCoef = speed < 0.03 ? 0 : speed;
-  scrollSpeedCoef.value = Number(newSpeedCoef.toFixed(2));
+  scrollSpeedCoef.value = Number(newSpeedCoef.toFixed(2)) * 100;
   gsap.set(scrollSpeedAniEl.value, {
     width: `${newSpeedCoef * 100}%`,
   });
@@ -16,11 +16,22 @@ const scrollSpeedBarOptions = computed(() => ({
   activeRange: 1,
   fixToParent: {
     containerId: "scrollSpeedBar",
-    fixPosition: 0,
-    margin: 0,
+    fixPosition: 0.97,
   },
   onScrollCallback: scrollSpeedCallback,
 }));
+
+const fps = ref<number | null>(null);
+const fpsInterval = ref<null | number>();
+
+onMounted(() => {
+  fpsInterval.value = setInterval(() => {
+    fps.value = Canvas3.getFPS();
+  }, 500);
+});
+onBeforeUnmount(() => {
+  fpsInterval.value = null;
+});
 </script>
 
 <template>
@@ -30,16 +41,28 @@ const scrollSpeedBarOptions = computed(() => ({
     class="scroll-speed-container"
   >
     <div class="scroll-speed-status-bar">
-      <span class="scroll-speed-text">
-        Scroll speed: {{ scrollSpeedCoef }}
-      </span>
-      <span ref="scrollSpeedAniEl" class="scroll-speed-ani" />
+      <div class="scroll-speed-text">Scroll speed: {{ scrollSpeedCoef }}%</div>
+      <div class="scroll-speed-ani-wrapper">
+        <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
+      </div>
+      <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
+      <div class="cred-holder">
+        <div class="person">
+          <span>Photography by </span>
+          <a href="https://jagodakondratiuk.com">Jagoda Kondratiuk</a>
+        </div>
+        <div class="person">
+          <span>Developed by </span>
+          <a href="https://tomaskmet.com">Tomas Kmet</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .scroll-speed-container {
+  font-family: "PP Neue Montreal Bold", serif;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -51,23 +74,57 @@ const scrollSpeedBarOptions = computed(() => ({
 
 .scroll-speed-status-bar {
   padding: 0;
+  height: 3%;
+  position: relative;
+  display: flex;
+  background: var(--light-color);
+}
+.fps-text,
+.scroll-speed-text {
+  text-transform: uppercase;
+  font-size: 14px;
+  z-index: 2;
+  color: var(--dark-color);
+  margin: 3px 3px 3px 15px;
+}
+.fps-text {
+  width: 200px;
+  text-align: right;
+  margin-right: 10px;
+}
+.scroll-speed-text {
+  width: 200px;
+}
+.scroll-speed-ani-wrapper {
+  width: calc(100% - 400px);
+  margin-top: 7px;
+  text-align: center;
 }
 
 .scroll-speed-ani {
-  position: absolute;
-  height: 15px;
-  top: 0px;
-  left: 0;
-  background: var(--light-color);
+  margin: 0 auto;
+  width: 0;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--dark-color);
   z-index: 1;
 }
-
-.scroll-speed-text {
-  font-size: 12px;
-  z-index: 2;
+.cred-holder {
   position: absolute;
-  left: 0px;
-  display: block;
+  top: 35px;
+  height: 200px;
+  width: 100%;
   color: var(--dark-color);
+  font-size: 20px;
+  font-weight: 100;
+  text-transform: uppercase;
+  .person {
+    text-align: center;
+    margin: 15px;
+  }
+  a {
+    color: var(--dark-color);
+    pointer-events: auto;
+  }
 }
 </style>
