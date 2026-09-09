@@ -83,7 +83,6 @@
 <script setup lang="ts">
 // TODO BEFORE RELEASE:
 // - first init test - image can be not loaded in some conditions - investigate from TK.com
-// - layout change causes text to flinch
 
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
