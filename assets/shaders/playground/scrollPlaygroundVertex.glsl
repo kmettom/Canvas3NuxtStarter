@@ -1,5 +1,5 @@
 varying vec2 vUv;
-uniform float scrollSpeed;
+uniform float uScrollSpeed;
 
 
 void main() {
