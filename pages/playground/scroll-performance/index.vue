@@ -574,6 +574,22 @@ const slides = ref<
       font-size: 75px;
       line-height: 80px;
     }
+    @include respond-width($w-m-s) {
+      font-size: 53px;
+      line-height: 60px;
+    }
+    @include respond-width($w-s) {
+      font-size: 38px;
+      line-height: 45px;
+    }
+    @include respond-width($w-xs) {
+      font-size: 30px;
+      line-height: 35px;
+    }
+    @include respond-width($w-xxs) {
+      font-size: 25px;
+      line-height: 30px;
+    }
   }
 }
 </style>
