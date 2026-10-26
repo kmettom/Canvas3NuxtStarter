@@ -1,8 +1,16 @@
 <template>
   <div class="page-container">
-    <div ref="gltfElDavid" v-canvas3-gltf-model="gltfBindingDavid" class="gltf-el" />
+    <div
+      ref="gltfElDavid"
+      v-canvas3-gltf-model="gltfBindingDavid"
+      class="gltf-el"
+    />
 
-    <div ref="gltfElGeo" v-canvas3-gltf-model="gltfBindingGeo" class="gltf2-el" />
+    <div
+      ref="gltfElGeo"
+      v-canvas3-gltf-model="gltfBindingGeo"
+      class="gltf2-el"
+    />
 
     <div
       v-for="(frame, index) in keyframeSectionContent"
@@ -23,9 +31,9 @@
 </template>
 <script setup lang="ts">
 //TODO:
-// - scope 3d object scroll to a container size, if container exists
+// - ??scope 3d object scroll to a container size, if container exists
 // - Check shaders on 3d object, of how to reveal a object
-// -
+// - check position logic, is it pixels?
 
 useSeoMeta({
   title: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
@@ -163,7 +171,6 @@ const gltfBindingDavid = ref({
         // color: 0xfff2db,
         intensity: 1,
         position: { x: 1000, y: 0.5, z: 1000 },
-        //TODO: check position logic, is it pixels?
       },
       //   type: "directional",
       //   color: 0x002aff,
@@ -274,11 +281,10 @@ const gltfBindingGeo = ref({
     lights: [
       {
         type: "directional",
-        color: 0x000DFF,
+        color: 0x000dff,
         // color: 0xfff2db,
         intensity: 1,
         position: { x: -1000, y: 0.5, z: 1000 },
-        //TODO: check position logic, is it pixels?
       },
       //   type: "directional",
       //   color: 0x002aff,
