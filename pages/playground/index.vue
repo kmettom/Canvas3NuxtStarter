@@ -136,7 +136,7 @@ const navigationStore = useNavigationStore();
 const ethBlockImageAniIn = ref(false);
 const ethBlockHover = ref(false);
 const scrollPerformanceHover = ref(false);
-const gltfModelHover = ref(false);
+// const gltfModelHover = ref(false);
 
 onMounted(() => {
   const timeDelay = navigationStore.webFirstLoadDone
