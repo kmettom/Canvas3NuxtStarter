@@ -31,6 +31,8 @@
 </template>
 <script setup lang="ts">
 //TODO:
+// - add text reveal logic
+// - set story to animate
 // - ??scope 3d object scroll to a container size, if container exists
 // - Check shaders on 3d object, of how to reveal a object
 // - check position logic, is it pixels?
@@ -147,9 +149,9 @@ const gltfPositioningDavid = ref({
     },
   ],
   mouseParallax: {
-    x: 0,
-    y: 0,
-    z: 0,
+    x: 0.0,
+    y: 0.0,
+    z: 0.0,
   },
 });
 
@@ -261,9 +263,9 @@ const gltfPositioningGeo = ref({
     },
   ],
   mouseParallax: {
-    x: 0.1,
-    y: 0.1,
-    z: 0.1,
+    x: 0.025,
+    y: 0.025,
+    z: 0,
   },
 });
 
