@@ -17,13 +17,17 @@
       :key="index"
       class="frame-section"
     >
-      <!--      {{ frame.id }} -->
       <div
         class="content-block"
         :style="`top:${frame.position.top}%;left:${frame.position.top}%;`"
       >
-        <div class="content">
+        <div class="content-wrapper">
+          <div v-if="frame.content" class="content">
           {{ frame.content }}
+          </div>
+          <div v-if="frame.smallContent" class="sm-content">
+          {{ frame.smallContent }}
+          </div>
         </div>
       </div>
     </div>
@@ -51,7 +55,26 @@ const gltfElGeo = ref(null);
 const keyframeSectionContent = ref([
   {
     content: "Canvas3",
-    position: { top: 25, left: 20, right: 0 },
+    smallContent: "some example - this is a Nuxt threeJs module",
+    position: { top: 0, left: 50, right: 0 },
+  },
+  {
+    content: "GLTF",
+    position: { top: 0, left: 0 },
+  },
+  {
+    content: "Story Line",
+    position: { top: 0, left: 0 },
+  },
+  {
+    content: "Light settings",
+    smallContent: "Set lights per model per keyframe in your story line",
+    position: { top: 0, left: 0 },
+  },
+  {
+    content: "Move light source",
+    smallContent: "Move lights per model",
+    position: { top: 0, left: 0 },
   },
   {
     content: "Position",
@@ -66,9 +89,10 @@ const keyframeSectionContent = ref([
     position: { top: 0, left: 0 },
   },
   {
-    content: "End",
+    content: "Get in Touch",
+    smallContent: "",
     position: { top: 0, left: 0 },
-  },
+  }
 ]);
 
 const gltfPositioningDavid = ref({
@@ -316,8 +340,8 @@ const gltfBindingGeo = ref({
 </script>
 
 <style lang="scss" scoped>
-.frame-section {
-  height: 1000px;
+.page-container{
+  font-family: "PP Formula Black", serif;
 }
 .gltf-david-el {
   height: 750px;
@@ -333,13 +357,26 @@ const gltfBindingGeo = ref({
   top: 0;
   left: 0;
 }
-.content-block {
+.frame-section {
+  height: 1000px;
   position: relative;
+}
+.content-block {
+  position: absolute;
   height: 100%;
   width: 100%;
+  transform: translate(50%,50%);
+}
+.content-wrapper{
+  position: absolute;
 }
 .content {
-  position: absolute;
+  text-transform: uppercase;
   font-size: 155px;
+}
+.sm-content{
+  padding-left: 10px;
+  font-size: 25px;
+  text-transform: uppercase;
 }
 </style>
