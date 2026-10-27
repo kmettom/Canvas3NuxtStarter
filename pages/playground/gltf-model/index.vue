@@ -17,7 +17,7 @@
       :key="index"
       class="frame-section"
     >
-      <!--      {{ frame.id }}-->
+      <!--      {{ frame.id }} -->
       <div
         class="content-block"
         :style="`top:${frame.position.top}%;left:${frame.position.top}%;`"
@@ -29,8 +29,9 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-//TODO:
+// TODO:
 // - add text reveal logic
 // - set story to animate
 // - ??scope 3d object scroll to a container size, if container exists
@@ -80,11 +81,13 @@ const gltfPositioningDavid = ref({
         position: { x: -0.45, y: -0.45, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
+        lights: { davidKey: { intensity: 1, position: { x: 1, y: 0, z: 0 } } },
       },
       to: {
         position: { x: 0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        scale: { x: 0.8, y: 0.8, z: 0.8 },
+        lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
     },
     {
@@ -94,12 +97,14 @@ const gltfPositioningDavid = ref({
       from: {
         position: { x: 0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        scale: { x: 0.8, y: 0.8, z: 0.8 },
+        lights: { davidKey: { position: { x: 0, y: 0, z: 1 } } },
       },
       to: {
         position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+        lights: { davidKey: { position: { x: -1, y: 0, z: 0 } } },
       },
     },
     {
@@ -125,11 +130,13 @@ const gltfPositioningDavid = ref({
         position: { x: 0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
+        lights: { davidKey: { intensity: 2.5 } },
       },
       to: {
         position: { x: 0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 0.8, y: 0.8, z: 0.8 },
+        lights: { davidKey: { intensity: 0.5 } },
       },
     },
     {
@@ -140,11 +147,18 @@ const gltfPositioningDavid = ref({
         position: { x: 0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 0.8, y: 0.8, z: 0.8 },
+        // all three animated at once
+        lights: {
+          davidKey: { intensity: 0.5, position: { x: -1, y: 0.5, z: 1 } },
+        },
       },
       to: {
         position: { x: -0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: Math.PI, z: 0 },
         scale: { x: 1.5, y: 1.5, z: 1.5 },
+        lights: {
+          davidKey: { intensity: 2, position: { x: 1, y: 0.5, z: 1 } },
+        },
       },
     },
   ],
@@ -168,16 +182,18 @@ const gltfBindingDavid = ref({
     defaultLights: false,
     lights: [
       {
+        // referenced in the positioning keyframes to animate the light
+        id: "davidKey",
         type: "directional",
         color: 0xff0009,
         // color: 0xfff2db,
-        intensity: 1,
-        position: { x: 1000, y: 0.5, z: 1000 },
+        intensity: 0,
+        position: { x: 0, y: 0, z: 0 },
       },
       //   type: "directional",
       //   color: 0x002aff,
       //   intensity: 1000,
-      //   position: { x: -1, y: -1, z: 1000 },
+      //   position: { x: -1, y: -1, z: 1 },
       // },
       // {
     ],
@@ -286,18 +302,19 @@ const gltfBindingGeo = ref({
         color: 0x000dff,
         // color: 0xfff2db,
         intensity: 1,
-        position: { x: -1000, y: 0.5, z: 1000 },
+        position: { x: -1, y: 0.5, z: 1 },
       },
       //   type: "directional",
       //   color: 0x002aff,
       //   intensity: 1000,
-      //   position: { x: -1, y: -1, z: 1000 },
+      //   position: { x: -1, y: -1, z: 1 },
       // },
       // {
     ],
   },
 });
 </script>
+
 <style lang="scss" scoped>
 .frame-section {
   border: 1px solid red;
