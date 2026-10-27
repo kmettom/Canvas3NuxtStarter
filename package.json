@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "scripts": {
     "start": "node .output/server/index.mjs",
@@ -43,6 +43,6 @@
     "vue-router": "^4.5.1"
   },
   "dependencies": {
-    "@canvas3/nuxt": "^0.1.58"
+    "@canvas3/nuxt": "^0.1.59"
   }
 }
