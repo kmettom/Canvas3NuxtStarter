@@ -3,13 +3,13 @@
     <div
       ref="gltfElDavid"
       v-canvas3-gltf-model="gltfBindingDavid"
-      class="gltf-el"
+      class="gltf-david-el"
     />
 
     <div
       ref="gltfElGeo"
       v-canvas3-gltf-model="gltfBindingGeo"
-      class="gltf2-el"
+      class="gltf-geo-el"
     />
 
     <div
@@ -317,19 +317,16 @@ const gltfBindingGeo = ref({
 
 <style lang="scss" scoped>
 .frame-section {
-  border: 1px solid red;
   height: 1000px;
 }
-.gltf-el {
-  border: 1px solid purple;
+.gltf-david-el {
   height: 750px;
   width: 750px;
   position: absolute;
   top: 0;
   left: 0;
 }
-.gltf2-el {
-  border: 1px solid blue;
+.gltf-geo-el {
   height: 250px;
   width: 250px;
   position: absolute;
