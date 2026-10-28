@@ -56,12 +56,14 @@ type KeyframeSection = {
 const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Canvas3",
-    smallContent: "some example - this is a Nuxt threeJs module",
-    position: { top: 50, left: 50, right: 0 },
+    smallContent: "Nuxt module for ThreeJS and animation features",
+    position: { top: 50, left: 50 },
   },
   {
     content: "GLTF",
-    position: { top: 0, left: 0 },
+    position: { top: 50, left: 50},
+    smallContent: "Nuxt",
+    sectionSize: 1.5,
   },
   {
     content: "Story Line",
