@@ -58,12 +58,10 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Canvas3",
     smallContent: "some example - this is a Nuxt threeJs module",
     position: { top: 50, left: 50, right: 0 },
-    sectionSize: 1,
   },
   {
     content: "GLTF",
     position: { top: 0, left: 0 },
-    sectionSize: 0.5,
   },
   {
     content: "Story Line",
@@ -202,9 +200,9 @@ const gltfPositioningDavid = ref({
     },
   ],
   mouseParallax: {
-    x: 0.0,
-    y: 0.0,
-    z: 0.0,
+    x: -0.025,
+    y: -0.025,
+    z: -0.025,
   },
 });
 
@@ -312,7 +310,7 @@ const gltfPositioningGeo = ref({
   mouseParallax: {
     x: 0.025,
     y: 0.025,
-    z: 0,
+    z: -0.5,
   },
 });
 
