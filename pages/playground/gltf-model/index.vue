@@ -18,25 +18,28 @@
       class="frame-section"
       :style="sectionStyle(frame.sectionSize)"
     >
-      <div
-        v-canvas3-scroll-action="{
-          activeRange: 0.95,
-          activateOnce: false,
-          activateCallback: (item: ScrollActionBinding) => {
-            setSlideActive(item.elNode, frame.content, index);
-          },
-        }"
-        class="content-block"
-      >
+      <div class="content-block">
         <div
           class="content-wrapper"
           :style="`top:${frame.position.top}%;left:${frame.position.left}%;transform:translate(-${frame.position.left}%,-${frame.position.top}%)`"
         >
-          <div v-if="frame.content" class="content">
-            {{ frame.content }}
-          </div>
-          <div v-if="frame.smallContent" class="sm-content">
-            {{ frame.smallContent }}
+          <div
+            v-canvas3-scroll-action="{
+              activeRange: 0.95,
+              activateOnce: false,
+              activateCallback: (item: ScrollActionBinding) => {
+                setSlideActive(item.elNode, index);
+              },
+            }"
+          >
+            <div v-if="frame.content" class="content-title">
+              {{ frame.content }}
+            </div>
+            <div class="sm-content-wrapper">
+              <div v-if="frame.smallContent" class="sm-content">
+                {{ frame.smallContent }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -62,7 +65,8 @@ useSeoMeta({
 
 const textAniIn = (el: HTMLElement, slideIndex: number) => {
   if (slideActiveArray.value[slideIndex]) return;
-  const text = el.querySelector(".slide-text");
+  console.log("textAniIn");
+  const text = el.querySelector(".content-title");
   const chars = new SplitText(text, {
     type: "chars",
     reduceWhiteSpace: false,
@@ -75,7 +79,7 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     },
   });
   tl.set(chars, {
-    y: 155,
+    y: 255,
     x: 100,
     transform: "matrix(1,0,1,2,0,0)",
   });
@@ -94,13 +98,12 @@ const slideActiveArray = ref<boolean[]>([]);
 
 const setSlideActive = (
   elNode: HTMLElement,
-  slideText: string | undefined,
+  // slideText: string | undefined,
   index: number,
 ) => {
   const timeoutTime = index <= 3 ? 100 : 0;
   setTimeout(() => {
-    if (slideText && !slideActivateOnceArray.value[index])
-      textAniIn(elNode, index);
+    if (!slideActivateOnceArray.value[index]) textAniIn(elNode, index);
     slideActivateOnceArray.value[index] = true;
     slideActiveArray.value[index] = true;
   }, timeoutTime);
@@ -442,15 +445,22 @@ const gltfBindingGeo = ref({
   width: 100%;
 }
 .content-wrapper {
+  overflow: hidden;
   position: absolute;
 }
-.content {
+.content-title {
   text-transform: uppercase;
   font-size: 155px;
-  line-height: 80%;
-  margin-top: 25px;
+  line-height: 90%;
+  padding-top: 10px;
+  overflow: hidden;
+  opacity: 0;
+}
+.sm-content-wrapper {
+  overflow: hidden;
 }
 .sm-content {
+  //opacity: 0;
   padding-left: 5px;
   font-size: 25px;
   text-transform: uppercase;

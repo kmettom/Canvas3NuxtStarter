@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import gsap from "gsap";
 
+withDefaults(defineProps<{ showPhotoCredentials?: boolean }>(), {
+  showPhotoCredentials: true,
+});
+
 const scrollSpeedAniEl = ref<HTMLElement | null>(null);
 const scrollSpeedCoef = ref(0);
 
@@ -47,7 +51,7 @@ onBeforeUnmount(() => {
       </div>
       <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
       <div class="cred-holder">
-        <div class="person">
+        <div v-if="showPhotoCredentials" class="person">
           <span>Photography by </span>
           <a href="https://jagodakondratiuk.com">Jagoda Kondratiuk</a>
         </div>
