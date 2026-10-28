@@ -62,12 +62,23 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "GLTF",
     position: { top: 50, left: 50},
-    smallContent: "Nuxt",
+    smallContent: "Playground for GLTF imports",
     sectionSize: 1.5,
   },
   {
-    content: "Story Line",
+    content: "Create",
     position: { top: 0, left: 0 },
+    sectionSize: 0.25
+  },
+  {
+    content: "story",
+    position: { top: 0, left: 50 },
+    sectionSize: 0.25
+  },
+  {
+    content: "lines",
+    position: { top: 0, left: 90 },
+    sectionSize: 0.25
   },
   {
     content: "Light settings",
