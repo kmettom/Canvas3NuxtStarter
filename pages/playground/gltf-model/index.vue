@@ -35,12 +35,6 @@
 </template>
 
 <script setup lang="ts">
-// TODO:
-// - add text reveal logic
-// - set story to animate
-// - ??scope 3d object scroll to a container size, if container exists
-// - Check shaders on 3d object, of how to reveal a object
-// - check position logic, is it pixels?
 
 useSeoMeta({
   title: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
@@ -171,7 +165,6 @@ const gltfPositioningDavid = ref({
         position: { x: 0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 0.8, y: 0.8, z: 0.8 },
-        // all three animated at once
         lights: {
           davidKey: { intensity: 0.5, position: { x: -1, y: 0.5, z: 1 } },
         },
@@ -206,20 +199,12 @@ const gltfBindingDavid = ref({
     defaultLights: false,
     lights: [
       {
-        // referenced in the positioning keyframes to animate the light
         id: "davidKey",
         type: "directional",
         color: 0xff0009,
-        // color: 0xfff2db,
         intensity: 0,
         position: { x: 0, y: 0, z: 0 },
       },
-      //   type: "directional",
-      //   color: 0x002aff,
-      //   intensity: 1000,
-      //   position: { x: -1, y: -1, z: 1 },
-      // },
-      // {
     ],
   },
 });
@@ -324,16 +309,9 @@ const gltfBindingGeo = ref({
       {
         type: "directional",
         color: 0x000dff,
-        // color: 0xfff2db,
         intensity: 1,
         position: { x: -1, y: 0.5, z: 1 },
       },
-      //   type: "directional",
-      //   color: 0x002aff,
-      //   intensity: 1000,
-      //   position: { x: -1, y: -1, z: 1 },
-      // },
-      // {
     ],
   },
 });
