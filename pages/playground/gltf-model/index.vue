@@ -17,16 +17,16 @@
       :key="index"
       class="frame-section"
     >
-      <div
-        class="content-block"
-        :style="`top:${frame.position.top}%;left:${frame.position.top}%;`"
-      >
-        <div class="content-wrapper">
+      <div class="content-block">
+        <div
+          class="content-wrapper"
+          :style="`top:${frame.position.top}%;left:${frame.position.left}%;transform:translate(-${frame.position.left}%,-${frame.position.top}%)`"
+        >
           <div v-if="frame.content" class="content">
-          {{ frame.content }}
+            {{ frame.content }}
           </div>
           <div v-if="frame.smallContent" class="sm-content">
-          {{ frame.smallContent }}
+            {{ frame.smallContent }}
           </div>
         </div>
       </div>
@@ -35,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-
 useSeoMeta({
   title: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
   ogTitle: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
@@ -50,7 +49,7 @@ const keyframeSectionContent = ref([
   {
     content: "Canvas3",
     smallContent: "some example - this is a Nuxt threeJs module",
-    position: { top: 0, left: 50, right: 0 },
+    position: { top: 50, left: 50, right: 0 },
   },
   {
     content: "GLTF",
@@ -86,7 +85,7 @@ const keyframeSectionContent = ref([
     content: "Get in Touch",
     smallContent: "",
     position: { top: 0, left: 0 },
-  }
+  },
 ]);
 
 const gltfPositioningDavid = ref({
@@ -318,7 +317,7 @@ const gltfBindingGeo = ref({
 </script>
 
 <style lang="scss" scoped>
-.page-container{
+.page-container {
   font-family: "PP Formula Black", serif;
 }
 .gltf-david-el {
@@ -340,20 +339,21 @@ const gltfBindingGeo = ref({
   position: relative;
 }
 .content-block {
-  position: absolute;
+  position: relative;
   height: 100%;
   width: 100%;
-  transform: translate(50%,50%);
 }
-.content-wrapper{
+.content-wrapper {
   position: absolute;
 }
 .content {
   text-transform: uppercase;
   font-size: 155px;
+  line-height: 80%;
+  margin-top: 25px;
 }
-.sm-content{
-  padding-left: 10px;
+.sm-content {
+  padding-left: 5px;
   font-size: 25px;
   text-transform: uppercase;
 }
