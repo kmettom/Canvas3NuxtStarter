@@ -18,7 +18,16 @@
       class="frame-section"
       :style="sectionStyle(frame.sectionSize)"
     >
-      <div class="content-block">
+      <div
+        v-canvas3-scroll-action="{
+          activeRange: 0.95,
+          activateOnce: false,
+          activateCallback: (item: ScrollActionBinding) => {
+            setSlideActive(item.elNode, frame.content, index);
+          },
+        }"
+        class="content-block"
+      >
         <div
           class="content-wrapper"
           :style="`top:${frame.position.top}%;left:${frame.position.left}%;transform:translate(-${frame.position.left}%,-${frame.position.top}%)`"
@@ -32,16 +41,70 @@
         </div>
       </div>
     </div>
+    <scrollSpeedBar />
   </div>
 </template>
 
 <script setup lang="ts">
+import ScrollSpeedBar from "~/components/playground/scroll-performance/scrollSpeedBar.vue";
+import type { ScrollActionBinding } from "@canvas3/nuxt";
+import SplitText from "gsap/SplitText";
+import gsap from "gsap";
+
+gsap.registerPlugin(SplitText);
+
 useSeoMeta({
   title: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
   ogTitle: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
   description: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
   ogDescription: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
 });
+
+const textAniIn = (el: HTMLElement, slideIndex: number) => {
+  if (slideActiveArray.value[slideIndex]) return;
+  const text = el.querySelector(".slide-text");
+  const chars = new SplitText(text, {
+    type: "chars",
+    reduceWhiteSpace: false,
+    charsClass: "char",
+  }).chars;
+
+  const tl = gsap.timeline({
+    defaults: {
+      ease: "power2.inOut",
+    },
+  });
+  tl.set(chars, {
+    y: 155,
+    x: 100,
+    transform: "matrix(1,0,1,2,0,0)",
+  });
+  tl.set(text, { opacity: 1 });
+  tl.to(chars, {
+    y: 0,
+    x: 0,
+    duration: 0.35,
+    transform: "matrix(1,0,0,1,0,0)",
+    stagger: 0.025,
+  });
+};
+
+const slideActivateOnceArray = ref<boolean[]>([]);
+const slideActiveArray = ref<boolean[]>([]);
+
+const setSlideActive = (
+  elNode: HTMLElement,
+  slideText: string | undefined,
+  index: number,
+) => {
+  const timeoutTime = index <= 3 ? 100 : 0;
+  setTimeout(() => {
+    if (slideText && !slideActivateOnceArray.value[index])
+      textAniIn(elNode, index);
+    slideActivateOnceArray.value[index] = true;
+    slideActiveArray.value[index] = true;
+  }, timeoutTime);
+};
 
 const gltfElDavid = ref(null);
 const gltfElGeo = ref(null);
@@ -61,24 +124,24 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "GLTF",
-    position: { top: 50, left: 50},
+    position: { top: 50, left: 50 },
     smallContent: "Playground for GLTF imports",
     sectionSize: 1.5,
   },
   {
     content: "Create",
     position: { top: 0, left: 0 },
-    sectionSize: 0.25
+    sectionSize: 0.25,
   },
   {
     content: "story",
     position: { top: 0, left: 50 },
-    sectionSize: 0.25
+    sectionSize: 0.25,
   },
   {
     content: "lines",
     position: { top: 0, left: 90 },
-    sectionSize: 0.25
+    sectionSize: 0.25,
   },
   {
     content: "Light settings",
