@@ -16,6 +16,7 @@
       v-for="(frame, index) in keyframeSectionContent"
       :key="index"
       class="frame-section"
+      :style="sectionStyle(frame.sectionSize)"
     >
       <div class="content-block">
         <div
@@ -45,15 +46,24 @@ useSeoMeta({
 const gltfElDavid = ref(null);
 const gltfElGeo = ref(null);
 
-const keyframeSectionContent = ref([
+type KeyframeSection = {
+  content?: string;
+  smallContent?: string;
+  position: { top: number; left: number; right?: number };
+  sectionSize?: number;
+};
+
+const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Canvas3",
     smallContent: "some example - this is a Nuxt threeJs module",
     position: { top: 50, left: 50, right: 0 },
+    sectionSize: 1,
   },
   {
     content: "GLTF",
     position: { top: 0, left: 0 },
+    sectionSize: 0.5,
   },
   {
     content: "Story Line",
@@ -87,6 +97,19 @@ const keyframeSectionContent = ref([
     position: { top: 0, left: 0 },
   },
 ]);
+
+// 100vh until mounted, then locked to window.innerHeight
+const viewportHeight = ref<number | null>(null);
+
+onMounted(() => {
+  viewportHeight.value = window.innerHeight;
+});
+
+const sectionStyle = (sectionSize = 1) => ({
+  height: viewportHeight.value
+    ? `${viewportHeight.value * sectionSize}px`
+    : `${sectionSize * 100}vh`,
+});
 
 const gltfPositioningDavid = ref({
   keyframes: [
@@ -335,8 +358,9 @@ const gltfBindingGeo = ref({
   left: 0;
 }
 .frame-section {
-  height: 1000px;
+  height: 100vh;
   position: relative;
+  border: 1px solid red;
 }
 .content-block {
   position: relative;
