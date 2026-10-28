@@ -44,7 +44,7 @@
         </div>
       </div>
     </div>
-    <scrollSpeedBar />
+    <scrollSpeedBar :show-photo-credentials="false" />
   </div>
 </template>
 
