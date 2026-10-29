@@ -169,43 +169,48 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Create",
     position: { top: 0, left: 0 },
-    sectionSize: 0.25,
+    sectionSize: 0.5,
   },
   {
     content: "story",
     position: { top: 0, left: 50 },
-    sectionSize: 0.25,
+    sectionSize: 0.5,
   },
   {
-    content: "lines",
+    content: "line",
     position: { top: 0, right: "0" },
-    sectionSize: 0.25,
+    sectionSize: 0.5,
   },
   {
-    content: "Light settings",
-    smallContent: "Set lights per model per keyframe in your story line",
+    content: "Change",
     position: { top: 0, left: 0 },
   },
   {
-    content: "Move light source",
-    smallContent: "Move lights per model",
+    content: "Light",
     position: { top: 0, left: 0 },
   },
   {
-    content: "Position",
+    smallContent: "per",
     position: { top: 0, left: 0 },
   },
   {
-    content: "Rotate",
+    smallContent: "model",
     position: { top: 0, left: 0 },
   },
   {
-    content: "Scale",
+    content: "Transform",
     position: { top: 0, left: 0 },
   },
   {
-    content: "Get in Touch",
-    smallContent: "",
+    smallContent: "Position",
+    position: { top: 0, left: 0 },
+  },
+  {
+    smallContent: "Rotate",
+    position: { top: 0, left: 0 },
+  },
+  {
+    smallContent: "Scale",
     position: { top: 0, left: 0 },
   },
 ]);
