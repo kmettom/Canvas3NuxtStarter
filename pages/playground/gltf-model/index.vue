@@ -21,7 +21,7 @@
       <div class="content-block">
         <div
           class="content-wrapper"
-          :style="`top:${frame.position.top}%;left:${frame.position.left}%;transform:translate(-${frame.position.left}%,-${frame.position.top}%)`"
+          :style="`top:${frame.position.top}%;left:${frame.position.left ?? 0}%;${frame.position.right ? `right:${frame.position.right}%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
         >
           <div
             v-canvas3-scroll-action="{
@@ -100,7 +100,7 @@ const slideActivateOnceArray = ref<boolean[]>([]);
 const slideActiveArray = ref<boolean[]>([]);
 
 const setSlideActive = (elNode: HTMLElement, index: number) => {
-  const timeoutTime = index <= 3 ? 100 : 0;
+  const timeoutTime = index <= 3 ? 500 : 0;
   setTimeout(() => {
     // if (!slideActivateOnceArray.value[index]) {
     textAniIn(elNode, index);
@@ -150,7 +150,7 @@ const gltfElGeo = ref(null);
 type KeyframeSection = {
   content?: string;
   smallContent?: string;
-  position: { top: number; left: number; right?: number };
+  position: { top: number; left?: number; right?: string };
   sectionSize?: number;
 };
 
@@ -178,7 +178,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "lines",
-    position: { top: 0, left: 90 },
+    position: { top: 0, right: "0" },
     sectionSize: 0.25,
   },
   {
@@ -320,11 +320,29 @@ const gltfPositioningDavid = ref({
   },
 });
 
+const gltfAppearDavid = {
+  duration: 2000,
+  ease: "power3.out",
+  from: {
+    position: { x: -0.45, y: -0.9, z: 0 },
+    rotation: { x: 0, y: -Math.PI, z: 0 },
+    scale: { x: 0.4, y: 0.4, z: 0.4 },
+    lights: { davidKey: { intensity: 0, position: { x: -1, y: 0, z: 0 } } },
+  },
+  to: {
+    position: { x: -0.45, y: -0.45, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 1, y: 1, z: 1 },
+    lights: { davidKey: { intensity: 1, position: { x: 1, y: 0, z: 0 } } },
+  },
+};
+
 const gltfBindingDavid = ref({
   url: "/gltf/david_head/scene.gltf",
   name: "david",
   container: gltfElDavid.value,
   positioning: gltfPositioningDavid.value,
+  appearAnimation: gltfAppearDavid,
   lighting: {
     environment: "room",
     environmentIntensity: 0.2,
@@ -428,14 +446,31 @@ const gltfPositioningGeo = ref({
   },
 });
 
+const gltfAppearGeo = {
+  duration: 1200,
+  delay: 600,
+  ease: "back.out(1.7)",
+  from: {
+    position: { x: 0.35, y: 0.15, z: 0 },
+    rotation: { x: -Math.PI, y: -Math.PI, z: 0 },
+    scale: { x: 0, y: 0, z: 0 },
+  },
+  to: {
+    position: { x: 0.35, y: 0.15, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 1, y: 1, z: 1 },
+  },
+};
+
 const gltfBindingGeo = ref({
   url: "/gltf/icosidodecahedron/scene.gltf",
   name: "geometry",
   container: gltfElGeo.value,
   positioning: gltfPositioningGeo.value,
+  appearAnimation: gltfAppearGeo,
   lighting: {
     environment: "room",
-    environmentIntensity: 0.1,
+    environmentIntensity: 0.2,
     toneMapping: "aces",
     exposure: 1,
     defaultLights: false,
