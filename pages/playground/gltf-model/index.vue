@@ -30,6 +30,9 @@
               activateCallback: (item: ScrollActionBinding) => {
                 setSlideActive(item.elNode, index);
               },
+              deactivateCallback: (item: ScrollActionBinding) => {
+                setSlideNonActive(item.elNode, index);
+              },
             }"
           >
             <div v-if="frame.content" class="content-title">
@@ -96,17 +99,49 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
 const slideActivateOnceArray = ref<boolean[]>([]);
 const slideActiveArray = ref<boolean[]>([]);
 
-const setSlideActive = (
-  elNode: HTMLElement,
-  // slideText: string | undefined,
-  index: number,
-) => {
+const setSlideActive = (elNode: HTMLElement, index: number) => {
   const timeoutTime = index <= 3 ? 100 : 0;
   setTimeout(() => {
-    if (!slideActivateOnceArray.value[index]) textAniIn(elNode, index);
+    // if (!slideActivateOnceArray.value[index]) {
+    textAniIn(elNode, index);
+    // };
     slideActivateOnceArray.value[index] = true;
     slideActiveArray.value[index] = true;
   }, timeoutTime);
+};
+
+const textAniOut = (el: HTMLElement, slideIndex: number) => {
+  if (slideActiveArray.value[slideIndex]) return;
+  console.log("textAniIn");
+  const text = el.querySelector(".content-title");
+  const chars = new SplitText(text, {
+    type: "chars",
+    reduceWhiteSpace: false,
+    charsClass: "char",
+  }).chars;
+
+  const tl = gsap.timeline({
+    defaults: {
+      // ease: "power2.inOut",
+    },
+  });
+  // tl.set(chars, {
+  //
+  //   transform: "matrix(1,0,1,2,0,0)",
+  // });
+  tl.to(chars, {
+    y: 255,
+    x: 100,
+    duration: 0.25,
+    transform: "matrix(1,0,0,1,0,0)",
+    stagger: 0.015,
+  });
+  tl.set(text, { opacity: 0 });
+};
+
+const setSlideNonActive = (elNode: HTMLElement, index: number) => {
+  slideActiveArray.value[index] = false;
+  textAniOut(elNode, index);
 };
 
 const gltfElDavid = ref(null);
