@@ -162,7 +162,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "GLTF",
-    position: { top: 50, left: 50 },
+    position: { top: 50, left: 0 },
     smallContent: "Playground for GLTF imports",
     sectionSize: 1.5,
   },
@@ -233,7 +233,7 @@ const gltfPositioningDavid = ref({
     {
       id: "1_start_to_right",
       start: 0,
-      end: 0.2,
+      end: 0.1,
       from: {
         position: { x: -0.45, y: -0.45, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
@@ -241,27 +241,27 @@ const gltfPositioningDavid = ref({
         lights: { davidKey: { intensity: 1, position: { x: 1, y: 0, z: 0 } } },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
+        position: { x: 0, y: -0.45, z: 0 },
+        rotation: { x: 0, y: -Math.PI, z: 0 },
+        scale: { x: 0.5, y: 0.5, z: 0.5 },
         lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
     },
     {
       id: "2_right_rotate",
-      start: 0.2,
-      end: 0.4,
+      start: 0.1,
+      end: 0.2,
       from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
-        lights: { davidKey: { position: { x: 0, y: 0, z: 1 } } },
+        position: { x: 0, y: -0.45, z: 0 },
+        rotation: { x: 0, y: -Math.PI, z: 0 },
+        scale: { x: 0.5, y: 0.5, z: 0.5 },
+        lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
+        position: { x: 0.4, y: -0.45, z: 0 },
+        rotation: { x: 0, y: -Math.PI * 2, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
-        lights: { davidKey: { position: { x: -1, y: 0, z: 0 } } },
+        lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
     },
     {
