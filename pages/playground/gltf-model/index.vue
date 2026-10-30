@@ -21,7 +21,7 @@
       <div class="content-block">
         <div
           class="content-wrapper"
-          :style="`top:${frame.position.top}%;left:${frame.position.left ?? 0}%;${frame.position.right ? `right:${frame.position.right}%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
+          :style="`top:${frame.position.top}%;${frame.position.left ? `left:${frame.position.left}%` : '0%'};${frame.position.right ? `right:${frame.position.right}%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
         >
           <div
             v-canvas3-scroll-action="{
@@ -163,8 +163,8 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "GLTF",
     position: { top: 50, left: 0 },
-    smallContent: "Playground for GLTF imports",
-    sectionSize: 1.5,
+    // smallContent: "Playground for GLTF imports",
+    // sectionSize: 1.5,
   },
   {
     content: "Create",
@@ -189,14 +189,14 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Light",
     position: { top: 0, left: 0 },
   },
-  {
-    smallContent: "per",
-    position: { top: 0, left: 0 },
-  },
-  {
-    smallContent: "model",
-    position: { top: 0, left: 0 },
-  },
+  // {
+  //   smallContent: "per",
+  //   position: { top: 0, left: 0 },
+  // },
+  // {
+  //   smallContent: "model",
+  //   position: { top: 0, left: 0 },
+  // },
   {
     content: "Transform",
     position: { top: 0, left: 0 },
@@ -204,16 +204,22 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     smallContent: "Position",
     position: { top: 0, left: 0 },
+    sectionSize: 0.5,
   },
   {
     smallContent: "Rotate",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 50 },
+    sectionSize: 0.5,
   },
   {
     smallContent: "Scale",
-    position: { top: 0, left: 0 },
+    position: { top: 0, right: "0" },
+    sectionSize: 0.5,
   },
 ]);
+
+console.log(keyframeSectionContent.value.length);
+// 13 screens, 1 keyframe 1/13 -> 6x0.5 + 7 = 10
 
 // 100vh until mounted, then locked to window.innerHeight
 const viewportHeight = ref<number | null>(null);
@@ -371,61 +377,57 @@ const gltfPositioningGeo = ref({
     {
       id: "1_start_to_right",
       start: 0,
-      end: 0.2,
+      end: 0.1,
       from: {
         position: { x: 0.35, y: 0.15, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
       },
       to: {
-        position: { x: -0.2, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.2, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
       },
     },
     {
-      id: "2_right_rotate",
-      start: 0.2,
-      end: 0.4,
+      id: "2_to_middle",
+      start: 0.1,
+      end: 0.2,
       from: {
-        position: { x: -0.2, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.2, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
       },
       to: {
-        position: { x: -0.2, y: 0.2, z: 0 },
+        position: { x: -0.35, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI },
-        scale: { x: 1, y: 1, z: 1 },
       },
     },
     {
-      id: "3_right_scale_down",
-      start: 0.4,
-      end: 0.6,
+      id: "3_to_left",
+      start: 0.2,
+      end: 0.3,
       from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
+        position: { x: -0.35, y: 0, z: 0 },
         rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        // scale: { x: 1.5, y: 1.5, z: 1.5 },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
+        position: { x: 0.2, y: 0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
       },
     },
     {
       id: "4_right_scale_down",
-      start: 0.6,
-      end: 0.8,
+      start: 0.3,
+      end: 0.4,
       from: {
         position: { x: 0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
+        // scale: { x: 1, y: 1, z: 1 },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
+        position: { x: 0.45, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
+        scale: { x: 0.6, y: 0.6, z: 0.6 },
       },
     },
     {
