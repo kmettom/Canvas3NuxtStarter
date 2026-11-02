@@ -68,9 +68,15 @@ useSeoMeta({
 
 const textAniIn = (el: HTMLElement, slideIndex: number) => {
   if (slideActiveArray.value[slideIndex]) return;
-  console.log("textAniIn");
   const text = el.querySelector(".content-title");
+  const textSm = el.querySelector(".sm-content");
   const chars = new SplitText(text, {
+    type: "chars",
+    reduceWhiteSpace: false,
+    charsClass: "char",
+  }).chars;
+
+  const charsSm = new SplitText(textSm, {
     type: "chars",
     reduceWhiteSpace: false,
     charsClass: "char",
@@ -86,7 +92,13 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     x: 100,
     transform: "matrix(1,0,1,2,0,0)",
   });
+  tl.set(charsSm, {
+    y: 55,
+    x: 10,
+    transform: "matrix(1,0,1,2,0,0)",
+  });
   tl.set(text, { opacity: 1 });
+  tl.set(textSm, { opacity: 1 });
   tl.to(chars, {
     y: 0,
     x: 0,
@@ -94,6 +106,13 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     transform: "matrix(1,0,0,1,0,0)",
     stagger: 0.025,
   });
+  tl.to(charsSm, {
+    y: 0,
+    x: 0,
+    duration: 0.35,
+    transform: "matrix(1,0,0,1,0,0)",
+    stagger: 0.005,
+  },"<+0.2");
 };
 
 const slideActivateOnceArray = ref<boolean[]>([]);
@@ -164,7 +183,13 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "GLTF",
     position: { top: 50, left: 0 },
     // smallContent: "Playground for GLTF imports",
-    // sectionSize: 1.5,
+    sectionSize: 0.5,
+  },
+  {
+    content: "Example",
+    position: { top: 50, left: 0 },
+    // smallContent: "Playground for GLTF imports",
+    sectionSize: 0.5,
   },
   {
     content: "Create",
@@ -539,8 +564,11 @@ const gltfBindingGeo = ref({
 }
 .sm-content-wrapper {
   overflow: hidden;
+
 }
 .sm-content {
+  opacity: 0;
+  overflow: hidden;
   //opacity: 0;
   padding-left: 5px;
   font-size: 25px;
