@@ -440,13 +440,13 @@ const gltfPositioningGeo = ref({
       end: 0.3,
       from: {
         position: { x: -0.35, y: 0, z: 0 },
-        rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 2, y: 2, z: 2 },
+        rotation: { x: 0, y: 0, z: Math.PI },
+        scale: { x: 1, y: 1, z: 1 },
       },
       to: {
         position: { x: 0.2, y: 0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
+        scale: { x: 0.6, y: 0.6, z: 0.6 },
       },
     },
     {
@@ -456,12 +456,12 @@ const gltfPositioningGeo = ref({
       from: {
         position: { x: 0.2, y: 0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
+        scale: { x: 0.6, y: 0.6, z: 0.6 },
       },
       to: {
-        position: { x: 0.45, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.6, y: 0.6, z: 0.6 },
+        position: { x: 0.55, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI },
+        scale: { x: 0.3, y: 0.3, z: 0.3 },
       },
     },
     {
@@ -469,8 +469,23 @@ const gltfPositioningGeo = ref({
       start: 0.4,
       end: 0.5,
       from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
+        position: { x: 0.45, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 0.6, y: 0.6, z: 0.6 },
+      },
+      to: {
+        position: { x: -0.2, y: -0.2, z: 0 },
+        rotation: { x: 0, y: Math.PI, z: 0 },
+        scale: { x: 0.6, y: 0.6, z: 0.6 },
+      },
+    },
+    {
+      id: "5_to_left_scale_up",
+      start: 0.5,
+      end: 1,
+      from: {
+        position: { x: -0.2, y: -0.2, z: 0 },
+        rotation: { x: 0, y: Math.PI, z: 0 },
         scale: { x: 0.6, y: 0.6, z: 0.6 },
       },
       to: {
