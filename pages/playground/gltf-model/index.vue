@@ -21,7 +21,7 @@
       <div class="content-block">
         <div
           class="content-wrapper"
-          :style="`top:${frame.position.top}%;left:${frame.position.left ?? 0}%;${frame.position.right ? `right:${frame.position.right}%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
+          :style="`top:${frame.position.top}%;${frame.position.left ? `left:${frame.position.left}%` : '0%'};${frame.position.right ? `right:${frame.position.right}%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
         >
           <div
             v-canvas3-scroll-action="{
@@ -68,9 +68,15 @@ useSeoMeta({
 
 const textAniIn = (el: HTMLElement, slideIndex: number) => {
   if (slideActiveArray.value[slideIndex]) return;
-  console.log("textAniIn");
   const text = el.querySelector(".content-title");
+  const textSm = el.querySelector(".sm-content");
   const chars = new SplitText(text, {
+    type: "chars",
+    reduceWhiteSpace: false,
+    charsClass: "char",
+  }).chars;
+
+  const charsSm = new SplitText(textSm, {
     type: "chars",
     reduceWhiteSpace: false,
     charsClass: "char",
@@ -86,7 +92,13 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     x: 100,
     transform: "matrix(1,0,1,2,0,0)",
   });
+  tl.set(charsSm, {
+    y: 55,
+    x: 10,
+    transform: "matrix(1,0,1,2,0,0)",
+  });
   tl.set(text, { opacity: 1 });
+  tl.set(textSm, { opacity: 1 });
   tl.to(chars, {
     y: 0,
     x: 0,
@@ -94,6 +106,17 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     transform: "matrix(1,0,0,1,0,0)",
     stagger: 0.025,
   });
+  tl.to(
+    charsSm,
+    {
+      y: 0,
+      x: 0,
+      duration: 0.35,
+      transform: "matrix(1,0,0,1,0,0)",
+      stagger: 0.005,
+    },
+    "<+0.2",
+  );
 };
 
 const slideActivateOnceArray = ref<boolean[]>([]);
@@ -162,9 +185,15 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "GLTF",
-    position: { top: 50, left: 50 },
-    smallContent: "Playground for GLTF imports",
-    sectionSize: 1.5,
+    position: { top: 50, left: 0 },
+    // smallContent: "Playground for GLTF imports",
+    sectionSize: 0.5,
+  },
+  {
+    content: "Example",
+    position: { top: 50, left: 0 },
+    // smallContent: "Playground for GLTF imports",
+    sectionSize: 0.5,
   },
   {
     content: "Create",
@@ -189,14 +218,14 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Light",
     position: { top: 0, left: 0 },
   },
-  {
-    smallContent: "per",
-    position: { top: 0, left: 0 },
-  },
-  {
-    smallContent: "model",
-    position: { top: 0, left: 0 },
-  },
+  // {
+  //   smallContent: "per",
+  //   position: { top: 0, left: 0 },
+  // },
+  // {
+  //   smallContent: "model",
+  //   position: { top: 0, left: 0 },
+  // },
   {
     content: "Transform",
     position: { top: 0, left: 0 },
@@ -204,16 +233,22 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     smallContent: "Position",
     position: { top: 0, left: 0 },
+    sectionSize: 0.5,
   },
   {
     smallContent: "Rotate",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 50 },
+    sectionSize: 0.5,
   },
   {
     smallContent: "Scale",
-    position: { top: 0, left: 0 },
+    position: { top: 0, right: "0" },
+    sectionSize: 0.5,
   },
 ]);
+
+console.log(keyframeSectionContent.value.length);
+// 13 screens, 1 keyframe 1/13 -> 6x0.5 + 7 = 10
 
 // 100vh until mounted, then locked to window.innerHeight
 const viewportHeight = ref<number | null>(null);
@@ -231,69 +266,67 @@ const sectionStyle = (sectionSize = 1) => ({
 const gltfPositioningDavid = ref({
   keyframes: [
     {
-      id: "1_start_to_right",
+      id: "1_left_to_middle",
       start: 0,
-      end: 0.2,
+      end: 0.1,
       from: {
         position: { x: -0.45, y: -0.45, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
-        lights: { davidKey: { intensity: 1, position: { x: 1, y: 0, z: 0 } } },
+        // lights: { davidKey: { intensity: 1, position: { x: 1, y: 0, z: 0 } } },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
-        lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
+        position: { x: 0, y: -0.45, z: 0 },
+        rotation: { x: 0, y: -Math.PI, z: 0 },
+        scale: { x: 0.5, y: 0.5, z: 0.5 },
+        // lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
     },
     {
-      id: "2_right_rotate",
+      id: "2_middle_to_right",
+      start: 0.1,
+      end: 0.2,
+      from: {
+        position: { x: 0, y: -0.45, z: 0 },
+        rotation: { x: 0, y: -Math.PI, z: 0 },
+        scale: { x: 0.5, y: 0.5, z: 0.5 },
+        // lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
+      },
+      to: {
+        position: { x: 0.4, y: -0.45, z: 0 },
+        rotation: { x: 0, y: -Math.PI * 2.5, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+        // lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
+      },
+    },
+    {
+      id: "3_right_stay_rotate",
       start: 0.2,
       end: 0.4,
       from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
-        lights: { davidKey: { position: { x: 0, y: 0, z: 1 } } },
+        position: { x: 0.4, y: -0.45, z: 0 },
+        rotation: { x: 0, y: -Math.PI * 2.5, z: 0 },
+        // scale: { x: 1, y: 1, z: 1 },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
-        lights: { davidKey: { position: { x: -1, y: 0, z: 0 } } },
+        position: { x: 0.4, y: -0.45, z: 0 },
+        rotation: { x: Math.PI/8, y: -Math.PI * 2, z: 0},
       },
     },
     {
-      id: "3_right_scale_down",
+      id: "4_to_middle_light",
       start: 0.4,
-      end: 0.6,
+      end: 0.5,
       from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        position: { x: 0.4, y: -0.45, z: 0 },
+        rotation: { x: Math.PI/8, y: 0, z: 0},
+        lights: { davidKey: { intensity: 1 } },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
-      },
-    },
-    {
-      id: "4_right_scale_down",
-      start: 0.6,
-      end: 0.8,
-      from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
-        lights: { davidKey: { intensity: 2.5 } },
-      },
-      to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
+        position: { x: 0, y: -0.45, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 0.8, y: 0.8, z: 0.8 },
-        lights: { davidKey: { intensity: 0.5 } },
+        lights: { davidKey: { intensity: 1 } },
       },
     },
     {
@@ -345,6 +378,7 @@ const gltfAppearDavid = {
 const gltfBindingDavid = ref({
   url: "/gltf/david_head/scene.gltf",
   name: "david",
+  zIndex: 1,
   container: gltfElDavid.value,
   positioning: gltfPositioningDavid.value,
   appearAnimation: gltfAppearDavid,
@@ -371,76 +405,61 @@ const gltfPositioningGeo = ref({
     {
       id: "1_start_to_right",
       start: 0,
-      end: 0.2,
+      end: 0.1,
       from: {
         position: { x: 0.35, y: 0.15, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
       },
       to: {
-        position: { x: -0.2, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.2, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        scale: { x: 2, y: 2, z: 2 },
       },
     },
     {
-      id: "2_right_rotate",
-      start: 0.2,
-      end: 0.4,
+      id: "2_to_middle",
+      start: 0.1,
+      end: 0.2,
       from: {
-        position: { x: -0.2, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.2, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        scale: { x: 2, y: 2, z: 2 },
       },
       to: {
-        position: { x: -0.2, y: 0.2, z: 0 },
+        position: { x: -0.35, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI },
         scale: { x: 1, y: 1, z: 1 },
       },
     },
     {
-      id: "3_right_scale_down",
-      start: 0.4,
-      end: 0.6,
+      id: "3_to_left",
+      start: 0.2,
+      end: 0.4,
       from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        position: { x: -0.35, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI },
+        scale: { x: 1, y: 1, z: 1 },
       },
       to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
+        position: { x: 0.55, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI*2 },
+        scale: { x: 0.3, y: 0.3, z: 0.3 },
       },
     },
     {
       id: "4_right_scale_down",
-      start: 0.6,
-      end: 0.8,
-      from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
-      },
-      to: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
-      },
-    },
-    {
-      id: "5_to_left_scale_up",
-      start: 0.8,
+      start: 0.4,
       end: 1,
       from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
+        position: { x: 0.55, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI },
+        scale: { x: 0.3, y: 0.3, z: 0.3 },
       },
       to: {
-        position: { x: -0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        position: { x: 0.55, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI },
+        scale: { x: 0.3, y: 0.3, z: 0.3 },
       },
     },
   ],
@@ -470,6 +489,7 @@ const gltfAppearGeo = {
 const gltfBindingGeo = ref({
   url: "/gltf/icosidodecahedron/scene.gltf",
   name: "geometry",
+  zIndex: 2,
   container: gltfElGeo.value,
   positioning: gltfPositioningGeo.value,
   appearAnimation: gltfAppearGeo,
@@ -535,6 +555,8 @@ const gltfBindingGeo = ref({
   overflow: hidden;
 }
 .sm-content {
+  opacity: 0;
+  overflow: hidden;
   //opacity: 0;
   padding-left: 5px;
   font-size: 25px;
