@@ -170,6 +170,11 @@ const setSlideNonActive = (elNode: HTMLElement, index: number) => {
 const gltfElDavid = ref(null);
 const gltfElGeo = ref(null);
 
+const baseColor = 0xfff8fd;
+const baseEnvIntensity = 0.05;
+const baseColorPositionRight = { x: 1, y: 0, z: 0.2 };
+const baseColorPositionLeft = { x: -1, y: 0, z: 0.2 };
+
 type KeyframeSection = {
   content?: string;
   smallContent?: string;
@@ -187,18 +192,17 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "GLTF",
     position: { top: 50, left: 0 },
     // smallContent: "Playground for GLTF imports",
-    sectionSize: 0.5,
+    sectionSize: 0.25,
   },
   {
     content: "Example",
-    position: { top: 50, left: 0 },
-    // smallContent: "Playground for GLTF imports",
-    sectionSize: 0.5,
+    position: { top: 50, right: "0" },
+    sectionSize: 0.25,
   },
   {
     content: "Create",
     position: { top: 0, left: 0 },
-    sectionSize: 0.5,
+    sectionSize: 0.75,
   },
   {
     content: "story",
@@ -213,10 +217,17 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Change",
     position: { top: 0, left: 0 },
+    sectionSize: 0.5,
   },
   {
     content: "Light",
+    position: { top: 0, right: "0" },
+    sectionSize: 0.5,
+  },
+  {
+    content: "settings",
     position: { top: 0, left: 0 },
+    sectionSize: 0.5,
   },
   // {
   //   smallContent: "per",
@@ -273,13 +284,11 @@ const gltfPositioningDavid = ref({
         position: { x: -0.45, y: -0.45, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
-        // lights: { davidKey: { intensity: 1, position: { x: 1, y: 0, z: 0 } } },
       },
       to: {
         position: { x: 0, y: -0.45, z: 0 },
         rotation: { x: 0, y: -Math.PI, z: 0 },
         scale: { x: 0.5, y: 0.5, z: 0.5 },
-        // lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
     },
     {
@@ -290,13 +299,11 @@ const gltfPositioningDavid = ref({
         position: { x: 0, y: -0.45, z: 0 },
         rotation: { x: 0, y: -Math.PI, z: 0 },
         scale: { x: 0.5, y: 0.5, z: 0.5 },
-        // lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
       to: {
         position: { x: 0.4, y: -0.45, z: 0 },
         rotation: { x: 0, y: -Math.PI * 2.5, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
-        // lights: { davidKey: { intensity: 1, position: { x: 0, y: 0, z: 1 } } },
       },
     },
     {
@@ -306,11 +313,10 @@ const gltfPositioningDavid = ref({
       from: {
         position: { x: 0.4, y: -0.45, z: 0 },
         rotation: { x: 0, y: -Math.PI * 2.5, z: 0 },
-        // scale: { x: 1, y: 1, z: 1 },
       },
       to: {
-        position: { x: 0.4, y: -0.45, z: 0 },
-        rotation: { x: Math.PI/8, y: -Math.PI * 2, z: 0},
+        position: { x: 0.4, y: -0.5, z: 0 },
+        rotation: { x: Math.PI / 8, y: -Math.PI * 2, z: 0 },
       },
     },
     {
@@ -318,36 +324,49 @@ const gltfPositioningDavid = ref({
       start: 0.4,
       end: 0.5,
       from: {
-        position: { x: 0.4, y: -0.45, z: 0 },
-        rotation: { x: Math.PI/8, y: 0, z: 0},
+        position: { x: 0.4, y: -0.5, z: 0 },
+        rotation: { x: Math.PI / 8, y: 0, z: 0 },
         lights: { davidKey: { intensity: 1 } },
       },
       to: {
-        position: { x: 0, y: -0.45, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
-        lights: { davidKey: { intensity: 1 } },
-      },
-    },
-    {
-      id: "5_to_left_scale_up",
-      start: 0.8,
-      end: 1,
-      from: {
-        position: { x: 0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.8, y: 0.8, z: 0.8 },
-        lights: {
-          davidKey: { intensity: 0.5, position: { x: -1, y: 0.5, z: 1 } },
-        },
-      },
-      to: {
-        position: { x: -0.2, y: -0.2, z: 0 },
-        rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 8, z: 0 },
         lights: {
           davidKey: { intensity: 2, position: { x: 1, y: 0.5, z: 1 } },
         },
+      },
+    },
+    {
+      id: "5_to_middle_light",
+      start: 0.5,
+      end: 0.6,
+      from: {
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 8, z: 0 },
+        // scale: { x: 0.8, y: 0.8, z: 0.8 },
+        lights: {
+          davidKey: { intensity: 2, position: { x: 1, y: 0.5, z: 1 } },
+        },
+      },
+      to: {
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 8, z: 0 },
+        // scale: { x: 0.8, y: 0.8, z: 0.8 },
+        lights: { davidKey: { intensity: 3, position: { x: -1, y: 0, z: 0 } } },
+      },
+    },
+    {
+      id: "5_x",
+      start: 0.6,
+      end: 0.99,
+      from: {
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 8, z: 0 },
+      },
+      to: {
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 8, z: 0 },
+        // lights: { davidKey: { intensity: 2, position: { x: 0, y: 0.5, z: 1 } } },
       },
     },
   ],
@@ -365,13 +384,13 @@ const gltfAppearDavid = {
     position: { x: -0.45, y: -0.9, z: 0 },
     rotation: { x: 0, y: -Math.PI, z: 0 },
     scale: { x: 0.4, y: 0.4, z: 0.4 },
-    lights: { davidKey: { intensity: 0, position: { x: -1, y: 0, z: 0 } } },
+    lights: { davidKey: { intensity: 0, position: { x: 0, y: 0, z: 0 } } },
   },
   to: {
     position: { x: -0.45, y: -0.45, z: 0 },
     rotation: { x: 0, y: 0, z: 0 },
     scale: { x: 1, y: 1, z: 1 },
-    lights: { davidKey: { intensity: 1, position: { x: 1, y: 0, z: 0 } } },
+    lights: { davidKey: { intensity: 1, position: baseColorPositionRight } },
   },
 };
 
@@ -384,7 +403,7 @@ const gltfBindingDavid = ref({
   appearAnimation: gltfAppearDavid,
   lighting: {
     environment: "room",
-    environmentIntensity: 0.2,
+    environmentIntensity: baseEnvIntensity,
     toneMapping: "aces",
     exposure: 1,
     defaultLights: false,
@@ -392,7 +411,7 @@ const gltfBindingDavid = ref({
       {
         id: "davidKey",
         type: "directional",
-        color: 0xff0009,
+        color: baseColor,
         intensity: 0,
         position: { x: 0, y: 0, z: 0 },
       },
@@ -442,8 +461,8 @@ const gltfPositioningGeo = ref({
         scale: { x: 1, y: 1, z: 1 },
       },
       to: {
-        position: { x: 0.55, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: Math.PI*2 },
+        position: { x: 0.55, y: -0.2, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
       },
     },
@@ -472,8 +491,8 @@ const gltfPositioningGeo = ref({
 
 const gltfAppearGeo = {
   duration: 1200,
-  delay: 600,
-  ease: "back.out(1.7)",
+  delay: 300,
+  ease: "back.out(2)",
   from: {
     position: { x: 0.35, y: 0.15, z: 0 },
     rotation: { x: -Math.PI, y: -Math.PI, z: 0 },
@@ -495,16 +514,16 @@ const gltfBindingGeo = ref({
   appearAnimation: gltfAppearGeo,
   lighting: {
     environment: "room",
-    environmentIntensity: 0.2,
+    environmentIntensity: baseEnvIntensity,
     toneMapping: "aces",
     exposure: 1,
     defaultLights: false,
     lights: [
       {
         type: "directional",
-        color: 0x000dff,
+        color: baseColor,
         intensity: 1,
-        position: { x: -1, y: 0.5, z: 1 },
+        position: baseColorPositionLeft,
       },
     ],
   },
@@ -532,7 +551,7 @@ const gltfBindingGeo = ref({
 .frame-section {
   height: 100vh;
   position: relative;
-  border: 1px solid red;
+  //border: 1px solid red;
 }
 .content-block {
   position: relative;
