@@ -106,13 +106,17 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     transform: "matrix(1,0,0,1,0,0)",
     stagger: 0.025,
   });
-  tl.to(charsSm, {
-    y: 0,
-    x: 0,
-    duration: 0.35,
-    transform: "matrix(1,0,0,1,0,0)",
-    stagger: 0.005,
-  },"<+0.2");
+  tl.to(
+    charsSm,
+    {
+      y: 0,
+      x: 0,
+      duration: 0.35,
+      transform: "matrix(1,0,0,1,0,0)",
+      stagger: 0.005,
+    },
+    "<+0.2",
+  );
 };
 
 const slideActivateOnceArray = ref<boolean[]>([]);
@@ -376,6 +380,7 @@ const gltfAppearDavid = {
 const gltfBindingDavid = ref({
   url: "/gltf/david_head/scene.gltf",
   name: "david",
+  zIndex: 1,
   container: gltfElDavid.value,
   positioning: gltfPositioningDavid.value,
   appearAnimation: gltfAppearDavid,
@@ -471,7 +476,7 @@ const gltfPositioningGeo = ref({
       to: {
         position: { x: -0.2, y: -0.2, z: 0 },
         rotation: { x: 0, y: Math.PI, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        scale: { x: 0.6, y: 0.6, z: 0.6 },
       },
     },
   ],
@@ -501,6 +506,7 @@ const gltfAppearGeo = {
 const gltfBindingGeo = ref({
   url: "/gltf/icosidodecahedron/scene.gltf",
   name: "geometry",
+  zIndex: 2,
   container: gltfElGeo.value,
   positioning: gltfPositioningGeo.value,
   appearAnimation: gltfAppearGeo,
@@ -564,7 +570,6 @@ const gltfBindingGeo = ref({
 }
 .sm-content-wrapper {
   overflow: hidden;
-
 }
 .sm-content {
   opacity: 0;
