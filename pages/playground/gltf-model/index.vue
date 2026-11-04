@@ -31,7 +31,7 @@
                 setSlideActive(item.elNode, index);
               },
               deactivateCallback: (item: ScrollActionBinding) => {
-                setSlideNonActive(item.elNode, index);
+                // setSlideNonActive(item.elNode, index);
               },
             }"
           >
@@ -133,44 +133,48 @@ const setSlideActive = (elNode: HTMLElement, index: number) => {
   }, timeoutTime);
 };
 
-const textAniOut = (el: HTMLElement, slideIndex: number) => {
-  if (slideActiveArray.value[slideIndex]) return;
-  console.log("textAniIn");
-  const text = el.querySelector(".content-title");
-  const chars = new SplitText(text, {
-    type: "chars",
-    reduceWhiteSpace: false,
-    charsClass: "char",
-  }).chars;
+// const textAniOut = (el: HTMLElement, slideIndex: number) => {
+//   if (slideActiveArray.value[slideIndex]) return;
+//   console.log("textAniIn");
+//   const text = el.querySelector(".content-title");
+//   const chars = new SplitText(text, {
+//     type: "chars",
+//     reduceWhiteSpace: false,
+//     charsClass: "char",
+//   }).chars;
+//
+//   const tl = gsap.timeline({
+//     defaults: {
+//       // ease: "power2.inOut",
+//     },
+//   });
+//   // tl.set(chars, {
+//   //
+//   //   transform: "matrix(1,0,1,2,0,0)",
+//   // });
+//   tl.to(chars, {
+//     y: 255,
+//     x: 100,
+//     duration: 0.25,
+//     transform: "matrix(1,0,0,1,0,0)",
+//     stagger: 0.015,
+//   });
+//   tl.set(text, { opacity: 0 });
+// };
 
-  const tl = gsap.timeline({
-    defaults: {
-      // ease: "power2.inOut",
-    },
-  });
-  // tl.set(chars, {
-  //
-  //   transform: "matrix(1,0,1,2,0,0)",
-  // });
-  tl.to(chars, {
-    y: 255,
-    x: 100,
-    duration: 0.25,
-    transform: "matrix(1,0,0,1,0,0)",
-    stagger: 0.015,
-  });
-  tl.set(text, { opacity: 0 });
-};
-
-const setSlideNonActive = (elNode: HTMLElement, index: number) => {
-  slideActiveArray.value[index] = false;
-  textAniOut(elNode, index);
-};
+// const setSlideNonActive = (elNode: HTMLElement, index: number) => {
+//   slideActiveArray.value[index] = false;
+//   textAniOut(elNode, index);
+// };
 
 const gltfElDavid = ref(null);
 const gltfElGeo = ref(null);
 
-const baseColor = 0xfff8fd;
+const baseColor = 0xf0eee9;
+// const baseColor = 0xfff8fd;
+const secondColor = 0xdb00ff;
+const thirdColor = 0xff0058;
+// const thirdColor = 0xff0058;
 const baseEnvIntensity = 0.05;
 const baseColorPositionRight = { x: 1, y: 0, z: 0.2 };
 const baseColorPositionLeft = { x: -1, y: 0, z: 0.2 };
@@ -196,8 +200,8 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Example",
-    position: { top: 50, right: "0" },
-    sectionSize: 0.25,
+    position: { top: 0, right: "0" },
+    sectionSize: 0.75,
   },
   {
     content: "Create",
@@ -229,31 +233,23 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     position: { top: 0, left: 0 },
     sectionSize: 0.5,
   },
-  // {
-  //   smallContent: "per",
-  //   position: { top: 0, left: 0 },
-  // },
-  // {
-  //   smallContent: "model",
-  //   position: { top: 0, left: 0 },
-  // },
   {
     content: "Transform",
-    position: { top: 0, left: 0 },
+    position: { top: 50, left: 50 },
   },
   {
     smallContent: "Position",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 100 },
     sectionSize: 0.5,
   },
   {
     smallContent: "Rotate",
-    position: { top: 0, left: 50 },
+    position: { top: 0, left: 100 },
     sectionSize: 0.5,
   },
   {
     smallContent: "Scale",
-    position: { top: 0, right: "0" },
+    position: { top: 0, left: 100 },
     sectionSize: 0.5,
   },
 ]);
@@ -326,46 +322,103 @@ const gltfPositioningDavid = ref({
       from: {
         position: { x: 0.4, y: -0.5, z: 0 },
         rotation: { x: Math.PI / 8, y: 0, z: 0 },
-        lights: { davidKey: { intensity: 1 } },
+        lights: { davidKey: { intensity: 1, color: baseColor } },
       },
       to: {
         position: { x: 0, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 8, z: 0 },
         lights: {
-          davidKey: { intensity: 2, position: { x: 1, y: 0.5, z: 1 } },
+          davidKey: {
+            intensity: 2,
+            position: { x: 1, y: 0, z: 0.1 },
+            color: secondColor,
+          },
         },
       },
     },
     {
-      id: "5_to_middle_light",
+      id: "5_light_mid",
       start: 0.5,
       end: 0.6,
       from: {
         position: { x: 0, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 8, z: 0 },
-        // scale: { x: 0.8, y: 0.8, z: 0.8 },
         lights: {
-          davidKey: { intensity: 2, position: { x: 1, y: 0.5, z: 1 } },
+          davidKey: {
+            position: { x: 1, y: 0, z: 0.1 },
+          },
         },
       },
       to: {
         position: { x: 0, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 8, z: 0 },
-        // scale: { x: 0.8, y: 0.8, z: 0.8 },
-        lights: { davidKey: { intensity: 3, position: { x: -1, y: 0, z: 0 } } },
+        lights: {
+          davidKey: {
+            position: { x: 0, y: 1, z: 0 },
+          },
+        },
       },
     },
     {
-      id: "5_x",
+      id: "6_light_left",
       start: 0.6,
-      end: 0.99,
+      end: 0.7,
       from: {
         position: { x: 0, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 8, z: 0 },
+        lights: {
+          davidKey: {
+            position: { x: 0, y: 1, z: 0 },
+          },
+        },
       },
       to: {
         position: { x: 0, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 8, z: 0 },
+        lights: {
+          davidKey: {
+            intensity: 2,
+            position: { x: -1, y: 0, z: 0 },
+            color: secondColor,
+          },
+        },
+      },
+    },
+    {
+      id: "7_pos_rotate_scale_1",
+      start: 0.7,
+      end: 0.99,
+      from: {
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 8, z: 0 },
+        lights: {
+          davidKey: {
+            intensity: 2,
+            position: { x: -1, y: 0, z: 0 },
+            color: secondColor,
+          },
+          davidKey2: {
+            intensity: 0,
+            position: { x: -1, y: 0, z: 0 },
+            color: thirdColor,
+          },
+        },
+      },
+      to: {
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 8, z: 0 },
+        lights: {
+          davidKey: {
+            intensity: 1,
+            position: { x: -1, y: 0, z: 0 },
+            color: secondColor,
+          },
+          davidKey2: {
+            intensity: 1,
+            position: { x: -1, y: 0, z: 0 },
+            color: thirdColor,
+          },
+        },
         // lights: { davidKey: { intensity: 2, position: { x: 0, y: 0.5, z: 1 } } },
       },
     },
@@ -412,6 +465,13 @@ const gltfBindingDavid = ref({
         id: "davidKey",
         type: "directional",
         color: baseColor,
+        intensity: 0,
+        position: { x: 0, y: 0, z: 0 },
+      },
+      {
+        id: "davidKey2",
+        type: "directional",
+        color: thirdColor,
         intensity: 0,
         position: { x: 0, y: 0, z: 0 },
       },
