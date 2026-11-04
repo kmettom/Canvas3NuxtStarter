@@ -488,9 +488,9 @@ const gltfPositioningGeo = ref({
       start: 0,
       end: 0.1,
       from: {
-        position: { x: 0.35, y: 0.15, z: 0 },
+        position: { x: 0.35, y: 0.05, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
+        scale: { x: 1.2, y: 1.2, z: 1.2 },
       },
       to: {
         position: { x: 0, y: 0.2, z: 0 },
@@ -572,14 +572,14 @@ const gltfAppearGeo = {
   delay: 300,
   ease: "back.out(2)",
   from: {
-    position: { x: 0.35, y: 0.15, z: 0 },
+    position: { x: 0.35, y: 0.05, z: 0 },
     rotation: { x: -Math.PI, y: -Math.PI, z: 0 },
     scale: { x: 0, y: 0, z: 0 },
   },
   to: {
-    position: { x: 0.35, y: 0.15, z: 0 },
+    position: { x: 0.35, y: 0.05, z: 0 },
     rotation: { x: 0, y: 0, z: 0 },
-    scale: { x: 1, y: 1, z: 1 },
+    scale: { x: 1.2, y: 1.2, z: 1.2 },
   },
 };
 
