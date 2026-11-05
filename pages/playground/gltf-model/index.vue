@@ -191,7 +191,6 @@ type KeyframeSection = {
 const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Canvas3",
-    // smallContent: "Nuxt module for ThreeJS and animation features",
     position: { top: 50, left: 50 },
   },
   {
@@ -240,7 +239,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     smallContent: "Position",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 50 },
     sectionSize: 0.5,
   },
   {
@@ -250,9 +249,18 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     smallContent: "Scale",
-    position: { top: 0, right: "0" },
+    position: { top: 0, left: 50 },
     sectionSize: 0.5,
   },
+  {
+    smallContent: "Get in touch",
+    position: { top: 20, left: 50 },
+    sectionSize: 0.5,
+  },
+  // {
+  //   smallContent: "with Performance",
+  //   position: { top: 0, left: 50 },
+  // },
 ]);
 
 console.log(keyframeSectionContent.value.length);
@@ -390,7 +398,7 @@ const gltfPositioningDavid = ref({
     {
       id: "7_pos_rotate_scale_1",
       start: 0.7,
-      end: 1,
+      end: 0.8,
       from: {
         position: { x: 0, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 8, z: 0 },
@@ -422,6 +430,19 @@ const gltfPositioningDavid = ref({
             color: redColor,
           },
         },
+      },
+    },
+    {
+      id: "8_",
+      start: 0.8,
+      end: 1,
+      from: {
+        position: { x: -0.2, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+      },
+      to: {
+        position: { x: -0.2, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 6, z: 0 },
       },
     },
   ],
@@ -493,9 +514,9 @@ const gltfPositioningGeo = ref({
         scale: { x: 1.2, y: 1.2, z: 1.2 },
       },
       to: {
-        position: { x: 0, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.1, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 2, y: 2, z: 2 },
+        scale: { x: 2.5, y: 2.5, z: 2.5 },
       },
     },
     {
@@ -503,9 +524,9 @@ const gltfPositioningGeo = ref({
       start: 0.1,
       end: 0.2,
       from: {
-        position: { x: 0, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.1, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 2, y: 2, z: 2 },
+        scale: { x: 2.5, y: 2.5, z: 2.5 },
       },
       to: {
         position: { x: -0.35, y: 0, z: 0 },
@@ -521,42 +542,83 @@ const gltfPositioningGeo = ref({
         position: { x: -0.35, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI },
         scale: { x: 1, y: 1, z: 1 },
+        zIndex: 2,
       },
       to: {
         position: { x: 0.55, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
+        zIndex: 2,
       },
     },
     {
-      id: "4_right_scale_down",
-      start: 0.6,
+      id: "3_to_left",
+      start: 0.4,
       end: 0.7,
       from: {
-        position: { x: 0.55, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: Math.PI },
+        position: { x: 0.55, y: -0.2, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
+        zIndex: 2,
       },
       to: {
-        position: { x: 0.55, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: Math.PI },
+        position: { x: 0.55, y: -0.2, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
+        zIndex: 0,
       },
     },
     {
-      id: "5_scale_up_right",
+      id: "4_scale_up_right",
       start: 0.7,
       end: 0.8,
       from: {
         position: { x: -0.55, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
-        lights: { geoKey: { intensity: 1, position: baseLightPositionRight } },
+        lights: { geoKey: { intensity: 1, position: baseLightPositionRight, color: baseColor } },
+        zIndex: 0,
       },
       to: {
         position: { x: 0.25, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        scale: { x: 2, y: 2, z: 2 },
+        lights: { geoKey: { intensity: 0.2, position: baseLightPositionRight, color: redColor } },
+        zIndex: 0,
+      },
+    },
+    {
+      id: "5_transform",
+      start: 0.8,
+      end: 0.9,
+      from: {
+        position: { x: 0.25, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 2, y: 2, z: 2 },
+        lights: { geoKey: { color: redColor } },
+      },
+      to: {
+        position: { x: 0.25, y: 0, z: 0 },
+        rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
+        scale: { x: 1, y: 1, z: 1 },
+        lights: { geoKey: { color: pinkColor } },
+      },
+    },
+    {
+      id: "6_transform",
+      start: 0.9,
+      end: 1,
+      from: {
+        position: { x: 0.25, y: 0, z: 0 },
+        rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
+        scale: { x: 1, y: 1, z: 1 },
+        lights: { geoKey: { color: pinkColor } },
+      },
+      to: {
+        position: { x: 0.25, y: 0, z: 0 },
+        rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
+        scale: { x: 1, y: 1, z: 1 },
+        lights: { geoKey: { color: pinkColor } },
       },
     },
   ],
@@ -603,6 +665,13 @@ const gltfBindingGeo = ref({
         color: baseColor,
         intensity: 1,
         position: baseLightPositionLeft,
+      },
+      {
+        id: "geoKey2",
+        type: "directional",
+        color: redColor,
+        intensity: 0,
+        position: baseLightPositionRight,
       },
     ],
   },
