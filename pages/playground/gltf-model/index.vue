@@ -25,7 +25,7 @@
         >
           <div
             v-canvas3-scroll-action="{
-              activeRange: 0.95,
+              activeRange: 0.99,
               activateOnce: false,
               activateCallback: (item: ScrollActionBinding) => {
                 setSlideActive(item.elNode, index);
@@ -123,60 +123,20 @@ const slideActivateOnceArray = ref<boolean[]>([]);
 const slideActiveArray = ref<boolean[]>([]);
 
 const setSlideActive = (elNode: HTMLElement, index: number) => {
-  const timeoutTime = index <= 3 ? 500 : 0;
-  setTimeout(() => {
-    // if (!slideActivateOnceArray.value[index]) {
-    textAniIn(elNode, index);
-    // };
-    slideActivateOnceArray.value[index] = true;
-    slideActiveArray.value[index] = true;
-  }, timeoutTime);
+  textAniIn(elNode, index);
+  slideActivateOnceArray.value[index] = true;
+  slideActiveArray.value[index] = true;
 };
-
-// const textAniOut = (el: HTMLElement, slideIndex: number) => {
-//   if (slideActiveArray.value[slideIndex]) return;
-//   console.log("textAniIn");
-//   const text = el.querySelector(".content-title");
-//   const chars = new SplitText(text, {
-//     type: "chars",
-//     reduceWhiteSpace: false,
-//     charsClass: "char",
-//   }).chars;
-//
-//   const tl = gsap.timeline({
-//     defaults: {
-//       // ease: "power2.inOut",
-//     },
-//   });
-//   // tl.set(chars, {
-//   //
-//   //   transform: "matrix(1,0,1,2,0,0)",
-//   // });
-//   tl.to(chars, {
-//     y: 255,
-//     x: 100,
-//     duration: 0.25,
-//     transform: "matrix(1,0,0,1,0,0)",
-//     stagger: 0.015,
-//   });
-//   tl.set(text, { opacity: 0 });
-// };
-
-// const setSlideNonActive = (elNode: HTMLElement, index: number) => {
-//   slideActiveArray.value[index] = false;
-//   textAniOut(elNode, index);
-// };
 
 const gltfElDavid = ref(null);
 const gltfElGeo = ref(null);
 
 const baseColor = 0xf0eee9;
-// const baseColor = 0xfff8fd;
 const pinkColor = 0xdb00ff;
 const blueColor = 0x00fffb;
 const yellowColor = 0xffec76;
 const redColor = 0xff0065;
-// const thirdColor = 0xff0058;
+
 const baseEnvIntensity = 0.05;
 const baseLightPositionRight = { x: 1, y: 0, z: 0.2 };
 const baseLightPositionLeft = { x: -1, y: 0, z: 0.2 };
@@ -196,17 +156,17 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "GLTF",
     position: { top: 50, left: 0 },
-    sectionSize: 0.25,
+    sectionSize: 0.35,
   },
   {
     content: "Example",
     position: { top: 0, right: "0" },
-    sectionSize: 0.75,
+    sectionSize: 1.25,
   },
   {
     content: "Create",
     position: { top: 0, left: 0 },
-    sectionSize: 0.75,
+    sectionSize: 0.5,
   },
   {
     content: "story",
@@ -254,8 +214,8 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     smallContent: "Get in touch",
-    position: { top: 20, left: 50 },
-    sectionSize: 0.5,
+    position: { top: 50, left: 50 },
+    // sectionSize: 0.5,
   },
   // {
   //   smallContent: "with Performance",
@@ -576,14 +536,26 @@ const gltfPositioningGeo = ref({
         position: { x: -0.55, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
-        lights: { geoKey: { intensity: 1, position: baseLightPositionRight, color: baseColor } },
+        lights: {
+          geoKey: {
+            intensity: 1,
+            position: baseLightPositionRight,
+            color: baseColor,
+          },
+        },
         zIndex: 0,
       },
       to: {
         position: { x: 0.25, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 2, y: 2, z: 2 },
-        lights: { geoKey: { intensity: 0.2, position: baseLightPositionRight, color: redColor } },
+        lights: {
+          geoKey: {
+            intensity: 0.2,
+            position: baseLightPositionRight,
+            color: redColor,
+          },
+        },
         zIndex: 0,
       },
     },
