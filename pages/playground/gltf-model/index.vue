@@ -25,7 +25,7 @@
         >
           <div
             v-canvas3-scroll-action="{
-              activeRange: 0.95,
+              activeRange: 0.99,
               activateOnce: false,
               activateCallback: (item: ScrollActionBinding) => {
                 setSlideActive(item.elNode, index);
@@ -123,60 +123,20 @@ const slideActivateOnceArray = ref<boolean[]>([]);
 const slideActiveArray = ref<boolean[]>([]);
 
 const setSlideActive = (elNode: HTMLElement, index: number) => {
-  const timeoutTime = index <= 3 ? 500 : 0;
-  setTimeout(() => {
-    // if (!slideActivateOnceArray.value[index]) {
-    textAniIn(elNode, index);
-    // };
-    slideActivateOnceArray.value[index] = true;
-    slideActiveArray.value[index] = true;
-  }, timeoutTime);
+  textAniIn(elNode, index);
+  slideActivateOnceArray.value[index] = true;
+  slideActiveArray.value[index] = true;
 };
-
-// const textAniOut = (el: HTMLElement, slideIndex: number) => {
-//   if (slideActiveArray.value[slideIndex]) return;
-//   console.log("textAniIn");
-//   const text = el.querySelector(".content-title");
-//   const chars = new SplitText(text, {
-//     type: "chars",
-//     reduceWhiteSpace: false,
-//     charsClass: "char",
-//   }).chars;
-//
-//   const tl = gsap.timeline({
-//     defaults: {
-//       // ease: "power2.inOut",
-//     },
-//   });
-//   // tl.set(chars, {
-//   //
-//   //   transform: "matrix(1,0,1,2,0,0)",
-//   // });
-//   tl.to(chars, {
-//     y: 255,
-//     x: 100,
-//     duration: 0.25,
-//     transform: "matrix(1,0,0,1,0,0)",
-//     stagger: 0.015,
-//   });
-//   tl.set(text, { opacity: 0 });
-// };
-
-// const setSlideNonActive = (elNode: HTMLElement, index: number) => {
-//   slideActiveArray.value[index] = false;
-//   textAniOut(elNode, index);
-// };
 
 const gltfElDavid = ref(null);
 const gltfElGeo = ref(null);
 
 const baseColor = 0xf0eee9;
-// const baseColor = 0xfff8fd;
 const pinkColor = 0xdb00ff;
 const blueColor = 0x00fffb;
 const yellowColor = 0xffec76;
 const redColor = 0xff0065;
-// const thirdColor = 0xff0058;
+
 const baseEnvIntensity = 0.05;
 const baseLightPositionRight = { x: 1, y: 0, z: 0.2 };
 const baseLightPositionLeft = { x: -1, y: 0, z: 0.2 };
@@ -191,23 +151,22 @@ type KeyframeSection = {
 const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Canvas3",
-    // smallContent: "Nuxt module for ThreeJS and animation features",
     position: { top: 50, left: 50 },
   },
   {
     content: "GLTF",
     position: { top: 50, left: 0 },
-    sectionSize: 0.25,
+    sectionSize: 0.35,
   },
   {
     content: "Example",
     position: { top: 0, right: "0" },
-    sectionSize: 0.75,
+    sectionSize: 1.25,
   },
   {
     content: "Create",
     position: { top: 0, left: 0 },
-    sectionSize: 0.75,
+    sectionSize: 0.5,
   },
   {
     content: "story",
@@ -240,7 +199,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     smallContent: "Position",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 50 },
     sectionSize: 0.5,
   },
   {
@@ -250,9 +209,18 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     smallContent: "Scale",
-    position: { top: 0, right: "0" },
+    position: { top: 0, left: 50 },
     sectionSize: 0.5,
   },
+  {
+    content: "Get in touch",
+    position: { top: 50, left: 50 },
+    // sectionSize: 0.5,
+  },
+  // {
+  //   smallContent: "with Performance",
+  //   position: { top: 0, left: 50 },
+  // },
 ]);
 
 console.log(keyframeSectionContent.value.length);
@@ -390,7 +358,7 @@ const gltfPositioningDavid = ref({
     {
       id: "7_pos_rotate_scale_1",
       start: 0.7,
-      end: 1,
+      end: 0.8,
       from: {
         position: { x: 0, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 8, z: 0 },
@@ -422,6 +390,34 @@ const gltfPositioningDavid = ref({
             color: redColor,
           },
         },
+      },
+    },
+    {
+      id: "8_transform",
+      start: 0.8,
+      end: 0.9,
+      from: {
+        position: { x: -0.2, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+      },
+      to: {
+        position: { x: -0.2, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+      },
+    },
+    {
+      id: "9_transform_final",
+      start: 0.9,
+      end: 1,
+      from: {
+        position: { x: -0.2, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      to: {
+        position: { x: -0.35, y: -0.2, z: 0 },
+        rotation: { x: 0, y: Math.PI / 3, z: 0 },
+        scale: { x: 0.5, y: 0.5, z: 0.5 },
       },
     },
   ],
@@ -488,14 +484,14 @@ const gltfPositioningGeo = ref({
       start: 0,
       end: 0.1,
       from: {
-        position: { x: 0.35, y: 0.05, z: 0 },
+        position: { x: 0.45, y: 0.05, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1.2, y: 1.2, z: 1.2 },
       },
       to: {
-        position: { x: 0, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.1, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 2, y: 2, z: 2 },
+        scale: { x: 2.5, y: 2.5, z: 2.5 },
       },
     },
     {
@@ -503,9 +499,9 @@ const gltfPositioningGeo = ref({
       start: 0.1,
       end: 0.2,
       from: {
-        position: { x: 0, y: 0.2, z: 0 },
+        position: { x: 0, y: 0.1, z: 0 },
         rotation: { x: Math.PI, y: Math.PI, z: 0 },
-        scale: { x: 2, y: 2, z: 2 },
+        scale: { x: 2.5, y: 2.5, z: 2.5 },
       },
       to: {
         position: { x: -0.35, y: 0, z: 0 },
@@ -521,42 +517,123 @@ const gltfPositioningGeo = ref({
         position: { x: -0.35, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI },
         scale: { x: 1, y: 1, z: 1 },
+        zIndex: 2,
       },
       to: {
         position: { x: 0.55, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
+        zIndex: 2,
       },
     },
     {
-      id: "4_right_scale_down",
-      start: 0.6,
+      id: "3_to_left",
+      start: 0.4,
       end: 0.7,
       from: {
-        position: { x: 0.55, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: Math.PI },
+        position: { x: 0.55, y: -0.2, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
+        zIndex: 2,
       },
       to: {
-        position: { x: 0.55, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: Math.PI },
+        position: { x: 0.55, y: -0.2, z: 0 },
+        rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
+        zIndex: 0,
       },
     },
     {
-      id: "5_scale_up_right",
+      id: "4_scale_up_right",
       start: 0.7,
       end: 0.8,
       from: {
         position: { x: -0.55, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
-        lights: { geoKey: { intensity: 1, position: baseLightPositionRight } },
+        lights: {
+          geoKey: {
+            intensity: 1,
+            position: baseLightPositionRight,
+            color: baseColor,
+          },
+        },
+        zIndex: 0,
       },
       to: {
         position: { x: 0.25, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1.5, y: 1.5, z: 1.5 },
+        scale: { x: 2, y: 2, z: 2 },
+        lights: {
+          geoKey: {
+            intensity: 1,
+            position: baseLightPositionRight,
+            color: redColor,
+          },
+        },
+        zIndex: 0,
+      },
+    },
+    {
+      id: "5_transform",
+      start: 0.8,
+      end: 0.9,
+      from: {
+        position: { x: 0.25, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 2, y: 2, z: 2 },
+        lights: {
+          geoKey: { color: redColor },
+          geoKey2: {
+            intensity: 0,
+            position: baseLightPositionLeft,
+            color: baseColor,
+          },
+        },
+      },
+      to: {
+        position: { x: 0.25, y: 0, z: 0 },
+        rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
+        scale: { x: 1, y: 1, z: 1 },
+        lights: {
+          geoKey: { color: pinkColor },
+          geoKey2: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: redColor,
+          },
+        },
+      },
+    },
+    {
+      id: "6_transform_final",
+      start: 0.9,
+      end: 1,
+      from: {
+        position: { x: 0.25, y: 0, z: 0 },
+        rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
+        scale: { x: 1, y: 1, z: 1 },
+        lights: {
+          geoKey: { color: pinkColor },
+          geoKey2: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: redColor,
+          },
+        },
+      },
+      to: {
+        position: { x: 0.35, y: 0.05, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 0.7, y: 0.7, z: 0.7 },
+        lights: {
+          geoKey: { color: pinkColor },
+          geoKey2: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: redColor,
+          },
+        },
       },
     },
   ],
@@ -572,12 +649,12 @@ const gltfAppearGeo = {
   delay: 300,
   ease: "back.out(2)",
   from: {
-    position: { x: 0.35, y: 0.05, z: 0 },
+    position: { x: 0.55, y: 0.05, z: 0 },
     rotation: { x: -Math.PI, y: -Math.PI, z: 0 },
     scale: { x: 0, y: 0, z: 0 },
   },
   to: {
-    position: { x: 0.35, y: 0.05, z: 0 },
+    position: { x: 0.45, y: 0.05, z: 0 },
     rotation: { x: 0, y: 0, z: 0 },
     scale: { x: 1.2, y: 1.2, z: 1.2 },
   },
@@ -603,6 +680,13 @@ const gltfBindingGeo = ref({
         color: baseColor,
         intensity: 1,
         position: baseLightPositionLeft,
+      },
+      {
+        id: "geoKey2",
+        type: "directional",
+        color: redColor,
+        intensity: 0,
+        position: baseLightPositionRight,
       },
     ],
   },
