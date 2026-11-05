@@ -213,7 +213,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     sectionSize: 0.5,
   },
   {
-    smallContent: "Get in touch",
+    content: "Get in touch",
     position: { top: 50, left: 50 },
     // sectionSize: 0.5,
   },
@@ -393,9 +393,9 @@ const gltfPositioningDavid = ref({
       },
     },
     {
-      id: "8_",
+      id: "8_transform",
       start: 0.8,
-      end: 1,
+      end: 0.9,
       from: {
         position: { x: -0.2, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 6, z: 0 },
@@ -403,6 +403,21 @@ const gltfPositioningDavid = ref({
       to: {
         position: { x: -0.2, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 6, z: 0 },
+      },
+    },
+    {
+      id: "9_transform_final",
+      start: 0.9,
+      end: 1,
+      from: {
+        position: { x: -0.2, y: -0.5, z: 0 },
+        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+      },
+      to: {
+        position: { x: -0.35, y: -0.2, z: 0 },
+        rotation: { x: 0, y: Math.PI / 3, z: 0 },
+        scale: { x: 0.5, y: 0.5, z: 0.5 },
       },
     },
   ],
@@ -469,7 +484,7 @@ const gltfPositioningGeo = ref({
       start: 0,
       end: 0.1,
       from: {
-        position: { x: 0.35, y: 0.05, z: 0 },
+        position: { x: 0.45, y: 0.05, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1.2, y: 1.2, z: 1.2 },
       },
@@ -551,7 +566,7 @@ const gltfPositioningGeo = ref({
         scale: { x: 2, y: 2, z: 2 },
         lights: {
           geoKey: {
-            intensity: 0.2,
+            intensity: 1,
             position: baseLightPositionRight,
             color: redColor,
           },
@@ -567,30 +582,58 @@ const gltfPositioningGeo = ref({
         position: { x: 0.25, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 2, y: 2, z: 2 },
-        lights: { geoKey: { color: redColor } },
+        lights: {
+          geoKey: { color: redColor },
+          geoKey2: {
+            intensity: 0,
+            position: baseLightPositionLeft,
+            color: baseColor,
+          },
+        },
       },
       to: {
         position: { x: 0.25, y: 0, z: 0 },
         rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
         scale: { x: 1, y: 1, z: 1 },
-        lights: { geoKey: { color: pinkColor } },
+        lights: {
+          geoKey: { color: pinkColor },
+          geoKey2: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: redColor,
+          },
+        },
       },
     },
     {
-      id: "6_transform",
+      id: "6_transform_final",
       start: 0.9,
       end: 1,
       from: {
         position: { x: 0.25, y: 0, z: 0 },
         rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
         scale: { x: 1, y: 1, z: 1 },
-        lights: { geoKey: { color: pinkColor } },
+        lights: {
+          geoKey: { color: pinkColor },
+          geoKey2: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: redColor,
+          },
+        },
       },
       to: {
-        position: { x: 0.25, y: 0, z: 0 },
-        rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
-        scale: { x: 1, y: 1, z: 1 },
-        lights: { geoKey: { color: pinkColor } },
+        position: { x: 0.35, y: 0.05, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 0.7, y: 0.7, z: 0.7 },
+        lights: {
+          geoKey: { color: pinkColor },
+          geoKey2: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: redColor,
+          },
+        },
       },
     },
   ],
@@ -606,12 +649,12 @@ const gltfAppearGeo = {
   delay: 300,
   ease: "back.out(2)",
   from: {
-    position: { x: 0.35, y: 0.05, z: 0 },
+    position: { x: 0.55, y: 0.05, z: 0 },
     rotation: { x: -Math.PI, y: -Math.PI, z: 0 },
     scale: { x: 0, y: 0, z: 0 },
   },
   to: {
-    position: { x: 0.35, y: 0.05, z: 0 },
+    position: { x: 0.45, y: 0.05, z: 0 },
     rotation: { x: 0, y: 0, z: 0 },
     scale: { x: 1.2, y: 1.2, z: 1.2 },
   },
