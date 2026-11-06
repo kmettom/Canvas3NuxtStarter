@@ -380,9 +380,9 @@ const gltfPositioningDavid = ref({
         rotation: { x: 0, y: Math.PI / 6, z: 0 },
         lights: {
           davidKey: {
-            intensity: 0.2,
+            intensity: 0,
             position: { x: -1, y: 0, z: 0 },
-            color: baseColor,
+            color: blueColor,
           },
           davidKey2: {
             intensity: 1,
@@ -399,10 +399,32 @@ const gltfPositioningDavid = ref({
       from: {
         position: { x: -0.2, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        lights: {
+          davidKey: {
+            intensity: 0,
+            position: { x: -1, y: 1, z: 0 },
+            color: blueColor,
+          },
+          davidKey2: {
+            intensity: 1,
+            position: { x: 1, y: 0, z: 0 },
+          },
+        }
       },
       to: {
         position: { x: -0.2, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        lights: {
+          davidKey: {
+            intensity: 1,
+            position: { x: -1, y: 0, z: 0 },
+            color: blueColor,
+          },
+          davidKey2: {
+            intensity: 2,
+            position: { x: 1, y: 1, z: 0 },
+          },
+        }
       },
     },
     {
@@ -413,11 +435,25 @@ const gltfPositioningDavid = ref({
         position: { x: -0.2, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 6, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
+        lights: {
+          davidKey: {
+            intensity: 1,
+            position: { x: -1, y: 0, z: 0 },
+            color: blueColor,
+          },
+        }
       },
       to: {
         position: { x: -0.35, y: -0.2, z: 0 },
         rotation: { x: 0, y: Math.PI / 3, z: 0 },
         scale: { x: 0.5, y: 0.5, z: 0.5 },
+        lights: {
+          davidKey: {
+            intensity: 1,
+            position: baseLightPositionRight,
+            color: blueColor,
+          },
+        }
       },
     },
   ],
@@ -567,7 +603,7 @@ const gltfPositioningGeo = ref({
         lights: {
           geoKey: {
             intensity: 1,
-            position: baseLightPositionRight,
+            position: baseLightPositionLeft,
             color: redColor,
           },
         },
@@ -586,8 +622,8 @@ const gltfPositioningGeo = ref({
           geoKey: { color: redColor },
           geoKey2: {
             intensity: 0,
-            position: baseLightPositionLeft,
-            color: baseColor,
+            position: baseLightPositionRight,
+            color: blueColor,
           },
         },
       },
@@ -596,11 +632,15 @@ const gltfPositioningGeo = ref({
         rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
         scale: { x: 1, y: 1, z: 1 },
         lights: {
-          geoKey: { color: pinkColor },
+          geoKey: {
+            color: redColor,
+            intensity: 2,
+            position: { x: -1, y: 1, z: 0 },
+          },
           geoKey2: {
             intensity: 1,
             position: baseLightPositionLeft,
-            color: redColor,
+            color: blueColor,
           },
         },
       },
@@ -614,11 +654,11 @@ const gltfPositioningGeo = ref({
         rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
         scale: { x: 1, y: 1, z: 1 },
         lights: {
-          geoKey: { color: pinkColor },
+          geoKey: { color: redColor },
           geoKey2: {
             intensity: 1,
-            position: baseLightPositionLeft,
-            color: redColor,
+            position: baseLightPositionRight,
+            color: blueColor,
           },
         },
       },
@@ -627,11 +667,11 @@ const gltfPositioningGeo = ref({
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 0.7, y: 0.7, z: 0.7 },
         lights: {
-          geoKey: { color: pinkColor },
+          geoKey: { color: redColor },
           geoKey2: {
             intensity: 1,
-            position: baseLightPositionLeft,
-            color: redColor,
+            position: baseLightPositionRight,
+            color: blueColor,
           },
         },
       },
