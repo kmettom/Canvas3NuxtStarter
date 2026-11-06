@@ -210,6 +210,9 @@ export const gltfPositioningDavid = {
             position: baseLightPositionRight,
             color: blueColor,
           },
+          davidKey2: {
+            intensity: 1,
+          },
         },
       },
       to: {
@@ -219,8 +222,11 @@ export const gltfPositioningDavid = {
         lights: {
           davidKey: {
             intensity: 1,
-            position: baseLightPositionRight,
-            color: blueColor,
+            position: { x: 1, y: 2, z: 0 },
+            color: pinkColor,
+          },
+          davidKey2: {
+            intensity: 0,
           },
         },
       },

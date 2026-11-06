@@ -4,6 +4,7 @@ import {
   baseLightPositionLeft,
   baseLightPositionRight,
   blueColor,
+  pinkColor,
   redColor,
 } from "./gltf-constants";
 
@@ -65,12 +66,26 @@ export const gltfPositioningGeo = {
         rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
         zIndex: 2,
+        lights: {
+          geoKey: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: baseColor,
+          },
+        },
       },
       to: {
         position: { x: 0.55, y: -0.2, z: 0 },
         rotation: { x: 0, y: 0, z: Math.PI * 2 },
         scale: { x: 0.3, y: 0.3, z: 0.3 },
         zIndex: 0,
+        lights: {
+          geoKey: {
+            intensity: 1,
+            position: baseLightPositionLeft,
+            color: blueColor,
+          },
+        },
       },
     },
     {
@@ -148,7 +163,7 @@ export const gltfPositioningGeo = {
         rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
         scale: { x: 1, y: 1, z: 1 },
         lights: {
-          geoKey: { color: redColor },
+          geoKey: { color: redColor, intensity: 1 },
           geoKey2: {
             intensity: 1,
             position: baseLightPositionLeft,
@@ -161,11 +176,11 @@ export const gltfPositioningGeo = {
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 0.7, y: 0.7, z: 0.7 },
         lights: {
-          geoKey: { color: redColor },
+          geoKey: { color: redColor, intensity: 0 },
           geoKey2: {
             intensity: 1,
-            position: baseLightPositionLeft,
-            color: blueColor,
+            position: { x: -1, y: 2, z: 0 },
+            color: pinkColor,
           },
         },
       },
