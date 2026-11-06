@@ -35,11 +35,14 @@
               },
             }"
           >
-            <div v-if="frame.content" class="content-title">
+            <div v-if="frame.content" class="content-title content-title-ani">
               {{ frame.content }}
             </div>
             <div class="sm-content-wrapper">
-              <div v-if="frame.smallContent" class="sm-content">
+              <div
+                v-if="frame.smallContent"
+                class="sm-content content-title-ani"
+              >
                 {{ frame.smallContent }}
               </div>
             </div>
@@ -78,15 +81,8 @@ useSeoMeta({
 
 const textAniIn = (el: HTMLElement, slideIndex: number) => {
   if (slideActiveArray.value[slideIndex]) return;
-  const text = el.querySelector(".content-title");
-  const textSm = el.querySelector(".sm-content");
+  const text = el.querySelector(".content-title-ani");
   const chars = new SplitText(text, {
-    type: "chars",
-    reduceWhiteSpace: false,
-    charsClass: "char",
-  }).chars;
-
-  const charsSm = new SplitText(textSm, {
     type: "chars",
     reduceWhiteSpace: false,
     charsClass: "char",
@@ -102,13 +98,7 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     x: 100,
     transform: "matrix(1,0,1,2,0,0)",
   });
-  tl.set(charsSm, {
-    y: 55,
-    x: 10,
-    transform: "matrix(1,0,1,2,0,0)",
-  });
   tl.set(text, { opacity: 1 });
-  tl.set(textSm, { opacity: 1 });
   tl.to(chars, {
     y: 0,
     x: 0,
@@ -116,17 +106,6 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     transform: "matrix(1,0,0,1,0,0)",
     stagger: 0.025,
   });
-  tl.to(
-    charsSm,
-    {
-      y: 0,
-      x: 0,
-      duration: 0.35,
-      transform: "matrix(1,0,0,1,0,0)",
-      stagger: 0.005,
-    },
-    "<+0.2",
-  );
 };
 
 const slideActivateOnceArray = ref<boolean[]>([]);
