@@ -200,27 +200,27 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     smallContent: "Position",
     position: { top: 0, left: 50 },
-    sectionSize: 0.5,
+    sectionSize: 0.35,
   },
   {
     smallContent: "Rotate",
     position: { top: 0, left: 50 },
-    sectionSize: 0.5,
+    sectionSize: 0.35,
   },
   {
     smallContent: "Scale",
     position: { top: 0, left: 50 },
-    sectionSize: 0.5,
+    sectionSize: 0.35,
+  },
+  {
+    smallContent: "Index",
+    position: { top: 0, left: 50 },
+    sectionSize: 0.35,
   },
   {
     content: "Get in touch",
     position: { top: 50, left: 50 },
-    // sectionSize: 0.5,
   },
-  // {
-  //   smallContent: "with Performance",
-  //   position: { top: 0, left: 50 },
-  // },
 ]);
 
 console.log(keyframeSectionContent.value.length);

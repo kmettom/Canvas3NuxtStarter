@@ -168,6 +168,7 @@ export const gltfPositioningDavid = {
       from: {
         position: { x: -0.2, y: -0.5, z: 0 },
         rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
         lights: {
           davidKey: {
             intensity: 0,
@@ -181,8 +182,8 @@ export const gltfPositioningDavid = {
         },
       },
       to: {
-        position: { x: -0.2, y: -0.5, z: 0 },
-        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        position: { x: -0.1, y: -0.35, z: -0.5 },
+        rotation: { x: 0, y: 0, z: 0 },
         lights: {
           davidKey: {
             intensity: 1,
@@ -201,8 +202,8 @@ export const gltfPositioningDavid = {
       start: 0.9,
       end: 1,
       from: {
-        position: { x: -0.2, y: -0.5, z: 0 },
-        rotation: { x: 0, y: Math.PI / 6, z: 0 },
+        position: { x: -0.1, y: -0.35, z: -0.5 },
+        rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
         lights: {
           davidKey: {
