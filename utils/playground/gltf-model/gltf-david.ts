@@ -5,7 +5,6 @@ import {
   blueColor,
   pinkColor,
   redColor,
-  yellowColor,
 } from "./gltf-constants";
 
 export const gltfPositioningDavid = {
@@ -140,7 +139,7 @@ export const gltfPositioningDavid = {
           davidKey2: {
             intensity: 0,
             position: { x: 0, y: 0, z: 0 },
-            color: yellowColor,
+            color: redColor,
           },
         },
       },
@@ -222,8 +221,8 @@ export const gltfPositioningDavid = {
         scale: { x: 0.5, y: 0.5, z: 0.5 },
         lights: {
           davidKey: {
-            intensity: 1,
-            position: { x: 1, y: 2, z: 0 },
+            intensity: 2,
+            position: { x: 1, y: 2, z: 0.1 },
             color: pinkColor,
           },
           davidKey2: {
