@@ -4,7 +4,7 @@ import {
   baseLightPositionLeft,
   baseLightPositionRight,
   blueColor,
-  pinkColor,
+  // pinkColor,
   redColor,
 } from "./gltf-constants";
 

@@ -287,8 +287,10 @@ const gltfBindingGeo = ref({
   overflow: hidden;
   opacity: 0;
   text-wrap: nowrap;
-
   @include respond-width($w-s) {
+    font-size: 110px;
+  }
+  @include respond-width($w-xs) {
     font-size: 75px;
   }
 }
@@ -302,6 +304,9 @@ const gltfBindingGeo = ref({
   font-size: 75px;
   text-transform: uppercase;
   @include respond-width($w-s) {
+    font-size: 55px;
+  }
+  @include respond-width($w-xs) {
     font-size: 35px;
   }
 }
