@@ -223,7 +223,7 @@ export const gltfPositioningDavid = {
           davidKey: {
             intensity: 2,
             position: { x: 1, y: 2, z: 0.1 },
-            color: pinkColor,
+            color: baseColor,
           },
           davidKey2: {
             intensity: 0,

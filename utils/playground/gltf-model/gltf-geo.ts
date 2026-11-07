@@ -180,7 +180,7 @@ export const gltfPositioningGeo = {
           geoKey2: {
             intensity: 2,
             position: { x: -1, y: 2, z: 0.1 },
-            color: pinkColor,
+            color: baseColor,
           },
         },
       },
