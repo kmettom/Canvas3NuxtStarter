@@ -249,6 +249,10 @@ const gltfBindingGeo = ref({
   position: absolute;
   top: 0;
   left: 0;
+  @include respond-width($w-s) {
+    height: 450px;
+    width: 450px;
+  }
 }
 .gltf-geo-el {
   height: 250px;
@@ -256,6 +260,10 @@ const gltfBindingGeo = ref({
   position: absolute;
   top: 0;
   left: 0;
+  @include respond-width($w-s) {
+    height: 150px;
+    width: 150px;
+  }
 }
 .frame-section {
   height: 100vh;
@@ -278,6 +286,13 @@ const gltfBindingGeo = ref({
   padding-top: 10px;
   overflow: hidden;
   opacity: 0;
+  text-wrap: nowrap;
+  @include respond-width($w-s) {
+    font-size: 110px;
+  }
+  @include respond-width($w-xs) {
+    font-size: 75px;
+  }
 }
 .sm-content-wrapper {
   overflow: hidden;
@@ -288,5 +303,11 @@ const gltfBindingGeo = ref({
   padding-left: 5px;
   font-size: 75px;
   text-transform: uppercase;
+  @include respond-width($w-s) {
+    font-size: 55px;
+  }
+  @include respond-width($w-xs) {
+    font-size: 35px;
+  }
 }
 </style>
