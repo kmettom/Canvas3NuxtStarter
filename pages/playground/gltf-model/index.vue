@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-    <scrollSpeedBar :show-photo-credentials="false" />
+    <scrollSpeedBar :show-photo-credentials="true" />
   </div>
 </template>
 
@@ -130,21 +130,23 @@ type KeyframeSection = {
 const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Canvas3",
+    smallContent: 'Nuxt Module',
     position: { top: 50, left: 50 },
   },
   {
     content: "GLTF",
-    position: { top: 50, left: 0 },
+    smallContent: 'Example',
+    position: { top: 50, left: 50 },
     sectionSize: 0.35,
   },
   {
     content: "Example",
-    position: { top: 0, right: "0" },
+    position: { top: 0, left: 50 },
     sectionSize: 1.25,
   },
   {
     content: "Create",
-    position: { top: 0, left: 0 },
+    position: { top: 0,left: 50  },
     sectionSize: 0.5,
   },
   {
@@ -154,22 +156,22 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "line",
-    position: { top: 0, right: "0" },
+    position: { top: 0, left: 50  },
     sectionSize: 0.5,
   },
   {
     content: "Change",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 50 },
     sectionSize: 0.5,
   },
   {
     content: "Light",
-    position: { top: 0, right: "0" },
+    position: { top: 0, left: 50  },
     sectionSize: 0.5,
   },
   {
     content: "settings",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 50  },
     sectionSize: 0.5,
   },
   {
@@ -280,6 +282,7 @@ const gltfBindingGeo = ref({
   position: absolute;
 }
 .content-title {
+  opacity: 0.7;
   text-transform: uppercase;
   font-size: 155px;
   line-height: 90%;
@@ -298,11 +301,12 @@ const gltfBindingGeo = ref({
   overflow: hidden;
 }
 .sm-content {
+  font-family: "Mea Cupla", "serif";
   opacity: 0;
   overflow: hidden;
   padding-left: 5px;
   font-size: 75px;
-  text-transform: uppercase;
+  //text-transform: uppercase;
   @include respond-width($w-s) {
     font-size: 55px;
   }

@@ -59,6 +59,15 @@ $w-xxs: 450px; // mobile resolution
 //*************************
 
 @font-face {
+  font-family: "Mea Cupla";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../public/fonts/mea-culpa-font/MeaCulpa-Regular.otf")
+    format("truetype");
+}
+
+@font-face {
   font-family: "PP Formula Black";
   font-style: normal;
   font-weight: 900;
