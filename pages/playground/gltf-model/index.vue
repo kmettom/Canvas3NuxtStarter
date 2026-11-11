@@ -151,25 +151,25 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "GLTF",
     smallContent: "example",
     position: { top: 50, left: 50 },
-    sectionSize: 1.6, //0.35
+    sectionSize: 1.5, //0.35
   },
   {
     content: "Create",
     smallContent: "story line",
-    position: { top: 45, left: 50 },
-    sectionSize: 1.5,
+    position: { top: 40, left: 50 },
+    sectionSize: 1.25,
   },
   {
     content: "Change",
     smallContent: "light settings",
     position: { top: 50, left: 50 },
-    sectionSize: 1.5,
+    sectionSize: 1.25,
   },
   {
     content: "Transform",
-    smallContent: "position | angle | scale | index",
+    smallContent: "position angle scale index",
     position: { top: 50, left: 50 },
-    sectionSize: 2.35,
+    sectionSize: 1.5,
   },
   {
     content: "Get",
@@ -274,7 +274,7 @@ const gltfBindingGeo = ref({
 .sm-content-wrapper {
   overflow: hidden;
   position: relative;
-  margin-top: -25px;
+  margin-top: -35px;
   text-align: center;
 }
 .sm-content {
@@ -285,7 +285,7 @@ const gltfBindingGeo = ref({
   margin-top: 0;
   padding-left: 5px;
   font-size: 75px;
-  line-height: 100%;
+  //line-height: 100%;
   //text-transform: uppercase;
   @include respond-width($w-s) {
     font-size: 55px;
