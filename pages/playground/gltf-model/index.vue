@@ -101,10 +101,10 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     tl.set(
       chars,
       {
-        y: reverse? 125: 255,
-        x: reverse? 50: 100,
+        y: reverse ? 125 : 255,
+        x: reverse ? 50 : 100,
         transform: "matrix(1,0,1,2,0,0);",
-        letterSpacing: '20px',
+        letterSpacing: "20px",
         // scale: 0,
       },
       0,
@@ -116,7 +116,7 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
       {
         y: 0,
         x: 0,
-        delay: reverse? 0.15: 0,
+        delay: reverse ? 0.15 : 0,
         duration: 0.55,
         transform: "matrix(1,0,0,1,0,0)",
         letterSpacing: 0,

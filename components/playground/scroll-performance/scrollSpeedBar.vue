@@ -50,16 +50,16 @@ onBeforeUnmount(() => {
         <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
       </div>
       <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
-      <div class="cred-holder">
-        <div v-if="showPhotoCredentials" class="person">
-          <span>Photography by </span>
-          <a href="https://jagodakondratiuk.com">Jagoda Kondratiuk</a>
-        </div>
-        <div class="person">
-          <span>Developed by </span>
-          <a href="https://tomaskmet.com">Tomas Kmet</a>
-        </div>
-      </div>
+      <!--      <div class="cred-holder">-->
+      <!--        <div v-if="showPhotoCredentials" class="person">-->
+      <!--          <span>Photography by </span>-->
+      <!--          <a href="https://jagodakondratiuk.com">Jagoda Kondratiuk</a>-->
+      <!--        </div>-->
+      <!--        <div class="person">-->
+      <!--          <span>Developed by </span>-->
+      <!--          <a href="https://tomaskmet.com">Tomas Kmet</a>-->
+      <!--        </div>-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
