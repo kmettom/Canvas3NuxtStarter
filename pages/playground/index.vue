@@ -8,7 +8,7 @@
         target="_blank"
       >
         <div
-          class="play-link-eth"
+          class="play-link"
           @mouseenter="ethBlockHover = true"
           @mouseleave="ethBlockHover = false"
         >
@@ -77,6 +77,126 @@
             :src="`/playground/images/02.webp`"
             alt=""
             class="play-block-image"
+          />
+        </div>
+      </nuxt-link>
+      <nuxt-link
+          class="play-link"
+          href="/playground/gltf-model"
+          target="_blank"
+      >
+        <div
+            class="play-link"
+            @mouseenter="scrollPerformanceHover = true"
+            @mouseleave="scrollPerformanceHover = false"
+        >
+          <h3 class="body-l">GLFT model</h3>
+          <p class="body-s">
+            3D model import and story line example
+          </p>
+          <img
+              v-canvas3-image="{
+              uniforms: {
+                uAniInImage: {
+                  value: ethBlockImageAniIn
+                    ? scrollPerformanceHover
+                      ? 0.85
+                      : 1
+                    : 0,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+                uBlockColor: {
+                  value: 0.5,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+              },
+              shaderName: 'playEthBlockNoDesign',
+            }"
+              :src="`/playground/images/03.webp`"
+              alt=""
+              class="play-block-image"
+          />
+        </div>
+      </nuxt-link>
+      <nuxt-link
+          class="play-link"
+          href="/playground/msdf-font"
+          target="_blank"
+      >
+        <div
+            class="play-link-right"
+            @mouseenter="scrollPerformanceHover = true"
+            @mouseleave="scrollPerformanceHover = false"
+        >
+          <h3 class="body-l">MSDF font</h3>
+          <p class="body-s">
+            MSDF font render and animations example
+          </p>
+          <img
+              v-canvas3-image="{
+              uniforms: {
+                uAniInImage: {
+                  value: ethBlockImageAniIn
+                    ? scrollPerformanceHover
+                      ? 0.85
+                      : 1
+                    : 0,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+                uBlockColor: {
+                  value: 0.5,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+              },
+              shaderName: 'playEthBlockNoDesign',
+            }"
+              :src="`/playground/images/04.webp`"
+              alt=""
+              class="play-block-image"
+          />
+        </div>
+      </nuxt-link>
+      <nuxt-link
+          class="play-link"
+          href="/playground/gallery-layout"
+          target="_blank"
+      >
+        <div
+            class="play-link"
+            @mouseenter="scrollPerformanceHover = true"
+            @mouseleave="scrollPerformanceHover = false"
+        >
+          <h3 class="body-l">Gallery layout</h3>
+          <p class="body-s">
+            gallery layout case study
+          </p>
+          <img
+              v-canvas3-image="{
+              uniforms: {
+                uAniInImage: {
+                  value: ethBlockImageAniIn
+                    ? scrollPerformanceHover
+                      ? 0.85
+                      : 1
+                    : 0,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+                uBlockColor: {
+                  value: 0.5,
+                  duration: 0.5,
+                  ease: 'linear',
+                },
+              },
+              shaderName: 'playEthBlockNoDesign',
+            }"
+              :src="`/playground/images/05.webp`"
+              alt=""
+              class="play-block-image"
           />
         </div>
       </nuxt-link>
