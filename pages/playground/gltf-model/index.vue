@@ -81,31 +81,45 @@ useSeoMeta({
 
 const textAniIn = (el: HTMLElement, slideIndex: number) => {
   if (slideActiveArray.value[slideIndex]) return;
-  const text = el.querySelector(".content-title-ani");
-  const chars = new SplitText(text, {
-    type: "chars",
-    reduceWhiteSpace: false,
-    charsClass: "char",
-  }).chars;
-
   const tl = gsap.timeline({
     defaults: {
       ease: "power2.inOut",
     },
   });
-  tl.set(chars, {
-    y: 255,
-    x: 100,
-    transform: "matrix(1,0,1,2,0,0)",
-  });
-  tl.set(text, { opacity: 1 });
-  tl.to(chars, {
-    y: 0,
-    x: 0,
-    duration: 0.35,
-    transform: "matrix(1,0,0,1,0,0)",
-    stagger: 0.025,
-  });
+
+  const addTextToTimeline = (text: Element | null) => {
+    if (!text) return;
+    const chars = new SplitText(text, {
+      type: "chars",
+      reduceWhiteSpace: false,
+      charsClass: "char",
+    }).chars;
+
+    tl.set(
+      chars,
+      {
+        y: 255,
+        x: 100,
+        transform: "matrix(1,0,1,2,0,0)",
+      },
+      0,
+    );
+    tl.set(text, { opacity: 1 }, 0);
+    tl.to(
+      chars,
+      {
+        y: 0,
+        x: 0,
+        duration: 0.35,
+        transform: "matrix(1,0,0,1,0,0)",
+        stagger: 0.025,
+      },
+      0,
+    );
+  };
+
+  addTextToTimeline(el.querySelector(".content-title.content-title-ani"));
+  addTextToTimeline(el.querySelector(".sm-content.content-title-ani"));
 };
 
 const slideActivateOnceArray = ref<boolean[]>([]);
@@ -130,76 +144,36 @@ type KeyframeSection = {
 const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Canvas3",
-    smallContent: 'Nuxt Module',
+    smallContent: "nuxt module",
     position: { top: 50, left: 50 },
   },
   {
     content: "GLTF",
-    smallContent: 'Example',
+    smallContent: "example",
     position: { top: 50, left: 50 },
-    sectionSize: 0.35,
-  },
-  {
-    content: "Example",
-    position: { top: 0, left: 50 },
-    sectionSize: 1.25,
+    sectionSize: 1.6, //0.35
   },
   {
     content: "Create",
-    position: { top: 0,left: 50  },
-    sectionSize: 0.5,
-  },
-  {
-    content: "story",
-    position: { top: 0, left: 50 },
-    sectionSize: 0.5,
-  },
-  {
-    content: "line",
-    position: { top: 0, left: 50  },
-    sectionSize: 0.5,
+    smallContent: "story line",
+    position: { top: 45, left: 50 },
+    sectionSize: 1.5,
   },
   {
     content: "Change",
-    position: { top: 0, left: 50 },
-    sectionSize: 0.5,
-  },
-  {
-    content: "Light",
-    position: { top: 0, left: 50  },
-    sectionSize: 0.5,
-  },
-  {
-    content: "settings",
-    position: { top: 0, left: 50  },
-    sectionSize: 0.5,
+    smallContent: "light settings",
+    position: { top: 50, left: 50 },
+    sectionSize: 1.5,
   },
   {
     content: "Transform",
+    smallContent: "position | angle | scale | index",
     position: { top: 50, left: 50 },
+    sectionSize: 2.35,
   },
   {
-    smallContent: "Position",
-    position: { top: 0, left: 50 },
-    sectionSize: 0.35,
-  },
-  {
-    smallContent: "Rotate",
-    position: { top: 0, left: 50 },
-    sectionSize: 0.35,
-  },
-  {
-    smallContent: "Scale",
-    position: { top: 0, left: 50 },
-    sectionSize: 0.35,
-  },
-  {
-    smallContent: "Index",
-    position: { top: 0, left: 50 },
-    sectionSize: 0.35,
-  },
-  {
-    content: "Get in touch",
+    content: "Get",
+    smallContent: "in touch",
     position: { top: 50, left: 50 },
   },
 ]);
@@ -299,13 +273,19 @@ const gltfBindingGeo = ref({
 }
 .sm-content-wrapper {
   overflow: hidden;
+  position: relative;
+  margin-top: -25px;
+  text-align: center;
 }
 .sm-content {
   font-family: "Mea Cupla", "serif";
   opacity: 0;
   overflow: hidden;
+  padding-top: 0;
+  margin-top: 0;
   padding-left: 5px;
   font-size: 75px;
+  line-height: 100%;
   //text-transform: uppercase;
   @include respond-width($w-s) {
     font-size: 55px;
