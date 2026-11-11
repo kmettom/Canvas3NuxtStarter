@@ -87,7 +87,10 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     },
   });
 
-  const addTextToTimeline = (text: Element | null) => {
+  const addTextToTimeline = (
+    text: Element | null,
+    reverse: boolean = false,
+  ) => {
     if (!text) return;
     const chars = new SplitText(text, {
       type: "chars",
@@ -98,28 +101,36 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     tl.set(
       chars,
       {
-        y: 255,
-        x: 100,
-        transform: "matrix(1,0,1,2,0,0)",
+        y: reverse? 125: 255,
+        x: reverse? 50: 100,
+        transform: "matrix(1,0,1,2,0,0);",
+        letterSpacing: '20px',
+        // scale: 0,
       },
       0,
     );
-    tl.set(text, { opacity: 1 }, 0);
+    tl.set(text, { opacity: 0.8 }, 0);
     tl.to(
+      // reverse ? chars.reverse() : chars,
       chars,
       {
         y: 0,
         x: 0,
-        duration: 0.35,
+        delay: reverse? 0.15: 0,
+        duration: 0.55,
         transform: "matrix(1,0,0,1,0,0)",
+        letterSpacing: 0,
         stagger: 0.025,
       },
       0,
     );
   };
 
-  addTextToTimeline(el.querySelector(".content-title.content-title-ani"));
-  addTextToTimeline(el.querySelector(".sm-content.content-title-ani"));
+  addTextToTimeline(
+    el.querySelector(".content-title.content-title-ani"),
+    false,
+  );
+  addTextToTimeline(el.querySelector(".sm-content.content-title-ani"), true);
 };
 
 const slideActivateOnceArray = ref<boolean[]>([]);
@@ -167,7 +178,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Transform",
-    smallContent: "position angle scale index",
+    smallContent: "position angle scale",
     position: { top: 50, left: 50 },
     sectionSize: 1.5,
   },
@@ -256,10 +267,9 @@ const gltfBindingGeo = ref({
   position: absolute;
 }
 .content-title {
-  opacity: 0.7;
   text-transform: uppercase;
-  font-size: 155px;
-  line-height: 90%;
+  font-size: 200px;
+  line-height: 95%;
   padding-top: 10px;
   overflow: hidden;
   opacity: 0;
