@@ -4,7 +4,6 @@
     <br />
     <br />
     <br />
-    text
     <Canvas3Text
       class="msdf-text"
       text="longer text"
@@ -44,6 +43,7 @@ useSeoMeta({
 </script>
 <style lang="scss" scoped>
 .msdf-text {
+  font-family: "PP Formula Black", serif;
   font-size: 200px;
 }
 </style>
