@@ -92,22 +92,22 @@ const playgroundLinks = reactive<PlaygroundLink[]>([
     alignRight: false,
     hovered: false,
   },
-  {
-    href: "/playground/msdf-font",
-    title: "MSDF font",
-    description: "MSDF font render and animations example",
-    image: "/playground/images/04.webp",
-    alignRight: true,
-    hovered: false,
-  },
-  {
-    href: "/playground/gallery-layout",
-    title: "Gallery layout",
-    description: "gallery layout case study",
-    image: "/playground/images/05.webp",
-    alignRight: false,
-    hovered: false,
-  },
+  // {
+  //   href: "/playground/msdf-font",
+  //   title: "MSDF font",
+  //   description: "MSDF font render and animations example",
+  //   image: "/playground/images/04.webp",
+  //   alignRight: true,
+  //   hovered: false,
+  // },
+  // {
+  //   href: "/playground/gallery-layout",
+  //   title: "Gallery layout",
+  //   description: "gallery layout case study",
+  //   image: "/playground/images/05.webp",
+  //   alignRight: false,
+  //   hovered: false,
+  // },
 ]);
 
 onMounted(() => {
