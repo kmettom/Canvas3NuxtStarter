@@ -3,25 +3,24 @@
     <h1 class="heading-2 play-headline">Playground</h1>
     <div class="playground-projects">
       <nuxt-link
+        v-for="link in playgroundLinks"
+        :key="link.href"
         class="play-link"
-        href="/playground/eth-blocks"
+        :href="link.href"
         target="_blank"
       >
         <div
-          class="play-link-eth"
-          @mouseenter="ethBlockHover = true"
-          @mouseleave="ethBlockHover = false"
+          :class="link.alignRight ? 'play-link-right' : 'play-link'"
+          @mouseenter="link.hovered = true"
+          @mouseleave="link.hovered = false"
         >
-          <h3 class="body-l">Ethereum blocks</h3>
-          <p class="body-s">
-            Ethereum network listener with interaction for new blocks added to
-            the blockchain
-          </p>
+          <h3 class="body-l">{{ link.title }}</h3>
+          <p class="body-s">{{ link.description }}</p>
           <img
             v-canvas3-image="{
               uniforms: {
                 uAniInImage: {
-                  value: ethBlockImageAniIn ? (ethBlockHover ? 0.85 : 1) : 0,
+                  value: imagesAniIn ? (link.hovered ? 0.85 : 1) : 0,
                   duration: 0.5,
                   ease: 'linear',
                 },
@@ -33,90 +32,12 @@
               },
               shaderName: 'playEthBlockNoDesign',
             }"
-            :src="`/images/01.jpg`"
+            :src="link.image"
             alt=""
             class="play-block-image"
           />
         </div>
       </nuxt-link>
-      <nuxt-link
-        class="play-link"
-        href="/playground/scroll-performance"
-        target="_blank"
-      >
-        <div
-          class="play-link-right"
-          @mouseenter="scrollPerformanceHover = true"
-          @mouseleave="scrollPerformanceHover = false"
-        >
-          <h3 class="body-l">Scroll performance</h3>
-          <p class="body-s">
-            Example of scroll performance with different scroll speed sections
-            and shaders
-          </p>
-          <img
-            v-canvas3-image="{
-              uniforms: {
-                uAniInImage: {
-                  value: ethBlockImageAniIn
-                    ? scrollPerformanceHover
-                      ? 0.85
-                      : 1
-                    : 0,
-                  duration: 0.5,
-                  ease: 'linear',
-                },
-                uBlockColor: {
-                  value: 0.5,
-                  duration: 0.5,
-                  ease: 'linear',
-                },
-              },
-              shaderName: 'playEthBlockNoDesign',
-            }"
-            :src="`/playground/images/02.webp`"
-            alt=""
-            class="play-block-image"
-          />
-        </div>
-      </nuxt-link>
-      <!--      <nuxt-link-->
-      <!--        class="play-link"-->
-      <!--        href="/playground/gltf-model"-->
-      <!--        target="_blank"-->
-      <!--      >-->
-      <!--        <div-->
-      <!--          class=""-->
-      <!--          @mouseenter="gltfModelHover = true"-->
-      <!--          @mouseleave="gltfModelHover = false"-->
-      <!--        >-->
-      <!--          <h3 class="body-l">GLTF Model</h3>-->
-      <!--          <p class="body-s">-->
-      <!--            GLTF model import, story tell feature with directive and easy to-->
-      <!--            setup scroll action-->
-      <!--          </p>-->
-      <!--          <img-->
-      <!--            v-canvas3-image="{-->
-      <!--              uniforms: {-->
-      <!--                uAniInImage: {-->
-      <!--                  value: ethBlockImageAniIn ? (gltfModelHover ? 0.85 : 1) : 0,-->
-      <!--                  duration: 0.5,-->
-      <!--                  ease: 'linear',-->
-      <!--                },-->
-      <!--                uBlockColor: {-->
-      <!--                  value: 0.5,-->
-      <!--                  duration: 0.5,-->
-      <!--                  ease: 'linear',-->
-      <!--                },-->
-      <!--              },-->
-      <!--              shaderName: 'playEthBlockNoDesign',-->
-      <!--            }"-->
-      <!--            :src="`/playground/images/03.webp`"-->
-      <!--            alt=""-->
-      <!--            class="play-block-image"-->
-      <!--          />-->
-      <!--        </div>-->
-      <!--      </nuxt-link>-->
     </div>
   </div>
 </template>
@@ -131,12 +52,63 @@ useSeoMeta({
   ogDescription: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
 });
 
+type PlaygroundLink = {
+  href: string;
+  title: string;
+  description: string;
+  image: string;
+  alignRight: boolean;
+  hovered: boolean;
+};
+
 const navigationStore = useNavigationStore();
 
-const ethBlockImageAniIn = ref(false);
-const ethBlockHover = ref(false);
-const scrollPerformanceHover = ref(false);
-// const gltfModelHover = ref(false);
+const imagesAniIn = ref(false);
+
+const playgroundLinks = reactive<PlaygroundLink[]>([
+  {
+    href: "/playground/eth-blocks",
+    title: "Ethereum blocks",
+    description:
+      "Ethereum network listener with interaction for new blocks added to the blockchain",
+    image: "/images/01.jpg",
+    alignRight: false,
+    hovered: false,
+  },
+  {
+    href: "/playground/scroll-performance",
+    title: "Scroll performance",
+    description:
+      "Example of scroll performance with different scroll speed sections and shaders",
+    image: "/playground/images/02.webp",
+    alignRight: true,
+    hovered: false,
+  },
+  {
+    href: "/playground/gltf-model",
+    title: "GLFT model",
+    description: "3D model import and story line example",
+    image: "/playground/images/03.webp",
+    alignRight: false,
+    hovered: false,
+  },
+  // {
+  //   href: "/playground/msdf-font",
+  //   title: "MSDF font",
+  //   description: "MSDF font render and animations example",
+  //   image: "/playground/images/04.webp",
+  //   alignRight: true,
+  //   hovered: false,
+  // },
+  // {
+  //   href: "/playground/gallery-layout",
+  //   title: "Gallery layout",
+  //   description: "gallery layout case study",
+  //   image: "/playground/images/05.webp",
+  //   alignRight: false,
+  //   hovered: false,
+  // },
+]);
 
 onMounted(() => {
   const timeDelay = navigationStore.webFirstLoadDone
@@ -144,7 +116,7 @@ onMounted(() => {
     : 100;
 
   setTimeout(() => {
-    ethBlockImageAniIn.value = true;
+    imagesAniIn.value = true;
   }, timeDelay);
 });
 </script>

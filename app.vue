@@ -61,7 +61,8 @@ useHead({
     {
       children: `
 html {
-  background-color: #1b1818;
+  // background-color: #1b1818;
+  background-color: #191919;
 }
       `,
     },
