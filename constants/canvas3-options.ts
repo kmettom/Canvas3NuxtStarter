@@ -21,8 +21,8 @@ import playEthBlockImageBgVertex from "~/assets/shaders/playground/playEthBlockI
 
 export const Canvas3Options = {
   font: {
-    fnt: "./font/PPFormula-CondensedBlack.fnt",
-    atlas: "./font/PPFormula-CondensedBlack.png",
+    fnt: "./fonts/PPFormula-CondensedBlack.fnt",
+    atlas: "./fonts/PPFormula-CondensedBlack.png",
   },
   shaders: {
     scroll: {
