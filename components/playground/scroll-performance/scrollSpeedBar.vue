@@ -44,21 +44,21 @@ onBeforeUnmount(() => {
     v-canvas3-scroll-action="scrollSpeedBarOptions"
     class="scroll-speed-container"
   >
-<!--    <div></div>-->
+    <!--    <div></div>-->
 
     <div class="scroll-speed-status-bar">
-<!--      <div class="bg-dark credits">-->
-<!--        Developed By <a href="https://tomaskmet.com" target="_blank">Tomas Kmet</a>-->
-<!--      </div>-->
+      <!--      <div class="bg-dark credits">-->
+      <!--        Developed By <a href="https://tomaskmet.com" target="_blank">Tomas Kmet</a>-->
+      <!--      </div>-->
       <div class="bg-light">
-        <div class="scroll-speed-text">Scroll speed: {{ scrollSpeedCoef }}%</div>
+        <div class="scroll-speed-text">
+          Scroll speed: {{ scrollSpeedCoef }}%
+        </div>
         <div class="scroll-speed-ani-wrapper">
           <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
         </div>
         <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
       </div>
-
-
     </div>
   </div>
 </template>
@@ -75,7 +75,7 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
-.credits{
+.credits {
   background: transparent;
 }
 
@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
   position: relative;
   background: var(--light-color);
 }
-.bg-light{
+.bg-light {
   padding: 0;
   display: flex;
   background: var(--light-color);
