@@ -30,9 +30,6 @@
               activateCallback: (item: ScrollActionBinding) => {
                 setSlideActive(item.elNode, index);
               },
-              deactivateCallback: (item: ScrollActionBinding) => {
-                // setSlideNonActive(item.elNode, index);
-              },
             }"
           >
             <div v-if="frame.content" class="content-title content-title-ani">
@@ -89,7 +86,7 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
 
   const addTextToTimeline = (
     text: Element | null,
-    reverse: boolean = false,
+    isSmallContent: boolean = false,
   ) => {
     if (!text) return;
     const chars = new SplitText(text, {
@@ -101,25 +98,21 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     tl.set(
       chars,
       {
-        y: reverse ? 125 : 255,
-        x: reverse ? 50 : 100,
+        y: isSmallContent ? -125 : 255,
+        x: isSmallContent ? 50 : 100,
         transform: "matrix(1,0,1,2,0,0);",
-        letterSpacing: "20px",
-        // scale: 0,
       },
       0,
     );
     tl.set(text, { opacity: 0.8 }, 0);
     tl.to(
-      // reverse ? chars.reverse() : chars,
       chars,
       {
         y: 0,
         x: 0,
-        delay: reverse ? 0.15 : 0,
+        delay: isSmallContent ? 0.15 : 0,
         duration: 0.55,
         transform: "matrix(1,0,0,1,0,0)",
-        letterSpacing: 0,
         stagger: 0.025,
       },
       0,
@@ -251,7 +244,6 @@ const gltfBindingGeo = ref({
 .frame-section {
   height: 100vh;
   position: relative;
-  //border: 1px solid red;
 }
 .content-block {
   position: relative;
@@ -271,10 +263,10 @@ const gltfBindingGeo = ref({
   opacity: 0;
   text-wrap: nowrap;
   @include respond-width($w-s) {
-    font-size: 110px;
+    font-size: 130px;
   }
   @include respond-width($w-xs) {
-    font-size: 75px;
+    font-size: 90px;
   }
 }
 .sm-content-wrapper {
@@ -282,6 +274,9 @@ const gltfBindingGeo = ref({
   position: relative;
   margin-top: -50px;
   text-align: center;
+  @include respond-width($w-xs) {
+    margin-top: -30px;
+  }
 }
 .sm-content {
   font-family: "Mea Cupla", "serif";
@@ -291,13 +286,11 @@ const gltfBindingGeo = ref({
   margin-top: 0;
   padding-left: 5px;
   font-size: 80px;
-  //line-height: 100%;
-  //text-transform: uppercase;
   @include respond-width($w-s) {
-    font-size: 55px;
+    font-size: 65px;
   }
   @include respond-width($w-xs) {
-    font-size: 35px;
+    font-size: 50px;
   }
 }
 </style>
