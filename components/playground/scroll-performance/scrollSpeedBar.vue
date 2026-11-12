@@ -1,34 +1,43 @@
 <script setup lang="ts">
-import gsap from "gsap";
-
 withDefaults(defineProps<{ showPhotoCredentials?: boolean }>(), {
   showPhotoCredentials: true,
 });
 
 const scrollSpeedAniEl = ref<HTMLElement | null>(null);
-const scrollSpeedCoef = ref(0);
+const scrollSpeedEl = ref<HTMLElement | null>(null);
+const enterAniWrapperEl = ref<HTMLElement | null>(null);
+const scrollSpeedCoef = ref<string>("0%");
 
 const scrollSpeedCallback = (_item: any, speed: number) => {
   const newSpeedCoef = speed < 0.03 ? 0 : speed;
-  scrollSpeedCoef.value = Number(newSpeedCoef.toFixed(2)) * 100;
-  gsap.set(scrollSpeedAniEl.value, {
-    width: `${newSpeedCoef * 100}%`,
-  });
+  scrollSpeedCoef.value = (newSpeedCoef * 100).toFixed(0) + "%";
+  if (scrollSpeedAniEl.value)
+    scrollSpeedAniEl.value.style.width =
+      Number(newSpeedCoef.toFixed(2)) * 100 + "%";
 };
 
-const scrollSpeedBarOptions = computed(() => ({
+const scrollSpeedBarOptions = {
   activeRange: 1,
   fixToParent: {
     containerId: "scrollSpeedBar",
-    fixPosition: 0.97,
+    fixPosition: 0,
   },
   onScrollCallback: scrollSpeedCallback,
-}));
+};
 
 const fps = ref<number | null>(null);
 const fpsInterval = ref<null | number>();
 
 onMounted(() => {
+  if (scrollSpeedEl.value) {
+    scrollSpeedBarOptions.fixToParent.fixPosition = Number(
+      (1 - scrollSpeedEl.value.clientHeight / window.innerHeight).toFixed(4),
+    );
+  }
+  if (enterAniWrapperEl.value) {
+    enterAniWrapperEl.value.classList.add("active");
+  }
+
   fpsInterval.value = setInterval(() => {
     fps.value = Canvas3.getFPS();
   }, 500);
@@ -44,20 +53,21 @@ onBeforeUnmount(() => {
     v-canvas3-scroll-action="scrollSpeedBarOptions"
     class="scroll-speed-container"
   >
-    <!--    <div></div>-->
-
-    <div class="scroll-speed-status-bar">
-      <!--      <div class="bg-dark credits">-->
-      <!--        Developed By <a href="https://tomaskmet.com" target="_blank">Tomas Kmet</a>-->
-      <!--      </div>-->
-      <div class="bg-light">
-        <div class="scroll-speed-text">
-          Scroll speed: {{ scrollSpeedCoef }}%
+    <div ref="scrollSpeedEl" class="scroll-bar-wrapper">
+      <div ref="enterAniWrapperEl" class="enter-ani-wrapper">
+        <div class="scroll-speed-status-bar">
+          <div class="scroll-speed-text">
+            Scroll speed: {{ scrollSpeedCoef }}
+          </div>
+          <div class="scroll-speed-ani-wrapper">
+            <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
+          </div>
+          <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
         </div>
-        <div class="scroll-speed-ani-wrapper">
-          <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
+        <div class="bg-light credits">
+          Developed By
+          <a href="https://tomaskmet.com" target="_blank">Tomas Kmet</a>
         </div>
-        <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
       </div>
     </div>
   </div>
@@ -73,21 +83,36 @@ onBeforeUnmount(() => {
   left: 0;
   z-index: 2;
   pointer-events: none;
+  transition: ease all 0.5s;
+  opacity: 0;
+  &.active {
+    opacity: 1;
+  }
+}
+
+.scroll-bar-wrapper {
+  position: relative;
 }
 
 .credits {
   background: transparent;
+  text-align: center;
+  color: var(--dark-color);
+  text-transform: uppercase;
+  a {
+    pointer-events: auto;
+    color: var(--dark-color);
+    text-decoration: none;
+  }
 }
 
 .scroll-speed-status-bar {
   padding: 0;
-  height: 30px;
   position: relative;
-  background: var(--light-color);
+  display: flex;
 }
 .bg-light {
   padding: 0;
-  display: flex;
   background: var(--light-color);
 }
 .fps-text,
@@ -95,7 +120,7 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   font-size: 14px;
   z-index: 2;
-  color: var(--dark-color);
+  color: var(--light-color);
   margin: 3px 3px 3px 15px;
 }
 .fps-text {
@@ -108,34 +133,25 @@ onBeforeUnmount(() => {
 }
 .scroll-speed-ani-wrapper {
   width: calc(100% - 400px);
-  margin-top: 7px;
+  margin-top: 10px;
   text-align: center;
 }
 
 .scroll-speed-ani {
   margin: 0 auto;
   width: 0;
-  height: 10px;
+  height: 5px;
   border-radius: 5px;
-  background: var(--dark-color);
+  background: var(--light-color);
   z-index: 1;
 }
-.cred-holder {
-  position: absolute;
-  top: 35px;
-  height: 200px;
-  width: 100%;
-  color: var(--dark-color);
-  font-size: 20px;
-  font-weight: 100;
-  text-transform: uppercase;
-  .person {
-    text-align: center;
-    margin: 15px;
-  }
-  a {
-    color: var(--dark-color);
-    pointer-events: auto;
+.enter-ani-wrapper {
+  position: relative;
+  top: 60px;
+  transition: ease all 0.35s;
+  transition-delay: 0.55s;
+  &.active {
+    top: 0;
   }
 }
 </style>
