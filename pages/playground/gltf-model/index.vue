@@ -189,10 +189,6 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
 ]);
 
-console.log(keyframeSectionContent.value.length);
-// 13 screens, 1 keyframe 1/13 -> 6x0.5 + 7 = 10
-
-// 100vh until mounted, then locked to window.innerHeight
 const viewportHeight = ref<number | null>(null);
 
 onMounted(() => {
@@ -284,7 +280,7 @@ const gltfBindingGeo = ref({
 .sm-content-wrapper {
   overflow: hidden;
   position: relative;
-  margin-top: -35px;
+  margin-top: -50px;
   text-align: center;
 }
 .sm-content {
@@ -294,7 +290,7 @@ const gltfBindingGeo = ref({
   padding-top: 0;
   margin-top: 0;
   padding-left: 5px;
-  font-size: 75px;
+  font-size: 80px;
   //line-height: 100%;
   //text-transform: uppercase;
   @include respond-width($w-s) {
