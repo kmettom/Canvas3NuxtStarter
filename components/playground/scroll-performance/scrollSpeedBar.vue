@@ -4,34 +4,40 @@ withDefaults(defineProps<{ showPhotoCredentials?: boolean }>(), {
 });
 
 const scrollSpeedAniEl = ref<HTMLElement | null>(null);
-const parentEl = ref<HTMLElement | null>(null);
+const scrollSpeedEl = ref<HTMLElement | null>(null);
+const enterAniWrapperEl = ref<HTMLElement | null>(null);
 const scrollSpeedCoef = ref<string>("0%");
 
 const scrollSpeedCallback = (_item: any, speed: number) => {
   const newSpeedCoef = speed < 0.03 ? 0 : speed;
-  scrollSpeedCoef.value = (newSpeedCoef * 100).toFixed(0)  + "%";
+  scrollSpeedCoef.value = (newSpeedCoef * 100).toFixed(0) + "%";
   if (scrollSpeedAniEl.value)
     scrollSpeedAniEl.value.style.width =
       Number(newSpeedCoef.toFixed(2)) * 100 + "%";
 };
 
-const scrollSpeedBarOptions = computed(() => {
-  const fixPos = parentEl.value ? Number((1 - parentEl.value.clientHeight / window.innerHeight).toFixed(2)) : null;
- return {
-        activeRange: 1,
-        fixToParent: {
-        containerId: "scrollSpeedBar",
-        fixPosition: fixPos
+const scrollSpeedBarOptions = {
+  activeRange: 1,
+  fixToParent: {
+    containerId: "scrollSpeedBar",
+    fixPosition: 0,
   },
-    onScrollCallback: scrollSpeedCallback,
-  }
-
-});
+  onScrollCallback: scrollSpeedCallback,
+};
 
 const fps = ref<number | null>(null);
 const fpsInterval = ref<null | number>();
 
 onMounted(() => {
+  if (scrollSpeedEl.value) {
+    scrollSpeedBarOptions.fixToParent.fixPosition = Number(
+      (1 - scrollSpeedEl.value.clientHeight / window.innerHeight).toFixed(4),
+    );
+  }
+  if (enterAniWrapperEl.value) {
+    enterAniWrapperEl.value.classList.add("active");
+  }
+
   fpsInterval.value = setInterval(() => {
     fps.value = Canvas3.getFPS();
   }, 500);
@@ -47,19 +53,21 @@ onBeforeUnmount(() => {
     v-canvas3-scroll-action="scrollSpeedBarOptions"
     class="scroll-speed-container"
   >
-    <div  ref="parentEl" class="">
-      <div  class="scroll-speed-status-bar bg-dark">
-        <div class="scroll-speed-text">
-          Scroll speed: {{ scrollSpeedCoef }}
+    <div ref="scrollSpeedEl" class="scroll-bar-wrapper">
+      <div ref="enterAniWrapperEl" class="enter-ani-wrapper">
+        <div class="scroll-speed-status-bar">
+          <div class="scroll-speed-text">
+            Scroll speed: {{ scrollSpeedCoef }}
+          </div>
+          <div class="scroll-speed-ani-wrapper">
+            <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
+          </div>
+          <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
         </div>
-        <div class="scroll-speed-ani-wrapper">
-          <div ref="scrollSpeedAniEl" class="scroll-speed-ani" />
+        <div class="bg-light credits">
+          Developed By
+          <a href="https://tomaskmet.com" target="_blank">Tomas Kmet</a>
         </div>
-        <div v-if="fps" class="fps-text">FPS: {{ fps }}</div>
-      </div>
-      <div class="bg-light credits">
-        Developed By
-        <a href="https://tomaskmet.com" target="_blank">Tomas Kmet</a>
       </div>
     </div>
   </div>
@@ -75,6 +83,15 @@ onBeforeUnmount(() => {
   left: 0;
   z-index: 2;
   pointer-events: none;
+  transition: ease all 0.5s;
+  opacity: 0;
+  &.active {
+    opacity: 1;
+  }
+}
+
+.scroll-bar-wrapper {
+  position: relative;
 }
 
 .credits {
@@ -83,6 +100,7 @@ onBeforeUnmount(() => {
   color: var(--dark-color);
   text-transform: uppercase;
   a {
+    pointer-events: auto;
     color: var(--dark-color);
     text-decoration: none;
   }
@@ -115,16 +133,25 @@ onBeforeUnmount(() => {
 }
 .scroll-speed-ani-wrapper {
   width: calc(100% - 400px);
-  margin-top: 7px;
+  margin-top: 10px;
   text-align: center;
 }
 
 .scroll-speed-ani {
   margin: 0 auto;
   width: 0;
-  height: 10px;
+  height: 5px;
   border-radius: 5px;
   background: var(--light-color);
   z-index: 1;
+}
+.enter-ani-wrapper {
+  position: relative;
+  top: 60px;
+  transition: ease all 0.35s;
+  transition-delay: 0.55s;
+  &.active {
+    top: 0;
+  }
 }
 </style>
