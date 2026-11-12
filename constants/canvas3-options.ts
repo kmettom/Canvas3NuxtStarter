@@ -23,6 +23,9 @@ export const Canvas3Options = {
   font: {
     fnt: "/fonts/PPFormula-CondensedBlack.fnt",
     atlas: "/fonts/PPFormula-CondensedBlack.png",
+    colors: {
+      dark: { color: '#ff0000' },
+    },
   },
   shaders: {
     scroll: {
