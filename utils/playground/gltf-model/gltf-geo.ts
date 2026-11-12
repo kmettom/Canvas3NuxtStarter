@@ -137,7 +137,7 @@ export const gltfPositioningGeo = {
         },
       },
       to: {
-        position: { x: 0.1, y: 0, z: 0.35 },
+        position: { x: 0, y: 0, z: 0.5 },
         rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
         zIndex: 2,
         lights: {
@@ -159,7 +159,7 @@ export const gltfPositioningGeo = {
       start: 0.9,
       end: 1,
       from: {
-        position: { x: 0.1, y: 0, z: 0.35 },
+        position: { x: 0, y: 0, z: 0.5 },
         rotation: { x: Math.PI / 8, y: Math.PI / 12, z: Math.PI / 2 },
         scale: { x: 2, y: 2, z: 2 },
         lights: {
@@ -172,14 +172,14 @@ export const gltfPositioningGeo = {
         },
       },
       to: {
-        position: { x: 0.35, y: 0.05, z: 0 },
+        position: { x: -0.35, y: -0.15, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.7, y: 0.7, z: 0.7 },
+        scale: { x: 0.9, y: 0.9, z: 0.9 },
         lights: {
           geoKey: { color: redColor, intensity: 0 },
           geoKey2: {
             intensity: 2,
-            position: { x: -1, y: 2, z: 0.1 },
+            position: { x: 1, y: 2, z: 0.1 },
             color: baseColor,
           },
         },

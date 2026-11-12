@@ -216,13 +216,13 @@ export const gltfPositioningDavid = {
         },
       },
       to: {
-        position: { x: -0.35, y: 0, z: 0 },
-        rotation: { x: 0, y: Math.PI / 3, z: 0 },
+        position: { x: 0.35, y: -0.2, z: 0 },
+        rotation: { x: 0, y: -Math.PI / 2, z: 0 },
         scale: { x: 0.5, y: 0.5, z: 0.5 },
         lights: {
           davidKey: {
             intensity: 2,
-            position: { x: 1, y: 2, z: 0.1 },
+            position: { x: -1, y: 2, z: 0.1 },
             color: baseColor,
           },
           davidKey2: {

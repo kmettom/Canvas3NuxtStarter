@@ -185,7 +185,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Get",
     smallContent: "in touch",
-    position: { top: 50, left: 50 },
+    position: { top: 80, left: 50 },
   },
 ]);
 
