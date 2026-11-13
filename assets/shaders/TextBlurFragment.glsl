@@ -1,126 +1,149 @@
-// Varyings
+precision highp float;
+
 varying vec2 vUv;
+varying vec2 vLayoutUv;
+varying vec2 vGlyphUv;
+varying float vSeed;
 
-// Uniforms: Common
-uniform float uThreshold;
-uniform float uAlphaTest;
-uniform vec3 uColor;
 uniform sampler2D uMap;
-
-varying float vNoise;
-
-// Generic uniforms
+uniform vec3 uColor;            // final fill color
+uniform float uAlphaTest;
 uniform float uTime;
-uniform float uAniInText;
-uniform float uDevicePixelRatio;
-uniform vec2 uViewport;
-uniform vec2 uMouse;
-uniform vec2 uMouseMovement;
-uniform vec2 uFooterGameBall;
-uniform vec2 uMeshSize;
-uniform float devicePixelRatio;
+uniform vec2 uMeshSize;         // CSS px
 
-uniform sampler2D gradientMap;
+uniform float uTextAniIn;       // 0 -> 1 animate in
 
-float DISTANCE_COEF = 0.5;
-float uBlurStrength;
+// Optional - unset uniforms are 0, so the defaults below are used
+uniform vec3 uLightColor;       // color of the light frame and the lines
+uniform float uFlickerFps;
+
+const float DISTANCE_COEF = 0.5;
+
+// Stages on uTextAniIn - they overlap, so one starts flickering while the previous is still on
+// 1. light frame (glyph outline + glow)  2. RGB lines inside  3. fill color
+const vec2 BORDER_STAGE = vec2(0.0, 0.35);
+const vec2 LINES_STAGE = vec2(0.2, 0.7);
+const vec2 FILL_STAGE = vec2(0.6, 1.0);
+
+const vec3 DEFAULT_LIGHT = vec3(0.9, 0.97, 1.0);
+const float DEFAULT_FLICKER_FPS = 24.0;
+
+const float BORDER_PX = 1.6;     // outline thickness, screen px
+const float GLOW_PX = 6.0;       // outer glow falloff, screen px
+const float LINE_PX = 3.0;       // width of a vertical line, CSS px
+const float BAND_COUNT = 5.0;    // horizontal bands the lines are broken into
+const float RGB_SHIFT_PX = 1.5;  // chromatic offset of the line channels, CSS px
 
 float median(float r, float g, float b) {
-  return max(min(r, g), min(max(r, g), b));
+    return max(min(r, g), min(max(r, g), b));
 }
 
-float createCircleTrail(float radius, vec2 mousePoint) {
-  vec2 viewportUv = gl_FragCoord.xy / uViewport / uDevicePixelRatio;
-  float viewportAspect = uViewport.x / uViewport.y;
-
-  vec2 shapeUvTrail = viewportUv - mousePoint;
-  shapeUvTrail /= vec2(1.0, viewportAspect);
-  shapeUvTrail += mousePoint;
-  float distTail = distance(shapeUvTrail, mousePoint);
-
-  float circleRadius = max(0.0, radius / uViewport.x);
-  float dist = smoothstep(circleRadius, circleRadius + 0.05, distTail);
-  return dist;
+float hash(float n) {
+    return fract(sin(n * 127.1) * 43758.5453123);
 }
 
-float createDraggedTrail(
-  vec2 mousePoint,
-  vec2 mousePointPrev,
-  float radiusStart,
-  float radiusEnd
-) {
-  vec2 viewportUv = gl_FragCoord.xy / uViewport / uDevicePixelRatio;
-  float viewportAspect = uViewport.x / uViewport.y;
-
-  // Adjust UV coordinates for aspect ratio
-  vec2 adjustedUv = viewportUv;
-  adjustedUv.y /= viewportAspect;
-  vec2 adjustedMousePoint = vec2(mousePoint.x, mousePoint.y / viewportAspect);
-  vec2 adjustedMousePointPrev = vec2(
-    mousePointPrev.x,
-    mousePointPrev.y / viewportAspect
-  );
-
-  // Compute distances to current and previous mouse points
-  float distToCurrent = distance(adjustedUv, adjustedMousePoint);
-  float distToPrev = distance(adjustedUv, adjustedMousePointPrev);
-
-  // Interpolate radius based on proximity to current or previous point
-  float interpFactor = distToCurrent / (distToCurrent + distToPrev + 0.0001);
-  float circleRadius = mix(radiusStart, radiusEnd, interpFactor) / uViewport.x;
-
-  // Compute minimum distance to the line segment between points
-  vec2 lineDir = adjustedMousePointPrev - adjustedMousePoint;
-  float lineLength = length(lineDir);
-  vec2 lineDirNorm = lineDir / (lineLength + 0.0001);
-  float proj = clamp(
-    dot(adjustedUv - adjustedMousePoint, lineDirNorm),
-    0.0,
-    lineLength
-  );
-  vec2 closestPoint = adjustedMousePoint + lineDirNorm * proj;
-  float distToLine = distance(adjustedUv, closestPoint);
-
-  // Smoothly fade out the trail based on distance
-  float trail = smoothstep(circleRadius, circleRadius + 0.02, distToLine);
-  return trail;
+float hash2(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
 
-float createOverlay(float activeOverlay) {
-  vec2 viewportUv =
-    gl_FragCoord.xy / uViewport * uDevicePixelRatio * (1.0 - activeOverlay);
-  float progress = smoothstep(
-    activeOverlay,
-    activeOverlay - 1.0,
-    viewportUv.x - vUv.x
-  );
-  return progress;
+float stageProgress(float p, vec2 stage) {
+    return clamp((p - stage.x) / (stage.y - stage.x), 0.0, 1.0);
+}
+
+float flickerFrame() {
+    return floor(uTime * (uFlickerFps > 0.0 ? uFlickerFps : DEFAULT_FLICKER_FPS));
+}
+
+// On / off flicker - off at 0, on more and more often while progressing, steady on at 1
+float flicker(float progress, float seed) {
+    if (progress <= 0.0) return 0.0;
+    if (progress >= 1.0) return 1.0;
+    float r = hash(flickerFrame() * 1.37 + seed * 17.0 + vSeed * 53.0);
+    // a bit of brightness variation while flickering
+    return step(r, progress) * mix(0.55, 1.0, hash(r * 91.0));
+}
+
+// Vertical streaks broken into horizontal bands, like a pixel-sorted / scanned light.
+// density 0..1 = how many of the streaks are lit
+float lines(vec2 px, float density, float frame) {
+    float col = floor(px.x / LINE_PX);
+
+    // bands with a per-column vertical offset, so the streak ends are ragged
+    float bandH = max(uMeshSize.y, 1.0) / BAND_COUNT;
+    float bandY = px.y / bandH + (hash(col * 0.73 + vSeed) - 0.5) * 0.6;
+    float band = floor(bandY);
+
+    // the pattern is re-rolled only every few flicker frames, so it reads as streaks, not noise
+    float slowFrame = floor(frame / 3.0);
+    float lit = step(1.0 - density, hash2(vec2(col, band + slowFrame * 7.0) + vSeed));
+
+    // brightness per streak, darker gap at the band edges
+    float brightness = mix(0.35, 1.0, hash2(vec2(col * 1.3, band)));
+    float bandEdge = smoothstep(0.0, 0.08, fract(bandY)) * smoothstep(1.0, 0.92, fract(bandY));
+
+    // thin dark separation between columns
+    float colEdge = smoothstep(0.0, 0.25, fract(px.x / LINE_PX));
+
+    return lit * brightness * bandEdge * colEdge;
 }
 
 void main() {
-  vec2 mousePoint = vec2(uMouse.x, 1.0 - uMouse.y);
-  vec2 mousePointPrev = vec2(uMouseMovement.x, 1.0 - uMouseMovement.y);
-  vec2 ballPoint = vec2(uFooterGameBall.x, 1.0 - uFooterGameBall.y);
+    float p = clamp(uTextAniIn, 0.0, 1.0);
 
-  float circleTrail = createDraggedTrail(mousePoint, mousePointPrev, 35.0, 1.0);
+    // --- MSDF glyph ---
+    vec3 msdf = texture2D(uMap, vUv).rgb;
+    float sd = median(msdf.r, msdf.g, msdf.b) - DISTANCE_COEF;
+    float sdWidth = max(fwidth(sd), 0.00001);
+    float sdPx = sd / sdWidth; // signed distance to the glyph edge in screen px, > 0 inside
+    float glyphAlpha = clamp(sdPx + 0.5, 0.0, 1.0);
 
-  float ballTrail = createCircleTrail(10.0, ballPoint);
+    // --- stages ---
+    float borderStage = stageProgress(p, BORDER_STAGE);
+    float linesStage = stageProgress(p, LINES_STAGE);
+    float fillStage = stageProgress(p, FILL_STAGE);
 
-  float overlayOpacity = createOverlay(uAniInText);
-  vec2 newUv = vUv;
+    float borderOn = flicker(borderStage, 1.0);
+    float linesOn = flicker(linesStage, 2.0);
+    float fillOn = flicker(fillStage, 3.0);
 
-  vec3 mySample = texture2D(uMap, newUv).rgb;
-  vec3 mySampleRGB = mySample.rgb;
+    // the light (frame + lines) goes out while the fill takes over
+    float lightOut = 1.0 - fillStage;
 
-  float aniInDistance = mix(0.5, 1.0, uAniInText * overlayOpacity);
+    vec3 light = uLightColor != vec3(0.0) ? uLightColor : DEFAULT_LIGHT;
 
-  float sigDist =
-    median(mySampleRGB.r, mySampleRGB.g, mySampleRGB.b) -
-    DISTANCE_COEF / aniInDistance / ballTrail / circleTrail;
-  float fill = clamp(sigDist / fwidth(sigDist) + DISTANCE_COEF, 0.0, 1.0);
+    // --- 1. light frame: outline on the glyph edge + soft outer glow ---
+    float outline = 1.0 - smoothstep(BORDER_PX * 0.5, BORDER_PX * 0.5 + 1.0, abs(sdPx - BORDER_PX * 0.5));
+    float glow = exp(min(sdPx, 0.0) / GLOW_PX) * (1.0 - glyphAlpha) * 0.45;
+    float borderA = clamp(outline + glow, 0.0, 1.0) * borderOn * lightOut;
 
-  float finalAlpha = fill * overlayOpacity * ballTrail * circleTrail;
+    // --- 2. RGB lines inside the glyph ---
+    vec2 px = vLayoutUv * uMeshSize;
+    float frame = flickerFrame();
+    float density = linesStage;
+    vec3 rgbLines = vec3(
+            lines(px + vec2(RGB_SHIFT_PX, 0.0), density, frame),
+            lines(px, density, frame),
+            lines(px - vec2(RGB_SHIFT_PX, 0.0), density, frame)
+    );
+    vec3 linesCol = rgbLines * light;
+    float linesA = max(max(rgbLines.r, rgbLines.g), rgbLines.b) * glyphAlpha * linesOn * lightOut;
 
-  gl_FragColor = vec4(uColor, finalAlpha);
-  if (finalAlpha < uAlphaTest) discard;
+    // --- 3. fill ---
+    float fillA = glyphAlpha * fillOn;
+
+    // --- compose: lines, light frame over them, fill on top ---
+    vec3 color = linesA > 0.0 ? linesCol / max(max(max(rgbLines.r, rgbLines.g), rgbLines.b), 0.0001) : light;
+    float alpha = linesA;
+
+    color = mix(color, light, borderA);
+    alpha = max(alpha, borderA);
+
+    color = mix(color, uColor, fillA);
+    alpha = max(alpha, fillA);
+
+    if (alpha < uAlphaTest) {
+        discard;
+    }
+
+    gl_FragColor = vec4(color, alpha);
 }
