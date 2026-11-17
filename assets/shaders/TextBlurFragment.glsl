@@ -30,6 +30,13 @@ const vec2 FILL_STAGE = vec2(0.6, 1.0);
 // pattern threshold offset over PATTERN_STAGE: x = no dots lit, y = all dots lit
 const vec2 REVEAL_RANGE = vec2(-1.4, 1.6);
 
+// Sweep - uTextAniIn runs across the text instead of everywhere at once
+// KEEP IN SYNC with SWEEP_DIR / SWEEP_WIDTH in TextBlurVertex.glsl
+// direction in layoutUv space: (1,0) left -> right, (-1,0) right -> left, (0,1) / (0,-1) vertical
+// (if a vertical one runs the wrong way, flip its sign), diagonals like (1,1) work too
+const vec2 SWEEP_DIR = vec2(1.0, 0.0);
+const float SWEEP_WIDTH = 0.6;   // soft edge of the sweep front, fraction of the text size
+
 // Dot matrix
 const float DOTS_PER_CELL = 5.0;    // dots per cell side
 const float DOT_PITCH_PX = 3.0;     // distance between dot centers, CSS px
@@ -72,6 +79,13 @@ float median(float r, float g, float b) {
 
 float stageProgress(float p, vec2 stage) {
     return clamp((p - stage.x) / (stage.y - stage.x), 0.0, 1.0);
+}
+
+// local progress of a point on the text: 0 before the sweep front reaches it, 1 once it has passed
+float sweepProgress(float p, vec2 layoutUv) {
+    vec2 dir = SWEEP_DIR;
+    float s = dot(layoutUv - 0.5, dir) / max(abs(dir.x) + abs(dir.y), 0.0001) + 0.5; // 0 = start side, 1 = end side
+    return clamp((p * (1.0 + SWEEP_WIDTH) - s) / SWEEP_WIDTH, 0.0, 1.0);
 }
 
 // --- flowing pattern ---
@@ -151,10 +165,11 @@ void main() {
     // 2. after the reveal: inside the cursor radius the progress is pulled back towards CURSOR_CENTER_PROGRESS,
     //    so the effect plays around the cursor, outside it the text stays filled
     float aniIn = clamp(uTextAniIn, 0.0, 1.0);
+    float localAniIn = sweepProgress(aniIn, vLayoutUv); // the reveal travels along SWEEP_DIR
     float cursorOn = stageProgress(aniIn, CURSOR_ENABLE_STAGE);
     float cursorStrength = cursorInfluence() * cursorOn;
     float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, cursorStrength);
-    float p = min(aniIn, cursorP);
+    float p = min(localAniIn, cursorP);
 
     // --- MSDF glyph ---
     vec3 msdf = texture2D(uMap, vUv).rgb;
