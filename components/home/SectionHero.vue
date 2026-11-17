@@ -12,7 +12,7 @@
           shaderName: 'example0',
         }"
         fetchPriority="high"
-        :src="'/images/new/01.jpg'"
+        :src="'/images/new/01.webp'"
         alt="background wave on beach"
       />
     </div>
