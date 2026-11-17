@@ -3,9 +3,9 @@
     <h1 class="heading-2 support-headline">Support</h1>
 
     <div
-        ref="gltfElCup"
-        v-canvas3-gltf-model="gltfBindingCup"
-        class="gltf-cup-el"
+      ref="gltfElCup"
+      v-canvas3-gltf-model="gltfBindingCup"
+      class="gltf-cup-el"
     />
 
     <div class="support-paywall">
@@ -49,8 +49,11 @@
 </template>
 
 <script setup lang="ts">
-
-import {baseColor, baseEnvIntensity, baseLightPositionRight} from "~/utils/playground/gltf-model/gltf-constants";
+import {
+  baseColor,
+  baseEnvIntensity,
+  baseLightPositionRight,
+} from "~/utils/playground/gltf-model/gltf-constants";
 
 definePageMeta({
   // Already paid: skip the paywall and show the content page

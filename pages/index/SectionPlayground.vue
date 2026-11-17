@@ -51,9 +51,9 @@
 
 <script setup lang="ts">
 import Container from "~/components/common/Container.vue";
-import { useAnimationAssets } from "~/stores/animationAssets";
+// import { useAnimationAssets } from "~/stores/animationAssets";
 
-const animationAssets = useAnimationAssets();
+// const animationAssets = useAnimationAssets();
 
 const eyeIconShow = ref(false);
 const ethBlockImageAniIn = ref(false);

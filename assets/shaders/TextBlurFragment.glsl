@@ -1,5 +1,10 @@
 precision highp float;
 
+// Dot-matrix CRT text (pattern based on https://www.shadertoy.com/view/MlsGDs)
+// The glyph is built from cells of 5x5 dots. A flowing fbm pattern sets how many dots each cell lights,
+// so the font grows out of the pattern, then the solid fill takes over.
+// Previous version (flickering grayscale cells): TextBlurFragmentCRTCells.glsl
+
 varying vec2 vUv;
 varying vec2 vLayoutUv;
 varying vec2 vGlyphUv;
@@ -16,32 +21,42 @@ uniform float uDevicePixelRatio;
 
 uniform float uTextAniIn;       // 0 -> 1 animate in
 
-// Optional - unset uniforms are 0, so the defaults below are used
-uniform vec3 uLightColor;       // color of the light frame and the lines
-uniform float uFlickerFps;
-
 const float DISTANCE_COEF = 0.5;
 
-// Stages on uTextAniIn - they overlap, so one starts flickering while the previous is still on
-// 1. light frame (glyph outline + glow)  2. grayscale cells inside  3. fill color
-const vec2 BORDER_STAGE = vec2(0.0, 0.35);
-const vec2 LINES_STAGE = vec2(0.2, 0.7);
+// Stages on uTextAniIn
+// 1. dots grow out of the pattern  2. fill color takes over
+const vec2 PATTERN_STAGE = vec2(0.0, 0.75);
 const vec2 FILL_STAGE = vec2(0.6, 1.0);
-// cells morph from circles (0) to rectangles that close all gaps (1)
-const vec2 MORPH_STAGE = vec2(0.25, 0.85);
+// pattern threshold offset over PATTERN_STAGE: x = no dots lit, y = all dots lit
+const vec2 REVEAL_RANGE = vec2(-1.4, 1.6);
 
-const vec3 DEFAULT_LIGHT = vec3(0.9, 0.97, 1.0);
-const float DEFAULT_FLICKER_FPS = 24.0;
+// Dot matrix
+const float DOTS_PER_CELL = 5.0;    // dots per cell side
+const float DOT_PITCH_PX = 3.0;     // distance between dot centers, CSS px
+const float DOT_RADIUS_PX = 1.0;    // dot radius, CSS px
+const float CELL_GAP = 1.2;         // > 1 leaves an empty gap between cells (1.2 = one sixth of the cell)
+const float CELL_PX = DOT_PITCH_PX * DOTS_PER_CELL * CELL_GAP;
+const float GLOW_PX = 1.2;          // soft halo around each dot, CSS px
+const float GLOW_STRENGTH = 0.35;
+const float GLOW_GRAY = 1.0;        // gray level of the halo (1 = white)
 
-const float BORDER_PX = 1.6;     // outline thickness, screen px
-const float GLOW_PX = 6.0;       // outer glow falloff, screen px
-const float DOT_RADIUS_PX = 1.0; // radius of the starting circles, CSS px
-const float DOT_GAP_PX = 5.0;    // gap between circles at the start, CSS px
-const float CELL_PX = DOT_RADIUS_PX * 2.0 + DOT_GAP_PX; // grid cell size, CSS px
-const float BAND_COUNT = 5.0;    // horizontal bands the streaks are broken into
-const float GRAY_LEVELS = 3.0;   // 3 = black / gray / white
+// Pattern
+const float PATTERN_CELL_STEP = 0.004; // pattern space per cell - higher = smaller, busier pattern
+const float TIME_SCALE = 1.0 / 3.0;    // pattern flow speed
 
-// Cursor reveal - pixels within the radius get animated in, the closer to the cursor the further
+// Wave - a horizontal sine displacement inside a band that rolls down the text
+const float WAVE_AMP_PX = 4.0;
+const float WAVE_FREQ = 0.08;          // per CSS px
+const float WAVE_SPEED = 1.0;
+const float WAVE_ROLL_SPEED = 0.25;    // text heights per second
+const float WAVE_WINDOW = 50.0;        // higher = narrower band
+
+// Scan bar - brighter horizontal stripes rolling down
+const float BAR_PX = 24.0;
+const float BAR_SPEED = 0.5;           // bars per second
+const float BAR_BOOST = 1.4;
+
+// Cursor reveal - inside the radius the progress is pulled back, so the effect plays around the cursor
 const float CURSOR_RADIUS_PX = 250.0; // CSS px
 const float CURSOR_FALLOFF = 4.0;     // > 1 = tighter center, < 1 = wider affected area
 const float CURSOR_CENTER_PROGRESS = 0.0; // progress right under the cursor (0 = fully back to the start of the effect)
@@ -52,62 +67,69 @@ float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
 }
 
-float hash(float n) {
-    return fract(sin(n * 127.1) * 43758.5453123);
-}
-
-float hash2(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-}
-
 float stageProgress(float p, vec2 stage) {
     return clamp((p - stage.x) / (stage.y - stage.x), 0.0, 1.0);
 }
 
-float flickerFrame() {
-    return floor(uTime * (uFlickerFps > 0.0 ? uFlickerFps : DEFAULT_FLICKER_FPS));
+// --- flowing pattern ---
+
+mat2 rotate(float a) {
+    return mat2(cos(a), -sin(a), sin(a), cos(a));
 }
 
-// On / off flicker - off at 0, on more and more often while progressing, steady on at 1
-float flicker(float progress, float seed) {
-    if (progress <= 0.0) return 0.0;
-    if (progress >= 1.0) return 1.0;
-    float r = hash(flickerFrame() * 1.37 + seed * 17.0 + vSeed * 53.0);
-    // a bit of brightness variation while flickering
-    return step(r, progress) * mix(0.55, 1.0, hash(r * 91.0));
+float noise(vec2 p, float t) {
+    return sin(p.x * 10.0) * sin(p.y * (3.0 + sin(t / 11.0))) + 0.2;
 }
 
-// Grid of cells grouped into vertical streaks broken into horizontal bands, like a pixel-sorted / scanned light.
-// density 0..1 = how many of the streaks are lit
-// morph   0..1 = circle (DOT_RADIUS_PX) -> rectangle filling the whole cell (gaps closed)
-// returns x = gray level (0 black .. 1 white), y = coverage
-vec2 cells(vec2 px, float density, float frame, float morph) {
+float fbm(vec2 p, float t) {
+    p *= 1.1;
+    float f = 0.0;
+    float amp = 0.5;
+    for (int i = 0; i < 3; i++) {
+        f += amp * noise(p, t);
+        p = rotate(t / 50.0 * float(i * i)) * p;
+        p *= 2.0;
+        amp /= 2.2;
+    }
+    return f;
+}
+
+float pattern(vec2 p, float t) {
+    vec2 q = vec2(fbm(p + vec2(1.0), t), fbm(rotate(0.1 * t) * p + vec2(1.0), t));
+    vec2 r = vec2(fbm(rotate(0.1) * q, t), fbm(q, t));
+    return fbm(p + r, t);
+}
+
+// --- dot matrix ---
+// returns x = gray level, y = coverage
+vec2 dotMatrix(vec2 px, float t, float reveal, float aa) {
     vec2 cellId = floor(px / CELL_PX);
-    vec2 local = px - (cellId + 0.5) * CELL_PX; // position relative to the cell center
-    float col = cellId.x;
+    vec2 cellUv = fract(px / CELL_PX) * CELL_GAP; // 0..CELL_GAP, dots live in 0..1
+    float inCell = step(cellUv.x, 1.0) * step(cellUv.y, 1.0);
 
-    // bands with a per-column vertical offset, so the streak ends are ragged
-    float bandH = max(uMeshSize.y, 1.0) / BAND_COUNT;
-    float cellY = (cellId.y + 0.5) * CELL_PX;
-    float band = floor(cellY / bandH + (hash(col * 0.73 + vSeed) - 0.5) * 0.6);
+    // one pattern value per cell
+    float intensity = pattern(cellId * PATTERN_CELL_STEP, t) * 1.3 - 0.03;
 
-    // the pattern is re-rolled only every few flicker frames, so it reads as streaks, not noise
-    float slowFrame = floor(frame / 3.0);
-    float lit = step(1.0 - density, hash2(vec2(col, band + slowFrame * 7.0) + vSeed));
+    vec2 dotUv = cellUv * DOTS_PER_CELL;
+    vec2 dotId = floor(dotUv);
+    vec2 dotFract = fract(dotUv);
 
-    // black / gray / white per streak
-    float level = floor(hash2(vec2(col * 1.3, band) + vSeed * 0.37) * GRAY_LEVELS) / max(GRAY_LEVELS - 1.0, 1.0);
+    // dots light up from the cell center outwards as intensity + reveal grows
+    float center = (DOTS_PER_CELL - 1.0) * 0.5;
+    vec2 fromCenter = dotId - center;
+    float f = dot(fromCenter, fromCenter) / max(4.0 * center * center, 1.0);
+    float on = smoothstep(0.1, 0.18, intensity + reveal - f);
 
-    // rounded box: circle at morph 0, slightly oversized sharp rectangle at morph 1 (no seams between cells)
-    vec2 halfSize = mix(vec2(DOT_RADIUS_PX), vec2(CELL_PX * 0.5 + 0.5), morph);
-    float corner = mix(DOT_RADIUS_PX, 0.0, morph);
-    vec2 q = abs(local) - halfSize + corner;
-    float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - corner;
+    // brightness gradient inside each dot, like the reference
+    float brightness = (0.2 + dotFract.y * 0.8) * (0.75 + dotFract.x * 0.25);
 
-    float aa = max(fwidth(px.x), 0.0001); // CSS px per screen px
-    float shape = clamp(0.5 - d / aa, 0.0, 1.0);
+    // round dot + soft halo
+    float d = length((dotFract - 0.5) * DOT_PITCH_PX) - DOT_RADIUS_PX;
+    float core = clamp(0.5 - d / aa, 0.0, 1.0);
+    float glow = exp(-max(d, 0.0) / GLOW_PX) * GLOW_STRENGTH;
 
-    return vec2(level, lit * shape);
+    float gray = mix(GLOW_GRAY, brightness * 0.9, core);
+    return vec2(gray, max(core, glow) * on * inCell);
 }
 
 // 1 at the cursor -> 0 at CURSOR_RADIUS_PX and beyond
@@ -132,44 +154,33 @@ void main() {
     vec3 msdf = texture2D(uMap, vUv).rgb;
     float sd = median(msdf.r, msdf.g, msdf.b) - DISTANCE_COEF;
     float sdWidth = max(fwidth(sd), 0.00001);
-    float sdPx = sd / sdWidth; // signed distance to the glyph edge in screen px, > 0 inside
-    float glyphAlpha = clamp(sdPx + 0.5, 0.0, 1.0);
+    float glyphAlpha = clamp(sd / sdWidth + 0.5, 0.0, 1.0);
 
     // --- stages ---
-    float borderStage = stageProgress(p, BORDER_STAGE);
-    float linesStage = stageProgress(p, LINES_STAGE);
+    float patternStage = stageProgress(p, PATTERN_STAGE);
     float fillStage = stageProgress(p, FILL_STAGE);
 
-    float borderOn = flicker(borderStage, 1.0);
-    float linesOn = flicker(linesStage, 2.0);
-    float fillOn = flicker(fillStage, 3.0);
-
-    // the light (frame + lines) goes out while the fill takes over
-    float lightOut = 1.0 - fillStage;
-
-    vec3 light = uLightColor != vec3(0.0) ? uLightColor : DEFAULT_LIGHT;
-
-    // --- 1. light frame: outline on the glyph edge + soft outer glow ---
-    float outline = 1.0 - smoothstep(BORDER_PX * 0.5, BORDER_PX * 0.5 + 1.0, abs(sdPx - BORDER_PX * 0.5));
-    float glow = exp(min(sdPx, 0.0) / GLOW_PX) * (1.0 - glyphAlpha) * 0.45;
-    float borderA = clamp(outline + glow, 0.0, 1.0) * borderOn * lightOut;
-
-    // --- 2. grayscale cells inside the glyph ---
+    // --- wave displacement of the dot grid ---
     vec2 px = vLayoutUv * uMeshSize;
-    float frame = flickerFrame();
-    float morph = smoothstep(0.0, 1.0, stageProgress(p, MORPH_STAGE));
-    vec2 cell = cells(px, linesStage, frame, morph);
-    float linesA = cell.y * glyphAlpha * linesOn * lightOut;
+    float aa = max(fwidth(px.x), 0.0001); // CSS px per screen px, taken before the displacement
 
-    // --- 3. fill ---
-    float fillA = glyphAlpha * fillOn;
+    float waveY = px.y / max(uMeshSize.y, 1.0) - mod(uTime * WAVE_ROLL_SPEED, 1.0);
+    float waveWindow = 1.0 / (1.0 + WAVE_WINDOW * waveY * waveY);
+    px.x += sin(px.y * WAVE_FREQ + uTime * WAVE_SPEED) * WAVE_AMP_PX * waveWindow;
 
-    // --- compose: cells, light frame over them, fill on top ---
-    vec3 color = linesA > 0.0 ? vec3(cell.x) : light;
-    float alpha = linesA;
+    // --- dots ---
+    float reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, patternStage);
+    vec2 dots = dotMatrix(px, uTime * TIME_SCALE, reveal, aa);
 
-    color = mix(color, light, borderA);
-    alpha = max(alpha, borderA);
+    float bar = mod(px.y / BAR_PX + uTime * BAR_SPEED, 1.0) < 0.2 ? BAR_BOOST : 1.0;
+    float dotsA = dots.y * glyphAlpha * (1.0 - fillStage);
+
+    // --- fill ---
+    float fillA = glyphAlpha * fillStage;
+
+    // --- compose ---
+    vec3 color = vec3(min(dots.x * bar, 1.0));
+    float alpha = dotsA;
 
     color = mix(color, uColor, fillA);
     alpha = max(alpha, fillA);
