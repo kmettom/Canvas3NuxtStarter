@@ -20,7 +20,7 @@ export const useAnimationAssets = defineStore("animationAssets", {
       if (textureMaskNoise) {
         this.textureMaskNoise = textureMaskNoise;
       }
-      const textureImage = await loader.loadAsync(`images/01.webp`);
+      const textureImage = await loader.loadAsync(`images/new/10.jpg`);
       if (textureImage) {
         this.textureDefaultImage = textureImage;
       }
