@@ -36,6 +36,13 @@
       <SectionRoadmap />
     </div>
     <div
+      v-canvas3-scroll-action="setSectionActivationOptions('support', true)"
+      class="page-section"
+      data-nav-id="support"
+    >
+      <SectionSupport />
+    </div>
+    <div
       v-canvas3-scroll-action="setSectionActivationOptions('contact', true)"
       class="page-section"
       data-nav-id="contact"
@@ -56,6 +63,7 @@ import SectionRoadmap from "~/pages/index/SectionRoadmap.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 import SectionPlayground from "~/pages/index/SectionPlayground.vue";
+import SectionSupport from "~/pages/index/SectionSupport.vue";
 
 const navigationStore = useNavigationStore();
 

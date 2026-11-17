@@ -32,8 +32,8 @@ const float DEFAULT_FLICKER_FPS = 24.0;
 
 const float BORDER_PX = 1.6;     // outline thickness, screen px
 const float GLOW_PX = 6.0;       // outer glow falloff, screen px
-const float DOT_RADIUS_PX = 2.0; // radius of the starting circles, CSS px
-const float DOT_GAP_PX = 1.0;    // gap between circles at the start, CSS px
+const float DOT_RADIUS_PX = 1.0; // radius of the starting circles, CSS px
+const float DOT_GAP_PX = 5.0;    // gap between circles at the start, CSS px
 const float CELL_PX = DOT_RADIUS_PX * 2.0 + DOT_GAP_PX; // grid cell size, CSS px
 const float BAND_COUNT = 5.0;    // horizontal bands the streaks are broken into
 const float GRAY_LEVELS = 3.0;   // 3 = black / gray / white
