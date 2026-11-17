@@ -57,9 +57,12 @@ const float BAR_SPEED = 0.5;           // bars per second
 const float BAR_BOOST = 1.4;
 
 // Cursor reveal - inside the radius the progress is pulled back, so the effect plays around the cursor
-const float CURSOR_RADIUS_PX = 250.0; // CSS px
-const float CURSOR_FALLOFF = 4.0;     // > 1 = tighter center, < 1 = wider affected area
-const float CURSOR_CENTER_PROGRESS = 0.0; // progress right under the cursor (0 = fully back to the start of the effect)
+const float CURSOR_RADIUS_PX = 150.0; // CSS px
+const float CURSOR_FALLOFF = 1.05;    // > 1 = tighter center, < 1 = wider affected area (~0 = flat over the whole radius)
+const float CURSOR_CENTER_PROGRESS = 0.35; // progress right under the cursor (0.15 = the effect goes 85% of the way back)
+// inside the cursor radius, dots this close to their cell center stay lit no matter the pattern,
+// so the text never goes fully dark (0 = only the center dot, 0.07 = center + 4 neighbours, < 0 = off)
+const float CURSOR_MIN_DOT_F = 0.0;
 // the cursor has no effect during the reveal, it fades in over this range of uTextAniIn at the very end
 const vec2 CURSOR_ENABLE_STAGE = vec2(0.95, 1.0);
 
@@ -102,7 +105,8 @@ float pattern(vec2 p, float t) {
 
 // --- dot matrix ---
 // returns x = gray level, y = coverage
-vec2 dotMatrix(vec2 px, float t, float reveal, float aa) {
+// minDotF: dots with f <= minDotF are always lit (pass < 0 to disable)
+vec2 dotMatrix(vec2 px, float t, float reveal, float aa, float minDotF) {
     vec2 cellId = floor(px / CELL_PX);
     vec2 cellUv = fract(px / CELL_PX) * CELL_GAP; // 0..CELL_GAP, dots live in 0..1
     float inCell = step(cellUv.x, 1.0) * step(cellUv.y, 1.0);
@@ -119,6 +123,7 @@ vec2 dotMatrix(vec2 px, float t, float reveal, float aa) {
     vec2 fromCenter = dotId - center;
     float f = dot(fromCenter, fromCenter) / max(4.0 * center * center, 1.0);
     float on = smoothstep(0.1, 0.18, intensity + reveal - f);
+    on = max(on, step(f, minDotF));
 
     // brightness gradient inside each dot, like the reference
     float brightness = (0.2 + dotFract.y * 0.8) * (0.75 + dotFract.x * 0.25);
@@ -147,7 +152,8 @@ void main() {
     //    so the effect plays around the cursor, outside it the text stays filled
     float aniIn = clamp(uTextAniIn, 0.0, 1.0);
     float cursorOn = stageProgress(aniIn, CURSOR_ENABLE_STAGE);
-    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, cursorInfluence() * cursorOn);
+    float cursorStrength = cursorInfluence() * cursorOn;
+    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, cursorStrength);
     float p = min(aniIn, cursorP);
 
     // --- MSDF glyph ---
@@ -170,7 +176,8 @@ void main() {
 
     // --- dots ---
     float reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, patternStage);
-    vec2 dots = dotMatrix(px, uTime * TIME_SCALE, reveal, aa);
+    float minDotF = cursorStrength > 0.0 ? CURSOR_MIN_DOT_F : -1.0;
+    vec2 dots = dotMatrix(px, uTime * TIME_SCALE, reveal, aa, minDotF);
 
     float bar = mod(px.y / BAR_PX + uTime * BAR_SPEED, 1.0) < 0.2 ? BAR_BOOST : 1.0;
     float dotsA = dots.y * glyphAlpha * (1.0 - fillStage);
