@@ -28,13 +28,13 @@
     >
       <SectionPlayground />
     </div>
-    <div
-      v-canvas3-scroll-action="setSectionActivationOptions('support', true)"
-      class="page-section"
-      data-nav-id="support"
-    >
-      <SectionSupport />
-    </div>
+    <!--    <div-->
+    <!--      v-canvas3-scroll-action="setSectionActivationOptions('support', true)"-->
+    <!--      class="page-section"-->
+    <!--      data-nav-id="support"-->
+    <!--    >-->
+    <!--      <SectionSupport />-->
+    <!--    </div>-->
     <div
       v-canvas3-scroll-action="setSectionActivationOptions('contact', true)"
       class="page-section"
@@ -55,7 +55,7 @@ import SectionAbout from "~/pages/index/SectionAbout.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 import SectionPlayground from "~/pages/index/SectionPlayground.vue";
-import SectionSupport from "~/pages/index/SectionSupport.vue";
+// import SectionSupport from "~/pages/index/SectionSupport.vue";
 
 const navigationStore = useNavigationStore();
 
