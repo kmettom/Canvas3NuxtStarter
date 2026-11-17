@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@nuxt-modules/compression": "^0.1.0",
-    "@nuxt/eslint": "^0.7.4",
+    "@nuxt/eslint": "^1.17.0",
     "@nuxtjs/style-resources": "^1.2.1",
     "@pinia/nuxt": "^0.9.0",
     "@types/big.js": "^6.2.2",
@@ -44,6 +44,6 @@
   },
   "dependencies": {
     "@canvas3/nuxt": "^0.1.70",
-    "x402-nuxt": "^0.1.4"
+    "x402-nuxt": "^0.1.6"
   }
 }
