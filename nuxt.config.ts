@@ -66,6 +66,12 @@ export default defineNuxtConfig({
   },
   nitro: {
     compressPublicAssets: true,
+    // Bundle viem into the server chunks instead of tracing it into node_modules.
+    // x402-nuxt ships its own nested viem, and two copies made Vercel's function
+    // import a viem/_esm path that wasn't in the traced output.
+    externals: {
+      inline: ["viem"],
+    },
   },
   compatibilityDate: "2025-01-08",
 });
