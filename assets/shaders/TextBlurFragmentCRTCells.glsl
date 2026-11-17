@@ -16,6 +16,11 @@ uniform float uDevicePixelRatio;
 
 uniform float uTextAniIn;       // 0 -> 1 animate in
 
+// Trail simulation (canvas3-options simulations.trail) - set by Canvas3, declaring them turns the simulation on
+// r = trail intensity 0..1, gb = cursor direction there (screen space)
+uniform sampler2D uSimTrail;
+uniform vec2 uSimTrailResolution; // drawing buffer, device px - gl_FragCoord / this = screen uv
+
 // Optional - unset uniforms are 0, so the defaults below are used
 uniform vec3 uLightColor;       // color of the light frame and the lines
 uniform float uFlickerFps;
@@ -48,6 +53,11 @@ const float CURSOR_CENTER_PROGRESS = 0.0; // progress right under the cursor (0 
 // the cursor has no effect during the reveal, it fades in over this range of uTextAniIn at the very end
 const vec2 CURSOR_ENABLE_STAGE = vec2(0.95, 1.0);
 
+// Trail - the cursor path pulls the progress back towards CURSOR_CENTER_PROGRESS like the cursor radius, so the cells
+// morph along the trail and the text fills back in as the trail fades. Fades in with the cursor (CURSOR_ENABLE_STAGE).
+const float TRAIL_FALLOFF = 1.5;   // > 1 = only the fresh part of the trail goes far back, < 1 = the whole trail
+const float TRAIL_SMEAR_PX = 10.0; // the cell grid is dragged along the cursor direction, CSS px
+
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
 }
@@ -75,6 +85,11 @@ float flicker(float progress, float seed) {
     float r = hash(flickerFrame() * 1.37 + seed * 17.0 + vSeed * 53.0);
     // a bit of brightness variation while flickering
     return step(r, progress) * mix(0.55, 1.0, hash(r * 91.0));
+}
+
+// steady 0 = flicker in (the reveal), 1 = plain fade by progress, no flicker (the cursor area after the reveal)
+float stageOn(float progress, float seed, float steady) {
+    return mix(flicker(progress, seed), progress, steady);
 }
 
 // Grid of cells grouped into vertical streaks broken into horizontal bands, like a pixel-sorted / scanned light.
@@ -125,7 +140,10 @@ void main() {
     //    so the effect plays around the cursor, outside it the text stays filled
     float aniIn = clamp(uTextAniIn, 0.0, 1.0);
     float cursorOn = stageProgress(aniIn, CURSOR_ENABLE_STAGE);
-    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, cursorInfluence() * cursorOn);
+    // trail behind the cursor - fades over time, so the progress returns to 1 behind it
+    vec3 trail = texture2D(uSimTrail, gl_FragCoord.xy / max(uSimTrailResolution, vec2(1.0))).rgb * cursorOn;
+    float trailStrength = pow(clamp(trail.r, 0.0, 1.0), TRAIL_FALLOFF);
+    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, max(cursorInfluence() * cursorOn, trailStrength));
     float p = min(aniIn, cursorP);
 
     // --- MSDF glyph ---
@@ -140,9 +158,11 @@ void main() {
     float linesStage = stageProgress(p, LINES_STAGE);
     float fillStage = stageProgress(p, FILL_STAGE);
 
-    float borderOn = flicker(borderStage, 1.0);
-    float linesOn = flicker(linesStage, 2.0);
-    float fillOn = flicker(fillStage, 3.0);
+    // the flicker plays only during the reveal - in the cursor area the stages fade and the cells only morph (rect <-> dot)
+    float steady = cursorOn;
+    float borderOn = stageOn(borderStage, 1.0, steady);
+    float linesOn = stageOn(linesStage, 2.0, steady);
+    float fillOn = stageOn(fillStage, 3.0, steady);
 
     // the light (frame + lines) goes out while the fill takes over
     float lightOut = 1.0 - fillStage;
@@ -156,7 +176,10 @@ void main() {
 
     // --- 2. grayscale cells inside the glyph ---
     vec2 px = vLayoutUv * uMeshSize;
-    float frame = flickerFrame();
+    // drag the cells against the cursor direction - layoutUv y runs down the text, screen y up
+    px -= vec2(trail.g, -trail.b) * TRAIL_SMEAR_PX;
+    // the streak pattern re-rolls only during the reveal - frozen after it, so the cells under the cursor don't flicker
+    float frame = steady > 0.0 ? 0.0 : flickerFrame();
     float morph = smoothstep(0.0, 1.0, stageProgress(p, MORPH_STAGE));
     vec2 cell = cells(px, linesStage, frame, morph);
     float linesA = cell.y * glyphAlpha * linesOn * lightOut;

@@ -21,6 +21,11 @@ uniform float uDevicePixelRatio;
 
 uniform float uTextAniIn;       // 0 -> 1 animate in
 
+// Trail simulation (canvas3-options simulations.trail) - set by Canvas3, declaring them turns the simulation on
+// r = trail intensity 0..1, gb = cursor direction there (screen space)
+uniform sampler2D uSimTrail;
+uniform vec2 uSimTrailResolution; // drawing buffer, device px - gl_FragCoord / this = screen uv
+
 const float DISTANCE_COEF = 0.5;
 
 // Stages on uTextAniIn
@@ -72,6 +77,11 @@ const float CURSOR_CENTER_PROGRESS = 0.35; // progress right under the cursor (0
 const float CURSOR_MIN_DOT_F = 0.0;
 // the cursor has no effect during the reveal, it fades in over this range of uTextAniIn at the very end
 const vec2 CURSOR_ENABLE_STAGE = vec2(0.95, 1.0);
+
+// Trail - the cursor path pulls the progress back towards CURSOR_CENTER_PROGRESS like the cursor radius, so the effect
+// plays along the trail and the text fills back in as the trail fades. Fades in with the cursor (CURSOR_ENABLE_STAGE).
+const float TRAIL_FALLOFF = 1.5;   // > 1 = only the fresh part of the trail goes far back, < 1 = the whole trail
+const float TRAIL_SMEAR_PX = 10.0; // the dot grid is dragged along the cursor direction, CSS px
 
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
@@ -168,7 +178,10 @@ void main() {
     float localAniIn = sweepProgress(aniIn, vLayoutUv); // the reveal travels along SWEEP_DIR
     float cursorOn = stageProgress(aniIn, CURSOR_ENABLE_STAGE);
     float cursorStrength = cursorInfluence() * cursorOn;
-    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, cursorStrength);
+    // trail behind the cursor - fades over time, so the progress returns to 1 behind it
+    vec3 trail = texture2D(uSimTrail, gl_FragCoord.xy / max(uSimTrailResolution, vec2(1.0))).rgb * cursorOn;
+    float trailStrength = pow(clamp(trail.r, 0.0, 1.0), TRAIL_FALLOFF);
+    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, max(cursorStrength, trailStrength));
     float p = min(localAniIn, cursorP);
 
     // --- MSDF glyph ---
@@ -188,10 +201,12 @@ void main() {
     float waveY = px.y / max(uMeshSize.y, 1.0) - mod(uTime * WAVE_ROLL_SPEED, 1.0);
     float waveWindow = 1.0 / (1.0 + WAVE_WINDOW * waveY * waveY);
     px.x += sin(px.y * WAVE_FREQ + uTime * WAVE_SPEED) * WAVE_AMP_PX * waveWindow;
+    // drag the dots against the cursor direction - layoutUv y runs down the text, screen y up
+    px -= vec2(trail.g, -trail.b) * TRAIL_SMEAR_PX;
 
     // --- dots ---
     float reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, patternStage);
-    float minDotF = cursorStrength > 0.0 ? CURSOR_MIN_DOT_F : -1.0;
+    float minDotF = max(cursorStrength, trailStrength) > 0.0 ? CURSOR_MIN_DOT_F : -1.0;
     vec2 dots = dotMatrix(px, uTime * TIME_SCALE, reveal, aa, minDotF);
 
     float bar = mod(px.y / BAR_PX + uTime * BAR_SPEED, 1.0) < 0.2 ? BAR_BOOST : 1.0;
