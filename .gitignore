@@ -6,4 +6,5 @@
 .data
 package-lock.json
 /myhost
-
+.claude
+.env
