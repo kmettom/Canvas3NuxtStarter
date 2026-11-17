@@ -21,15 +21,15 @@
     <br />
     <br />
     <br />
-        <Canvas3Text
-          class="msdf-text"
-          text="EXAMPLE"
-          :duration="1"
-          split-style="word"
-          ease="linear"
-          theme="light"
-          shader="textCRT"
-        />
+    <Canvas3Text
+      class="msdf-text"
+      text="EXAMPLE"
+      :duration="1"
+      split-style="word"
+      ease="linear"
+      theme="light"
+      shader="textCRT"
+    />
   </div>
 </template>
 <script setup lang="ts">
