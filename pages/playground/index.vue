@@ -92,14 +92,14 @@ const playgroundLinks = reactive<PlaygroundLink[]>([
     alignRight: false,
     hovered: false,
   },
-  // {
-  //   href: "/playground/msdf-font",
-  //   title: "MSDF font",
-  //   description: "MSDF font render and animations example",
-  //   image: "/images/04.webp",
-  //   alignRight: true,
-  //   hovered: false,
-  // },
+  {
+    href: "/playground/msdf-font",
+    title: "MSDF font",
+    description: "MSDF font render and animations example",
+    image: "/images/new/13.jpg",
+    alignRight: true,
+    hovered: false,
+  },
   // {
   //   href: "/playground/gallery-layout",
   //   title: "Gallery layout",
