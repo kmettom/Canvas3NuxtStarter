@@ -2,6 +2,12 @@
   <div class="page-container support-page">
     <h1 class="heading-2 support-headline">Support</h1>
 
+    <div
+        ref="gltfElCup"
+        v-canvas3-gltf-model="gltfBindingCup"
+        class="gltf-cup-el"
+    />
+
     <div class="support-paywall">
       <p>🔒 The support page is behind an x402 payment wall.</p>
       <p v-if="price" class="body-s">
@@ -43,10 +49,62 @@
 </template>
 
 <script setup lang="ts">
+
+import {baseColor, baseEnvIntensity, baseLightPositionRight} from "~/utils/playground/gltf-model/gltf-constants";
+
 definePageMeta({
   // Already paid: skip the paywall and show the content page
   middleware: () => {
     if (useState("support:access").value) return navigateTo("/support/content");
+  },
+});
+
+const gltfElCup = ref(null);
+
+const gltfBindingCup = ref({
+  url: "/gltf/coffee_cup/scene.gltf",
+  name: "david",
+  zIndex: 1,
+  container: gltfElCup.value,
+  // positioning: gltfPositioningDavid,
+  appearAnimation: {
+    duration: 2000,
+    ease: "power3.out",
+    from: {
+      position: { x: 0.0, y: -0.9, z: 0 },
+      rotation: { x: 0, y: -Math.PI, z: 0 },
+      scale: { x: 0.1, y: 0.1, z: 0.1 },
+      lights: { cupKey: { intensity: 0, position: { x: 0, y: 0, z: 0 } } },
+    },
+    to: {
+      position: { x: 0.0, y: 0.0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+      lights: { cupKey: { intensity: 1, position: baseLightPositionRight } },
+    },
+  },
+  lighting: {
+    environment: "room",
+    environmentIntensity: baseEnvIntensity,
+    toneMapping: "aces",
+    exposure: 1,
+    defaultLights: false,
+    lights: [
+      {
+        id: "cupKey",
+        type: "directional",
+        color: baseColor,
+        intensity: 0,
+        position: { x: 0, y: 0, z: 0 },
+      },
+      // {
+      //   id: "davidKey2",
+      //   type: "directional",
+      //   color: blueColor,
+      //   intensity: 0,
+      //   position: { x: 0, y: 0, z: 0 },
+      // },
+    ],
   },
 });
 
@@ -102,5 +160,17 @@ async function handleUnlock() {
 }
 code {
   word-break: break-all;
+}
+
+.gltf-cup-el {
+  height: 250px;
+  width: 250px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  @include respond-width($w-s) {
+    height: 150px;
+    width: 150px;
+  }
 }
 </style>

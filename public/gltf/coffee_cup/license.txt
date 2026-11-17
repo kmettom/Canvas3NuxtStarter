@@ -1,0 +1,11 @@
+Model Information:
+* title:	Coffee Cup
+* source:	https://sketchfab.com/3d-models/coffee-cup-945ff8c7ee1d4bffb07c0491343761d0
+* author:	liabooo (https://sketchfab.com/liabooo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Coffee Cup" (https://sketchfab.com/3d-models/coffee-cup-945ff8c7ee1d4bffb07c0491343761d0) by liabooo (https://sketchfab.com/liabooo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
