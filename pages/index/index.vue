@@ -49,13 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import SectionExamples from "~/pages/index/SectionExamples.vue";
-import SectionHero from "~/pages/index/SectionHero.vue";
-import SectionAbout from "~/pages/index/SectionAbout.vue";
-import SectionContact from "~/pages/index/SectionContact.vue";
+import SectionExamples from "~/components/home/SectionExamples.vue";
+import SectionHero from "~/components/home/SectionHero.vue";
+import SectionAbout from "~/components/home/SectionAbout.vue";
+import SectionContact from "~/components/home/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
-import SectionPlayground from "~/pages/index/SectionPlayground.vue";
-// import SectionSupport from "~/pages/index/SectionSupport.vue";
+import SectionPlayground from "~/components/home/SectionPlayground.vue";
+// import SectionSupport from "~/components/home/SectionSupport.vue";
 
 const navigationStore = useNavigationStore();
 
