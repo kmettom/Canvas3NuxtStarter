@@ -2,28 +2,8 @@
   <div class="page-container support-page">
     <h1 class="heading-2 support-headline">Support</h1>
 
-    <!-- Unlocked: content comes from the paid /api/support response -->
-    <div v-if="access" class="support-content">
-      <p class="support-badge">Payment confirmed</p>
-      <h2 class="body-l">{{ access.content.title }}</h2>
-      <p v-for="(paragraph, i) in access.content.paragraphs" :key="i">
-        {{ paragraph }}
-      </p>
-      <p v-if="access.amountFormatted" class="body-s">
-        Paid {{ access.amountFormatted }} on {{ access.networkName }}
-        <a
-          v-if="access.txHash"
-          :href="access.explorerTxUrl"
-          target="_blank"
-          rel="noopener"
-          >· view transaction</a
-        >
-      </p>
-    </div>
-
-    <!-- Locked: payment wall -->
-    <div v-else class="support-paywall">
-      <p>🔒 This page is behind an x402 payment wall.</p>
+    <div class="support-paywall">
+      <p>🔒 The support page is behind an x402 payment wall.</p>
       <p v-if="price" class="body-s">
         Price: {{ price.amountFormatted }} on {{ price.networkName }}
       </p>
@@ -41,7 +21,7 @@
         v-else
         class="support-button"
         :disabled="isPaying"
-        @click="unlock"
+        @click="handleUnlock"
       >
         {{
           isPaying
@@ -63,47 +43,28 @@
 </template>
 
 <script setup lang="ts">
-interface SupportAccess {
-  payer?: string;
-  txHash?: string;
-  networkName?: string;
-  amountFormatted?: string;
-  explorerTxUrl?: string;
-  content: { title: string; paragraphs: string[] };
-}
-
-const SUPPORT_API = "/api/support";
-
-const { wallet, connect } = useWallet();
-const { pay, quote, isPaying, error } = useX402Payment();
-
-const access = useState<SupportAccess | null>("support:access", () => null);
-const price = ref<Awaited<ReturnType<typeof quote>>>(null);
-const payError = ref<string | null>(null);
-
-const errorMessage = computed(
-  () => payError.value ?? error.value ?? wallet.value.error,
-);
-
-onMounted(async () => {
-  // Read price / network from the 402 challenge so it can be shown before paying
-  price.value = await quote(SUPPORT_API).catch(() => null);
+definePageMeta({
+  // Already paid: skip the paywall and show the content page
+  middleware: () => {
+    if (useState("support:access").value) return navigateTo("/support/content");
+  },
 });
 
-async function unlock() {
-  payError.value = null;
-  try {
-    // Fetches the route; on 402 it signs the payment in MetaMask and retries
-    const response = await pay(SUPPORT_API);
-    if (!response.ok) {
-      const body = await response.json().catch(() => null);
-      payError.value = `Error: ${response.status} ${body?.message ?? response.statusText}`;
-      return;
-    }
-    access.value = await response.json();
-  } catch (err: unknown) {
-    payError.value = `Payment error: ${err instanceof Error ? err.message : "Unknown error"}`;
-  }
+const { wallet, connect } = useWallet();
+const { price, isPaying, error, loadPrice, unlock } = useSupportAccess();
+
+const result = ref<string | null>(null);
+
+const errorMessage = computed(
+  () => result.value ?? error.value ?? wallet.value.error,
+);
+
+onMounted(loadPrice);
+
+async function handleUnlock() {
+  result.value = null;
+  // Redirects to /support/content on success
+  result.value = await unlock();
 }
 </script>
 
@@ -116,15 +77,11 @@ async function unlock() {
 .support-headline {
   padding-bottom: 40px;
 }
-.support-paywall,
-.support-content {
+.support-paywall {
   max-width: 640px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-.support-badge {
-  opacity: 0.6;
 }
 .support-button {
   align-self: flex-start;
