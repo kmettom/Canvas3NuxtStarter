@@ -13,7 +13,7 @@
               v-canvas3-image="{
                 shaderName: 'example1',
               }"
-              :src="'/images/02.webp'"
+              :src="'/images/new/02.webp'"
               alt="building"
             />
             <CodeSnippet>
@@ -41,7 +41,7 @@
                 uniforms: ex2ImageUniforms,
                 shaderName: 'example0',
               }"
-              :src="'/images/01.webp'"
+              :src="'/images/new/04.webp'"
               alt="building"
             />
             <CodeSnippet>
@@ -92,7 +92,7 @@
                     },
                     shaderName: 'example0',
                   }"
-                  :src="'/images/03.webp'"
+                  :src="'/images/new/05.webp'"
                   alt="sky"
                 />
                 <CodeSnippet>
@@ -134,7 +134,7 @@
                       },
                     },
                   }"
-                  :src="'/images/04.webp'"
+                  :src="'/images/new/06.webp'"
                   alt="sky"
                 />
               </div>
@@ -174,7 +174,7 @@
                     },
                     shaderName: 'example1',
                   }"
-                  :src="'/images/02.webp'"
+                  :src="'/images/new/07.webp'"
                   alt="building"
                 />
                 <CodeSnippet>

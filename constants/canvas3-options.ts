@@ -6,6 +6,7 @@ import projectBlurFragment from "~/assets/shaders/projectBlurFragment.glsl";
 import projectBlurVertex from "~/assets/shaders/projectBlurVertex.glsl";
 import TextBlurFragment from "~/assets/shaders/TextBlurFragment.glsl";
 import TextBlurVertex from "~/assets/shaders/TextBlurVertex.glsl";
+import TextBlurFragmentCRTCells from "~/assets/shaders/TextBlurFragmentCRTCells.glsl";
 import example0Fragment from "~/assets/shaders/examples/example0Fragment.glsl";
 import example0Vertex from "~/assets/shaders/examples/example0Vertex.glsl";
 import example1Fragment from "~/assets/shaders/examples/example1Fragment.glsl";
@@ -18,11 +19,16 @@ import playEthBlockGlassFragment from "~/assets/shaders/playground/playEthBlockG
 import playEthBlockGlassVertex from "~/assets/shaders/playground/playEthBlockGlassVertex.glsl";
 import playEthBlockImageBgFragment from "~/assets/shaders/playground/playEthBlockImageBgFragment.glsl";
 import playEthBlockImageBgVertex from "~/assets/shaders/playground/playEthBlockImageBgVertex.glsl";
+import rippleSimulation from "~/assets/shaders//rippleSimulation.glsl";
+import trailSimulation from "~/assets/shaders//trailSimulation.glsl";
 
 export const Canvas3Options = {
   font: {
     fnt: "/fonts/PPFormula-CondensedBlack.fnt",
     atlas: "/fonts/PPFormula-CondensedBlack.png",
+    colors: {
+      light: { color: "#ebebeb" },
+    },
   },
   shaders: {
     scroll: {
@@ -37,6 +43,10 @@ export const Canvas3Options = {
       fragmentShader: projectBlurFragment,
       vertexShader: projectBlurVertex,
       textFragment: TextBlurFragment,
+      textVertex: TextBlurVertex,
+    },
+    textCRT: {
+      textFragment: TextBlurFragmentCRTCells,
       textVertex: TextBlurVertex,
     },
     example0: {
@@ -62,6 +72,18 @@ export const Canvas3Options = {
     playEthBlockImageBg: {
       fragmentShader: playEthBlockImageBgFragment,
       vertexShader: playEthBlockImageBgVertex,
+    },
+  },
+  simulations: {
+    ripples: {
+      fragmentShader: rippleSimulation,
+      resolution: 256,
+      substeps: 2,
+    },
+    // soft fading stroke - low resolution is enough, FADE in the shader is per step, so keep substeps at 1
+    trail: {
+      fragmentShader: trailSimulation,
+      resolution: 128,
     },
   },
   activateMeshOptions: {

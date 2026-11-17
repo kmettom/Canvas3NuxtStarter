@@ -26,34 +26,34 @@
           Enter playground with more examples and experiments 👉
         </div>
       </NuxtLink>
-      <img
-        v-canvas3-image="{
-          uniforms: {
-            uTransition: {
-              value: ethBlockImageAniIn ? 1 : 0,
-              duration: ethBlockImageAniIn ? 0.35 : 0.15,
-              ease: 'linear',
-            },
-            uTextureMaskNoise: { value: animationAssets.getTextureMaskNoise() },
-            uTexturePrevious: {
-              value: animationAssets.getTextureDefaultBlack(),
-            },
-          },
-          shaderName: 'example0',
-        }"
-        :src="`/images/04.webp`"
-        alt=""
-        class="play-block-image"
-      />
+      <!--      <img-->
+      <!--        v-canvas3-image="{-->
+      <!--          uniforms: {-->
+      <!--            uTransition: {-->
+      <!--              value: ethBlockImageAniIn ? 1 : 0,-->
+      <!--              duration: ethBlockImageAniIn ? 0.35 : 0.15,-->
+      <!--              ease: 'linear',-->
+      <!--            },-->
+      <!--            uTextureMaskNoise: { value: animationAssets.getTextureMaskNoise() },-->
+      <!--            uTexturePrevious: {-->
+      <!--              value: animationAssets.getTextureDefaultBlack(),-->
+      <!--            },-->
+      <!--          },-->
+      <!--          shaderName: 'example0',-->
+      <!--        }"-->
+      <!--        :src="`/images/04.webp`"-->
+      <!--        alt=""-->
+      <!--        class="play-block-image"-->
+      <!--      />-->
     </Container>
   </div>
 </template>
 
 <script setup lang="ts">
 import Container from "~/components/common/Container.vue";
-import { useAnimationAssets } from "~/stores/animationAssets";
+// import { useAnimationAssets } from "~/stores/animationAssets";
 
-const animationAssets = useAnimationAssets();
+// const animationAssets = useAnimationAssets();
 
 const eyeIconShow = ref(false);
 const ethBlockImageAniIn = ref(false);

@@ -12,7 +12,7 @@
           shaderName: 'example0',
         }"
         fetchPriority="high"
-        :src="'/images/08.webp'"
+        :src="'/images/new/01.webp'"
         alt="background wave on beach"
       />
     </div>
@@ -36,7 +36,9 @@ const imageUniforms = computed(() => {
   return {
     uTransition: { value: imageIn.value ? 1 : 0, duration: 0.45, ease: "ease" },
     uTextureMaskNoise: { value: animationAssets.getTextureMaskNoise() ?? null },
-    uTexturePrevious: { value: animationAssets.getTextureMaskNoise() ?? null },
+    uTexturePrevious: {
+      value: animationAssets.getTextureDefaultBlack() ?? null,
+    },
   };
 });
 

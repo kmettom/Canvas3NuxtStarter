@@ -20,7 +20,19 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     // "../canvas3-nuxt/src/module", // Canvas3 Nuxt module local dev path
     "@canvas3/nuxt",
+    "x402-nuxt",
   ],
+
+  // x402 payment wall — payTo / CDP keys come from X402_PAY_TO, CDP_API_KEY_ID, CDP_API_KEY_SECRET env vars
+  x402: {
+    routes: {
+      "GET /api/support": {
+        price: "$0.001",
+        network: "eip155:84532", // Base Sepolia (testnet)
+        description: "Canvas3 support content",
+      },
+    },
+  },
   // image: {
   //   target: "static",
   //   dir: "public/",

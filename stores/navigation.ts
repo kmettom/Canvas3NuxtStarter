@@ -14,7 +14,7 @@ export const useNavigationStore = defineStore("navigationStore", {
       { name: "About", id: "about" },
       { name: "Examples", id: "examples" },
       { name: "Playground", id: "playground" },
-      { name: "Roadmap", id: "roadmap" },
+      { name: "Support", id: "support" },
       { name: "Contact", id: "contact" },
     ],
   }),
