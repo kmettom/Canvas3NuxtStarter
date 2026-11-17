@@ -36,7 +36,9 @@ const imageUniforms = computed(() => {
   return {
     uTransition: { value: imageIn.value ? 1 : 0, duration: 0.45, ease: "ease" },
     uTextureMaskNoise: { value: animationAssets.getTextureMaskNoise() ?? null },
-    uTexturePrevious: { value: animationAssets.getTextureDefaultBlack() ?? null },
+    uTexturePrevious: {
+      value: animationAssets.getTextureDefaultBlack() ?? null,
+    },
   };
 });
 
