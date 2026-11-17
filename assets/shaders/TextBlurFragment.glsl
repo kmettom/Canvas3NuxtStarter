@@ -10,6 +10,9 @@ uniform vec3 uColor;            // final fill color
 uniform float uAlphaTest;
 uniform float uTime;
 uniform vec2 uMeshSize;         // CSS px
+uniform vec2 uMouse;            // viewport 0..1, y from the top (set by Canvas3)
+uniform vec2 uViewport;         // CSS px
+uniform float uDevicePixelRatio;
 
 uniform float uTextAniIn;       // 0 -> 1 animate in
 
@@ -37,6 +40,13 @@ const float DOT_GAP_PX = 5.0;    // gap between circles at the start, CSS px
 const float CELL_PX = DOT_RADIUS_PX * 2.0 + DOT_GAP_PX; // grid cell size, CSS px
 const float BAND_COUNT = 5.0;    // horizontal bands the streaks are broken into
 const float GRAY_LEVELS = 3.0;   // 3 = black / gray / white
+
+// Cursor reveal - pixels within the radius get animated in, the closer to the cursor the further
+const float CURSOR_RADIUS_PX = 120.0; // CSS px
+const float CURSOR_FALLOFF = 1.0;     // > 1 = tighter center, < 1 = wider affected area
+const float CURSOR_CENTER_PROGRESS = 0.0; // progress right under the cursor (0 = fully back to the start of the effect)
+// the cursor has no effect during the reveal, it fades in over this range of uTextAniIn at the very end
+const vec2 CURSOR_ENABLE_STAGE = vec2(0.95, 1.0);
 
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
@@ -100,8 +110,23 @@ vec2 cells(vec2 px, float density, float frame, float morph) {
     return vec2(level, lit * shape);
 }
 
+// 1 at the cursor -> 0 at CURSOR_RADIUS_PX and beyond
+float cursorInfluence() {
+    float dpr = uDevicePixelRatio > 0.0 ? uDevicePixelRatio : 1.0;
+    vec2 fragPx = gl_FragCoord.xy / dpr;
+    vec2 cursorPx = vec2(uMouse.x, 1.0 - uMouse.y) * uViewport;
+    float t = 1.0 - smoothstep(0.0, CURSOR_RADIUS_PX, distance(fragPx, cursorPx));
+    return pow(t, CURSOR_FALLOFF);
+}
+
 void main() {
-    float p = clamp(uTextAniIn, 0.0, 1.0);
+    // 1. reveal: the whole text follows uTextAniIn, the cursor is ignored
+    // 2. after the reveal: inside the cursor radius the progress is pulled back towards CURSOR_CENTER_PROGRESS,
+    //    so the effect plays around the cursor, outside it the text stays filled
+    float aniIn = clamp(uTextAniIn, 0.0, 1.0);
+    float cursorOn = stageProgress(aniIn, CURSOR_ENABLE_STAGE);
+    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, cursorInfluence() * cursorOn);
+    float p = min(aniIn, cursorP);
 
     // --- MSDF glyph ---
     vec3 msdf = texture2D(uMap, vUv).rgb;
