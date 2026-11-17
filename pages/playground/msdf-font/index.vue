@@ -10,6 +10,7 @@
       :duration="1"
       split-style="word"
       ease="linear"
+      theme="light"
     />
     <br />
     <br />

@@ -15,12 +15,12 @@ export const useAnimationAssets = defineStore("animationAssets", {
     async init() {
       const loader = new THREE.TextureLoader();
       const textureMaskNoise = await loader.loadAsync(
-        `images/textureMaskNoise.png`,
+        `/images/textureMaskNoise.png`,
       );
       if (textureMaskNoise) {
         this.textureMaskNoise = textureMaskNoise;
       }
-      const textureImage = await loader.loadAsync(`images/new/10.jpg`);
+      const textureImage = await loader.loadAsync(`/images/new/10.jpg`);
       if (textureImage) {
         this.textureDefaultImage = textureImage;
       }

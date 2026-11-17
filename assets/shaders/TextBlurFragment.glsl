@@ -20,19 +20,23 @@ uniform float uFlickerFps;
 const float DISTANCE_COEF = 0.5;
 
 // Stages on uTextAniIn - they overlap, so one starts flickering while the previous is still on
-// 1. light frame (glyph outline + glow)  2. RGB lines inside  3. fill color
+// 1. light frame (glyph outline + glow)  2. grayscale cells inside  3. fill color
 const vec2 BORDER_STAGE = vec2(0.0, 0.35);
 const vec2 LINES_STAGE = vec2(0.2, 0.7);
 const vec2 FILL_STAGE = vec2(0.6, 1.0);
+// cells morph from circles (0) to rectangles that close all gaps (1)
+const vec2 MORPH_STAGE = vec2(0.25, 0.85);
 
 const vec3 DEFAULT_LIGHT = vec3(0.9, 0.97, 1.0);
 const float DEFAULT_FLICKER_FPS = 24.0;
 
 const float BORDER_PX = 1.6;     // outline thickness, screen px
 const float GLOW_PX = 6.0;       // outer glow falloff, screen px
-const float LINE_PX = 3.0;       // width of a vertical line, CSS px
-const float BAND_COUNT = 5.0;    // horizontal bands the lines are broken into
-const float RGB_SHIFT_PX = 1.5;  // chromatic offset of the line channels, CSS px
+const float DOT_RADIUS_PX = 2.0; // radius of the starting circles, CSS px
+const float DOT_GAP_PX = 1.0;    // gap between circles at the start, CSS px
+const float CELL_PX = DOT_RADIUS_PX * 2.0 + DOT_GAP_PX; // grid cell size, CSS px
+const float BAND_COUNT = 5.0;    // horizontal bands the streaks are broken into
+const float GRAY_LEVELS = 3.0;   // 3 = black / gray / white
 
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
@@ -63,28 +67,37 @@ float flicker(float progress, float seed) {
     return step(r, progress) * mix(0.55, 1.0, hash(r * 91.0));
 }
 
-// Vertical streaks broken into horizontal bands, like a pixel-sorted / scanned light.
+// Grid of cells grouped into vertical streaks broken into horizontal bands, like a pixel-sorted / scanned light.
 // density 0..1 = how many of the streaks are lit
-float lines(vec2 px, float density, float frame) {
-    float col = floor(px.x / LINE_PX);
+// morph   0..1 = circle (DOT_RADIUS_PX) -> rectangle filling the whole cell (gaps closed)
+// returns x = gray level (0 black .. 1 white), y = coverage
+vec2 cells(vec2 px, float density, float frame, float morph) {
+    vec2 cellId = floor(px / CELL_PX);
+    vec2 local = px - (cellId + 0.5) * CELL_PX; // position relative to the cell center
+    float col = cellId.x;
 
     // bands with a per-column vertical offset, so the streak ends are ragged
     float bandH = max(uMeshSize.y, 1.0) / BAND_COUNT;
-    float bandY = px.y / bandH + (hash(col * 0.73 + vSeed) - 0.5) * 0.6;
-    float band = floor(bandY);
+    float cellY = (cellId.y + 0.5) * CELL_PX;
+    float band = floor(cellY / bandH + (hash(col * 0.73 + vSeed) - 0.5) * 0.6);
 
     // the pattern is re-rolled only every few flicker frames, so it reads as streaks, not noise
     float slowFrame = floor(frame / 3.0);
     float lit = step(1.0 - density, hash2(vec2(col, band + slowFrame * 7.0) + vSeed));
 
-    // brightness per streak, darker gap at the band edges
-    float brightness = mix(0.35, 1.0, hash2(vec2(col * 1.3, band)));
-    float bandEdge = smoothstep(0.0, 0.08, fract(bandY)) * smoothstep(1.0, 0.92, fract(bandY));
+    // black / gray / white per streak
+    float level = floor(hash2(vec2(col * 1.3, band) + vSeed * 0.37) * GRAY_LEVELS) / max(GRAY_LEVELS - 1.0, 1.0);
 
-    // thin dark separation between columns
-    float colEdge = smoothstep(0.0, 0.25, fract(px.x / LINE_PX));
+    // rounded box: circle at morph 0, slightly oversized sharp rectangle at morph 1 (no seams between cells)
+    vec2 halfSize = mix(vec2(DOT_RADIUS_PX), vec2(CELL_PX * 0.5 + 0.5), morph);
+    float corner = mix(DOT_RADIUS_PX, 0.0, morph);
+    vec2 q = abs(local) - halfSize + corner;
+    float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - corner;
 
-    return lit * brightness * bandEdge * colEdge;
+    float aa = max(fwidth(px.x), 0.0001); // CSS px per screen px
+    float shape = clamp(0.5 - d / aa, 0.0, 1.0);
+
+    return vec2(level, lit * shape);
 }
 
 void main() {
@@ -116,23 +129,18 @@ void main() {
     float glow = exp(min(sdPx, 0.0) / GLOW_PX) * (1.0 - glyphAlpha) * 0.45;
     float borderA = clamp(outline + glow, 0.0, 1.0) * borderOn * lightOut;
 
-    // --- 2. RGB lines inside the glyph ---
+    // --- 2. grayscale cells inside the glyph ---
     vec2 px = vLayoutUv * uMeshSize;
     float frame = flickerFrame();
-    float density = linesStage;
-    vec3 rgbLines = vec3(
-            lines(px + vec2(RGB_SHIFT_PX, 0.0), density, frame),
-            lines(px, density, frame),
-            lines(px - vec2(RGB_SHIFT_PX, 0.0), density, frame)
-    );
-    vec3 linesCol = rgbLines * light;
-    float linesA = max(max(rgbLines.r, rgbLines.g), rgbLines.b) * glyphAlpha * linesOn * lightOut;
+    float morph = smoothstep(0.0, 1.0, stageProgress(p, MORPH_STAGE));
+    vec2 cell = cells(px, linesStage, frame, morph);
+    float linesA = cell.y * glyphAlpha * linesOn * lightOut;
 
     // --- 3. fill ---
     float fillA = glyphAlpha * fillOn;
 
-    // --- compose: lines, light frame over them, fill on top ---
-    vec3 color = linesA > 0.0 ? linesCol / max(max(max(rgbLines.r, rgbLines.g), rgbLines.b), 0.0001) : light;
+    // --- compose: cells, light frame over them, fill on top ---
+    vec3 color = linesA > 0.0 ? vec3(cell.x) : light;
     float alpha = linesA;
 
     color = mix(color, light, borderA);
