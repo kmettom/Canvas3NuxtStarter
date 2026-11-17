@@ -29,13 +29,6 @@
       <SectionPlayground />
     </div>
     <div
-      v-canvas3-scroll-action="setSectionActivationOptions('roadmap', true)"
-      class="page-section"
-      data-nav-id="roadmap"
-    >
-      <SectionRoadmap />
-    </div>
-    <div
       v-canvas3-scroll-action="setSectionActivationOptions('support', true)"
       class="page-section"
       data-nav-id="support"
@@ -59,7 +52,6 @@
 import SectionExamples from "~/pages/index/SectionExamples.vue";
 import SectionHero from "~/pages/index/SectionHero.vue";
 import SectionAbout from "~/pages/index/SectionAbout.vue";
-import SectionRoadmap from "~/pages/index/SectionRoadmap.vue";
 import SectionContact from "~/pages/index/SectionContact.vue";
 import Footer from "~/components/common/Footer.vue";
 import SectionPlayground from "~/pages/index/SectionPlayground.vue";
