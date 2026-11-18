@@ -95,6 +95,7 @@ const float MISALIGN_SPEED = 1.5;
 const float PULL_STRENGTH = 0.25;        // pieces in the cursor radius move this fraction of their distance to the cursor
 const float PULL_MAX_PX = 25.0;          // max pull, CSS px
 const float TRAIL_DRAG_PX = 8.0;         // pieces on the trail are dragged along the cursor direction, CSS px
+const float TRAIL_PULL = 1.0;            // pieces on the trail are pulled towards the cursor too (0 = off, 1 = as strong as the radius)
 
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
@@ -214,9 +215,11 @@ vec2 pieceOffset(vec2 cellId, vec2 fragDev, vec2 layPx, mat2 layToDev, float ani
     float t = uTime * MISALIGN_SPEED;
     vec2 offset = vec2(sin(t + seed * 31.0), sin(t * 1.3 + seed * 17.0 + 1.7)) * MISALIGN_PX * effect;
 
-    // pull towards the cursor
+    // pull towards the cursor - inside the radius and along the fading trail (capped by PULL_MAX_PX, so far trail
+    // pieces lean towards the cursor rather than jump to it)
     vec2 toCursor = vec2(uMouse.x, 1.0 - uMouse.y) * uViewport - centerCss;
-    vec2 pull = toCursor * PULL_STRENGTH * influence;
+    float pullAmount = max(influence, trailStrength * TRAIL_PULL);
+    vec2 pull = toCursor * PULL_STRENGTH * pullAmount;
     float pullLen = length(pull);
     if (pullLen > PULL_MAX_PX) pull *= PULL_MAX_PX / pullLen;
 
