@@ -7,7 +7,7 @@ import projectBlurVertex from "~/assets/shaders/projectBlurVertex.glsl";
 import TextBlurFragment from "~/assets/shaders/TextBlurFragment.glsl";
 import TextBlurVertex from "~/assets/shaders/TextBlurVertex.glsl";
 import TextCRTVertex from "~/assets/shaders/TextCRTVertex.glsl";
-import TextBlurFragmentCRTCells from "~/assets/shaders/TextBlurFragmentCRTCells.glsl";
+import TextCRTFragment from "~/assets/shaders/TextCRTFragment.glsl";
 import example0Fragment from "~/assets/shaders/examples/example0Fragment.glsl";
 import example0Vertex from "~/assets/shaders/examples/example0Vertex.glsl";
 import example1Fragment from "~/assets/shaders/examples/example1Fragment.glsl";
@@ -47,7 +47,7 @@ export const Canvas3Options = {
       textVertex: TextBlurVertex,
     },
     textCRT: {
-      textFragment: TextBlurFragmentCRTCells,
+      textFragment: TextCRTFragment,
       textVertex: TextCRTVertex,
     },
     example0: {
