@@ -4,10 +4,10 @@ import scrollPlaygroundFragment from "~/assets/shaders/playground/scrollPlaygrou
 import scrollPlaygroundVertex from "~/assets/shaders/playground/scrollPlaygroundVertex.glsl";
 import projectBlurFragment from "~/assets/shaders/projectBlurFragment.glsl";
 import projectBlurVertex from "~/assets/shaders/projectBlurVertex.glsl";
-import TextBlurFragment from "~/assets/shaders/TextBlurFragment.glsl";
-import TextBlurVertex from "~/assets/shaders/TextBlurVertex.glsl";
-import TextCRTVertex from "~/assets/shaders/TextCRTVertex.glsl";
-import TextCRTFragment from "~/assets/shaders/TextCRTFragment.glsl";
+import TextCRTBlurFragment from "~/assets/shaders/TextCRTBlurFragment.glsl";
+import TextCRTBlurVertex from "~/assets/shaders/TextCRTBlurVertex.glsl";
+import TextCRTBWVertex from "~/assets/shaders/TextCRTBWVertex.glsl";
+import TextCRTBWFragment from "~/assets/shaders/TextCRTBWFragment.glsl";
 import example0Fragment from "~/assets/shaders/examples/example0Fragment.glsl";
 import example0Vertex from "~/assets/shaders/examples/example0Vertex.glsl";
 import example1Fragment from "~/assets/shaders/examples/example1Fragment.glsl";
@@ -43,12 +43,12 @@ export const Canvas3Options = {
     default: {
       fragmentShader: projectBlurFragment,
       vertexShader: projectBlurVertex,
-      textFragment: TextBlurFragment,
-      textVertex: TextBlurVertex,
+      textFragment: TextCRTBlurFragment,
+      textVertex: TextCRTBlurVertex,
     },
     textCRT: {
-      textFragment: TextCRTFragment,
-      textVertex: TextCRTVertex,
+      textFragment: TextCRTBWFragment,
+      textVertex: TextCRTBWVertex,
     },
     example0: {
       fragmentShader: example0Fragment,
