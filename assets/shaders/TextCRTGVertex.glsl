@@ -13,7 +13,7 @@ varying vec2 vGlyphUv;
 varying vec2 vStretch;          // original half size / grown half size, per glyph axis
 
 // KEEP IN SYNC with PULL_PAD_PX in TextCRTGFragment.glsl - must be >= the largest pull there
-const float PULL_PAD_PX = 14.0; // CSS px
+const float PULL_PAD_PX = 5.0; // CSS px
 
 // clip space -> viewport CSS px
 vec2 clipToPx(vec4 clip) {

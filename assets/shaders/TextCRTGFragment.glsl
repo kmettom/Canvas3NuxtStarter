@@ -48,7 +48,7 @@ const float CURSOR_FALLOFF = 1.0;     // > 1 = tighter center, < 1 = wider low a
 // KEEP IN SYNC: PULL_PAD_PX in TextCRTGVertex.glsl must be >= CURSOR_PULL_MAX_PX + TRAIL_PULL_MAX_PX (where both overlap),
 // anything further is cut off at the glyph quad edge
 const float CURSOR_PULL = 0.7;          // fraction of the distance to the cursor, 0 at the cursor and at the radius edge
-const float CURSOR_PULL_MAX_PX = 14.0;  // CSS px
+const float CURSOR_PULL_MAX_PX = 5.0;  // CSS px
 // trail pull works like the cursor pull - towards the middle of the trail, by a fraction of the distance to it,
 // 0 in the middle and at the trail edge, strongest in between
 const float TRAIL_PULL = CURSOR_PULL;            // fraction of the distance to the trail middle
