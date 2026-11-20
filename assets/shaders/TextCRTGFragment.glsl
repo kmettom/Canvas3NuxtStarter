@@ -34,12 +34,12 @@ const float PATTERN_SPEED = 0.3;
 
 // Trail - the existing pattern gets more intense along the cursor trail (strongest in the middle of the trail),
 // and blends back into the normal pattern as the trail fades (FADE in trailSimulation.glsl, ~1 s)
-const float TRAIL_INTENSITY = 5.5; // pattern boost at full trail - intensity * (1 + this), 0 = off
-const float TRAIL_FALLOFF = 1.0;   // > 1 = only the middle / fresh part of the trail boosts, < 1 = the whole trail
+const float TRAIL_INTENSITY = 1.5; // pattern boost at full trail - intensity * (1 + this), 0 = off
+const float TRAIL_FALLOFF = 2.0;   // > 1 = only the middle / fresh part of the trail boosts, < 1 = the whole trail
 
 // Cursor - inside the radius the pattern goes down to INTENSITY_RANGE.x (fewest dots) at the cursor,
 // blending back into the pattern towards the edge of the radius
-const float CURSOR_RADIUS_PX = 50.0; // CSS px
+const float CURSOR_RADIUS_PX = 75.0; // CSS px
 const float CURSOR_FALLOFF = 1.0;     // > 1 = tighter center, < 1 = wider low area
 
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
@@ -91,7 +91,7 @@ float digit(vec2 p) {
     // pattern() is about -0.66..1.0 - remap it to INTENSITY_RANGE; x > 0.1 = no blank cells, the shapes stay the same
     float intensity = mix(INTENSITY_RANGE.x, INTENSITY_RANGE.y, (pattern(s / 10.0) + 0.66) / 1.66);
     // trail - the same pattern, more intense
-    intensity *= 1.0 + trailAmount * TRAIL_INTENSITY;
+    intensity *= 1.0 - trailAmount * TRAIL_INTENSITY;
     // cursor - down to the weakest cell at the cursor
     intensity = mix(intensity, INTENSITY_RANGE.x, cursorAmount);
     p = fract(p);
@@ -142,7 +142,7 @@ void main() {
     float dpr = uDevicePixelRatio > 0.0 ? uDevicePixelRatio : 1.0;
     vec2 cursorPx = vec2(uMouse.x, 1.0 - uMouse.y) * uViewport;
     float cursorDist = distance(gl_FragCoord.xy / dpr, cursorPx);
-    cursorAmount = pow(1.0 - smoothstep(0.0, CURSOR_RADIUS_PX, cursorDist), CURSOR_FALLOFF) * aniIn;
+    cursorAmount = pow(1.0 - smoothstep(0.1, CURSOR_RADIUS_PX, cursorDist), CURSOR_FALLOFF) * aniIn;
 
     // --- MSDF glyph ---
     vec3 msdf = texture2D(uMap, vUv).rgb;
