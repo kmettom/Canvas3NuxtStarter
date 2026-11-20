@@ -22,7 +22,10 @@ const float ELEMENT_OFFSET = 10.0;         // how far apart (in pattern space) t
 // uTextAniIn from which every cell keeps at least its center dot (no blank cells) - 0 = as soon as the reveal starts
 const float MIN_DOT_FROM = 0.0;
 
-float time;   // iTime / 3, set in main
+// speed of the flowing waves in the pattern - 1 = the original, 0.5 = half as fast
+const float PATTERN_SPEED = 0.3;
+
+float time;   // iTime / 3 * PATTERN_SPEED, set in main
 float reveal; // threshold offset from uTextAniIn, set in main
 float minDotOn; // 1 = every cell shows at least its center dot, set in main
 
@@ -87,7 +90,8 @@ float onOff(float a, float b, float c) {
 }
 
 vec3 getColor(vec2 p) {
-    float bar = mod(p.y + time * 20.0, 1.0) < 0.2 ? 1.4 : 1.0;
+    // the scan bar keeps its original speed, only the pattern waves follow PATTERN_SPEED
+    float bar = mod(p.y + uTime / 3.0 * 20.0, 1.0) < 0.2 ? 1.4 : 1.0;
     float middle = 0.0;
     float off = 0.002;
     float sum = 0.0;
@@ -103,7 +107,7 @@ vec3 getColor(vec2 p) {
 }
 
 void main() {
-    time = uTime / 3.0;
+    time = uTime / 3.0 * PATTERN_SPEED;
     reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, clamp(uTextAniIn, 0.0, 1.0));
     minDotOn = uTextAniIn > MIN_DOT_FROM ? 1.0 : 0.0;
 
