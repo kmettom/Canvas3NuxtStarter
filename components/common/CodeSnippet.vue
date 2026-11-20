@@ -1,5 +1,5 @@
 <template>
-  <div class="code-container">
+  <div class="code-container" :class="`theme-${theme}`">
     <pre class="code-pre"><code>{{ formatted }}</code></pre>
     <button
       type="button"
@@ -17,8 +17,9 @@ const props = withDefaults(
   defineProps<{
     code: string;
     tabSize?: number;
+    theme?: "light" | "dark";
   }>(),
-  { tabSize: 2 },
+  { tabSize: 2, theme: "light" },
 );
 
 const formatted = computed(() => {
@@ -64,13 +65,38 @@ onBeforeUnmount(() => clearTimeout(copiedTimeout));
   width: 100%;
   max-width: 375px;
   margin: 10px 0;
-  color: var(--dark-color);
-  background: var(--light-color);
+  border-radius: 8px;
+  overflow: hidden;
+  color: var(--code-fg);
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+
+  // Light theme: soft off-white surface, dark text
+  &.theme-light {
+    --code-fg: var(--dark-color);
+    --code-bg: color-mix(in srgb, var(--light-color) 92%, var(--dark-color));
+    --code-border: color-mix(
+      in srgb,
+      var(--light-color) 80%,
+      var(--dark-color)
+    );
+  }
+
+  // Dark theme: slightly lifted dark surface, light text
+  &.theme-dark {
+    --code-fg: var(--light-color);
+    --code-bg: color-mix(in srgb, var(--dark-color) 90%, var(--light-color));
+    --code-border: color-mix(
+      in srgb,
+      var(--dark-color) 78%,
+      var(--light-color)
+    );
+  }
 }
 
 .code-pre {
   margin: 0;
-  padding: 10px;
+  padding: 12px 14px;
   overflow-x: auto;
   white-space: pre;
   tab-size: 2;
@@ -96,9 +122,10 @@ onBeforeUnmount(() => clearTimeout(copiedTimeout));
   padding: 2px 6px;
   font: inherit;
   font-size: 11px;
-  color: var(--dark-color);
-  background: var(--light-color);
-  border: 1px solid var(--dark-color);
+  color: var(--code-fg);
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s;

@@ -173,7 +173,7 @@ vec3 getColor(vec2 p) {
             if (i == 0.0 && j == 0.0) middle = d;
         }
     }
-    vec3 color = vec3(0.8, 0.8, 0.8);
+    vec3 color = vec3(0.85, 0.85, 0.85);
     return vec3(0.9) * middle + sum / 10.0 * color * bar;
 }
 

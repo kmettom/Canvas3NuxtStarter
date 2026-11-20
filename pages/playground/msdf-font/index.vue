@@ -37,17 +37,15 @@
     <br />
     <br />
     <br />
-    <div
-      v-canvas3-text="{
-        theme: 'light',
-        shaderName: 'textCRT',
-        uniforms: { uTextAniIn: textAniInCRT },
-      }"
+    <Canvas3Text
       class="msdf-text"
-      style="opacity: 0"
-    >
-      EXAMPLE
-    </div>
+      text="font"
+      :duration="1.5"
+      split-style="word"
+      ease="linear"
+      theme="light"
+      shader="textCRTG"
+    />
 
     <!-- previous version - Canvas3Text components, activated by the scroll action when in view -->
     <br />
@@ -57,26 +55,16 @@
     <br />
     <Canvas3Text
       class="msdf-text"
-      text="Canvas3 MSDF"
+      text="render"
       :duration="1.5"
       split-style="word"
       ease="linear"
       theme="light"
+      shader="textCRTG"
     />
     <br />
     <br />
     <br />
-    <br />
-    <br />
-    <Canvas3Text
-      class="msdf-text"
-      text="EXAMPLE"
-      :duration="1"
-      split-style="word"
-      ease="linear"
-      theme="light"
-      shader="textCRT"
-    />
   </div>
 </template>
 <script setup lang="ts">
