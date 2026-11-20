@@ -96,6 +96,10 @@ const float PULL_STRENGTH = 0.25;        // pieces in the cursor radius move thi
 const float PULL_MAX_PX = 25.0;          // max pull, CSS px
 const float TRAIL_DRAG_PX = 8.0;         // pieces on the trail are dragged along the cursor direction, CSS px
 const float TRAIL_PULL = 1.0;            // pieces on the trail are pulled towards the cursor too (0 = off, 1 = as strong as the radius)
+// how fast the pieces settle back after the trail passed - only the piece movement, the dot effect keeps TRAIL_FALLOFF.
+// The trail fades in ~1 s (FADE in trailSimulation.glsl), this curve makes the movement drop off sooner:
+// 1 = follows the trail, 3 = back in place after ~1/3 of the fade, higher = even faster
+const float TRAIL_MOVE_FALLOFF = 3.0;
 
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
@@ -206,9 +210,12 @@ vec2 pieceOffset(vec2 cellId, vec2 fragDev, vec2 layPx, mat2 layToDev, float ani
     // same progress as the dots use, at the piece center
     float influence = cursorInfluence(centerCss) * cursorOn;
     vec3 trail = sampleTrail(centerDev) * cursorOn;
-    float trailStrength = pow(clamp(trail.r, 0.0, 1.0), TRAIL_FALLOFF);
-    float cursorP = mix(1.0, CURSOR_CENTER_PROGRESS, max(influence, trailStrength));
-    float effect = 1.0 - min(sweepProgress(aniIn, centerLay / max(uMeshSize, vec2(1.0))), cursorP);
+    float sweepP = sweepProgress(aniIn, centerLay / max(uMeshSize, vec2(1.0)));
+
+    // the trail as it drives the movement - drops off faster than the dot effect (TRAIL_MOVE_FALLOFF)
+    float trailR = clamp(trail.r, 0.0, 1.0);
+    float moveStrength = pow(trailR, TRAIL_MOVE_FALLOFF);
+    float effect = 1.0 - min(sweepP, mix(1.0, CURSOR_CENTER_PROGRESS, max(influence, moveStrength)));
 
     // misalign - smooth wobble per piece
     float seed = hash2(cellId);
@@ -218,12 +225,15 @@ vec2 pieceOffset(vec2 cellId, vec2 fragDev, vec2 layPx, mat2 layToDev, float ani
     // pull towards the cursor - inside the radius and along the fading trail (capped by PULL_MAX_PX, so far trail
     // pieces lean towards the cursor rather than jump to it)
     vec2 toCursor = vec2(uMouse.x, 1.0 - uMouse.y) * uViewport - centerCss;
-    float pullAmount = max(influence, trailStrength * TRAIL_PULL);
+    float pullAmount = max(influence, moveStrength * TRAIL_PULL);
     vec2 pull = toCursor * PULL_STRENGTH * pullAmount;
     float pullLen = length(pull);
     if (pullLen > PULL_MAX_PX) pull *= PULL_MAX_PX / pullLen;
 
-    return offset + pull + trail.gb * TRAIL_DRAG_PX;
+    // trail.gb is the direction scaled by the trail (linear fade) - rescale it to the faster moveStrength
+    vec2 drag = trail.gb * pow(max(trailR, 0.0001), TRAIL_MOVE_FALLOFF - 1.0) * TRAIL_DRAG_PX;
+
+    return offset + pull + drag;
 }
 
 void main() {

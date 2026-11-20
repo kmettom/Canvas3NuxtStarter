@@ -8,6 +8,8 @@ import TextCRTBlurFragment from "~/assets/shaders/TextCRTBlurFragment.glsl";
 import TextCRTBlurVertex from "~/assets/shaders/TextCRTBlurVertex.glsl";
 import TextCRTBWVertex from "~/assets/shaders/TextCRTBWVertex.glsl";
 import TextCRTBWFragment from "~/assets/shaders/TextCRTBWFragment.glsl";
+import TextCRTGFragment from "~/assets/shaders/TextCRTGFragment.glsl";
+import TextCRTGVertex from "~/assets/shaders/TextCRTGVertex.glsl";
 import example0Fragment from "~/assets/shaders/examples/example0Fragment.glsl";
 import example0Vertex from "~/assets/shaders/examples/example0Vertex.glsl";
 import example1Fragment from "~/assets/shaders/examples/example1Fragment.glsl";
@@ -49,6 +51,10 @@ export const Canvas3Options = {
     textCRT: {
       textFragment: TextCRTBWFragment,
       textVertex: TextCRTBWVertex,
+    },
+    textCRTG: {
+      textFragment: TextCRTGFragment,
+      textVertex: TextCRTGVertex,
     },
     example0: {
       fragmentShader: example0Fragment,
