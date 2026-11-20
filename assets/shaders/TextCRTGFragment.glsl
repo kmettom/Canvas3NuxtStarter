@@ -4,8 +4,10 @@ precision highp float;
 // The pattern is anchored to the text element (scrolls with it), with the dot size of the screen-space original.
 // uTextAniIn 0 -> 1 lowers the dot threshold, so the dots grow out of the pattern - at 1 it is the original look.
 
-varying vec2 vUv;
+varying vec2 vUv;               // all stretched over the grown glyph quad - see TextCRTGVertex.glsl
 varying vec2 vLayoutUv;         // 0..1 across the text element
+varying vec2 vGlyphUv;
+varying vec2 vStretch;
 
 uniform sampler2D uMap;
 uniform float uTime;
@@ -42,6 +44,15 @@ const float TRAIL_FALLOFF = 2.0;   // > 1 = only the middle / fresh part of the 
 const float CURSOR_RADIUS_PX = 75.0; // CSS px
 const float CURSOR_FALLOFF = 1.0;     // > 1 = tighter center, < 1 = wider low area
 
+// Pull - the font (and the pattern on it) is pulled towards the cursor and into the trail, deforming the letters
+// KEEP IN SYNC: PULL_PAD_PX in TextCRTGVertex.glsl must be >= CURSOR_PULL_MAX_PX + TRAIL_PULL_PX,
+// anything further is cut off at the glyph quad edge
+const float CURSOR_PULL = 0.7;          // fraction of the distance to the cursor, 0 at the cursor and at the radius edge
+const float CURSOR_PULL_MAX_PX = 14.0;  // CSS px
+const float TRAIL_PULL_PX = 2.0;       // max pull into the trail (towards its middle), CSS px
+const float TRAIL_PULL_SLOPE = 0.6;   // trail slope (per CSS px) that gives the full pull - lower = pulls further from the trail
+const float PULL_SLOPE_PX = 1.0;        // distance the trail slope is measured over, CSS px
+
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
 float trailAmount;  // 0..1 trail at this fragment, set in main
 float cursorAmount; // 0..1 cursor influence at this fragment, set in main
@@ -54,6 +65,16 @@ float median(float r, float g, float b) {
 
 float hash(float n) {
     return fract(sin(n * 127.1) * 43758.5453123);
+}
+
+mat2 inverse2(mat2 m) {
+    float det = m[0][0] * m[1][1] - m[1][0] * m[0][1];
+    det = abs(det) < 1e-12 ? 1e-12 : det;
+    return mat2(m[1][1], -m[0][1], -m[1][0], m[0][0]) / det;
+}
+
+float sampleTrail(vec2 devicePx) {
+    return texture2D(uSimTrail, devicePx / max(uSimTrailResolution, vec2(1.0))).r;
 }
 
 float noise(vec2 p) {
@@ -136,26 +157,62 @@ void main() {
 
     // --- trail + cursor at this fragment, both scaled in with uTextAniIn ---
     float aniIn = clamp(uTextAniIn, 0.0, 1.0);
-    float trail = texture2D(uSimTrail, gl_FragCoord.xy / max(uSimTrailResolution, vec2(1.0))).r;
+    float dpr = uDevicePixelRatio > 0.0 ? uDevicePixelRatio : 1.0;
+    vec2 fragDev = gl_FragCoord.xy;
+    vec2 fragCss = fragDev / dpr;
+
+    float trail = sampleTrail(fragDev);
     trailAmount = pow(clamp(trail, 0.0, 1.0), TRAIL_FALLOFF) * aniIn;
 
-    float dpr = uDevicePixelRatio > 0.0 ? uDevicePixelRatio : 1.0;
     vec2 cursorPx = vec2(uMouse.x, 1.0 - uMouse.y) * uViewport;
-    float cursorDist = distance(gl_FragCoord.xy / dpr, cursorPx);
+    float cursorDist = distance(fragCss, cursorPx);
     cursorAmount = pow(1.0 - smoothstep(0.1, CURSOR_RADIUS_PX, cursorDist), CURSOR_FALLOFF) * aniIn;
 
+    // --- undo the quad growth (vertex shader): true glyph / atlas / layout uv at this fragment ---
+    vec2 g = 0.5 + (vGlyphUv - 0.5) / max(vStretch, vec2(0.0001));
+    mat2 invGs = inverse2(mat2(dFdx(vGlyphUv), dFdy(vGlyphUv)));
+    mat2 uvPerG = mat2(dFdx(vUv), dFdy(vUv)) * invGs;
+    mat2 layPerG = mat2(dFdx(vLayoutUv), dFdy(vLayoutUv)) * invGs;
+    vec2 uvTrue = vUv + uvPerG * (g - vGlyphUv);
+    vec2 layTrue = vLayoutUv + layPerG * (g - vGlyphUv);
+    // changes per device px
+    mat2 gPerDev = mat2(dFdx(g), dFdy(g));
+    mat2 uvPerDev = uvPerG * gPerDev;
+    mat2 layPerDev = layPerG * gPerDev;
+
+    // --- pull: where this fragment takes its content from - pointing at the cursor / into the trail makes
+    //     the content further out show up here, so the font moves towards the cursor / trail ---
+    // cursor: 0 at the cursor and at the radius edge, strongest in between
+    vec2 pull = (cursorPx - fragCss) * CURSOR_PULL * cursorAmount;
+    float pullLen = length(pull);
+    if (pullLen > CURSOR_PULL_MAX_PX) pull *= CURSOR_PULL_MAX_PX / pullLen;
+    // trail: along the slope of the trail, towards its middle
+    float slopeDev = PULL_SLOPE_PX * dpr;
+    vec2 trailSlope = vec2(
+            sampleTrail(fragDev + vec2(slopeDev, 0.0)) - trail,
+            sampleTrail(fragDev + vec2(0.0, slopeDev)) - trail
+    ) / PULL_SLOPE_PX;
+    float trailSlopeLen = length(trailSlope);
+    pull += trailSlope / max(trailSlopeLen, 0.00001) * smoothstep(0.0, TRAIL_PULL_SLOPE, trailSlopeLen) * TRAIL_PULL_PX * aniIn;
+
+    vec2 pullDev = pull * dpr;
+    vec2 uvSrc = uvTrue - uvPerDev * pullDev;
+    vec2 laySrc = layTrue - layPerDev * pullDev;
+    vec2 gSrc = g - gPerDev * pullDev;
+    float inGlyph = step(0.0, gSrc.x) * step(gSrc.x, 1.0) * step(0.0, gSrc.y) * step(gSrc.y, 1.0);
+
     // --- MSDF glyph ---
-    vec3 msdf = texture2D(uMap, vUv).rgb;
+    vec3 msdf = texture2D(uMap, uvSrc).rgb;
     float sd = median(msdf.r, msdf.g, msdf.b) - DISTANCE_COEF;
-    float glyphAlpha = clamp(sd / max(fwidth(sd), 0.00001) + 0.5, 0.0, 1.0);
+    float glyphAlpha = clamp(sd / max(fwidth(sd), 0.00001) + 0.5, 0.0, 1.0) * inGlyph;
     if (glyphAlpha <= 0.0) {
         discard;
     }
 
-    // --- CRT pattern, anchored to the element (scrolls with it) ---
+    // --- CRT pattern, anchored to the element (scrolls with it), pulled along with the font ---
     // element px / viewport keeps the dot size of the screen-space original
     vec2 viewport = max(uViewport, vec2(1.0));
-    vec2 p = vLayoutUv * uMeshSize / viewport;
+    vec2 p = laySrc * uMeshSize / viewport;
     // per-element offset, so each text shows a different part of the pattern
     // (from the element size - stable on scroll; elements of the exact same size share it)
     p += vec2(hash(uMeshSize.x * 0.731 + uMeshSize.y * 1.37), hash(uMeshSize.y * 0.913 + uMeshSize.x * 0.29)) * ELEMENT_OFFSET;
