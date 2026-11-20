@@ -15,21 +15,12 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    /** Raw code. Paste it as-is (e.g. in a template literal) – indentation is normalized. */
     code: string;
-    /** Spaces used to replace tabs. */
     tabSize?: number;
   }>(),
   { tabSize: 2 },
 );
 
-/**
- * Normalizes pasted code:
- * - tabs -> spaces
- * - trailing whitespace removed per line
- * - leading/trailing empty lines removed
- * - common indentation removed (dedent)
- */
 const formatted = computed(() => {
   const lines = props.code
     .replace(/\r\n?/g, "\n")
