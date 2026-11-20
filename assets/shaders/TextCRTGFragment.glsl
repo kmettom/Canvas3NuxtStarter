@@ -15,6 +15,9 @@ uniform float uTextAniIn;       // 0 -> 1 animate in
 
 const float DISTANCE_COEF = 0.5;
 const vec2 REVEAL_RANGE = vec2(-1.4, 0.0); // dot threshold offset at uTextAniIn 0 (no dots) -> 1 (original)
+// cell intensity: x = weakest cell, y = strongest cell. 0.1 = only the center dot, 0.6 = full cell
+// (the original is about -0.9..1.27, below 0.1 the cell is blank)
+const vec2 INTENSITY_RANGE = vec2(0.01, 0.99);
 const float ELEMENT_OFFSET = 10.0;         // how far apart (in pattern space) the elements' patterns start, 0 = all the same
 // uTextAniIn from which every cell keeps at least its center dot (no blank cells) - 0 = as soon as the reveal starts
 const float MIN_DOT_FROM = 0.0;
@@ -63,7 +66,8 @@ float digit(vec2 p) {
     vec2 grid = vec2(3.0, 1.0) * 40.0;
     vec2 s = floor(p * grid) / grid;
     p = p * grid;
-    float intensity = pattern(s / 10.0) * 1.3 - 0.03;
+    // pattern() is about -0.66..1.0 - remap it to INTENSITY_RANGE; x > 0.1 = no blank cells, the shapes stay the same
+    float intensity = mix(INTENSITY_RANGE.x, INTENSITY_RANGE.y, (pattern(s / 10.0) + 0.66) / 1.66);
     p = fract(p);
     p *= vec2(1.2, 1.2);
     float x = fract(p.x * 5.0);
