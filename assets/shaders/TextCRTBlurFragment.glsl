@@ -72,7 +72,7 @@ const float BAR_SPEED = 0.5;           // bars per second
 const float BAR_BOOST = 1.4;
 
 // Cursor reveal - inside the radius the progress is pulled back, so the effect plays around the cursor
-const float CURSOR_RADIUS_PX = 150.0; // CSS px
+const float CURSOR_RADIUS_PX = 50.0; // CSS px
 const float CURSOR_FALLOFF = 1.05;    // > 1 = tighter center, < 1 = wider affected area (~0 = flat over the whole radius)
 const float CURSOR_CENTER_PROGRESS = 0.35; // progress right under the cursor (0.15 = the effect goes 85% of the way back)
 // inside the cursor radius, dots this close to their cell center stay lit no matter the pattern,

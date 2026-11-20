@@ -26,7 +26,7 @@ const float PI = 3.14159265;
 // Quad expansion - the fragment shader cuts the glyph into pieces and moves them (cursor pull, misalign, trail).
 // The quad is grown by this margin so moved pieces can be drawn outside the original glyph box.
 // KEEP IN SYNC with DEFORM_PAD_PX in TextCRTBlurFragment.glsl (>= the largest piece offset there)
-const float DEFORM_PAD_PX = 40.0;   // CSS px
+const float DEFORM_PAD_PX = 20.0;   // CSS px
 
 float hash(float n) {
     return fract(sin(n * 127.1) * 43758.5453123);
