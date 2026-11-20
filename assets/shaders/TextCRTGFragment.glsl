@@ -68,6 +68,11 @@ const float SADDLE_EASE = 1.0;      // how the saddle flattens: 1 = linear with 
 const vec2 SWEEP_DIR = vec2(1.0, 0.0);
 const float SWEEP_WIDTH = 0.5;      // soft edge of the sweep front, fraction of the element - lower = sharper front
 
+// Scan bar - the original's rolling bright stripe (+40 % glow, 20 % of each repeat). On text it is smaller than
+// one repeat and passes every ~0.15 s, so it reads as the whole text flickering - off by default.
+const float BAR_BOOST = 1.0;        // glow multiplier inside the bar - 1.0 = off, 1.4 = the original
+const float BAR_SPEED = 20.0 / 3.0; // repeats per second - the original is 20 / 3, lower = a slow roll instead of a flicker
+
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
 float trailAmount;  // 0..1 trail at this fragment, set in main
 float cursorAmount; // 0..1 cursor influence at this fragment, set in main
@@ -156,8 +161,8 @@ float onOff(float a, float b, float c) {
 }
 
 vec3 getColor(vec2 p) {
-    // the scan bar keeps its original speed, only the pattern waves follow PATTERN_SPEED
-    float bar = mod(p.y + uTime / 3.0 * 20.0, 1.0) < 0.2 ? 1.4 : 1.0;
+    // rolling scan bar from the original - BAR_BOOST 1.0 = off (on text it reads as a flicker)
+    float bar = mod(p.y + uTime * BAR_SPEED, 1.0) < 0.2 ? BAR_BOOST : 1.0;
     float middle = 0.0;
     float off = 0.002;
     float sum = 0.0;
