@@ -6,6 +6,7 @@ attribute vec2 glyphUv;         // 0..1 inside each glyph quad
 attribute vec2 center;          // glyph center (font units, same space as position)
 
 uniform vec2 uViewport;         // CSS px
+uniform float uTextAniIn;       // 0 -> 1 animate in
 
 varying vec2 vUv;               // all three are stretched over the grown quad
 varying vec2 vLayoutUv;
@@ -36,5 +37,7 @@ void main() {
 
     vec3 pos = position;
     pos.xy += sign(fromCenter) * pad;
+    // reveal squash - replaced by the saddle motion of the dots in TextCRTGFragment.glsl (SADDLE_*)
+    // pos.x *= uTextAniIn;
     gl_Position = mvp * vec4(pos, 1.0);
 }

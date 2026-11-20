@@ -56,6 +56,13 @@ const float TRAIL_PULL_MAX_PX = CURSOR_PULL_MAX_PX; // CSS px
 const float TRAIL_RADIUS_PX = 100.0;  // KEEP IN SYNC with RADIUS_PX in trailSimulation.glsl - turns the trail value into a distance
 const float PULL_SLOPE_PX = 6.0;      // distance the trail direction is measured over, CSS px (the trail texture is coarse, ~10 px texels)
 
+// Reveal saddle - while uTextAniIn goes 0 -> 1 the dots travel along a saddle surface z = x² - y²
+// (centered on the text element): each column of dots is bent into a parabola that flattens out as the text reveals.
+// The saddle height becomes a vertical shift of the dot pattern.
+const float SADDLE_AMP_PX = 520.0;  // shift at the saddle extremes (element corners / edge middles) at uTextAniIn 0, CSS px
+const vec2 SADDLE_SCALE = vec2(2.0, 2.0); // x / y curvature - higher = steeper toward that edge, 0 = flat along that axis
+const float SADDLE_EASE = 1.0;      // how the saddle flattens: 1 = linear with uTextAniIn, 2+ = most of the motion early
+
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
 float trailAmount;  // 0..1 trail at this fragment, set in main
 float cursorAmount; // 0..1 cursor influence at this fragment, set in main
@@ -226,6 +233,13 @@ void main() {
     // per-element offset, so each text shows a different part of the pattern
     // (from the element size - stable on scroll; elements of the exact same size share it)
     p += vec2(hash(uMeshSize.x * 0.731 + uMeshSize.y * 1.37), hash(uMeshSize.y * 0.913 + uMeshSize.x * 0.29)) * ELEMENT_OFFSET;
+
+    // --- reveal saddle: the dots move along z = x² - y² and settle as uTextAniIn reaches 1 ---
+    vec2 c = (laySrc * 2.0 - 1.0) * SADDLE_SCALE; // -1..1 from the element center
+    float saddle = c.x * c.x - c.y * c.y;          // -1..1
+    float saddleAmount = pow(1.0 - aniIn, SADDLE_EASE);
+    p.y += saddle * SADDLE_AMP_PX * saddleAmount / viewport.y;
+
     vec3 col = getColor(p);
 
     // the original is drawn on black - brightness becomes alpha, so it reads the same over any background

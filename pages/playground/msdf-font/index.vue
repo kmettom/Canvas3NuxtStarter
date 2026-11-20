@@ -95,7 +95,7 @@ const textAniInDefault = ref<UniformAnimation>(hidden());
 const textAniInCRT = ref<UniformAnimation>(hidden());
 
 const animateIn = () => {
-  textAniInDefault.value = { value: 1, duration: 1.5, ease: "linear" };
+  textAniInDefault.value = { value: 1, duration: 1.75, ease: "linear" };
   textAniInCRT.value = { value: 1, duration: 1, ease: "linear" };
 };
 
