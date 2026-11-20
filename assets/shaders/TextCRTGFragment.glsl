@@ -51,7 +51,7 @@ float pattern(vec2 p) {
 }
 
 float digit(vec2 p) {
-    vec2 grid = vec2(3.0, 1.0) * 15.0;
+    vec2 grid = vec2(3.0, 1.0) * 40.0;
     vec2 s = floor(p * grid) / grid;
     p = p * grid;
     float intensity = pattern(s / 10.0) * 1.3 - 0.03;

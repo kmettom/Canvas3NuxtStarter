@@ -6,31 +6,11 @@
     <br />
     <br />
     <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
     <!-- v-canvas3-text directly - animated in on mounted, the restart button plays it again -->
     <div
       v-canvas3-text="{
         theme: 'light',
         shaderName: 'textCRTG',
-        uniforms: { uTextAniIn: textAniInCRTG },
-      }"
-      class="msdf-text"
-      style="opacity: 0"
-    >
-      Canvas3
-    </div>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <div
-      v-canvas3-text="{
-        theme: 'light',
         uniforms: { uTextAniIn: textAniInDefault },
       }"
       class="msdf-text"
@@ -38,10 +18,13 @@
     >
       Canvas3
     </div>
+    <br />
+    <br />
     &nbsp;
     <div
       v-canvas3-text="{
         theme: 'light',
+        shaderName: 'textCRTG',
         uniforms: { uTextAniIn: textAniInDefault },
       }"
       class="msdf-text"
@@ -110,17 +93,14 @@ type UniformAnimation = { value: number; duration: number; ease?: string };
 const hidden = (): UniformAnimation => ({ value: 0, duration: 0 });
 const textAniInDefault = ref<UniformAnimation>(hidden());
 const textAniInCRT = ref<UniformAnimation>(hidden());
-const textAniInCRTG = ref<UniformAnimation>(hidden());
 
 const animateIn = () => {
-  textAniInCRTG.value = { value: 1, duration: 1.5, ease: "linear" };
   textAniInDefault.value = { value: 1, duration: 1.5, ease: "linear" };
   textAniInCRT.value = { value: 1, duration: 1, ease: "linear" };
 };
 
 // jump back to 0 instantly, wait a frame so the reset is rendered, then animate in again
 const restart = async () => {
-  textAniInCRTG.value = hidden();
   textAniInDefault.value = hidden();
   textAniInCRT.value = hidden();
   await nextTick();
@@ -137,7 +117,7 @@ onMounted(() => {
 }
 .msdf-text {
   font-family: "PP Formula Black", serif;
-  font-size: 200px;
+  font-size: 300px;
 }
 .restart-button {
   position: fixed;
