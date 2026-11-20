@@ -12,6 +12,13 @@ uniform float uTime;
 uniform vec2 uViewport;         // CSS px
 uniform vec2 uMeshSize;         // text element size, CSS px
 uniform float uTextAniIn;       // 0 -> 1 animate in
+uniform vec2 uMouse;            // viewport 0..1, y from the top (set by Canvas3)
+uniform float uDevicePixelRatio;
+
+// Trail simulation (canvas3-options simulations.trail) - set by Canvas3, declaring them turns the simulation on
+// r = trail intensity 0..1, gb = cursor direction there (screen space)
+uniform sampler2D uSimTrail;
+uniform vec2 uSimTrailResolution; // drawing buffer, device px - gl_FragCoord / this = screen uv
 
 const float DISTANCE_COEF = 0.5;
 const vec2 REVEAL_RANGE = vec2(-1.4, 0.0); // dot threshold offset at uTextAniIn 0 (no dots) -> 1 (original)
@@ -25,7 +32,19 @@ const float MIN_DOT_FROM = 0.0;
 // speed of the flowing waves in the pattern - 1 = the original, 0.5 = half as fast
 const float PATTERN_SPEED = 0.3;
 
+// Trail - the existing pattern gets more intense along the cursor trail (strongest in the middle of the trail),
+// and blends back into the normal pattern as the trail fades (FADE in trailSimulation.glsl, ~1 s)
+const float TRAIL_INTENSITY = 5.5; // pattern boost at full trail - intensity * (1 + this), 0 = off
+const float TRAIL_FALLOFF = 1.0;   // > 1 = only the middle / fresh part of the trail boosts, < 1 = the whole trail
+
+// Cursor - inside the radius the pattern goes down to INTENSITY_RANGE.x (fewest dots) at the cursor,
+// blending back into the pattern towards the edge of the radius
+const float CURSOR_RADIUS_PX = 50.0; // CSS px
+const float CURSOR_FALLOFF = 1.0;     // > 1 = tighter center, < 1 = wider low area
+
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
+float trailAmount;  // 0..1 trail at this fragment, set in main
+float cursorAmount; // 0..1 cursor influence at this fragment, set in main
 float reveal; // threshold offset from uTextAniIn, set in main
 float minDotOn; // 1 = every cell shows at least its center dot, set in main
 
@@ -71,6 +90,10 @@ float digit(vec2 p) {
     p = p * grid;
     // pattern() is about -0.66..1.0 - remap it to INTENSITY_RANGE; x > 0.1 = no blank cells, the shapes stay the same
     float intensity = mix(INTENSITY_RANGE.x, INTENSITY_RANGE.y, (pattern(s / 10.0) + 0.66) / 1.66);
+    // trail - the same pattern, more intense
+    intensity *= 1.0 + trailAmount * TRAIL_INTENSITY;
+    // cursor - down to the weakest cell at the cursor
+    intensity = mix(intensity, INTENSITY_RANGE.x, cursorAmount);
     p = fract(p);
     p *= vec2(1.2, 1.2);
     float x = fract(p.x * 5.0);
@@ -110,6 +133,16 @@ void main() {
     time = uTime / 3.0 * PATTERN_SPEED;
     reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, clamp(uTextAniIn, 0.0, 1.0));
     minDotOn = uTextAniIn > MIN_DOT_FROM ? 1.0 : 0.0;
+
+    // --- trail + cursor at this fragment, both scaled in with uTextAniIn ---
+    float aniIn = clamp(uTextAniIn, 0.0, 1.0);
+    float trail = texture2D(uSimTrail, gl_FragCoord.xy / max(uSimTrailResolution, vec2(1.0))).r;
+    trailAmount = pow(clamp(trail, 0.0, 1.0), TRAIL_FALLOFF) * aniIn;
+
+    float dpr = uDevicePixelRatio > 0.0 ? uDevicePixelRatio : 1.0;
+    vec2 cursorPx = vec2(uMouse.x, 1.0 - uMouse.y) * uViewport;
+    float cursorDist = distance(gl_FragCoord.xy / dpr, cursorPx);
+    cursorAmount = pow(1.0 - smoothstep(0.0, CURSOR_RADIUS_PX, cursorDist), CURSOR_FALLOFF) * aniIn;
 
     // --- MSDF glyph ---
     vec3 msdf = texture2D(uMap, vUv).rgb;
