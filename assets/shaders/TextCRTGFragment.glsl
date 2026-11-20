@@ -45,13 +45,16 @@ const float CURSOR_RADIUS_PX = 75.0; // CSS px
 const float CURSOR_FALLOFF = 1.0;     // > 1 = tighter center, < 1 = wider low area
 
 // Pull - the font (and the pattern on it) is pulled towards the cursor and into the trail, deforming the letters
-// KEEP IN SYNC: PULL_PAD_PX in TextCRTGVertex.glsl must be >= CURSOR_PULL_MAX_PX + TRAIL_PULL_PX,
+// KEEP IN SYNC: PULL_PAD_PX in TextCRTGVertex.glsl must be >= CURSOR_PULL_MAX_PX + TRAIL_PULL_MAX_PX (where both overlap),
 // anything further is cut off at the glyph quad edge
 const float CURSOR_PULL = 0.7;          // fraction of the distance to the cursor, 0 at the cursor and at the radius edge
 const float CURSOR_PULL_MAX_PX = 14.0;  // CSS px
-const float TRAIL_PULL_PX = 2.0;       // max pull into the trail (towards its middle), CSS px
-const float TRAIL_PULL_SLOPE = 0.6;   // trail slope (per CSS px) that gives the full pull - lower = pulls further from the trail
-const float PULL_SLOPE_PX = 1.0;        // distance the trail slope is measured over, CSS px
+// trail pull works like the cursor pull - towards the middle of the trail, by a fraction of the distance to it,
+// 0 in the middle and at the trail edge, strongest in between
+const float TRAIL_PULL = CURSOR_PULL;            // fraction of the distance to the trail middle
+const float TRAIL_PULL_MAX_PX = CURSOR_PULL_MAX_PX; // CSS px
+const float TRAIL_RADIUS_PX = 100.0;  // KEEP IN SYNC with RADIUS_PX in trailSimulation.glsl - turns the trail value into a distance
+const float PULL_SLOPE_PX = 6.0;      // distance the trail direction is measured over, CSS px (the trail texture is coarse, ~10 px texels)
 
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
 float trailAmount;  // 0..1 trail at this fragment, set in main
@@ -193,7 +196,14 @@ void main() {
             sampleTrail(fragDev + vec2(0.0, slopeDev)) - trail
     ) / PULL_SLOPE_PX;
     float trailSlopeLen = length(trailSlope);
-    pull += trailSlope / max(trailSlopeLen, 0.00001) * smoothstep(0.0, TRAIL_PULL_SLOPE, trailSlopeLen) * TRAIL_PULL_PX * aniIn;
+    vec2 trailDir = trailSlope / max(trailSlopeLen, 0.00001) * step(0.00001, trailSlopeLen); // towards the trail middle
+    // the trail falls off like the brush (1 at the middle, 0 at TRAIL_RADIUS_PX) - same shape as the cursor influence
+    float trailValue = clamp(trail, 0.0, 1.0);
+    float trailDistPx = (1.0 - trailValue) * TRAIL_RADIUS_PX; // approx distance to the trail middle
+    vec2 trailPull = trailDir * trailDistPx * TRAIL_PULL * trailValue * aniIn;
+    float trailPullLen = length(trailPull);
+    if (trailPullLen > TRAIL_PULL_MAX_PX) trailPull *= TRAIL_PULL_MAX_PX / trailPullLen;
+    pull += trailPull;
 
     vec2 pullDev = pull * dpr;
     vec2 uvSrc = uvTrue - uvPerDev * pullDev;
