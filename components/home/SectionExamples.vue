@@ -16,15 +16,7 @@
               :src="'/images/new/02.webp'"
               alt="building"
             />
-            <CodeSnippet>
-              <span> {{ String("<") }}</span
-              >img <br />
-              &nbsp;&nbsp;v-canvas3-image="{<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;shaderName: 'example1',<br />
-              &nbsp;&nbsp;}"<br />
-              &nbsp;&nbsp;:src-link="'images/01.JPG'" <br />
-              />
-            </CodeSnippet>
+            <CodeSnippet :code="codeExample1" />
           </div>
 
           <div
@@ -44,16 +36,7 @@
               :src="'/images/new/04.webp'"
               alt="building"
             />
-            <CodeSnippet>
-              <span> {{ String("<") }}</span
-              >img <br />
-              &nbsp;&nbsp;v-canvas3-image="{<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;uniforms: uniforms,<br />
-              &nbsp;&nbsp;&nbsp;&nbsp;shaderName: 'example0',<br />
-              &nbsp;&nbsp;}"<br />
-              &nbsp;&nbsp;:src-link="'images/01.webp'" <br />
-              />
-            </CodeSnippet>
+            <CodeSnippet :code="codeExample2" />
           </div>
         </div>
         <div class="example-row-second">
@@ -95,14 +78,7 @@
                   :src="'/images/new/05.webp'"
                   alt="sky"
                 />
-                <CodeSnippet>
-                  v-canvas3-scroll-action="{ <br />
-                  &nbsp;&nbsp;activeRange: 0.9,<br />
-                  &nbsp;&nbsp;onScrollCallback: (item, speed) => {
-                  <br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;// do something on scroll<br />
-                  }"
-                </CodeSnippet>
+                <CodeSnippet :code="codeExample3" />
               </div>
             </div>
             <div
@@ -138,16 +114,7 @@
                   alt="sky"
                 />
               </div>
-              <CodeSnippet>
-                v-canvas3-scroll-action="{ <br />
-                &nbsp;&nbsp;activeRange: 0.7,<br />
-                &nbsp;&nbsp;scrollSpeedSetTo: { value: 0.3 },<br />
-                &nbsp;&nbsp;bidirectionalActivation: true,<br />
-                &nbsp;&nbsp;activateCallback: (item, speed) => {
-                <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;// do something when activated<br />
-                }"
-              </CodeSnippet>
+              <CodeSnippet :code="codeExample4" />
             </div>
             <div
               id="fixedParent"
@@ -177,16 +144,7 @@
                   :src="'/images/new/07.webp'"
                   alt="building"
                 />
-                <CodeSnippet>
-                  v-canvas3-scroll-action="{<br />
-                  &nbsp;&nbsp;activeRange: 0.9,<br />
-                  &nbsp;&nbsp;fixToParent: {<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;containerId: 'fixedParent',<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;fixPosition: 0,<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;margin: 0,<br />
-                  &nbsp;&nbsp;},<br />
-                  }"
-                </CodeSnippet>
+                <CodeSnippet :code="codeExample5" />
               </div>
             </div>
           </div>
@@ -219,6 +177,56 @@ const onExample3Scroll = (item: ScrollActionBinding, speed: number) => {
 };
 
 const animationAssets = useAnimationAssets();
+
+const codeExample1 = `
+  <img
+    v-canvas3-image="{
+      shaderName: 'example1',
+    }"
+    :src="'images/01.webp'"
+  />
+`;
+
+const codeExample2 = `
+  <img
+    v-canvas3-image="{
+      uniforms: uniforms,
+      shaderName: 'example0',
+    }"
+    :src="'images/01.webp'"
+  />
+`;
+
+const codeExample3 = `
+  v-canvas3-scroll-action="{
+    activeRange: 0.9,
+    onScrollCallback: (item, speed) => {
+      // do something on scroll
+    },
+  }"
+`;
+
+const codeExample4 = `
+  v-canvas3-scroll-action="{
+    activeRange: 0.7,
+    scrollSpeedSetTo: { value: 0.3 },
+    bidirectionalActivation: true,
+    activateCallback: (item, speed) => {
+      // do something when activated
+    },
+  }"
+`;
+
+const codeExample5 = `
+  v-canvas3-scroll-action="{
+    activeRange: 0.9,
+    fixToParent: {
+      containerId: 'fixedParent',
+      fixPosition: 0,
+      margin: 0,
+    },
+  }"
+`;
 
 const ex2ImageUniforms = computed(() => {
   return {

@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <nuxt-link to="/" class="play-back body-s">&larr; Back</nuxt-link>
     <h1 class="heading-2 play-headline">Playground</h1>
     <div class="playground-projects">
       <nuxt-link
@@ -127,6 +128,14 @@ onMounted(() => {
 }
 .page-container {
   //min-height: 100vh;
+}
+.play-back {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  color: inherit;
+  text-decoration: none;
 }
 .play-headline {
   text-transform: capitalize;
