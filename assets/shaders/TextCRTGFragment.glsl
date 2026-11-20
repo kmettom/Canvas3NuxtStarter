@@ -16,9 +16,12 @@ uniform float uTextAniIn;       // 0 -> 1 animate in
 const float DISTANCE_COEF = 0.5;
 const vec2 REVEAL_RANGE = vec2(-1.4, 0.0); // dot threshold offset at uTextAniIn 0 (no dots) -> 1 (original)
 const float ELEMENT_OFFSET = 10.0;         // how far apart (in pattern space) the elements' patterns start, 0 = all the same
+// uTextAniIn from which every cell keeps at least its center dot (no blank cells) - 0 = as soon as the reveal starts
+const float MIN_DOT_FROM = 0.0;
 
 float time;   // iTime / 3, set in main
 float reveal; // threshold offset from uTextAniIn, set in main
+float minDotOn; // 1 = every cell shows at least its center dot, set in main
 
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
@@ -70,6 +73,8 @@ float digit(vec2 p) {
     int n = (i - 2) * (i - 2) + (j - 2) * (j - 2);
     float f = float(n) / 16.0;
     float isOn = intensity + reveal - f > 0.1 ? 1.0 : 0.0;
+    // minimum size - the center dot (the smallest a cell can show) is always on, so no cell is blank
+    //    if (n == 0) isOn = max(isOn, minDotOn);
     return p.x <= 1.0 && p.y <= 1.0 ? isOn * (0.2 + y * 4.0 / 5.0) * (0.75 + x / 4.0) : 0.0;
 }
 
@@ -96,6 +101,7 @@ vec3 getColor(vec2 p) {
 void main() {
     time = uTime / 3.0;
     reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, clamp(uTextAniIn, 0.0, 1.0));
+    minDotOn = uTextAniIn > MIN_DOT_FROM ? 1.0 : 0.0;
 
     // --- MSDF glyph ---
     vec3 msdf = texture2D(uMap, vUv).rgb;
