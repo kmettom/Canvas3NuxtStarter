@@ -63,6 +63,11 @@ const float SADDLE_AMP_PX = 520.0;  // shift at the saddle extremes (element cor
 const vec2 SADDLE_SCALE = vec2(2.0, 2.0); // x / y curvature - higher = steeper toward that edge, 0 = flat along that axis
 const float SADDLE_EASE = 1.0;      // how the saddle flattens: 1 = linear with uTextAniIn, 2+ = most of the motion early
 
+// Sweep - the reveal (dots growing + saddle flattening) travels across the element instead of everywhere at once
+// direction in layoutUv space: (1,0) left -> right, (-1,0) right -> left, (0,1) / (0,-1) vertical
+const vec2 SWEEP_DIR = vec2(1.0, 0.0);
+const float SWEEP_WIDTH = 0.5;      // soft edge of the sweep front, fraction of the element - lower = sharper front
+
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
 float trailAmount;  // 0..1 trail at this fragment, set in main
 float cursorAmount; // 0..1 cursor influence at this fragment, set in main
@@ -75,6 +80,13 @@ float median(float r, float g, float b) {
 
 float hash(float n) {
     return fract(sin(n * 127.1) * 43758.5453123);
+}
+
+// local reveal progress of a point: 0 before the sweep front reaches it, 1 once it has passed
+float sweepProgress(float p, vec2 layoutUv) {
+    vec2 dir = SWEEP_DIR;
+    float s = dot(layoutUv - 0.5, dir) / max(abs(dir.x) + abs(dir.y), 0.0001) + 0.5; // 0 = start side, 1 = end side
+    return clamp((p * (1.0 + SWEEP_WIDTH) - s) / SWEEP_WIDTH, 0.0, 1.0);
 }
 
 mat2 inverse2(mat2 m) {
@@ -162,7 +174,6 @@ vec3 getColor(vec2 p) {
 
 void main() {
     time = uTime / 3.0 * PATTERN_SPEED;
-    reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, clamp(uTextAniIn, 0.0, 1.0));
     minDotOn = uTextAniIn > MIN_DOT_FROM ? 1.0 : 0.0;
 
     // --- trail + cursor at this fragment, both scaled in with uTextAniIn ---
@@ -230,6 +241,10 @@ void main() {
     // element px / viewport keeps the dot size of the screen-space original
     vec2 viewport = max(uViewport, vec2(1.0));
     vec2 p = laySrc * uMeshSize / viewport;
+
+    // --- sweep: the reveal at this point of the element, travelling along SWEEP_DIR ---
+    float localAniIn = sweepProgress(aniIn, laySrc);
+    reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, localAniIn);
     // per-element offset, so each text shows a different part of the pattern
     // (from the element size - stable on scroll; elements of the exact same size share it)
     p += vec2(hash(uMeshSize.x * 0.731 + uMeshSize.y * 1.37), hash(uMeshSize.y * 0.913 + uMeshSize.x * 0.29)) * ELEMENT_OFFSET;
@@ -237,7 +252,7 @@ void main() {
     // --- reveal saddle: the dots move along z = x² - y² and settle as uTextAniIn reaches 1 ---
     vec2 c = (laySrc * 2.0 - 1.0) * SADDLE_SCALE; // -1..1 from the element center
     float saddle = c.x * c.x - c.y * c.y;          // -1..1
-    float saddleAmount = pow(1.0 - aniIn, SADDLE_EASE);
+    float saddleAmount = pow(1.0 - localAniIn, SADDLE_EASE);
     p.y += saddle * SADDLE_AMP_PX * saddleAmount / viewport.y;
 
     vec3 col = getColor(p);
