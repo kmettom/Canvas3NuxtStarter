@@ -249,7 +249,10 @@ void main() {
 
     // --- sweep: the reveal at this point of the element, travelling along SWEEP_DIR ---
     float localAniIn = sweepProgress(aniIn, laySrc);
-    reveal = mix(REVEAL_RANGE.x, REVEAL_RANGE.y, localAniIn);
+    // start right where the strongest cell lights its first dot (0.1 - INTENSITY_RANGE.y), so the dots appear as soon as
+    // the sweep reaches them - REVEAL_RANGE.x (-1.4) was tuned for the original pattern range and left a dead start
+    float revealStart = max(REVEAL_RANGE.x, 0.1 - INTENSITY_RANGE.y - 0.001);
+    reveal = mix(revealStart, REVEAL_RANGE.y, localAniIn);
     // per-element offset, so each text shows a different part of the pattern
     // (from the element size - stable on scroll; elements of the exact same size share it)
     p += vec2(hash(uMeshSize.x * 0.731 + uMeshSize.y * 1.37), hash(uMeshSize.y * 0.913 + uMeshSize.x * 0.29)) * ELEMENT_OFFSET;
