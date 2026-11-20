@@ -1,25 +1,31 @@
 precision highp float;
 
 // Green CRT dot-matrix text - https://www.shadertoy.com/view/MlsGDs masked by the MSDF glyph
-// The pattern runs in screen space (like the original), the glyph only cuts it out.
+// The pattern is anchored to the text element (scrolls with it), with the dot size of the screen-space original.
 // uTextAniIn 0 -> 1 lowers the dot threshold, so the dots grow out of the pattern - at 1 it is the original look.
 
 varying vec2 vUv;
+varying vec2 vLayoutUv;         // 0..1 across the text element
 
 uniform sampler2D uMap;
 uniform float uTime;
 uniform vec2 uViewport;         // CSS px
-uniform float uDevicePixelRatio;
+uniform vec2 uMeshSize;         // text element size, CSS px
 uniform float uTextAniIn;       // 0 -> 1 animate in
 
 const float DISTANCE_COEF = 0.5;
 const vec2 REVEAL_RANGE = vec2(-1.4, 0.0); // dot threshold offset at uTextAniIn 0 (no dots) -> 1 (original)
+const float ELEMENT_OFFSET = 10.0;         // how far apart (in pattern space) the elements' patterns start, 0 = all the same
 
 float time;   // iTime / 3, set in main
 float reveal; // threshold offset from uTextAniIn, set in main
 
 float median(float r, float g, float b) {
     return max(min(r, g), min(max(r, g), b));
+}
+
+float hash(float n) {
+    return fract(sin(n * 127.1) * 43758.5453123);
 }
 
 float noise(vec2 p) {
@@ -99,9 +105,13 @@ void main() {
         discard;
     }
 
-    // --- CRT pattern, screen space like the original ---
-    float dpr = uDevicePixelRatio > 0.0 ? uDevicePixelRatio : 1.0;
-    vec2 p = gl_FragCoord.xy / max(uViewport * dpr, vec2(1.0));
+    // --- CRT pattern, anchored to the element (scrolls with it) ---
+    // element px / viewport keeps the dot size of the screen-space original
+    vec2 viewport = max(uViewport, vec2(1.0));
+    vec2 p = vLayoutUv * uMeshSize / viewport;
+    // per-element offset, so each text shows a different part of the pattern
+    // (from the element size - stable on scroll; elements of the exact same size share it)
+    p += vec2(hash(uMeshSize.x * 0.731 + uMeshSize.y * 1.37), hash(uMeshSize.y * 0.913 + uMeshSize.x * 0.29)) * ELEMENT_OFFSET;
     vec3 col = getColor(p);
 
     // the original is drawn on black - brightness becomes alpha, so it reads the same over any background
