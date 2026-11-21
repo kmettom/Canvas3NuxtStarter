@@ -25,6 +25,7 @@
         <blockContent :block="block" />
       </div>
     </div>
+    <scrollSpeedBar :show-photo-credentials="true" />
   </div>
 </template>
 <script setup lang="ts">
@@ -60,6 +61,7 @@ import {
 } from "~/constants/playground/eth-blocks";
 import Credentials from "~/components/playground/eth-blocks/credentials.vue";
 import type { ShaderMaterial } from "three";
+import ScrollSpeedBar from "~/components/playground/scroll-performance/scrollSpeedBar.vue";
 gsap.registerPlugin(SplitText);
 
 //**************************
@@ -202,8 +204,11 @@ const hoverBlock = (blockId: number) => {
         ease: "power1.out",
         onStart: () => {
           ethBlocksAnimation.hoveredBlockId = blockId;
+          ethBlocksAnimation.setGlassGeometryDense(true);
         },
         onComplete: () => {
+          // The wave has faded out at progress 1, so the flat quad is enough
+          ethBlocksAnimation.setGlassGeometryDense(false);
           setEthRender(false, "hoverBlock");
         },
       },

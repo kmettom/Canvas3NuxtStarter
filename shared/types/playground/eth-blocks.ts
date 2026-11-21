@@ -19,6 +19,7 @@ export type EthBlocksAnimation = {
   getImageFileAmount: () => number;
   applyPixelRatioCap: () => void;
   loadBgTexture: (url: string) => Promise<THREE.Texture>;
+  setGlassGeometryDense: (dense: boolean) => void;
   revealFirstTexture: () => Promise<void>;
   loadTextureMaskNoise: () => Promise<void>;
   startRender: () => Promise<void>;

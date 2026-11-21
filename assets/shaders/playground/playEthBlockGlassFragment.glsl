@@ -36,12 +36,24 @@ vec4 glassPass(
         vec2 uv,
         vec4 baseColor,
         vec4 rect,
-        float hoverActive
+        float hoverActive,
+        inout float touched
 ) {
+    if (rect.z <= 0.0 || rect.w <= 0.0) {
+        return baseColor;
+    }
+
     vec2 glassCenter = vec2(0.5) + rect.xy / uMeshSize;
     vec2 glassHalfUv = rect.zw / uMeshSize;
 
     vec2 m2 = (vUv - glassCenter) / glassHalfUv;
+
+    // Outside the block's rectangle the rounded box is > 1, so the glass has
+    // no effect - skip the pow() and texture reads
+    if (abs(m2.x) > 1.0 || abs(m2.y) > 1.0) {
+        return baseColor;
+    }
+
     float roundedBox = pow(abs(m2.x), boxRadius) + pow(abs(m2.y), boxRadius);
 
     float rb1 = clamp((1.00 - roundedBox) * 8.0, 0.0, 1.0);
@@ -59,6 +71,7 @@ vec4 glassPass(
     if (transition <= 0.0) {
         return baseColor;
     }
+    touched = 1.0;
 
     float mouseCircle = createCircleMask(20.0, 125.0);
 
@@ -114,20 +127,21 @@ vec4 glassPass(
 
     lensUv += distortDir * 0.06 * boost;
 
-    // Stronger local blur around mouse
+    // Stronger local blur around mouse.
+    // 5x5 taps at double spacing cover the same radius as the old 9x9 grid
+    // (25 reads instead of 81); the half-res scene texture's bilinear
+    // filtering fills in between the taps.
     vec4 blurred = vec4(0.0);
-    float total = 0.0;
-    float blurScale = 0.5 + boost * 1.75;
+    float blurScale = (0.5 + boost * 1.75) * 2.0;
 
-    for (float x = -4.0; x <= 4.0; x++) {
-        for (float y = -4.0; y <= 4.0; y++) {
+    for (float x = -2.0; x <= 2.0; x++) {
+        for (float y = -2.0; y <= 2.0; y++) {
             vec2 off = vec2(x, y) * blurScale / uMeshSize;
             blurred += texture2D(uSceneTexture, lensUv + off);
-            total += 1.0;
         }
     }
 
-    blurred /= total;
+    blurred /= 25.0;
 
     // RGB split along the distortion vector
     vec2 chromaDir = normalize(distortDir + vec2(0.00001));
@@ -189,9 +203,35 @@ vec4 glassPass(
     return mix(baseColor, lighting, glassOpacity);
 }
 
+bool insideBlock(vec2 vUv, vec4 rect) {
+    vec2 glassCenter = vec2(0.5) + rect.xy / uMeshSize;
+    vec2 glassHalfUv = rect.zw / uMeshSize;
+    vec2 m2 = abs((vUv - glassCenter) / glassHalfUv);
+    return m2.x <= 1.0 && m2.y <= 1.0;
+}
+
 void main() {
     vec2 uv = vUv;
+
+    // Outside every block the glass changes nothing, and the scene under it is
+    // already drawn at full resolution - discard instead of re-drawing the
+    // (half-res) scene copy over it
+    bool anyBlock = false;
+    for (int i = 0; i < MAX_GLASS; i++) {
+        if (i >= uBlockCount) {
+            break;
+        }
+        if (uBlocks[i].z > 0.0 && insideBlock(vUv, uBlocks[i])) {
+            anyBlock = true;
+            break;
+        }
+    }
+    if (!anyBlock) {
+        discard;
+    }
+
     vec4 color = texture2D(uSceneTexture, uv);
+    float touched = 0.0;
 
     for (int i = 0; i < MAX_GLASS; i++) {
         if (i >= uBlockCount) {
@@ -208,8 +248,14 @@ void main() {
                 uv,
                 color,
                 uBlocks[i],
-                hoverActive
+                hoverActive,
+                touched
         );
+    }
+
+    // Rounded corners of the block rect - also leave the full-res scene
+    if (touched <= 0.0) {
+        discard;
     }
 
     gl_FragColor = color;

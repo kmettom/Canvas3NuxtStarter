@@ -22,6 +22,22 @@ const isLowMemoryDevice = () =>
   typeof window !== "undefined" &&
   window.matchMedia?.("(pointer: coarse)").matches;
 
+// The glass blur makes a half-resolution scene copy look the same, at a
+// quarter of the pixels to render and sample
+const SCENE_RT_SCALE = 0.5;
+const getSceneRTSize = (renderer: THREE.WebGLRenderer | null) => {
+  const ratio = (renderer?.getPixelRatio() ?? 1) * SCENE_RT_SCALE;
+  const width = renderer?.domElement.clientWidth ?? window.innerWidth;
+  const height = renderer?.domElement.clientHeight ?? window.innerHeight;
+  return [
+    Math.max(1, Math.round(width * ratio)),
+    Math.max(1, Math.round(height * ratio)),
+  ] as const;
+};
+
+let glassGeometryDense: THREE.PlaneGeometry | null = null;
+let glassGeometryFlat: THREE.PlaneGeometry | null = null;
+
 const disposeMesh = (mesh: THREE.Mesh) => {
   mesh.geometry?.dispose();
   const material = mesh.material as THREE.ShaderMaterial;
@@ -150,6 +166,10 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       if (this._scene) this._scene.remove(this.glassMesh);
       disposeMesh(this.glassMesh);
     }
+    glassGeometryDense?.dispose();
+    glassGeometryFlat?.dispose();
+    glassGeometryDense = null;
+    glassGeometryFlat = null;
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToRemove = this.imageBgMeshes[i];
       if (!meshToRemove) continue;
@@ -234,12 +254,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
 
     this._cachedCanvasBounds =
       this._renderer?.domElement.getBoundingClientRect() ?? null;
-    const rtWidth = this._renderer
-      ? this._renderer.domElement.clientWidth * this._renderer.getPixelRatio()
-      : window.innerWidth;
-    const rtHeight = this._renderer
-      ? this._renderer.domElement.clientHeight * this._renderer.getPixelRatio()
-      : window.innerHeight;
+    const [rtWidth, rtHeight] = getSceneRTSize(this._renderer);
 
     this.sceneRT = new THREE.WebGLRenderTarget(rtWidth, rtHeight, {
       depthBuffer: false,
@@ -350,7 +365,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const fragmentShader =
       Canvas3Options.shaders.playEthBlockGlass.fragmentShader;
 
-    const geometry = new THREE.PlaneGeometry(1, 1, 128, 128);
+    glassGeometryDense = new THREE.PlaneGeometry(1, 1, 128, 128);
+    glassGeometryFlat = new THREE.PlaneGeometry(1, 1, 1, 1);
+    const geometry = glassGeometryFlat;
 
     this.calculateUBlockPositions();
     if (!this._uBlocksPositions) return;
@@ -609,12 +626,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
 
     if (this.sceneRT) {
-      const w =
-        (this._renderer?.domElement.clientWidth ?? window.innerWidth) *
-        (this._renderer?.getPixelRatio() ?? 1);
-      const h =
-        (this._renderer?.domElement.clientHeight ?? window.innerHeight) *
-        (this._renderer?.getPixelRatio() ?? 1);
+      const [w, h] = getSceneRTSize(this._renderer);
       this._cachedCanvasBounds =
         this._renderer?.domElement.getBoundingClientRect() ?? null;
       this.sceneRT.setSize(w, h);
@@ -643,17 +655,21 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     if (!this.glassMesh || !this.sceneRT) return;
     this.calculateUBlockPositions();
     if (this._renderer && this._scene && this._camera) {
-      // Pass 1: render scene into render target WITHOUT the mesh that samples it
+      // Render the scene WITHOUT the glass mesh into the (half-res) render
+      // target the glass shader samples. The on-screen frame, glass included,
+      // is drawn right after this callback by Canvas3's own composer.render().
       this.glassMesh.visible = false;
       this._renderer.setRenderTarget(this.sceneRT);
       this._renderer.clear();
       this._renderer.render(this._scene, this._camera);
-
-      // Pass 2: render full scene to screen WITH the glass mesh visible
-      this.glassMesh.visible = true;
       this._renderer.setRenderTarget(null);
-      this._renderer.clear();
-      this._renderer.render(this._scene, this._camera);
+      this.glassMesh.visible = true;
     }
+  },
+  // The hover wave displaces vertices, so it needs a dense plane - but only
+  // while the 0.3s hover sweep runs. The rest of the time a single quad does.
+  setGlassGeometryDense(dense) {
+    if (!this.glassMesh || !glassGeometryDense || !glassGeometryFlat) return;
+    this.glassMesh.geometry = dense ? glassGeometryDense : glassGeometryFlat;
   },
 };

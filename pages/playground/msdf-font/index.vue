@@ -65,9 +65,12 @@
     <br />
     <br />
     <br />
+    <scrollSpeedBar :show-photo-credentials="true" />
   </div>
 </template>
 <script setup lang="ts">
+import ScrollSpeedBar from "~/components/playground/scroll-performance/scrollSpeedBar.vue";
+
 useSeoMeta({
   title: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
   ogTitle: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
