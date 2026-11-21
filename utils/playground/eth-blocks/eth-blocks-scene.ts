@@ -35,6 +35,24 @@ const getSceneRTSize = (renderer: THREE.WebGLRenderer | null) => {
   ] as const;
 };
 
+// Mouse position for the glass cursor circle, in CSS px from the canvas
+// centre with y up - the same space getVec4PositionFromClientRect() uses for
+// the block rects, so the circle lines up with the blocks
+const handleGlassMouseMove = (event: MouseEvent) => {
+  const material = ethBlocksAnimation.glassMesh?.material as
+    THREE.ShaderMaterial | undefined;
+  const uMousePx = material?.uniforms.uMousePx;
+  if (!uMousePx) return;
+  const bounds = ethBlocksAnimation._cachedCanvasBounds;
+  const centerX = bounds
+    ? bounds.left + bounds.width * 0.5
+    : window.innerWidth * 0.5;
+  const centerY = bounds
+    ? bounds.top + bounds.height * 0.5
+    : window.innerHeight * 0.5;
+  uMousePx.value.set(event.clientX - centerX, centerY - event.clientY);
+};
+
 let glassGeometryDense: THREE.PlaneGeometry | null = null;
 let glassGeometryFlat: THREE.PlaneGeometry | null = null;
 
@@ -186,6 +204,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     }
     this._visibleBlockIds.clear();
 
+    window.removeEventListener("mousemove", handleGlassMouseMove);
     Canvas3.removeAnimationFromRender("ethBlocksAnimation");
     this.imageBgMeshes = [];
     this.glassMesh = null;
@@ -264,6 +283,9 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     const glassMaterial = this.glassMesh.material as THREE.ShaderMaterial;
     if (glassMaterial.uniforms.uSceneTexture)
       glassMaterial.uniforms.uSceneTexture.value = this.sceneRT.texture;
+    window.addEventListener("mousemove", handleGlassMouseMove, {
+      passive: true,
+    });
     Canvas3.addAnimationToRender("ethBlocksAnimation", {
       onAnimationsRender: true,
       onResize: true,
@@ -391,7 +413,8 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
           value: this._uBlocksPositions,
         },
         uSceneTexture: { value: null },
-        uMouse: { value: new THREE.Vector2(0.01, 0.01) },
+        // Far off-screen until the first mousemove
+        uMousePx: { value: new THREE.Vector2(1e5, 1e5) },
         uDevicePixelRatio: { value: window.devicePixelRatio },
         uHoverProgress: { value: 0.0 },
         uUnHoverProgress: { value: 0.0 },

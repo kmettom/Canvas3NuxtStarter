@@ -8,7 +8,7 @@ uniform vec4 uBlocks[MAX_GLASS];
 uniform int uBlockCount;
 uniform vec2 uMeshSize;
 uniform vec2 uViewport;
-uniform vec2 uMouse;
+uniform vec2 uMousePx;
 uniform float uDevicePixelRatio;
 uniform float uHoverProgress;
 uniform float uUnHoverProgress;
@@ -16,19 +16,15 @@ uniform int uHoverBlockIndex;
 
 float boxRadius = 20.0;
 
-float createCircleMask(float radiusPx, float featherPx) {
-    vec2 viewportUv = gl_FragCoord.xy / (uViewport * uDevicePixelRatio);
-    vec2 mouseUv = vec2(uMouse.x, 1.0 - uMouse.y);
+// Cursor circle, measured in the same space as the blocks: CSS px from the
+// canvas centre, y up (uMousePx is set from the DOM mouse position the same
+// way uBlocks is set from the block rects). Independent of the pixel ratio and
+// of which render target the mesh is drawn into.
+float createCircleMask(vec2 vUv, float radiusPx, float featherPx) {
+    vec2 fragPx = (vUv - 0.5) * uMeshSize;
+    float dist = length(fragPx - uMousePx);
 
-    float aspect = uViewport.x / uViewport.y;
-    vec2 delta = viewportUv - mouseUv;
-    delta.x *= aspect;
-
-    float dist = length(delta);
-    float radius = radiusPx / uViewport.y;
-    float feather = featherPx / uViewport.y;
-
-    return 1.0 - smoothstep(radius, radius + feather, dist);
+    return 1.0 - smoothstep(radiusPx, radiusPx + featherPx, dist);
 }
 
 vec4 glassPass(
@@ -73,7 +69,7 @@ vec4 glassPass(
     }
     touched = 1.0;
 
-    float mouseCircle = createCircleMask(20.0, 125.0);
+    float mouseCircle = createCircleMask(vUv, 20.0, 125.0);
 
     // Cursor distortion mask
     float cursorBoost = mouseCircle * transition;
