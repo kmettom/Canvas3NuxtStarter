@@ -103,7 +103,10 @@ async function fetchInitialBlocks() {
 const blockCountersUpdate = () => {
   blockIdCounter.value += 1;
   blockImageIdCounter.value += 1;
-  if (blockImageIdCounter.value >= IMAGE_FILE_AMOUNT)
+  const imageFileAmount = import.meta.client
+    ? ethBlocksAnimation.getImageFileAmount()
+    : IMAGE_FILE_AMOUNT;
+  if (blockImageIdCounter.value >= imageFileAmount)
     blockImageIdCounter.value = 0;
 };
 
@@ -322,7 +325,7 @@ const blockDoneAnimate = (blockId: number) => {
   }
   if (
     ethBlocks.value.size >= ethBlocksAnimation.imageBgMeshes.length &&
-    ethBlocks.value.size < IMAGE_FILE_AMOUNT
+    ethBlocks.value.size < ethBlocksAnimation.getImageFileAmount()
   ) {
     setTimeout(() => {
       ethBlocksAnimation.loadTextures(NEXT_IMAGE_BATCH_LOAD_AMOUNT);
@@ -410,7 +413,16 @@ onUnmounted(() => {
   eventSource?.close();
   tlNewBlockAniIn.kill();
   window.removeEventListener("resize", handleResize);
+  contextCanvas?.removeEventListener("webglcontextlost", handleContextLost);
 });
+
+// preventDefault lets the browser restore the context instead of leaving
+// the canvas permanently dead
+let contextCanvas: HTMLCanvasElement | null = null;
+const handleContextLost = (event: Event) => {
+  event.preventDefault();
+  console.warn("[eth-blocks] WebGL context lost");
+};
 
 await fetchInitialBlocks();
 
@@ -423,6 +435,8 @@ onMounted(async () => {
   firstLoadingBlockAniStart();
 
   window.addEventListener("resize", handleResize);
+  contextCanvas = Canvas3.getRenderer()?.domElement ?? null;
+  contextCanvas?.addEventListener("webglcontextlost", handleContextLost);
 
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;

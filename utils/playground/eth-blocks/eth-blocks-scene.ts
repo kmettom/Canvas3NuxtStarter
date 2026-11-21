@@ -9,13 +9,71 @@ import {
   IMAGE_FILE_AMOUNT,
   INITIAL_BLOCK_AMOUNT,
   LOADING_BLOCK_SIZE,
+  MAX_PIXEL_RATIO,
+  MOBILE_IMAGE_FILE_AMOUNT,
+  MOBILE_MAX_TEXTURE_SIZE,
   NEXT_IMAGE_BATCH_LOAD_AMOUNT,
   U_TRANSACTIONS_AMOUNT_NORMALISED,
 } from "~/constants/playground/eth-blocks";
 import type { EthBlocksAnimation } from "#shared/types/playground/eth-blocks";
 import { ETH_ANI_CALLBACK_NAME } from "~/utils/playground/eth-blocks/web3-helpers";
 
+const isLowMemoryDevice = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(pointer: coarse)").matches;
+
+const disposeMesh = (mesh: THREE.Mesh) => {
+  mesh.geometry?.dispose();
+  const material = mesh.material as THREE.ShaderMaterial;
+  material.uniforms?.uTexture?.value?.dispose?.();
+  material.dispose();
+};
+
 export const ethBlocksAnimation: EthBlocksAnimation = {
+  _loadGeneration: 0,
+  getImageFileAmount() {
+    return isLowMemoryDevice() ? MOBILE_IMAGE_FILE_AMOUNT : IMAGE_FILE_AMOUNT;
+  },
+  // Canvas3.setSize() resets the renderer to the full devicePixelRatio (3 on
+  // iPhones), which makes the screen buffer, composer and sceneRT ~4x larger.
+  applyPixelRatioCap() {
+    const renderer = Canvas3.getRenderer();
+    if (!renderer) return;
+    const ratio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO);
+    if (renderer.getPixelRatio() !== ratio) {
+      renderer.setPixelRatio(ratio);
+      Canvas3.composer?.setPixelRatio(ratio);
+    }
+    const glassMaterial = this.glassMesh?.material as
+      THREE.ShaderMaterial | undefined;
+    if (glassMaterial?.uniforms.uDevicePixelRatio)
+      glassMaterial.uniforms.uDevicePixelRatio.value = ratio;
+  },
+  async loadBgTexture(url) {
+    const texture = await new THREE.TextureLoader().loadAsync(url);
+    if (!isLowMemoryDevice()) return texture;
+
+    const image = texture.image as HTMLImageElement;
+    const longest = Math.max(image.width, image.height);
+    if (!longest) return texture;
+
+    const scale = Math.min(1, MOBILE_MAX_TEXTURE_SIZE / longest);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(image.width * scale);
+    canvas.height = Math.round(image.height * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return texture;
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const scaled = new THREE.CanvasTexture(canvas);
+    scaled.colorSpace = texture.colorSpace;
+    // Shown at roughly screen size, so mipmaps only cost memory here
+    scaled.generateMipmaps = false;
+    scaled.minFilter = THREE.LinearFilter;
+    texture.dispose();
+    return scaled;
+  },
+
   imageBgMeshes: [],
   glassMesh: null,
   sceneRT: null,
@@ -86,15 +144,21 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this.blocksBasePosition = window.innerHeight * this.blocksTopPadding;
   },
   destroy() {
+    // Invalidates any loadTextures() still running for this page
+    this._loadGeneration++;
     if (this.glassMesh) {
       if (this._scene) this._scene.remove(this.glassMesh);
+      disposeMesh(this.glassMesh);
     }
     for (let i = 0; i < this.imageBgMeshes.length; i++) {
       const meshToRemove = this.imageBgMeshes[i];
-      if (meshToRemove && this._scene) {
-        this._scene.remove(meshToRemove);
-      }
+      if (!meshToRemove) continue;
+      if (this._scene) this._scene.remove(meshToRemove);
+      disposeMesh(meshToRemove);
     }
+    this.sceneRT?.dispose();
+    this.textureMaskNoise?.dispose();
+    this.textureMaskNoise = null;
 
     if (this._intersectionObserver) {
       this._intersectionObserver.disconnect();
@@ -166,6 +230,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     this._camera = Canvas3.getCamera();
 
     this.glassMesh = await this.createGlassBlockMesh();
+    this.applyPixelRatioCap();
 
     this._cachedCanvasBounds =
       this._renderer?.domElement.getBoundingClientRect() ?? null;
@@ -204,24 +269,26 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     amountOfTextures = NEXT_IMAGE_BATCH_LOAD_AMOUNT,
     delay = 0,
   ) {
+    const generation = this._loadGeneration;
     if (!this.textureMaskNoise) {
       await this.loadTextureMaskNoise();
     }
+    const imageFileAmount = this.getImageFileAmount();
     const alreadyLoadedTextures = this.imageBgMeshes.length;
-    if (alreadyLoadedTextures >= IMAGE_FILE_AMOUNT) return;
-    const amountToLoad = amountOfTextures
-      ? amountOfTextures
-      : IMAGE_FILE_AMOUNT;
-    const loader = new THREE.TextureLoader();
+    if (alreadyLoadedTextures >= imageFileAmount) return;
+    const amountToLoad = amountOfTextures ? amountOfTextures : imageFileAmount;
 
     const endIndex = amountToLoad + alreadyLoadedTextures;
-    const endIndexCapped =
-      endIndex >= IMAGE_FILE_AMOUNT ? IMAGE_FILE_AMOUNT : endIndex;
+    const endIndexCapped = Math.min(endIndex, imageFileAmount);
     for (let i = alreadyLoadedTextures; i < endIndexCapped; i++) {
       const imageName = i < 10 ? "0" + i : i;
       try {
-        const texture = await loader.loadAsync(`images/${imageName}.webp`);
-        if (!texture) continue;
+        const texture = await this.loadBgTexture(`images/${imageName}.webp`);
+        if (generation !== this._loadGeneration) {
+          // Page was left while this texture was loading
+          texture.dispose();
+          return;
+        }
         const mesh = await this.createImageBgMesh(texture, i);
         if (mesh) {
           this.imageBgMeshes.push(mesh);
@@ -342,7 +409,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
       uniforms: {
         uTexture: { value: texture },
         uTexturePrevious: { value: null },
-        uTextureMaskNoise: { value: this.textureMaskNoise?.clone() },
+        uTextureMaskNoise: { value: this.textureMaskNoise },
         uTransactionsAmount: { value: U_TRANSACTIONS_AMOUNT_NORMALISED },
         uVector: { value: 1 },
         uTransitionProgress: { value: 0 },
@@ -530,6 +597,7 @@ export const ethBlocksAnimation: EthBlocksAnimation = {
     return this._uBlocksPositions;
   },
   resizeImageBGMesh() {
+    this.applyPixelRatioCap();
     if (this.glassMesh) {
       this.glassMesh.scale.set(window.innerWidth, window.innerHeight, 1);
       this.glassMesh.position.x = 0;

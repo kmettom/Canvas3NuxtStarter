@@ -15,6 +15,10 @@ export type EthBlocksAnimation = {
   setBlockBasePosition: () => void;
   init: (ethBlockEls: HTMLCollection) => Promise<void>;
   destroy: () => void;
+  _loadGeneration: number;
+  getImageFileAmount: () => number;
+  applyPixelRatioCap: () => void;
+  loadBgTexture: (url: string) => Promise<THREE.Texture>;
   revealFirstTexture: () => Promise<void>;
   loadTextureMaskNoise: () => Promise<void>;
   startRender: () => Promise<void>;
