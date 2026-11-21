@@ -79,6 +79,16 @@ const blocksToRender = computed<BlockItem[]>(() => {
 });
 let eventSource: EventSource;
 
+// Small screens skip the WebGL scene (bg images + glass shader) entirely and
+// only run the HTML blocks with gsap animations. Mobile Safari runs out of GPU
+// memory with the full scene. Decided in onMounted, as the store isn't
+// initialised during SSR.
+let canvasSceneEnabled = false;
+const setEthRender = (state: boolean, animationId: string) => {
+  if (!canvasSceneEnabled) return;
+  Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, state, animationId);
+};
+
 async function fetchInitialBlocks() {
   await useAsyncData("ethBlocksInitial", async () => {
     const initialBlocks = await $fetch<BlockExtended[]>(
@@ -113,22 +123,14 @@ const blockCountersUpdate = () => {
 const tlNewBlockAniIn = gsap.timeline({
   paused: true,
   onStart: () => {
-    Canvas3.setAnimationToRender(
-      ETH_ANI_CALLBACK_NAME,
-      true,
-      "firstAnimationIn",
-    );
+    setEthRender(true, "firstAnimationIn");
   },
   onUpdate: () => {
     ethBlocksAnimation.isAnimating = true;
   },
   onComplete: () => {
     newLoadingBlock();
-    Canvas3.setAnimationToRender(
-      ETH_ANI_CALLBACK_NAME,
-      false,
-      "firstAnimationIn",
-    );
+    setEthRender(false, "firstAnimationIn");
   },
 });
 
@@ -141,9 +143,10 @@ const tlEnterBlockAniIn = gsap.timeline({});
 const hoverTl = gsap.timeline();
 
 const unHoverBlock = () => {
-  Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true, "unHoverBlock");
+  if (!canvasSceneEnabled || !ethBlocksAnimation.glassMesh) return;
+  setEthRender(true, "unHoverBlock");
 
-  const material = ethBlocksAnimation.glassMesh?.material as ShaderMaterial;
+  const material = ethBlocksAnimation.glassMesh.material as ShaderMaterial;
   if (material.uniforms.uHoverProgress !== undefined) {
     gsap.set(material.uniforms.uHoverProgress, {
       value: 1,
@@ -166,11 +169,7 @@ const unHoverBlock = () => {
 
           ethBlocksAnimation.hoveredBlockId = -1;
           ethBlocksAnimation.calculateUBlockPositions();
-          Canvas3.setAnimationToRender(
-            ETH_ANI_CALLBACK_NAME,
-            false,
-            "unHoverBlock",
-          );
+          setEthRender(false, "unHoverBlock");
         },
       },
     );
@@ -178,9 +177,10 @@ const unHoverBlock = () => {
 };
 
 const hoverBlock = (blockId: number) => {
-  Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true, "hoverBlock");
+  if (!canvasSceneEnabled || !ethBlocksAnimation.glassMesh) return;
+  setEthRender(true, "hoverBlock");
 
-  const material = ethBlocksAnimation.glassMesh?.material as ShaderMaterial;
+  const material = ethBlocksAnimation.glassMesh.material as ShaderMaterial;
 
   hoverTl.clear();
 
@@ -204,11 +204,7 @@ const hoverBlock = (blockId: number) => {
           ethBlocksAnimation.hoveredBlockId = blockId;
         },
         onComplete: () => {
-          Canvas3.setAnimationToRender(
-            ETH_ANI_CALLBACK_NAME,
-            false,
-            "hoverBlock",
-          );
+          setEthRender(false, "hoverBlock");
         },
       },
     );
@@ -324,6 +320,7 @@ const blockDoneAnimate = (blockId: number) => {
     return;
   }
   if (
+    canvasSceneEnabled &&
     ethBlocks.value.size >= ethBlocksAnimation.imageBgMeshes.length &&
     ethBlocks.value.size < ethBlocksAnimation.getImageFileAmount()
   ) {
@@ -344,7 +341,7 @@ const blockDoneAnimate = (blockId: number) => {
     if (!el) {
       return;
     }
-    Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true, "newBlockIn");
+    setEthRender(true, "newBlockIn");
     tlNewBlockAniIn.clear();
     tlNewBlockAniIn.add(() => {
       el.classList.add("animating");
@@ -374,11 +371,7 @@ const blockDoneAnimate = (blockId: number) => {
       opacity: 1,
       onComplete: () => {
         setTimeout(() => {
-          Canvas3.setAnimationToRender(
-            ETH_ANI_CALLBACK_NAME,
-            false,
-            "newBlockIn",
-          );
+          setEthRender(false, "newBlockIn");
         }, 500);
         el.classList.remove("animating");
       },
@@ -428,15 +421,23 @@ await fetchInitialBlocks();
 
 const handleResize = () => {
   Canvas3.resizeOnChange();
-  ethBlocksAnimation.resizeImageBGMesh();
+  if (canvasSceneEnabled) ethBlocksAnimation.resizeImageBGMesh();
 };
 
 onMounted(async () => {
+  // app.vue initialises the display store after child pages mount, so on a
+  // first load isMobile can still be null here
+  const isSmallScreen =
+    displayStore.isMobile ?? window.innerWidth < displayStore.mobileBreakPoint;
+  canvasSceneEnabled = !isSmallScreen;
+
   firstLoadingBlockAniStart();
 
   window.addEventListener("resize", handleResize);
-  contextCanvas = Canvas3.getRenderer()?.domElement ?? null;
-  contextCanvas?.addEventListener("webglcontextlost", handleContextLost);
+  if (canvasSceneEnabled) {
+    contextCanvas = Canvas3.getRenderer()?.domElement ?? null;
+    contextCanvas?.addEventListener("webglcontextlost", handleContextLost);
+  }
 
   if (!ethBlocksWrapper.value) return;
   const ethBlockEls = ethBlocksWrapper.value.children;
@@ -445,13 +446,15 @@ onMounted(async () => {
   ethBlocksAnimation.setBlockBasePosition();
   blocksBasePosition.value = ethBlocksAnimation.blocksBasePosition;
 
-  await ethBlocksAnimation.init(ethBlockEls);
-  await ethBlocksAnimation.startRender();
+  if (canvasSceneEnabled) {
+    await ethBlocksAnimation.init(ethBlockEls);
+    await ethBlocksAnimation.startRender();
+  }
 
   await firstLoadingBlockAniEnd();
 
   addBlockListener();
-  Canvas3.setAnimationToRender(ETH_ANI_CALLBACK_NAME, true, "firstAnimationIn");
+  setEthRender(true, "firstAnimationIn");
   await enterAni(tlEnterBlockAniIn, ethBlockEls, !!displayStore.isMobile);
   tlNewBlockAniIn.play();
 
