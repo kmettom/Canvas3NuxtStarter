@@ -127,7 +127,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Canvas3",
     smallContent: "nuxt module",
-    position: { top: 50, left: 50 },
+    position: { top: 30, left: 50 },
   },
   {
     content: "MSDF",
@@ -136,14 +136,12 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Font",
-    // smallContent: "Render",
     position: { top: 0, left: 0 },
     sectionSize: 0.5,
   },
   {
     content: "Render",
-    // smallContent: "",
-    position: { top: 0, left: 50 },
+    position: { top: 0, right: "0" },
     sectionSize: 0.5,
   },
   {
@@ -164,11 +162,14 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   {
     content: "Get",
     position: { top: 0, left: 50 },
+    sectionSize: 0.4,
+    contentSize: "md",
   },
   {
     content: "in touch",
+    smallContent: "Tomas Kmet",
     position: { top: 0, left: 50 },
-    contentSize: "md",
+    contentSize: "sm",
   },
 ]);
 
@@ -183,12 +184,12 @@ const sectionStyle = (sectionSize = 1) => ({
 onMounted(() => {
   viewportHeight.value = window.innerHeight;
   setTimeout(() => {
-    Canvas3.setScrollShaderByName("scrollPlayground");
+    Canvas3.setScrollShaderByName("msdfPlayground");
   }, 0);
 });
 
 onBeforeUnmount(() => {
-  Canvas3.setScrollShaderByName("scrollPlayground");
+  Canvas3.setScrollShaderByName("msdfPlayground");
 });
 </script>
 
@@ -211,7 +212,6 @@ onBeforeUnmount(() => {
   position: absolute;
 }
 .msdf-text {
-  text-transform: uppercase;
   font-size: 450px;
   line-height: 95%;
   padding-top: 10px;
@@ -231,7 +231,7 @@ onBeforeUnmount(() => {
 .sm-content-wrapper {
   overflow: hidden;
   position: relative;
-  margin-top: -150px;
+  margin-top: -50px;
   text-align: center;
   @include respond-width($w-xs) {
     margin-top: -30px;

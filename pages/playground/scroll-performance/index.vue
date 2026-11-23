@@ -28,7 +28,6 @@
         :style="`margin-left:${slide.position * 33}%`"
         :data-item-position="slide.position"
       >
-        <!--        {{ index }}-->
         <div
           :id="`slide_${index}`"
           v-canvas3-scroll-action="{
@@ -46,7 +45,6 @@
             },
           }"
         >
-          <!--          <div>{{ index }}</div>-->
           <img
             v-if="slide.image"
             v-canvas3-image="{
@@ -73,7 +71,6 @@
             class="slide-image"
             alt=""
           />
-          <!--          :loading="index <= 3 ? 'eager' : 'lazy'"-->
           <div v-if="slide.text" class="slide-text">{{ slide.text }}</div>
         </div>
       </div>
@@ -81,9 +78,6 @@
   </div>
 </template>
 <script setup lang="ts">
-// TODO BEFORE RELEASE:
-// - first init test - image can be not loaded in some conditions - investigate from TK.com
-
 import type { ScrollActionBinding } from "../../../../canvas3-nuxt/dist/runtime/types/types";
 import gsap from "gsap";
 import { useTemplateRefsList } from "@vueuse/core";
@@ -182,9 +176,6 @@ const layoutChangeTl = gsap.timeline({
   onComplete: () => {
     layoutSwitchInProgress.value = false;
     Canvas3.setFixedScrollToElement(null);
-    // setTimeout(() => {
-    //   Canvas3.setMeshPositionsUpdate(false);
-    // }, 100);
   },
 });
 
@@ -240,18 +231,6 @@ const layoutChangeSwitch = async () => {
   layoutSmall.value = !layoutSmall.value;
   const itemWidth = layoutSmall.value ? 25 : 33;
 
-  // layoutChangeTl.clear();
-  // layoutChangeTl.to(
-  //   ".nav-icon-line",
-  //   {
-  //     x: layoutSmall.value ? 10 : 0, // from origin down /
-  //     y: layoutSmall.value ? 0 : 0, //  / to origin, down
-  //     width: 0,
-  //     duration: layoutChangeDuration / 2 + 0.3,
-  //     stagger: 0.05,
-  //   },
-  //   "<",
-  // );
   layoutChangeTl.set(".nav-icon", {
     transform: `rotate(${layoutSmall.value ? 0 : 90}deg)`,
   });
@@ -338,22 +317,18 @@ const slides = ref<
   {
     text: "Canvas3",
     position: 1,
-    // scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/sm/01.webp",
     position: 0,
-    // scrollSpeed: 0.3,
   },
   {
     image: "/playground/images/sm/02.webp",
     position: 1,
-    // scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/sm/03.webp",
     position: 2,
-    // scrollSpeed: 0.3,
   },
   {
     text: "scroll",
@@ -382,7 +357,6 @@ const slides = ref<
   {
     image: "/playground/images/sm/06.webp",
     position: 2,
-    // scrollSpeed: 0.15,
   },
   {
     image: "/playground/images/sm/07.webp",
@@ -465,7 +439,6 @@ const slides = ref<
   {
     image: "/playground/images/sm/15.webp",
     position: 2,
-    // scrollSpeed: -0.15,
   },
   {
     image: "/playground/images/sm/16.webp",
@@ -474,7 +447,6 @@ const slides = ref<
   {
     image: "/playground/images/sm/17.webp",
     position: 0,
-    // scrollSpeed: -0.35,
   },
   {
     image: "/playground/images/sm/18.webp",
@@ -489,10 +461,6 @@ const slides = ref<
 ]);
 </script>
 <style lang="scss" scoped>
-.page-container {
-  //background: black;
-}
-
 .layout-nav-container {
   height: 100%;
   width: 100%;
