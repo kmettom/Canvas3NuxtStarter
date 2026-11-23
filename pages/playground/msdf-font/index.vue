@@ -9,26 +9,40 @@
       <div class="content-block">
         <div
           class="content-wrapper"
-          :style="`top:${frame.position.top}%;${frame.position.left ? `left:${frame.position.left}%` : '0%'};${frame.position.right ? `right:${frame.position.right}%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
+          :style="`top:${frame.position.top}%;${frame.position.left ? `left:${frame.position.left}%` : '0%'};${frame.position.right ? `right:0%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
         >
           <div
             v-canvas3-scroll-action="{
-              activeRange: 0.99,
-              activateOnce: false,
+              activeRange: 1,
+              activateOnce: true,
+              scrollSpeedSetTo: {
+                value: frame.scrollSpeed ? frame.scrollSpeed : 0,
+                duration: 0.2,
+                ease: 'linear',
+              },
               activateCallback: (item: ScrollActionBinding) => {
                 setSlideActive(item.elNode, index);
               },
             }"
           >
             <div v-if="frame.content" class="">
-              <Canvas3Text
+              <div
+                v-canvas3-text="{
+                  shaderName: 'textCRTG',
+                  theme: 'light',
+                  uniforms: {
+                    uTextAniIn: {
+                      value: slideActivateOnceArray[index] ? 1 : 0,
+                      duration: index == 0 ? 1.25 : 0.75,
+                      ease: 'linear',
+                    },
+                  },
+                }"
+                style="color: transparent"
                 :class="`msdf-text ${frame.contentSize}`"
-                :text="frame.content"
-                :duration="index === 0 ? 1 : 0.75"
-                ease="linear"
-                theme="light"
-                shader="textCRTG"
-              />
+              >
+                {{ frame.content }}
+              </div>
             </div>
             <div class="sm-content-wrapper">
               <div
@@ -69,41 +83,37 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
     },
   });
 
-  const addTextToTimeline = (
-    text: Element | null,
-    isSmallContent: boolean = false,
-  ) => {
-    if (!text) return;
-    const chars = new SplitText(text, {
-      type: "chars",
-      reduceWhiteSpace: false,
-      charsClass: "char",
-    }).chars;
+  const selector = ".sm-content.content-title-ani";
+  const textEl = el.querySelector(selector);
 
-    tl.set(
-      chars,
-      {
-        y: isSmallContent ? -125 : 255,
-        x: isSmallContent ? 50 : 100,
-        transform: "matrix(1,0,1,2,0,0);",
-      },
-      0,
-    );
-    tl.set(text, { opacity: 0.8 }, 0);
-    tl.to(
-      chars,
-      {
-        y: 0,
-        x: 0,
-        delay: isSmallContent ? 0.15 : 0,
-        duration: 0.55,
-        transform: "matrix(1,0,0,1,0,0)",
-        stagger: 0.025,
-      },
-      0,
-    );
-  };
-  addTextToTimeline(el.querySelector(".sm-content.content-title-ani"), true);
+  const chars = new SplitText(textEl, {
+    type: "chars",
+    reduceWhiteSpace: false,
+    charsClass: "char",
+  }).chars;
+
+  tl.set(
+    chars,
+    {
+      y: -125,
+      x: 50,
+      transform: "matrix(1,0,1,2,0,0);",
+    },
+    0,
+  );
+  tl.set(textEl, { opacity: 0.8 }, 0);
+  tl.to(
+    chars,
+    {
+      y: 0,
+      x: 0,
+      delay: 0.15,
+      duration: 0.55,
+      transform: "matrix(1,0,0,1,0,0)",
+      stagger: 0.025,
+    },
+    0,
+  );
 };
 
 const slideActivateOnceArray = ref<boolean[]>([]);
@@ -118,9 +128,10 @@ const setSlideActive = (elNode: HTMLElement, index: number) => {
 type KeyframeSection = {
   content?: string;
   smallContent?: string;
-  position: { top: number; left?: number; right?: string };
+  position: { top: number; left?: number; right?: boolean };
   sectionSize?: number;
   contentSize?: string;
+  scrollSpeed?: number;
 };
 
 const keyframeSectionContent = ref<KeyframeSection[]>([
@@ -136,40 +147,51 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Font",
-    position: { top: 0, left: 0 },
+    position: { top: 0, left: 10 },
     sectionSize: 0.5,
+    contentSize: "sm",
+    scrollSpeed: 0.2,
   },
   {
     content: "Render",
-    position: { top: 0, right: "0" },
+    position: { top: 0, right: true },
+    sectionSize: 0.5,
+    contentSize: "sm",
+  },
+  {
+    content: "Example",
+    position: { top: 50, left: 50 },
+    sectionSize: 0.5,
+    scrollSpeed: -0.2,
+    contentSize: "sm",
+  },
+  {
+    content: "Developed",
+    position: { top: 50, left: 50 },
+    contentSize: "md",
+    scrollSpeed: 0.2,
+  },
+  {
+    content: "by",
+    // smallContent: "position angle scale",
+    position: { top: 50, left: 50 },
+    contentSize: "sm",
     sectionSize: 0.5,
   },
   {
-    content: "LINE",
-    smallContent: "light settings",
+    content: "Tomas",
+    smallContent: "Kmet",
     position: { top: 50, left: 50 },
   },
+  // {
+  //   content: "Kmet",
+  //   smallContent: "position angle scale",
+  //   position: { top: 50, left: 50 },
+  // },
   {
-    content: "CHARACTERS",
-    smallContent: "position angle scale",
+    content: "GET",
+    smallContent: "in touch",
     position: { top: 50, left: 50 },
-  },
-  {
-    content: "WORDS",
-    smallContent: "position angle scale",
-    position: { top: 50, left: 50 },
-  },
-  {
-    content: "Get",
-    position: { top: 0, left: 50 },
-    sectionSize: 0.4,
-    contentSize: "md",
-  },
-  {
-    content: "in touch",
-    smallContent: "Tomas Kmet",
-    position: { top: 0, left: 50 },
-    contentSize: "sm",
   },
 ]);
 
@@ -227,6 +249,9 @@ onBeforeUnmount(() => {
   &.sm {
     font-size: 250px;
   }
+  &.xs {
+    font-size: 100px;
+  }
 }
 .sm-content-wrapper {
   overflow: hidden;
@@ -251,5 +276,16 @@ onBeforeUnmount(() => {
   @include respond-width($w-xs) {
     font-size: 50px;
   }
+}
+#fixedTextEl {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: ease all 0.5s;
+  opacity: 0;
 }
 </style>
