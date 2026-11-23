@@ -172,14 +172,22 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
 
 const viewportHeight = ref<number | null>(null);
 
-onMounted(() => {
-  viewportHeight.value = window.innerHeight;
-});
 
 const sectionStyle = (sectionSize = 1) => ({
   height: viewportHeight.value
-    ? `${viewportHeight.value * sectionSize}px`
-    : `${sectionSize * 100}vh`,
+      ? `${viewportHeight.value * sectionSize}px`
+      : `${sectionSize * 100}vh`,
+});
+
+onMounted(() => {
+  viewportHeight.value = window.innerHeight;
+  setTimeout(() => {
+    Canvas3.setScrollShaderByName("scrollPlayground");
+  }, 0);
+});
+
+onBeforeUnmount(() => {
+  Canvas3.setScrollShaderByName("scrollPlayground");
 });
 </script>
 
