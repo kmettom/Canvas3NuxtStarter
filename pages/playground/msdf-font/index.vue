@@ -24,7 +24,7 @@
               <Canvas3Text
                 :class="`msdf-text ${frame.contentSize}`"
                 :text="frame.content"
-                :duration="1"
+                :duration="index === 0 ? 1 : 0.75"
                 ease="linear"
                 theme="light"
                 shader="textCRTG"
@@ -138,14 +138,13 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Font",
     // smallContent: "Render",
     position: { top: 0, left: 0 },
-    sectionSize: 0.5
+    sectionSize: 0.5,
   },
   {
     content: "Render",
     // smallContent: "",
     position: { top: 0, left: 50 },
-    sectionSize: 0.5
-
+    sectionSize: 0.5,
   },
   {
     content: "LINE",
@@ -172,11 +171,10 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
 
 const viewportHeight = ref<number | null>(null);
 
-
 const sectionStyle = (sectionSize = 1) => ({
   height: viewportHeight.value
-      ? `${viewportHeight.value * sectionSize}px`
-      : `${sectionSize * 100}vh`,
+    ? `${viewportHeight.value * sectionSize}px`
+    : `${sectionSize * 100}vh`,
 });
 
 onMounted(() => {
