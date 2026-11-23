@@ -14,6 +14,9 @@ uniform float uTime;
 uniform vec2 uViewport;         // CSS px
 uniform vec2 uMeshSize;         // text element size, CSS px
 uniform float uTextAniIn;       // 0 -> 1 animate in
+// direction of the reveal sweep, degrees on screen (clockwise, y down like CSS) - defaults to 0 when not set
+// 0 = left -> right, 90 = top -> bottom, 180 = right -> left, 270 = bottom -> top, 45 = top-left -> bottom-right
+uniform float uSweepAngle;
 uniform vec2 uMouse;            // viewport 0..1, y from the top (set by Canvas3)
 uniform float uDevicePixelRatio;
 
@@ -64,8 +67,7 @@ const vec2 SADDLE_SCALE = vec2(2.0, 2.0); // x / y curvature - higher = steeper 
 const float SADDLE_EASE = 1.0;      // how the saddle flattens: 1 = linear with uTextAniIn, 2+ = most of the motion early
 
 // Sweep - the reveal (dots growing + saddle flattening) travels across the element instead of everywhere at once
-// direction in layoutUv space: (1,0) left -> right, (-1,0) right -> left, (0,1) / (0,-1) vertical
-const vec2 SWEEP_DIR = vec2(1.0, 0.0);
+// the direction comes from uSweepAngle, the speed from uTextAniIn
 const float SWEEP_WIDTH = 0.5;      // soft edge of the sweep front, fraction of the element - lower = sharper front
 
 // Scan bar - the original's rolling bright stripe (+40 % glow, 20 % of each repeat). On text it is smaller than
@@ -89,7 +91,10 @@ float hash(float n) {
 
 // local reveal progress of a point: 0 before the sweep front reaches it, 1 once it has passed
 float sweepProgress(float p, vec2 layoutUv) {
-    vec2 dir = SWEEP_DIR;
+    float a = radians(uSweepAngle);
+    // screen direction (y down) -> layoutUv space (y up)
+    vec2 dir = vec2(cos(a), -sin(a));
+    // / (|x| + |y|) keeps s in 0..1 for any angle (corner to corner on diagonals)
     float s = dot(layoutUv - 0.5, dir) / max(abs(dir.x) + abs(dir.y), 0.0001) + 0.5; // 0 = start side, 1 = end side
     return clamp((p * (1.0 + SWEEP_WIDTH) - s) / SWEEP_WIDTH, 0.0, 1.0);
 }

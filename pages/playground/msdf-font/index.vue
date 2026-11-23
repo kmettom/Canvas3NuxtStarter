@@ -36,6 +36,7 @@
                       duration: index == 0 ? 1.25 : 0.75,
                       ease: 'linear',
                     },
+                    uSweepAngle: { value: frame.sweepAngle ?? 0 },
                   },
                 }"
                 style="color: transparent"
@@ -132,6 +133,9 @@ type KeyframeSection = {
   sectionSize?: number;
   contentSize?: string;
   scrollSpeed?: number;
+  // reveal sweep direction in degrees (uSweepAngle in TextCRTGFragment.glsl):
+  // 0 = left -> right (default), 90 = top -> bottom, 180 = right -> left, 270 = bottom -> top
+  sweepAngle?: number;
 };
 
 const keyframeSectionContent = ref<KeyframeSection[]>([
@@ -144,6 +148,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "MSDF",
     smallContent: "Multi-Signed Distance Fields",
     position: { top: 50, left: 50 },
+    sweepAngle: 90, // top -> bottom
   },
   {
     content: "Font",
@@ -151,12 +156,14 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     sectionSize: 0.5,
     contentSize: "sm",
     scrollSpeed: 0.2,
+    sweepAngle: 0, // left -> right
   },
   {
     content: "Render",
     position: { top: 0, right: true },
     sectionSize: 0.5,
     contentSize: "sm",
+    sweepAngle: 180, // right -> left
   },
   {
     content: "Example",
@@ -164,10 +171,11 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     sectionSize: 0.5,
     scrollSpeed: -0.2,
     contentSize: "sm",
+    sweepAngle: 270, // bottom -> top
   },
   {
     content: "Developed",
-    smallContent: 'by Tomas Kmet',
+    smallContent: "by Tomas Kmet",
     position: { top: 50, left: 50 },
     contentSize: "md",
     // scrollSpeed: 0.2,
