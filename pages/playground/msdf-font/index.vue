@@ -167,22 +167,23 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Developed",
+    smallContent: 'by Tomas Kmet',
     position: { top: 50, left: 50 },
     contentSize: "md",
-    scrollSpeed: 0.2,
+    // scrollSpeed: 0.2,
   },
-  {
-    content: "by",
-    // smallContent: "position angle scale",
-    position: { top: 50, left: 50 },
-    contentSize: "sm",
-    sectionSize: 0.5,
-  },
-  {
-    content: "Tomas",
-    smallContent: "Kmet",
-    position: { top: 50, left: 50 },
-  },
+  // {
+  //   content: "by",
+  //   // smallContent: "position angle scale",
+  //   position: { top: 50, left: 50 },
+  //   contentSize: "sm",
+  //   sectionSize: 0.5,
+  // },
+  // {
+  //   content: "Tomas",
+  //   smallContent: "Kmet",
+  //   position: { top: 50, left: 50 },
+  // },
   // {
   //   content: "Kmet",
   //   smallContent: "position angle scale",
