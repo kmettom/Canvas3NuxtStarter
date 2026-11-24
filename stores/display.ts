@@ -25,7 +25,7 @@ export const useDisplayStore = defineStore("displayStore", {
     resizeListener() {
       window.addEventListener("resize", () => {
         this.setScreenSize();
-        // Canvas3.resizeOnChange();
+        Canvas3.resizeOnChange();
       });
     },
     setScreenSize() {

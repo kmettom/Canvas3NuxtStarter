@@ -9,15 +9,15 @@
       <div class="content-block">
         <div
           class="content-wrapper"
-          :style="`top:${frame.position.top}%;${frame.position.left ? `left:${frame.position.left}%` : '0%'};${frame.position.right ? `right:0%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
+          :style="`top:${frame.position.top}%;${frame.position.left ? `left:${frame.position.left}%` : '0%'};${frame.position.right ? `right:${frame.position.right}%` : ''};transform:translate(-${frame.position.left ?? 0}%,-${frame.position.top}%)`"
         >
           <div
             v-canvas3-scroll-action="{
-              activeRange: 1,
+              activeRange: index == 0 ? 1 : 1,
               activateOnce: true,
               scrollSpeedSetTo: {
                 value: frame.scrollSpeed ? frame.scrollSpeed : 0,
-                duration: 0.2,
+                duration: 0,
                 ease: 'linear',
               },
               activateCallback: (item: ScrollActionBinding) => {
@@ -29,13 +29,14 @@
               <div
                 v-canvas3-text="{
                   shaderName: 'textCRTG',
-                  theme: 'light',
+                  theme: 'dark',
                   uniforms: {
                     uTextAniIn: {
                       value: slideActivateOnceArray[index] ? 1 : 0,
                       duration: index == 0 ? 1.25 : 0.75,
                       ease: 'linear',
                     },
+                    uSweepAngle: { value: frame.sweepAngle ?? 0 },
                   },
                 }"
                 style="color: transparent"
@@ -128,10 +129,14 @@ const setSlideActive = (elNode: HTMLElement, index: number) => {
 type KeyframeSection = {
   content?: string;
   smallContent?: string;
-  position: { top: number; left?: number; right?: boolean };
+  position: { top: number; left?: number; right?: string };
   sectionSize?: number;
   contentSize?: string;
   scrollSpeed?: number;
+  lightTheme?: boolean;
+  // reveal sweep direction in degrees (uSweepAngle in TextCRTGFragment.glsl):
+  // 0 = left -> right (default), 90 = top -> bottom, 180 = right -> left, 270 = bottom -> top
+  sweepAngle?: number;
 };
 
 const keyframeSectionContent = ref<KeyframeSection[]>([
@@ -139,11 +144,13 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Canvas3",
     smallContent: "nuxt module",
     position: { top: 30, left: 50 },
+    lightTheme: true,
   },
   {
     content: "MSDF",
     smallContent: "Multi-Signed Distance Fields",
     position: { top: 50, left: 50 },
+    sweepAngle: 270, // top -> bottom
   },
   {
     content: "Font",
@@ -151,34 +158,34 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     sectionSize: 0.5,
     contentSize: "sm",
     scrollSpeed: 0.2,
+    sweepAngle: 0, // left -> right
   },
   {
     content: "Render",
-    position: { top: 0, right: true },
+    position: { top: 0, right: "10" },
     sectionSize: 0.5,
     contentSize: "sm",
+    sweepAngle: 180, // right -> left
   },
   {
-    content: "Example",
-    position: { top: 50, left: 50 },
-    sectionSize: 0.5,
-    scrollSpeed: -0.2,
-    contentSize: "sm",
-  },
-  {
-    content: "Developed",
-    smallContent: 'by Tomas Kmet',
+    content: "Playground",
     position: { top: 50, left: 50 },
     contentSize: "md",
-    // scrollSpeed: 0.2,
+    sweepAngle: 270,
   },
   // {
-  //   content: "by",
-  //   // smallContent: "position angle scale",
-  //   position: { top: 50, left: 50 },
-  //   contentSize: "sm",
-  //   sectionSize: 0.5,
+  //   content: "Control",
+  //   position: { top: 50, right: true },
+  //   contentSize: "md",
+  //   scrollSpeed: -0.2,
+  //   sweepAngle: 135,
   // },
+  {
+    content: "Developed",
+    smallContent: "by Tomas Kmet",
+    position: { top: 50, left: 50 },
+    contentSize: "md",
+  },
   // {
   //   content: "Tomas",
   //   smallContent: "Kmet",
@@ -204,11 +211,16 @@ const sectionStyle = (sectionSize = 1) => ({
     : `${sectionSize * 100}vh`,
 });
 
+const navigationStore = useNavigationStore();
+
 onMounted(() => {
   viewportHeight.value = window.innerHeight;
   setTimeout(() => {
     Canvas3.setScrollShaderByName("msdfPlayground");
   }, 0);
+  setTimeout(() => {
+    navigationStore.setCanvas3zIndex(10);
+  }, 1500);
 });
 
 onBeforeUnmount(() => {
