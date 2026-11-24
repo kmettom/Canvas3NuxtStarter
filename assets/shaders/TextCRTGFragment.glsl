@@ -19,7 +19,7 @@ uniform float uTextAniIn;       // 0 -> 1 animate in
 uniform float uSweepAngle;
 uniform vec2 uMouse;            // viewport 0..1, y from the top (set by Canvas3)
 uniform float uDevicePixelRatio;
-uniform float uScrollSpeed;
+uniform float uScrollSpeed;     // 0..1 (set by Canvas3)
 
 // Trail simulation (canvas3-options simulations.trail) - set by Canvas3, declaring them turns the simulation on
 // r = trail intensity 0..1, gb = cursor direction there (screen space)
@@ -48,10 +48,21 @@ const float TRAIL_FALLOFF = 2.0;   // > 1 = only the middle / fresh part of the 
 const float CURSOR_RADIUS_PX = 75.0; // CSS px
 const float CURSOR_FALLOFF = 1.0;     // > 1 = tighter center, < 1 = wider low area
 
-// Pull - the font (and the pattern on it) is pulled towards the cursor and into the trail, deforming the letters
-// KEEP IN SYNC: PULL_PAD_PX in TextCRTGVertex.glsl must be >= CURSOR_PULL_MAX_PX + TRAIL_PULL_MAX_PX (where both overlap),
+// Edge - near the top / bottom of the screen the text dissolves like at the cursor (cells down to INTENSITY_RANGE.x,
+// which blanks them) and is pulled towards the edge. Both get stronger with uScrollSpeed (0 = SLOW, 1 = FAST).
+const float EDGE_SIZE_SLOW = 0.25;       // zone from the top and from the bottom, fraction of the viewport height
+const float EDGE_SIZE_FAST = 0.55;
+const float EDGE_FALLOFF = 10.0;          // > 1 = only right at the edge, < 1 = wider dissolved area
+const float EDGE_PULL = 0.7;             // fraction of the distance to the edge, like CURSOR_PULL
+const float EDGE_PULL_MAX_PX_SLOW = 5.0; // CSS px
+const float EDGE_PULL_MAX_PX_FAST = 20.0;
+
+// Pull - the font (and the pattern on it) is pulled towards the cursor, into the trail and towards the screen edge,
+// deforming the letters
+// KEEP IN SYNC: PULL_PAD_PX in TextCRTGVertex.glsl must be >= CURSOR_PULL_MAX_PX + TRAIL_PULL_MAX_PX + EDGE_PULL_MAX_PX_FAST
+// (where all overlap),
 // anything further is cut off at the glyph quad edge
-const float CURSOR_PULL = 0.7;          // fraction of the distance to the cursor, 0 at the cursor and at the radius edge
+const float CURSOR_PULL = 0.5;          // fraction of the distance to the cursor, 0 at the cursor and at the radius edge
 const float CURSOR_PULL_MAX_PX = 5.0;  // CSS px
 // trail pull works like the cursor pull - towards the middle of the trail, by a fraction of the distance to it,
 // 0 in the middle and at the trail edge, strongest in between
@@ -79,6 +90,7 @@ const float BAR_SPEED = 20.0 / 3.0; // repeats per second - the original is 20 /
 float time;   // iTime / 3 * PATTERN_SPEED, set in main
 float trailAmount;  // 0..1 trail at this fragment, set in main
 float cursorAmount; // 0..1 cursor influence at this fragment, set in main
+float edgeAmount;   // 0..1 top / bottom screen edge influence at this fragment, set in main
 float reveal; // threshold offset from uTextAniIn, set in main
 float minDotOn; // 1 = every cell shows at least its center dot, set in main
 
@@ -146,8 +158,8 @@ float digit(vec2 p) {
     float intensity = mix(INTENSITY_RANGE.x, INTENSITY_RANGE.y, (pattern(s / 10.0) + 0.66) / 1.66);
     // trail - the same pattern, more intense
     intensity *= 1.0 - trailAmount * TRAIL_INTENSITY;
-    // cursor - down to the weakest cell at the cursor
-    intensity = mix(intensity, INTENSITY_RANGE.x, cursorAmount);
+    // cursor / screen edge - down to the weakest cell at the cursor and at the edge
+    intensity = mix(intensity, INTENSITY_RANGE.x, max(cursorAmount, edgeAmount));
     p = fract(p);
     p *= vec2(1.2, 1.2);
     float x = fract(p.x * 5.0);
@@ -200,6 +212,15 @@ void main() {
     float cursorDist = distance(fragCss, cursorPx);
     cursorAmount = pow(1.0 - smoothstep(0.1, CURSOR_RADIUS_PX, cursorDist), CURSOR_FALLOFF) * aniIn;
 
+    // top / bottom screen edge, the zone grows with the scroll speed
+    // (not scaled by aniIn - text that is still revealing at the edge dissolves too)
+    vec2 viewportCss = max(uViewport, vec2(1.0));
+    float scrollSpeed = clamp(uScrollSpeed, 0.0, 1.0);
+    float edgeSizePx = mix(EDGE_SIZE_SLOW, EDGE_SIZE_FAST, scrollSpeed) * viewportCss.y;
+    float edgeY = fragCss.y > viewportCss.y * 0.5 ? viewportCss.y : 0.0; // nearest edge - gl_FragCoord y goes up
+    float edgeDist = abs(edgeY - fragCss.y);
+    edgeAmount = pow(1.0 - smoothstep(0.0, edgeSizePx, edgeDist), EDGE_FALLOFF);
+
     // --- undo the quad growth (vertex shader): true glyph / atlas / layout uv at this fragment ---
     vec2 g = 0.5 + (vGlyphUv - 0.5) / max(vStretch, vec2(0.0001));
     mat2 invGs = inverse2(mat2(dFdx(vGlyphUv), dFdy(vGlyphUv)));
@@ -233,6 +254,12 @@ void main() {
     float trailPullLen = length(trailPull);
     if (trailPullLen > TRAIL_PULL_MAX_PX) trailPull *= TRAIL_PULL_MAX_PX / trailPullLen;
     pull += trailPull;
+    // edge: straight towards the nearest top / bottom edge, 0 at the edge and at the zone end, stronger when scrolling fast
+    vec2 edgePull = vec2(0.0, (edgeY - fragCss.y) * EDGE_PULL * edgeAmount);
+    float edgePullMax = mix(EDGE_PULL_MAX_PX_SLOW, EDGE_PULL_MAX_PX_FAST, scrollSpeed);
+    float edgePullLen = length(edgePull);
+    if (edgePullLen > edgePullMax) edgePull *= edgePullMax / edgePullLen;
+    pull += edgePull;
 
     vec2 pullDev = pull * dpr;
     vec2 uvSrc = uvTrue - uvPerDev * pullDev;
