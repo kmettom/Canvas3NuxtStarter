@@ -45,7 +45,7 @@
                 {{ frame.content }}
               </div>
             </div>
-            <div class="sm-content-wrapper">
+            <div :class="`sm-content-wrapper ${frame.smContentPushUp? ' push-up' : ''}`">
               <div
                 v-if="frame.smallContent"
                 class="sm-content content-title-ani"
@@ -133,9 +133,7 @@ type KeyframeSection = {
   sectionSize?: number;
   contentSize?: string;
   scrollSpeed?: number;
-  lightTheme?: boolean;
-  // reveal sweep direction in degrees (uSweepAngle in TextCRTGFragment.glsl):
-  // 0 = left -> right (default), 90 = top -> bottom, 180 = right -> left, 270 = bottom -> top
+  smContentPushUp?: boolean;
   sweepAngle?: number;
 };
 
@@ -144,7 +142,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Canvas3",
     smallContent: "nuxt module",
     position: { top: 30, left: 50 },
-    lightTheme: true,
+    smContentPushUp: true
   },
   {
     content: "MSDF",
@@ -152,6 +150,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     position: { top: 50, left: 50 },
     sweepAngle: 270, // top -> bottom
     contentSize: "xl",
+    smContentPushUp: true
   },
   {
     content: "Font",
@@ -177,7 +176,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Easy",
-    position: { top: 50, left: 0 },
+    position: { top: 50, left: 10 },
     contentSize: "sm",
     scrollSpeed: 0.2,
     sweepAngle: 180,
@@ -185,7 +184,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Setup",
-    position: { top: 50, right: "0" },
+    position: { top: 50, right: "10" },
     contentSize: "sm",
     scrollSpeed: -0.2,
     sweepAngle: 0,
@@ -205,6 +204,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     position: { top: 50, left: 50 },
     contentSize: "md",
     sweepAngle: 180,
+    smContentPushUp: true,
   },
   {
     content: "Developed",
@@ -217,6 +217,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "GET",
     smallContent: "in touch",
     position: { top: 50, left: 50 },
+    smContentPushUp: true,
   },
 ]);
 
@@ -239,7 +240,6 @@ onMounted(() => {
     navigationStore.setCanvas3zIndex(10);
   }, 1500);
 });
-
 onBeforeUnmount(() => {
   Canvas3.setScrollShaderByName("msdfPlayground");
 });
@@ -289,10 +289,13 @@ onBeforeUnmount(() => {
 .sm-content-wrapper {
   overflow: hidden;
   position: relative;
-  margin-top: 0px;
+  margin-top: -5px;
   text-align: center;
   @include respond-width($w-xs) {
     margin-top: -30px;
+  }
+  &.push-up{
+    margin-top: -65px;
   }
 }
 .sm-content {
