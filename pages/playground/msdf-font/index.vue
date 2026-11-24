@@ -59,6 +59,53 @@
         </div>
       </div>
     </div>
+    <div class="frame-section contact-section" :style="sectionStyle(1)">
+      <div class="content-block">
+        <div
+          class="content-wrapper"
+          :style="`top:${contactSection.position.top}%;left:${contactSection.position.left}%};transform:translate(-${contactSection.position.left ?? 0}%,-${contactSection.position.top}%)`"
+        >
+          <div
+            v-canvas3-scroll-action="{
+              activeRange: 1,
+              activateOnce: true,
+              activateCallback: (item) => {
+                textAniIn(item.elNode, 99, true);
+                contactSectionActive = true;
+              },
+            }"
+          >
+            <div class="">
+              <div
+                v-canvas3-text="{
+                  shaderName: 'textCRTG',
+                  theme: 'dark',
+                  uniforms: {
+                    uTextAniIn: {
+                      value: contactSectionActive ? 1 : 0,
+                      duration: 0.65,
+                      ease: 'linear',
+                    },
+                    uSweepAngle: { value: contactSection.sweepAngle ?? 0 },
+                  },
+                }"
+                style="color: transparent"
+                class="msdf-text"
+              >
+                {{ contactSection.content }}
+              </div>
+            </div>
+            <div
+              :class="`sm-content-wrapper ${contactSection.smContentPushUp ? ' push-up' : ''}`"
+            >
+              <div class="sm-content content-title-ani">
+                {{ contactSection.smallContent }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <scrollSpeedBar :show-photo-credentials="true" />
   </div>
 </template>
@@ -78,8 +125,12 @@ useSeoMeta({
   ogDescription: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
 });
 
-const textAniIn = (el: HTMLElement, slideIndex: number) => {
-  if (slideActiveArray.value[slideIndex]) return;
+const textAniIn = (
+  el: HTMLElement,
+  slideIndex: number,
+  isContact: boolean = false,
+) => {
+  if (slideActiveArray.value[slideIndex] && !isContact) return;
   const tl = gsap.timeline({
     defaults: {
       ease: "power2.inOut",
@@ -88,6 +139,7 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
 
   const selector = ".sm-content.content-title-ani";
   const textEl = el.querySelector(selector);
+  if (!textEl) return;
 
   const chars = new SplitText(textEl, {
     type: "chars",
@@ -119,6 +171,7 @@ const textAniIn = (el: HTMLElement, slideIndex: number) => {
   );
 };
 
+const contactSectionActive = ref<boolean>(false);
 const slideActivateOnceArray = ref<boolean[]>([]);
 const slideActiveArray = ref<boolean[]>([]);
 
@@ -150,7 +203,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "MSDF",
     smallContent: "Multi-Signed Distance Fields",
     position: { top: 50, left: 50 },
-    sweepAngle: 270, // top -> bottom
+    sweepAngle: 270,
     contentSize: "xl",
     smContentPushUp: true,
   },
@@ -160,14 +213,14 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     sectionSize: 0.5,
     contentSize: "sm",
     scrollSpeed: 0.2,
-    sweepAngle: 0, // left -> right
+    sweepAngle: 0,
   },
   {
     content: "Render",
     position: { top: 0, right: "0" },
     sectionSize: 0.5,
     contentSize: "sm",
-    sweepAngle: 180, // right -> left
+    sweepAngle: 180,
   },
   {
     content: "Playground",
@@ -215,13 +268,21 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     contentSize: "md",
     sweepAngle: 270,
   },
-  {
-    content: "GET",
-    smallContent: "in touch",
-    position: { top: 50, left: 50 },
-    smContentPushUp: true,
-  },
+  // {
+  //   content: "GET",
+  //   smallContent: "in touch",
+  //   position: { top: 50, left: 50 },
+  //   smContentPushUp: true,
+  // },
 ]);
+
+const contactSection = ref<KeyframeSection>({
+  content: "GET",
+  smallContent: "in touch",
+  position: { top: 50, left: 50 },
+  smContentPushUp: true,
+  sweepAngle: 0,
+});
 
 const viewportHeight = ref<number | null>(null);
 
