@@ -3,7 +3,7 @@
     <div
       v-for="(frame, index) in keyframeSectionContent"
       :key="index"
-      :class="`frame-section ${frame.lightTheme ? 'light' : ''}`"
+      class="frame-section"
       :style="sectionStyle(frame.sectionSize)"
     >
       <div class="content-block">
@@ -29,7 +29,7 @@
               <div
                 v-canvas3-text="{
                   shaderName: 'textCRTG',
-                  theme: frame.lightTheme ? 'dark' : 'light',
+                  theme: 'dark',
                   uniforms: {
                     uTextAniIn: {
                       value: slideActivateOnceArray[index] ? 1 : 0,
@@ -173,14 +173,6 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     contentSize: "md",
     sweepAngle: 270,
   },
-  {
-    content: "Full",
-    position: { top: 50, left: 0 },
-    // lightTheme
-    // contentSize: "md",
-    // scrollSpeed: 0.2,
-    // sweepAngle: 45,
-  },
   // {
   //   content: "Control",
   //   position: { top: 50, right: true },
@@ -244,9 +236,6 @@ onBeforeUnmount(() => {
 .frame-section {
   height: 100vh;
   position: relative;
-  &.light {
-    background: var(--light-color);
-  }
 }
 .content-block {
   position: relative;
