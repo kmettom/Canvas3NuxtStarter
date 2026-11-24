@@ -57,7 +57,7 @@ const float EDGE_SIZE_FAST = 1.0;
 const float EDGE_FALLOFF = 5.0;          // > 1 = only right at the edge, < 1 = wider dissolved area
 const float EDGE_PULL = 0.7;             // fraction of the distance to the edge, like CURSOR_PULL
 const float EDGE_PULL_MAX_PX_SLOW = 25.0; // CSS px
-const float EDGE_PULL_MAX_PX_FAST = 100.0;
+const float EDGE_PULL_MAX_PX_FAST = 50.0;
 
 // Pull - the font (and the pattern on it) is pulled towards the cursor, into the trail and towards the screen edge,
 // deforming the letters

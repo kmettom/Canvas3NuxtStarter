@@ -151,10 +151,11 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     smallContent: "Multi-Signed Distance Fields",
     position: { top: 50, left: 50 },
     sweepAngle: 270, // top -> bottom
+    contentSize: "xl",
   },
   {
     content: "Font",
-    position: { top: 0, left: 10 },
+    position: { top: 0, left: 0 },
     sectionSize: 0.5,
     contentSize: "sm",
     scrollSpeed: 0.2,
@@ -162,40 +163,56 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Render",
-    position: { top: 0, right: "10" },
+    position: { top: 0, right: "0" },
     sectionSize: 0.5,
     contentSize: "sm",
     sweepAngle: 180, // right -> left
   },
   {
     content: "Playground",
+    smallContent: "nuxt directive, Three.js font render",
+    position: { top: 50, left: 50 },
+    contentSize: "sm",
+    sweepAngle: 0,
+  },
+  {
+    content: "Easy",
+    position: { top: 50, left: 0 },
+    contentSize: "sm",
+    scrollSpeed: 0.2,
+    sweepAngle: 180,
+    sectionSize: 0.5,
+  },
+  {
+    content: "Setup",
+    position: { top: 50, right: "0" },
+    contentSize: "sm",
+    scrollSpeed: -0.2,
+    sweepAngle: 0,
+    sectionSize: 0.5,
+  },
+  {
+    content: "Full",
     position: { top: 50, left: 50 },
     contentSize: "md",
-    sweepAngle: 270,
+    scrollSpeed: 0.1,
+    sweepAngle: 0,
+    sectionSize: 0.5,
   },
-  // {
-  //   content: "Control",
-  //   position: { top: 50, right: true },
-  //   contentSize: "md",
-  //   scrollSpeed: -0.2,
-  //   sweepAngle: 135,
-  // },
+  {
+    content: "Control",
+    smallContent: "directives & uniforms",
+    position: { top: 50, left: 50 },
+    contentSize: "md",
+    sweepAngle: 180,
+  },
   {
     content: "Developed",
     smallContent: "by Tomas Kmet",
     position: { top: 50, left: 50 },
     contentSize: "md",
+    sweepAngle: 270,
   },
-  // {
-  //   content: "Tomas",
-  //   smallContent: "Kmet",
-  //   position: { top: 50, left: 50 },
-  // },
-  // {
-  //   content: "Kmet",
-  //   smallContent: "position angle scale",
-  //   position: { top: 50, left: 50 },
-  // },
   {
     content: "GET",
     smallContent: "in touch",
@@ -247,7 +264,7 @@ onBeforeUnmount(() => {
   position: absolute;
 }
 .msdf-text {
-  font-size: 450px;
+  font-size: 425px;
   line-height: 95%;
   padding-top: 10px;
   @include respond-width($w-s) {
@@ -256,11 +273,14 @@ onBeforeUnmount(() => {
   @include respond-width($w-xs) {
     font-size: 90px;
   }
+  &.xl {
+    font-size: 450px;
+  }
   &.md {
     font-size: 350px;
   }
   &.sm {
-    font-size: 250px;
+    font-size: 300px;
   }
   &.xs {
     font-size: 100px;
@@ -269,7 +289,7 @@ onBeforeUnmount(() => {
 .sm-content-wrapper {
   overflow: hidden;
   position: relative;
-  margin-top: -50px;
+  margin-top: 0px;
   text-align: center;
   @include respond-width($w-xs) {
     margin-top: -30px;
