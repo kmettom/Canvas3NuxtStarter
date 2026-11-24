@@ -63,7 +63,7 @@
       <div class="content-block">
         <div
           class="content-wrapper"
-          :style="`top:${contactSection.position.top}%;left:${contactSection.position.left}%};transform:translate(-${contactSection.position.left ?? 0}%,-${contactSection.position.top}%)`"
+          :style="`top:${contactSection.position.top}%;left:${contactSection.position.left}%;transform:translate(-${contactSection.position.left ?? 0}%,-${contactSection.position.top}%)`"
         >
           <div
             v-canvas3-scroll-action="{
