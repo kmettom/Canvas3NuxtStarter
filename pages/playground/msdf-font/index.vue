@@ -148,7 +148,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "MSDF",
     smallContent: "Multi-Signed Distance Fields",
     position: { top: 50, left: 50 },
-    sweepAngle: 90, // top -> bottom
+    sweepAngle: 270, // top -> bottom
   },
   {
     content: "Font",
@@ -166,27 +166,31 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     sweepAngle: 180, // right -> left
   },
   {
-    content: "Example",
+    content: "Playground",
     position: { top: 50, left: 50 },
-    sectionSize: 0.5,
-    scrollSpeed: -0.2,
-    contentSize: "sm",
-    sweepAngle: 270, // bottom -> top
+    contentSize: "md",
+    sweepAngle: 270,
   },
+  // {
+  //   content: "Scroll",
+  //   position: { top: 50, left: 0 },
+  //   contentSize: "md",
+  //   scrollSpeed: 0.2,
+  //   sweepAngle: 45,
+  // },
+  // {
+  //   content: "Control",
+  //   position: { top: 50, right: true },
+  //   contentSize: "md",
+  //   scrollSpeed: -0.2,
+  //   sweepAngle: 135,
+  // },
   {
     content: "Developed",
     smallContent: "by Tomas Kmet",
     position: { top: 50, left: 50 },
     contentSize: "md",
-    // scrollSpeed: 0.2,
   },
-  // {
-  //   content: "by",
-  //   // smallContent: "position angle scale",
-  //   position: { top: 50, left: 50 },
-  //   contentSize: "sm",
-  //   sectionSize: 0.5,
-  // },
   // {
   //   content: "Tomas",
   //   smallContent: "Kmet",
