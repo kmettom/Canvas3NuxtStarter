@@ -33,7 +33,7 @@
                   uniforms: {
                     uTextAniIn: {
                       value: slideActivateOnceArray[index] ? 1 : 0,
-                      duration: index == 0 ? 1.25 : 0.75,
+                      duration: index == 0 ? 1.35 : 0.65,
                       ease: 'linear',
                     },
                     uSweepAngle: { value: frame.sweepAngle ?? 0 },
@@ -45,7 +45,9 @@
                 {{ frame.content }}
               </div>
             </div>
-            <div class="sm-content-wrapper">
+            <div
+              :class="`sm-content-wrapper ${frame.smContentPushUp ? ' push-up' : ''}`"
+            >
               <div
                 v-if="frame.smallContent"
                 class="sm-content content-title-ani"
@@ -133,9 +135,7 @@ type KeyframeSection = {
   sectionSize?: number;
   contentSize?: string;
   scrollSpeed?: number;
-  lightTheme?: boolean;
-  // reveal sweep direction in degrees (uSweepAngle in TextCRTGFragment.glsl):
-  // 0 = left -> right (default), 90 = top -> bottom, 180 = right -> left, 270 = bottom -> top
+  smContentPushUp?: boolean;
   sweepAngle?: number;
 };
 
@@ -144,17 +144,19 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Canvas3",
     smallContent: "nuxt module",
     position: { top: 30, left: 50 },
-    lightTheme: true,
+    smContentPushUp: true,
   },
   {
     content: "MSDF",
     smallContent: "Multi-Signed Distance Fields",
     position: { top: 50, left: 50 },
     sweepAngle: 270, // top -> bottom
+    contentSize: "xl",
+    smContentPushUp: true,
   },
   {
     content: "Font",
-    position: { top: 0, left: 10 },
+    position: { top: 0, left: 0 },
     sectionSize: 0.5,
     contentSize: "sm",
     scrollSpeed: 0.2,
@@ -162,44 +164,62 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
   },
   {
     content: "Render",
-    position: { top: 0, right: "10" },
+    position: { top: 0, right: "0" },
     sectionSize: 0.5,
     contentSize: "sm",
     sweepAngle: 180, // right -> left
   },
   {
     content: "Playground",
+    smallContent: "nuxt directive, Three.js font render",
+    position: { top: 50, left: 50 },
+    contentSize: "sm",
+    sweepAngle: 0,
+  },
+  {
+    content: "Easy",
+    position: { top: 50, left: 10 },
+    contentSize: "sm",
+    scrollSpeed: 0.2,
+    sweepAngle: 180,
+    sectionSize: 0.5,
+  },
+  {
+    content: "Setup",
+    position: { top: 50, right: "10" },
+    contentSize: "sm",
+    scrollSpeed: -0.2,
+    sweepAngle: 0,
+    sectionSize: 0.5,
+  },
+  {
+    content: "Full",
     position: { top: 50, left: 50 },
     contentSize: "md",
-    sweepAngle: 270,
+    scrollSpeed: 0.1,
+    sweepAngle: 0,
+    sectionSize: 0.5,
   },
-  // {
-  //   content: "Control",
-  //   position: { top: 50, right: true },
-  //   contentSize: "md",
-  //   scrollSpeed: -0.2,
-  //   sweepAngle: 135,
-  // },
+  {
+    content: "Control",
+    smallContent: "directives & uniforms",
+    position: { top: 50, left: 50 },
+    contentSize: "md",
+    sweepAngle: 180,
+    smContentPushUp: true,
+  },
   {
     content: "Developed",
     smallContent: "by Tomas Kmet",
     position: { top: 50, left: 50 },
     contentSize: "md",
+    sweepAngle: 270,
   },
-  // {
-  //   content: "Tomas",
-  //   smallContent: "Kmet",
-  //   position: { top: 50, left: 50 },
-  // },
-  // {
-  //   content: "Kmet",
-  //   smallContent: "position angle scale",
-  //   position: { top: 50, left: 50 },
-  // },
   {
     content: "GET",
     smallContent: "in touch",
     position: { top: 50, left: 50 },
+    smContentPushUp: true,
   },
 ]);
 
@@ -212,9 +232,12 @@ const sectionStyle = (sectionSize = 1) => ({
 });
 
 const navigationStore = useNavigationStore();
+const displayStore = useDisplayStore();
 
 onMounted(() => {
-  viewportHeight.value = window.innerHeight;
+  viewportHeight.value = displayStore.isMobile
+    ? window.innerHeight / 1.25
+    : window.innerHeight;
   setTimeout(() => {
     Canvas3.setScrollShaderByName("msdfPlayground");
   }, 0);
@@ -222,7 +245,6 @@ onMounted(() => {
     navigationStore.setCanvas3zIndex(10);
   }, 1500);
 });
-
 onBeforeUnmount(() => {
   Canvas3.setScrollShaderByName("msdfPlayground");
 });
@@ -247,32 +269,65 @@ onBeforeUnmount(() => {
   position: absolute;
 }
 .msdf-text {
-  font-size: 450px;
+  font-size: 425px;
   line-height: 95%;
   padding-top: 10px;
+  @include respond-width($w-m) {
+    font-size: 330px;
+  }
+  @include respond-width($w-m-s) {
+    font-size: 300px;
+  }
   @include respond-width($w-s) {
-    font-size: 130px;
+    font-size: 250px;
   }
   @include respond-width($w-xs) {
-    font-size: 90px;
+    font-size: 115px;
+  }
+  &.xl {
+    font-size: 450px;
+    @include respond-width($w-s) {
+      font-size: 300px;
+    }
+    @include respond-width($w-xs) {
+      font-size: 145px;
+    }
   }
   &.md {
     font-size: 350px;
+    @include respond-width($w-s) {
+      font-size: 220px;
+    }
+    @include respond-width($w-xs) {
+      font-size: 100px;
+    }
   }
   &.sm {
-    font-size: 250px;
-  }
-  &.xs {
-    font-size: 100px;
+    font-size: 300px;
+    @include respond-width($w-s) {
+      font-size: 190px;
+    }
+    @include respond-width($w-xs) {
+      font-size: 95px;
+    }
   }
 }
 .sm-content-wrapper {
   overflow: hidden;
   position: relative;
-  margin-top: -50px;
+  margin-top: -5px;
   text-align: center;
   @include respond-width($w-xs) {
-    margin-top: -30px;
+    margin-top: 0;
+  }
+  &.push-up {
+    margin-top: -65px;
+    @include respond-width($w-m) {
+      margin-top: -40px;
+    }
+    @include respond-width($w-s) {
+      margin-top: -20px;
+    }
   }
 }
 .sm-content {
