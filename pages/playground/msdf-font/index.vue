@@ -75,8 +75,7 @@
               },
             }"
           >
-            <div  @click="contactCTA"
-                  class="contact-cta">
+            <div @click="contactCTA" class="contact-cta">
               <div
                 v-canvas3-text="{
                   shaderName: 'textCRTG',
@@ -290,9 +289,7 @@ const sectionStyle = (sectionSize = 1) => ({
     : `${sectionSize * 100}vh`,
 });
 
-const contactCTA = () => {
-
-}
+const contactCTA = () => {};
 
 onMounted(() => {
   viewportHeight.value = displayStore.isMobile
@@ -417,7 +414,7 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-.contact-cta{
+.contact-cta {
   cursor: pointer;
 }
 </style>
