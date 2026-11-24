@@ -45,7 +45,9 @@
                 {{ frame.content }}
               </div>
             </div>
-            <div :class="`sm-content-wrapper ${frame.smContentPushUp? ' push-up' : ''}`">
+            <div
+              :class="`sm-content-wrapper ${frame.smContentPushUp ? ' push-up' : ''}`"
+            >
               <div
                 v-if="frame.smallContent"
                 class="sm-content content-title-ani"
@@ -142,7 +144,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     content: "Canvas3",
     smallContent: "nuxt module",
     position: { top: 30, left: 50 },
-    smContentPushUp: true
+    smContentPushUp: true,
   },
   {
     content: "MSDF",
@@ -150,7 +152,7 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     position: { top: 50, left: 50 },
     sweepAngle: 270, // top -> bottom
     contentSize: "xl",
-    smContentPushUp: true
+    smContentPushUp: true,
   },
   {
     content: "Font",
@@ -294,7 +296,7 @@ onBeforeUnmount(() => {
   @include respond-width($w-xs) {
     margin-top: -30px;
   }
-  &.push-up{
+  &.push-up {
     margin-top: -65px;
   }
 }
