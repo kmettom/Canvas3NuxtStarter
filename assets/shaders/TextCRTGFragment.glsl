@@ -8,6 +8,8 @@ varying vec2 vUv;               // all stretched over the grown glyph quad - see
 varying vec2 vLayoutUv;         // 0..1 across the text element
 varying vec2 vGlyphUv;
 varying vec2 vStretch;
+uniform vec3 uColor;            // final fill color
+
 
 uniform sampler2D uMap;
 uniform float uTime;
@@ -191,7 +193,7 @@ vec3 getColor(vec2 p) {
             if (i == 0.0 && j == 0.0) middle = d;
         }
     }
-    vec3 color = vec3(0.85, 0.85, 0.85);
+    vec3 color = uColor; //vec3(0.85, 0.85, 0.85);
     return vec3(0.9) * middle + sum / 10.0 * color * bar;
 }
 
