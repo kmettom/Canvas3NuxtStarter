@@ -75,7 +75,8 @@
               },
             }"
           >
-            <div class="">
+            <div  @click="contactCTA"
+                  class="contact-cta">
               <div
                 v-canvas3-text="{
                   shaderName: 'textCRTG',
@@ -124,6 +125,9 @@ useSeoMeta({
   description: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
   ogDescription: "Canvas3 - Playground - Tomas Kmet - Creative web developer",
 });
+
+const navigationStore = useNavigationStore();
+const displayStore = useDisplayStore();
 
 const textAniIn = (
   el: HTMLElement,
@@ -268,12 +272,6 @@ const keyframeSectionContent = ref<KeyframeSection[]>([
     contentSize: "md",
     sweepAngle: 270,
   },
-  // {
-  //   content: "GET",
-  //   smallContent: "in touch",
-  //   position: { top: 50, left: 50 },
-  //   smContentPushUp: true,
-  // },
 ]);
 
 const contactSection = ref<KeyframeSection>({
@@ -292,8 +290,9 @@ const sectionStyle = (sectionSize = 1) => ({
     : `${sectionSize * 100}vh`,
 });
 
-const navigationStore = useNavigationStore();
-const displayStore = useDisplayStore();
+const contactCTA = () => {
+
+}
 
 onMounted(() => {
   viewportHeight.value = displayStore.isMobile
@@ -416,5 +415,9 @@ onBeforeUnmount(() => {
   pointer-events: none;
   transition: ease all 0.5s;
   opacity: 0;
+}
+
+.contact-cta{
+  cursor: pointer;
 }
 </style>
