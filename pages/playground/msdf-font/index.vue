@@ -33,7 +33,7 @@
                   uniforms: {
                     uTextAniIn: {
                       value: slideActivateOnceArray[index] ? 1 : 0,
-                      duration: index == 0 ? 1.25 : 0.75,
+                      duration: index == 0 ? 1.35 : 0.65,
                       ease: 'linear',
                     },
                     uSweepAngle: { value: frame.sweepAngle ?? 0 },
@@ -232,9 +232,12 @@ const sectionStyle = (sectionSize = 1) => ({
 });
 
 const navigationStore = useNavigationStore();
+const displayStore = useDisplayStore();
 
 onMounted(() => {
-  viewportHeight.value = window.innerHeight;
+  viewportHeight.value = displayStore.isMobile
+    ? window.innerHeight / 1.25
+    : window.innerHeight;
   setTimeout(() => {
     Canvas3.setScrollShaderByName("msdfPlayground");
   }, 0);
@@ -269,23 +272,44 @@ onBeforeUnmount(() => {
   font-size: 425px;
   line-height: 95%;
   padding-top: 10px;
+  @include respond-width($w-m) {
+    font-size: 330px;
+  }
+  @include respond-width($w-m-s) {
+    font-size: 300px;
+  }
   @include respond-width($w-s) {
-    font-size: 130px;
+    font-size: 250px;
   }
   @include respond-width($w-xs) {
-    font-size: 90px;
+    font-size: 115px;
   }
   &.xl {
     font-size: 450px;
+    @include respond-width($w-s) {
+      font-size: 300px;
+    }
+    @include respond-width($w-xs) {
+      font-size: 145px;
+    }
   }
   &.md {
     font-size: 350px;
+    @include respond-width($w-s) {
+      font-size: 220px;
+    }
+    @include respond-width($w-xs) {
+      font-size: 100px;
+    }
   }
   &.sm {
     font-size: 300px;
-  }
-  &.xs {
-    font-size: 100px;
+    @include respond-width($w-s) {
+      font-size: 190px;
+    }
+    @include respond-width($w-xs) {
+      font-size: 95px;
+    }
   }
 }
 .sm-content-wrapper {
@@ -294,10 +318,16 @@ onBeforeUnmount(() => {
   margin-top: -5px;
   text-align: center;
   @include respond-width($w-xs) {
-    margin-top: -30px;
+    margin-top: 0;
   }
   &.push-up {
     margin-top: -65px;
+    @include respond-width($w-m) {
+      margin-top: -40px;
+    }
+    @include respond-width($w-s) {
+      margin-top: -20px;
+    }
   }
 }
 .sm-content {
