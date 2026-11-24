@@ -19,6 +19,7 @@ uniform float uTextAniIn;       // 0 -> 1 animate in
 uniform float uSweepAngle;
 uniform vec2 uMouse;            // viewport 0..1, y from the top (set by Canvas3)
 uniform float uDevicePixelRatio;
+uniform float uScrollSpeed;
 
 // Trail simulation (canvas3-options simulations.trail) - set by Canvas3, declaring them turns the simulation on
 // r = trail intensity 0..1, gb = cursor direction there (screen space)
