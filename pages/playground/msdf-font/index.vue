@@ -16,7 +16,7 @@
               activeRange: index == 0 ? 1 : 1,
               activateOnce: true,
               scrollSpeedSetTo: {
-                value: frame.scrollSpeed ? frame.scrollSpeed : 0,
+                value: frame.scrollSpeed && !displayStore.isMobile ? frame.scrollSpeed : 0,
                 duration: 0,
                 ease: 'linear',
               },
